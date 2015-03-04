@@ -1,5 +1,5 @@
 #!/bin/bash
-fprint_root=..
+fprint_root=../..
 fprint_dir=${fprint_root}/quartus/full_system_arria_2
 
 programming_dir=${fprint_dir}/output_files
@@ -21,6 +21,7 @@ sed -r -e 's/(CFPU_0_CSR_IRQ) (-*[0-9]+)/\1 3/' \
 		-e 's/(CFPU_0_CSR_IRQ_INTERRUPT_CONTROLLER_ID) (-*[0-9]+)/\1 0/' \
 		<$sw_dir/ucosMon_bsp/system.h >$DIR/test.x
 
+cp $DIR/test.x $sw_dir/ucosMon_bsp/system.h
 
 #update the Monitor dma interrupts file for all
 for i in {0..1}

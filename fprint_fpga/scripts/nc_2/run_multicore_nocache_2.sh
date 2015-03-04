@@ -1,10 +1,10 @@
 #!/bin/bash
-fprint_dir=../quartus/full_system_arria_2
+fprint_dir=../../quartus/full_system_arria_2
 
 programming_dir=${fprint_dir}/output_files
 sw_dir=${fprint_dir}/software
 
-cd $programming_dir
+# cd $programming_dir
 #nios2-configure-sof  fprint_1_1.sof
 
 

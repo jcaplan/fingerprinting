@@ -4,7 +4,7 @@
  * Machine generated for CPU 'processorM_0_cpuM' in SOPC Builder design 'nios_fprint'
  * SOPC Builder design path: ../../nios_fprint.sopcinfo
  *
- * Generated: Wed Nov 12 12:53:42 EST 2014
+ * Generated: Wed Mar 04 17:57:08 EST 2015
  */
 
 /*
@@ -140,17 +140,6 @@ SECTIONS
     {
         PROVIDE (_alt_partition_critical_start = ABSOLUTE(.));
         *(.critical .critical.*)
-        *\libm.a:*
-        *:*div*
-        *:*sqrt*
-        *:*mul*
-        *:*sub*
-        *:*add*
-        *critical_library.a:*
-        
-     
-        
-        
         . = ALIGN(4);
         PROVIDE (_alt_partition_critical_end = ABSOLUTE(.));
     } > memory_0_onchip_memoryMain
