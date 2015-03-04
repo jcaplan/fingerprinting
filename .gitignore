@@ -1,0 +1,19 @@
+*~
+#QSYS generated non-hdl files
+*.debugingo
+*.qip
+*.regmap
+#Non essential Quartus project files
+*.bsf
+*.cmp
+*.html
+*.rpt
+#Quartus synthesis generated files
+db/
+incremental_db/
+output_files/
+.qsys_edit/
+flash/
+simulation/
+hc_output/
+*_pin_model_dump.txt
