@@ -1,0 +1,6 @@
+proc cpu1
+b *0x00400d74
+print *0x8203000@0x1000
+continue
+proc cpu1
+print *0x8203000@0x1000

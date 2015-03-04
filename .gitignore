@@ -40,3 +40,8 @@ obj/
 *.out
 *.synctex.gz
 *.toc
+
+#OVP
+log.*
+*.exe
+*.so

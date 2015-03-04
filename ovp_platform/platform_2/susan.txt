@@ -1,0 +1,9 @@
+proc cpu0
+b cpu0.c:117
+continue
+set itrace change
+proc cpu1
+set itrace change
+diagnostics cpu0_fprint 3
+diagnostics cpu1_fprint 3
+continue
