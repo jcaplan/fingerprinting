@@ -16,3 +16,16 @@ flash/
 simulation/
 hc_output/
 *_pin_model_dump.txt
+
+
+#Software projects
+obj/
+*.a
+#eclipse
+.cproject
+.project
+*.map
+*.objdump
+.force_rebuild
+.force_relink
+*.gdb
