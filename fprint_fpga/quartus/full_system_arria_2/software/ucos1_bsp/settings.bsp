@@ -4,8 +4,8 @@
         <BspVersion>default</BspVersion>
         <BspGeneratedTimeStamp>Nov 12, 2014 12:54:59 PM</BspGeneratedTimeStamp>
         <BspGeneratedUnixTimeStamp>1415814899250</BspGeneratedUnixTimeStamp>
-        <BspGeneratedLocation>/data/jcapla9/fprint_ptype_1_2/quartus/full_system_arria_2/software/ucos1_bsp</BspGeneratedLocation>
-        <BspSettingsFile>/data/jcapla9/fprint_ptype_1_2/quartus/full_system_arria_2/software/ucos1_bsp/settings.bsp</BspSettingsFile>
+        <BspGeneratedLocation>/data/jcapla9/fingerprinting/fprint_fpga/scripts/../quartus/full_system_arria_2/software/ucos1_bsp</BspGeneratedLocation>
+        <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../nios_fprint.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
         <Cpu>processor1_0_cpu1</Cpu>
