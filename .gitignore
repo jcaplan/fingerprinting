@@ -45,3 +45,8 @@ obj/
 log.*
 *.exe
 *.so
+
+$CodeGen
+*.d
+*.o
+CodeGen

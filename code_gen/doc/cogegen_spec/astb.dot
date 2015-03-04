@@ -1,0 +1,27 @@
+digraph G {
+	size = "4,4";
+	parser [shape=box];
+	ASTB [shape=box];
+	parser -> ASTNODE;
+	ASTNODE -> ASTB;
+	ASTB -> global;
+	global [label="Top Level Variable \nDeclarations"];
+	ASTB -> functions;
+	functions [label="Top Level Function \nDeclarations"];
+	ASTB -> typedef;
+	typedef [label="Top Level Type \nDefinitions"];
+	global -> declare_list;
+	declare_list [label="Declaration \n List"];
+	declare_list -> Declarations;
+	typedef -> TList;
+	TList [label="TypeDef Lists"];
+	functions -> Flist;
+	Flist [label="Function List"];
+	Flist -> fdlist;
+	Flist -> fstatementList;
+	fdlist [label="Local Declaration \nList"];
+	fstatementList[label="Statement List"];
+	fstatementList -> Statements;
+	Statements
+
+}
