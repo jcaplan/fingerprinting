@@ -1,0 +1,226 @@
+\begin{thebibliography}{31}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[LaFrieda et~al.(2007)LaFrieda, Ipek, Martinez, and
+  Manohar]{lafrieda2007utilizing}
+Christopher LaFrieda, Engin Ipek, Jose~F Martinez, and Rajit Manohar.
+\newblock Utilizing dynamically coupled cores to form a resilient chip
+  multiprocessor.
+\newblock In \emph{Dependable Systems and Networks, 2007. DSN'07. 37th Annual
+  IEEE/IFIP International Conference on}, pages 317--326. IEEE, 2007.
+
+\bibitem[Perez et~al.(2013)Perez, Gonzalez, Trujillo, Trapman, and
+  Garate]{perez2013safety}
+Jon Perez, David Gonzalez, Salvador Trujillo, Ton Trapman, and Jose~Miguel
+  Garate.
+\newblock A safety concept for a wind power mixed-criticality embedded system
+  based on multicore partitioning.
+\newblock \emph{Proc. WMC, RTSS}, pages 25--30, 2013.
+
+\bibitem[Swingler et~al.(2000)Swingler, McBride, and
+  Maul]{swingler2000degradation}
+Johnathan Swingler, John~W McBride, and Christian Maul.
+\newblock Degradation of road tested automotive connectors.
+\newblock \emph{Components and Packaging Technologies, IEEE Transactions on},
+  23\penalty0 (1):\penalty0 157--164, 2000.
+
+\bibitem[{B. H. Meyer, B. H. Calhoun, \emph{et al.}}(2011)]{Meyer:CASES11}
+{B. H. Meyer, B. H. Calhoun, \emph{et al.}}
+\newblock Cost-effective safety and fault localization using distributed
+  temporal redundancy.
+\newblock In \emph{CASES'11}, 2011.
+
+\bibitem[El~Salloum et~al.(2013)El~Salloum, Elshuber, H{\"o}ftberger, Isakovic,
+  and Wasicek]{el2013across}
+Christian El~Salloum, Martin Elshuber, Oliver H{\"o}ftberger, Haris Isakovic,
+  and Armin Wasicek.
+\newblock The {ACROSS MPSoC}: A new generation of multi-core processors
+  designed for safety critical embedded systems.
+\newblock \emph{Microprocessors and Microsystems}, 37\penalty0 (8):\penalty0
+  1020--1032, 2013.
+
+\bibitem[Huang et~al.(2014)Huang, Barner, Raabe, Buckl, and
+  Knoll]{huang2014framework}
+Jia Huang, Simon Barner, Andreas Raabe, Christian Buckl, and Alois Knoll.
+\newblock A framework for reliability-aware embedded system design on
+  multiprocessor platforms.
+\newblock \emph{Microprocessors and Microsystems}, 2014.
+
+\bibitem[Kopetz et~al.(2007)Kopetz, Obermaisser, El~Salloum, and
+  Huber]{kopetz2007automotive}
+Hermann Kopetz, Roman Obermaisser, Christian El~Salloum, and Bernhard Huber.
+\newblock Automotive software development for a multi-core system-on-a-chip.
+\newblock In \emph{Software Engineering for Automotive Systems, 2007. ICSE
+  Workshops SEAS'07. Fourth International Workshop on}, pages 2--2. IEEE, 2007.
+
+\bibitem[Hruby et~al.(2013)Hruby, Bos, and Tanenbaum]{hruby2013slower}
+Tomas Hruby, Herbert Bos, and Andrew~S Tanenbaum.
+\newblock When slower is faster: On heterogeneous multicores for reliable
+  systems.
+\newblock In \emph{USENIX Annual Technical Conference}, pages 255--266.
+  Citeseer, 2013.
+
+\bibitem[He et~al.(2003)He, Shao, Xiao, Zhuge, and Sha]{he2003reliability}
+Yi~He, Zili Shao, Bin Xiao, Qingfeng Zhuge, and Edwin Sha.
+\newblock Reliability driven task scheduling for heterogeneous systems.
+\newblock In \emph{Fifteenth IASTED International Conference on Parallel and
+  Distributed Computing and Systems}, volume~1, pages 465--470, 2003.
+
+\bibitem[Ungsunan et~al.(2009)Ungsunan, Lin, Gai, and
+  Kong]{ungsunan2009improving}
+P.D. Ungsunan, Chuang Lin, Yi~Gai, and Xiangzhen Kong.
+\newblock Improving network processing dependability with heterogeneous
+  reliability cores.
+\newblock In \emph{Communication Software and Networks, 2009. ICCSN '09.
+  International Conference on}, pages 479--483, Feb 2009.
+\newblock \doi{10.1109/ICCSN.2009.147}.
+
+\bibitem[Bolchini and Miele(2013)]{bolchini2013reliability}
+Cristiana Bolchini and Antonio Miele.
+\newblock Reliability-driven system-level synthesis for mixed-critical embedded
+  systems.
+\newblock \emph{Computers, IEEE Transactions on}, 62\penalty0 (12):\penalty0
+  2489--2502, 2013.
+
+\bibitem[D{\"o}bel et~al.(2012)D{\"o}bel, H{\"a}rtig, and
+  Engel]{dobel2012operating}
+Bj{\"o}rn D{\"o}bel, Hermann H{\"a}rtig, and Michael Engel.
+\newblock Operating system support for redundant multithreading.
+\newblock In \emph{Proceedings of the tenth ACM international conference on
+  Embedded software}, pages 83--92. ACM, 2012.
+
+\bibitem[Suhendra et~al.(2005)Suhendra, Mitra, Roychoudhury, and
+  Chen]{suhendra2005wcet}
+Vivy Suhendra, Tulika Mitra, Abhik Roychoudhury, and Ting Chen.
+\newblock {WCET centric data allocation to scratchpad memory}.
+\newblock In \emph{Real-Time Systems Symposium, 2005. RTSS 2005. 26th IEEE
+  International}, pages 10--pp. IEEE, 2005.
+
+\bibitem[Steinke et~al.(2002)Steinke, Wehmeyer, Lee, and
+  Marwedel]{steinke2002assigning}
+Stefan Steinke, Lars Wehmeyer, Bo-Sik Lee, and Peter Marwedel.
+\newblock Assigning program and data objects to scratchpad for energy
+  reduction.
+\newblock In \emph{Design, Automation and Test in Europe Conference and
+  Exhibition, 2002. Proceedings}, pages 409--415. IEEE, 2002.
+
+\bibitem[Francesco et~al.(2004)Francesco, Marchal, Atienza, Benini, Catthoor,
+  and Mendias]{francesco2004integrated}
+Poletti Francesco, Paul Marchal, David Atienza, Luca Benini, Francky Catthoor,
+  and Jose~M Mendias.
+\newblock An integrated hardware/software approach for run-time scratchpad
+  management.
+\newblock In \emph{Proceedings of the 41st annual Design Automation
+  Conference}, pages 238--243. ACM, 2004.
+
+\bibitem[Abel et~al.(2013)Abel, Benz, Doerfert, D{\"o}rr, Hahn, Haupenthal,
+  Jacobs, Moin, Reineke, Schommer, et~al.]{abel2013impact}
+Andreas Abel, Florian Benz, Johannes Doerfert, Barbara D{\"o}rr, Sebastian
+  Hahn, Florian Haupenthal, Michael Jacobs, Amir~H Moin, Jan Reineke, Bernhard
+  Schommer, et~al.
+\newblock Impact of resource sharing on performance and performance prediction:
+  A survey.
+\newblock In \emph{CONCUR 2013--Concurrency Theory}, pages 25--43. Springer,
+  2013.
+
+\bibitem[N{\'e}lis et~al.(2014)N{\'e}lis, Yomsi, Fonseca, Qui{\~n}ones, Vargas,
+  and Marongiu]{nelis2014challenge}
+Vincent N{\'e}lis, Patrick~Meumeu Yomsi, Luis Miguel Pinho~Jos{\'e} Fonseca,
+  Marko Bertogna~Eduardo Qui{\~n}ones, Roberto Vargas, and Andrea Marongiu.
+\newblock The challenge of time-predictability in modern many-core
+  architectures.
+\newblock In \emph{14th International Workshop on Worst-Case Execution Time
+  Analysis}, page~63, 2014.
+
+\bibitem[Lari et~al.(2014)Lari, Tanase, Hannig, and Teich]{lari2014massively}
+Vahid Lari, Alexandru Tanase, Frank Hannig, and J{\"u}rgen Teich.
+\newblock Massively parallel processor architectures for resource-aware
+  computing.
+\newblock \emph{arXiv preprint arXiv:1405.2907}, 2014.
+
+\bibitem[Ferreira et~al.(2014)Ferreira, Rolt, Nazar, Moreira, and
+  Carro]{ferreira2014adaptive}
+Ronaldo~R Ferreira, Jean~da Rolt, Gabriel~L Nazar, Alvaro~F Moreira, and Luigi
+  Carro.
+\newblock Adaptive low-power architecture for high-performance and reliable
+  embedded computing.
+\newblock In \emph{Dependable Systems and Networks (DSN), 2014 44th Annual
+  IEEE/IFIP International Conference on}, pages 538--549. IEEE, 2014.
+
+\bibitem[Koopman(2002)]{koopman200232}
+Philip Koopman.
+\newblock 32-bit cyclic redundancy codes for internet applications.
+\newblock In \emph{Dependable Systems and Networks, 2002. DSN 2002.
+  Proceedings. International Conference on}, pages 459--468. IEEE, 2002.
+
+\bibitem[{H. F. A. Hamed, F. A. Elmisery, \emph{et al.}}(2012)]{Hamed:12}
+{H. F. A. Hamed, F. A. Elmisery, \emph{et al.}}
+\newblock Implementation of low area and high data throughput {CRC} design on
+  {FPGA}.
+\newblock \emph{IJARCSEE}, 1\penalty0 (9), 2012.
+
+\bibitem[alt(2014)]{altera_ip_ug}
+\emph{{Embedded Peripheral IP User Guide}}.
+\newblock Altera, 2014.
+
+\bibitem[M{\"o}ssinger(2010)]{mossinger2010software}
+J{\"u}rgen M{\"o}ssinger.
+\newblock Software in automotive systems.
+\newblock \emph{IEEE software}, 27\penalty0 (2):\penalty0 0092--94, 2010.
+
+\bibitem[{The Mathworks, Inc}(2014)]{sim_trans}
+{The Mathworks, Inc}.
+\newblock {Modeling an Automatic Transmission Controller}, 2014.
+\newblock URL
+  \url{http://www.mathworks.com/help/simulink/examples/modeling-an-automatic-transmission-controller.html}.
+
+\bibitem[Altera(2010)]{alteraniossc}
+Altera.
+\newblock {Altera's DO-254/ED-80 Certifiable Nios II Processor Leveraged in
+  Thales Safety-Critical Avionics System Certified by EASA}, 2010.
+\newblock URL
+  \url{http://www.altera.com/corporate/news_room/releases/2010/products/nr-do-254.html?f=hp&k=wn1}.
+
+\bibitem[{Xilinx}(2012)]{xilinx_lockstep}
+{Xilinx}.
+\newblock \emph{{Spartan-6 FPGA Dual-Lockstep MicroBlaze Processor with
+  Isolation Design Flow}}.
+\newblock Application Note: Spartan-6 FPGAs. XAPP584. July 2012.
+
+\bibitem[Guthaus et~al.(2001)Guthaus, Ringenberg, Ernst, Austin, Mudge, and
+  Brown]{guthaus2001mibench}
+Matthew~R Guthaus, Jeffrey~S Ringenberg, Dan Ernst, Todd~M Austin, Trevor
+  Mudge, and Richard~B Brown.
+\newblock {MiBench}: A free, commercially representative embedded benchmark
+  suite.
+\newblock In \emph{Workload Characterization, 2001. WWC-4. 2001 IEEE
+  International Workshop on}, pages 3--14. IEEE, 2001.
+
+\bibitem[{B. H. Meyer, M. Liu, \emph{et al.}}(2013)]{Meyer:13}
+{B. H. Meyer, M. Liu, \emph{et al.}}
+\newblock Rapid, tunable error detection with execution fingerprinting.
+\newblock In \emph{SAE 2013 AeroTech}, 2013.
+
+\bibitem[Freescale(2014)]{freescale2014qorivva}
+Freescale.
+\newblock {MPC577xK 32-bit MCU for ADAS Applications}, 2014.
+\newblock URL
+  \url{http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=MPC577xK}.
+
+\bibitem[Infineon(2014)]{infineon2014aurix}
+Infineon.
+\newblock {AURIX Family - TC29xT}, 2014.
+\newblock URL
+  \url{http://www.infineon.com/cms/en/product/channel.html?channel=db3a304342c787030142dc92c9aa1674}.
+
+\bibitem[autoevolution(2014)]{beij_traffic}
+autoevolution.
+\newblock {The longest traffic jam in history - 12 days, 62-mile-long}, 2014.
+\newblock URL
+  \url{http://www.autoevolution.com/news/the-longest-traffic-jam-in-history-12-days-62-mile-long-47237.html#agal_0}.
+
+\end{thebibliography}

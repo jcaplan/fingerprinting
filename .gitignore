@@ -29,3 +29,14 @@ obj/
 .force_rebuild
 .force_relink
 *.gdb
+
+
+#tex files
+*.log
+*.aux
+*blg
+*.lof
+*.lot
+*.out
+*.synctex.gz
+*.toc
