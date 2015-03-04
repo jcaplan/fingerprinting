@@ -1,7 +1,6 @@
 *~
 #QSYS generated non-hdl files
 *.debugingo
-*.qip
 *.regmap
 #Non essential Quartus project files
 *.bsf

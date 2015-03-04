@@ -133,9 +133,15 @@ set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda
 set_global_assignment -name EDA_ENABLE_GLITCH_FILTERING ON -section_id eda_simulation
 set_global_assignment -name EDA_WRITE_NODES_FOR_POWER_ESTIMATION ALL_NODES -section_id eda_simulation
 set_global_assignment -name EDA_TEST_BENCH_DESIGN_INSTANCE_NAME system_top_level -section_id eda_simulation
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_location_assignment PIN_AK21 -to flash_csn
+set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS ON
+set_global_assignment -name ALLOW_ANY_RAM_SIZE_FOR_RECOGNITION ON
+set_global_assignment -name VERILOG_FILE system_top_level.v
 set_global_assignment -name VERILOG_FILE ../../src/clk_halve.v
 set_global_assignment -name VERILOG_FILE ../../src/crc_defines.v
-set_global_assignment -name VERILOG_FILE nios_fprint/synthesis/system_top_level.v
 set_global_assignment -name VERILOG_FILE nios_fprint/synthesis/nios_fprint.v -library nios_fprint
 set_global_assignment -name QIP_FILE nios_fprint/synthesis/nios_fprint.qip
 set_global_assignment -name SIGNALTAP_FILE output_files/stp1.stp
@@ -166,10 +172,4 @@ set_global_assignment -name SIGNALTAP_FILE output_files/error05.stp
 set_global_assignment -name SIGNALTAP_FILE output_files/flash.stp
 set_global_assignment -name CDF_FILE output_files/fprint_1_12.cdf
 set_global_assignment -name SIGNALTAP_FILE ../../../../../Desktop/error05.stp
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_location_assignment PIN_AK21 -to flash_csn
-set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS ON
-set_global_assignment -name ALLOW_ANY_RAM_SIZE_FOR_RECOGNITION ON
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
