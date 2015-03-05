@@ -1,0 +1,6 @@
+set itrace change
+set itrace count
+set itrace on
+proc cpum
+b Monitor.c:150
+continue

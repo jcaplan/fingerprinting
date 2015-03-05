@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <peripheral constructor="constructor"
+    destructor="destructor"
+    imagefile="pse.pse"
+    library="peripheral"
+    name="comparator"
+    vendor="mcgill.ca"
+    version="1.0">
+    <documentation name="Description">Comparator peripheral model</documentation>
+    <busslaveport addresswidth="32"
+        name="COMP_CSR_SLAVE"
+        size="0x1000">
+        <documentation name="Description">Comparator control register slave port</documentation>
+        <addressblock name="ab32"
+            size="0x200"
+            width="32">
+            <localmemory name="c0_start"
+                offset="0x40"
+                size="0x40"
+                writefunction="memWr"/>
+            <localmemory name="c1_start"
+                offset="0x140"
+                size="0x40"
+                writefunction="memWr"/>
+            <localmemory name="c0_end"
+                offset="0x80"
+                size="0x40"
+                writefunction="memWr"/>
+            <localmemory name="c1_end"
+                offset="0x180"
+                size="0x40"
+                writefunction="memWr"/>
+        </addressblock>
+    </busslaveport>
+    <busslaveport addresswidth="32"
+        mustbeconnected="T"
+        name="COMP_FPRINT_SLAVE"
+        size="0x1000">
+        <documentation name="Description">Comparator fprint slave port</documentation>
+    </busslaveport>
+    <netport name="COMP_IRQ"
+        type="output"
+        updatefunctionargument="0">
+        <documentation name="Description">comparator interrupt</documentation>
+    </netport>
+    <fileversion major="1"
+        minor="0"
+        name="_version_0"/>
+ </peripheral>

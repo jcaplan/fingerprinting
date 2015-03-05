@@ -1,0 +1,370 @@
+# Macro Assembler
+
+.macro add_R1 A B C
+    .int 0x0001883a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro addi_I1S A B SIMM16
+    .int 0x00000004 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro and_R1 A B C
+    .int 0x0000703a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro andhi_I2U A B UIMM16
+    .int 0x0000002c | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\UIMM16&0xffffffff)<<6)
+.endm
+
+.macro andi_I1U A B UIMM16
+    .int 0x0000000c | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\UIMM16&0xffff)<<6)
+.endm
+
+.macro beq_IB1 A B SIMM16
+    .int 0x00000026 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro bge_IB1 A B SIMM16
+    .int 0x0000000e | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro bgeu_IB1 A B SIMM16
+    .int 0x0000002e | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro blt_IB1 A B SIMM16
+    .int 0x00000016 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro bltu_IB1 A B SIMM16
+    .int 0x00000036 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro bne_IB1 A B SIMM16
+    .int 0x0000001e | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro br_IB2 SIMM16
+    .int 0x00000006 | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro break_RU UIMM5
+    .int 0x003da03a | ((\UIMM5&0x1f)<<6)
+.endm
+
+.macro bret_I0
+    .int 0xf000483a
+.endm
+
+.macro call_J1 UIMM26
+    .int 0x00000000 | ((\UIMM26&0xfffffff)<<6)
+.endm
+
+.macro callr_R4 A
+    .int 0x003ee83a | ((\A&0x1f)<<27)
+.endm
+
+.macro cmpeq_R1 A B C
+    .int 0x0001003a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro cmpeqi_I1S A B SIMM16
+    .int 0x00000020 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro cmpge_R1 A B C
+    .int 0x0000403a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro cmpgei_I1S A B SIMM16
+    .int 0x00000008 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro cmpgeu_R1 A B C
+    .int 0x0001403a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro cmpgeui_I1U A B UIMM16
+    .int 0x00000028 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\UIMM16&0xffff)<<6)
+.endm
+
+.macro cmplt_R1 A B C
+    .int 0x0000803a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro cmplti_I1S A B SIMM16
+    .int 0x00000010 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro cmpltu_R1 A B C
+    .int 0x0001803a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro cmpltui_I1U A B UIMM16
+    .int 0x00000030 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\UIMM16&0xffff)<<6)
+.endm
+
+.macro cmpne_R1 A B C
+    .int 0x0000c03a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro cmpnei_I1S A B SIMM16
+    .int 0x00000018 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro custom_C1 A B C N readra readrb readrc
+    .int 0x00000032 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17) | ((\N&0xff)<<6) | ((\readra&0x1)<<16) | ((\readrb&0x1)<<15) | ((\readrc&0x1)<<14)
+.endm
+
+.macro div_R1 A B C
+    .int 0x0001283a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro divu_R1 A B C
+    .int 0x0001203a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro eret_I0
+    .int 0xef80083a
+.endm
+
+.macro flushd_I3S A SIMM16
+    .int 0x0000003b | ((\A&0x1f)<<27) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro flushda_I3S A SIMM16
+    .int 0x0000001b | ((\A&0x1f)<<27) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro flushi_R4 A
+    .int 0x0000603a | ((\A&0x1f)<<27)
+.endm
+
+.macro flushp_I0
+    .int 0x0000203a
+.endm
+
+.macro initd_I3S A SIMM16
+    .int 0x00000033 | ((\A&0x1f)<<27) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro initda_I3S A SIMM16
+    .int 0x00000013 | ((\A&0x1f)<<27) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro initi_R4 A
+    .int 0x0001483a | ((\A&0x1f)<<27)
+.endm
+
+.macro jmp_R4 A
+    .int 0x0000683a | ((\A&0x1f)<<27)
+.endm
+
+.macro jmpi_J1 UIMM26
+    .int 0x00000001 | ((\UIMM26&0xfffffff)<<6)
+.endm
+
+.macro ldb_I4S A B SIMM16
+    .int 0x00000007 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro ldbio_I4S A B SIMM16
+    .int 0x00000027 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro ldbu_I4S A B SIMM16
+    .int 0x00000003 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro ldbuio_I4S A B SIMM16
+    .int 0x00000023 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro ldh_I4S A B SIMM16
+    .int 0x0000000f | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro ldhio_I4S A B SIMM16
+    .int 0x0000002f | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro ldhu_I4S A B SIMM16
+    .int 0x0000000b | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro ldhuio_I4S A B SIMM16
+    .int 0x0000002b | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro ldw_I4S A B SIMM16
+    .int 0x00000017 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro ldwio_I4S A B SIMM16
+    .int 0x00000037 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro mov_R2 A C
+    .int 0x0001883a | ((\A&0x1f)<<27) | ((\C&0x1f)<<17)
+.endm
+
+.macro movhi_I3U B UIMM16
+    .int 0x00000034 | ((\B&0x1f)<<22) | ((\UIMM16&0xffffffff)<<6)
+.endm
+
+.macro movi_I2S B SIMM16
+    .int 0x00000004 | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro movui_I4U B UIMM16
+    .int 0x00000014 | ((\B&0x1f)<<22) | ((\UIMM16&0xffff)<<6)
+.endm
+
+.macro mul_R1 A B C
+    .int 0x0001383a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro muli_I1S A B SIMM16
+    .int 0x00000024 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro mulxss_R1 A B C
+    .int 0x0000f83a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro mulxsu_R1 A B C
+    .int 0x0000b83a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro mulxuu_R1 A B C
+    .int 0x0000383a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro nextpc_R3 C
+    .int 0x0000e03a | ((\C&0x1f)<<17)
+.endm
+
+.macro nop_I0
+    .int 0x0001883a
+.endm
+
+.macro nor_R1 A B C
+    .int 0x0000303a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro or_R1 A B C
+    .int 0x0000b03a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro orhi_I2U A B UIMM16
+    .int 0x00000034 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\UIMM16&0xffffffff)<<6)
+.endm
+
+.macro ori_I1U A B UIMM16
+    .int 0x00000014 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\UIMM16&0xffff)<<6)
+.endm
+
+.macro rdctl_R5 C N
+    .int 0x0001303a | ((\C&0x1f)<<17) | ((\N&0x1f)<<6)
+.endm
+
+.macro rdprs_I1S A B SIMM16
+    .int 0x00000038 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro ret_I0
+    .int 0xf800283a
+.endm
+
+.macro rol_R1 A B C
+    .int 0x0000183a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro roli_R2U A C UIMM5
+    .int 0x0000103a | ((\A&0x1f)<<27) | ((\C&0x1f)<<17) | ((\UIMM5&0x1f)<<6)
+.endm
+
+.macro ror_R1 A B C
+    .int 0x0000583a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro sll_R1 A B C
+    .int 0x0000983a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro slli_R2U A C UIMM5
+    .int 0x0000903a | ((\A&0x1f)<<27) | ((\C&0x1f)<<17) | ((\UIMM5&0x1f)<<6)
+.endm
+
+.macro sra_R1 A B C
+    .int 0x0001d83a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro srai_R2U A C UIMM5
+    .int 0x0001d03a | ((\A&0x1f)<<27) | ((\C&0x1f)<<17) | ((\UIMM5&0x1f)<<6)
+.endm
+
+.macro srl_R1 A B C
+    .int 0x0000d83a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro srli_R2U A C UIMM5
+    .int 0x0000d03a | ((\A&0x1f)<<27) | ((\C&0x1f)<<17) | ((\UIMM5&0x1f)<<6)
+.endm
+
+.macro stb_I4S A B SIMM16
+    .int 0x00000005 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro stbio_I4S A B SIMM16
+    .int 0x00000025 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro sth_I4S A B SIMM16
+    .int 0x0000000d | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro sthio_I4S A B SIMM16
+    .int 0x0000002d | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro stw_I4S A B SIMM16
+    .int 0x00000015 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro stwio_I4S A B SIMM16
+    .int 0x00000035 | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\SIMM16&0xffff)<<6)
+.endm
+
+.macro sub_R1 A B C
+    .int 0x0001c83a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro sync_I0
+    .int 0x0001b03a
+.endm
+
+.macro trap_RU UIMM5
+    .int 0x003b683a | ((\UIMM5&0x1f)<<6)
+.endm
+
+.macro wrctl_R6 A N
+    .int 0x0001703a | ((\A&0x1f)<<27) | ((\N&0x1f)<<6)
+.endm
+
+.macro wrprs_R2 A C
+    .int 0x0000a03a | ((\A&0x1f)<<27) | ((\C&0x1f)<<17)
+.endm
+
+.macro xor_R1 A B C
+    .int 0x0000f03a | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\C&0x1f)<<17)
+.endm
+
+.macro xorhi_I2U A B UIMM16
+    .int 0x0000003c | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\UIMM16&0xffffffff)<<6)
+.endm
+
+.macro xori_I1U A B UIMM16
+    .int 0x0000001c | ((\A&0x1f)<<27) | ((\B&0x1f)<<22) | ((\UIMM16&0xffff)<<6)
+.endm
+

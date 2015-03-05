@@ -1,0 +1,14 @@
+tcl source debug.tcl
+proc cpu2_fprint
+b fprint.c:46
+tclcallback 1 myCallback
+proc comparator
+b collision_occurred
+continue
+proc cpu2
+set itrace change
+proc cpu3
+set itrace change
+diagnostics cpu2_fprint 3
+diagnostics cpu3_fprint 3
+continue

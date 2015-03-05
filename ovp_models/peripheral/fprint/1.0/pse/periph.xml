@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <peripheral constructor="constructor"
+    destructor="destructor"
+    imagefile="pse.pse"
+    library="peripheral"
+    name="fprint"
+    vendor="mcgill.ca"
+    version="1.0">
+    <documentation name="Description">Fingerprint peripheral model</documentation>
+    <busmasterport addresswidth="32"
+        name="FPRINT_MASTER">
+        <documentation name="Description">Fingerprint master port</documentation>
+    </busmasterport>
+    <busslaveport addresswidth="32"
+        mustbeconnected="T"
+        name="FPRINT_CSR_SLAVE"
+        size="0x140">
+        <documentation name="Description">Fingerprint control register slave port</documentation>
+        <addressblock name="ab32"
+            size="0x20"
+            width="32">
+            <memorymappedregister access="rw"
+                isvolatile="T"
+                name="currentState"
+                readfunction="regRd32"
+                width="32"
+                writefunction="regWr32">
+                <field name="key"
+                    width="4"/>
+                <field bitoffset="4"
+                    name="enable"
+                    width="1"/>
+                <documentation name="Description">current state register</documentation>
+            </memorymappedregister>
+            <memorymappedregister access="rw"
+                isvolatile="T"
+                name="pauseReg"
+                offset="0x4"
+                readfunction="regRd32"
+                width="32"
+                writefunction="regWr32"/>
+            <memorymappedregister access="r"
+                isvolatile="T"
+                name="pauseStrobe"
+                offset="0x8"
+                readfunction="pause"
+                width="32">
+                <documentation name="Description">pause strobe</documentation>
+            </memorymappedregister>
+            <memorymappedregister access="r"
+                isvolatile="T"
+                name="unpauseStrobe"
+                offset="0xc"
+                readfunction="unpause"
+                width="32">
+                <documentation name="Description">unpause strobe</documentation>
+            </memorymappedregister>
+            <memorymappedregister access="rw"
+                isvolatile="T"
+                name="counterMax"
+                offset="0x10"
+                readfunction="regRd32"
+                width="32"
+                writefunction="regWr32">
+                <documentation name="Description">counter max</documentation>
+            </memorymappedregister>
+        </addressblock>
+    </busslaveport>
+    <netport name="FPRINT_WRITE"
+        type="input"
+        updatefunction="do_store"
+        updatefunctionargument="0">
+        <documentation name="Description">bus write signal</documentation>
+    </netport>
+    <netport name="FPRINT_WRITE_ADDRESS"
+        type="input"
+        updatefunctionargument="0">
+        <documentation name="Description">bus address signal</documentation>
+    </netport>
+    <netport name="FPRINT_WRITE_DATA"
+        type="input"
+        updatefunctionargument="0">
+        <documentation name="Description">bus address signal</documentation>
+    </netport>
+    <formalattribute max="15"
+        name="coreID"
+        type="uns32"/>
+    <fileversion major="1"
+        minor="0"
+        name="_version_0"/>
+ </peripheral>
