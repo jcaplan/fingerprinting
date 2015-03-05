@@ -7,9 +7,9 @@ for file in *.dot; do
 done
 
 
-pdflatex milestone1.tex 
+pdflatex codegen.tex 
 
-pdflatex milestone1.tex 
+pdflatex codegen.tex 
 
 
 

@@ -49,4 +49,3 @@ log.*
 $CodeGen
 *.d
 *.o
-CodeGen
