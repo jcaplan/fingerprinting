@@ -46,6 +46,8 @@ log.*
 *.exe
 *.so
 
-$CodeGen
 *.d
 *.o
+
+#Python
+*.pyc
