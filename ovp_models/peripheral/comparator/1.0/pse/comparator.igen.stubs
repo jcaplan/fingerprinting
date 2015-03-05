@@ -1,0 +1,36 @@
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//                W R I T T E N   B Y   I M P E R A S   I G E N
+//
+//                             Version 20140430.0
+//                          Wed Sep 10 17:28:07 2014
+//
+////////////////////////////////////////////////////////////////////////////////
+
+#include "comparator.igen.h"
+//////////////////////////////// Callback stubs ////////////////////////////////
+
+PPM_WRITE_CB(fprintWr) {
+    // YOUR CODE HERE (fprintWr)
+}
+
+PPM_READ_CB(memRd) {
+    // YOUR CODE HERE (memRd)
+    return 0;
+}
+
+PPM_WRITE_CB(memWr) {
+    // YOUR CODE HERE (memWr)
+}
+
+PPM_CONSTRUCTOR_CB(constructor) {
+    // YOUR CODE HERE (pre constructor)
+    periphConstructor();
+    // YOUR CODE HERE (post constructor)
+}
+
+PPM_DESTRUCTOR_CB(destructor) {
+    // YOUR CODE HERE (destructor)
+}
+

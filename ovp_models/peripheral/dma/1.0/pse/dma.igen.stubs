@@ -1,0 +1,43 @@
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//                W R I T T E N   B Y   I M P E R A S   I G E N
+//
+//                             Version 20140430.0
+//                          Fri Oct  3 10:15:33 2014
+//
+////////////////////////////////////////////////////////////////////////////////
+
+#include "dma.igen.h"
+//////////////////////////////// Callback stubs ////////////////////////////////
+
+PPM_REG_WRITE_CB(controlWr) {
+    // YOUR CODE HERE (controlWr)
+    *(Uns32*)user = data;
+}
+
+PPM_REG_READ_CB(regRd) {
+    // YOUR CODE HERE (regRd)
+    return *(Uns32*)user;
+}
+
+PPM_REG_WRITE_CB(regWr) {
+    // YOUR CODE HERE (regWr)
+    *(Uns32*)user = data;
+}
+
+PPM_REG_WRITE_CB(statusWr) {
+    // YOUR CODE HERE (statusWr)
+    *(Uns32*)user = data;
+}
+
+PPM_CONSTRUCTOR_CB(constructor) {
+    // YOUR CODE HERE (pre constructor)
+    periphConstructor();
+    // YOUR CODE HERE (post constructor)
+}
+
+PPM_DESTRUCTOR_CB(destructor) {
+    // YOUR CODE HERE (destructor)
+}
+

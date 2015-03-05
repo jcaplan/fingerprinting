@@ -1,0 +1,25 @@
+tcl source debug.tcl
+proc cpu2_fprint
+b fprint.c:69
+#proc cpu3_fprint
+#b fprint.c:69
+
+
+tclcallback 1 myCallback
+#tclcallback 2 myCallback
+continue
+
+
+#first breakpoint
+#proc cpu2
+#set itrace change
+#proc cpu3
+#set itrace change
+
+#proc comparator
+#b do_comparison
+
+#diagnostics cpu2_fprint 3
+#diagnostics cpu3_fprint 3
+#diagnostics comparator  3
+#continue

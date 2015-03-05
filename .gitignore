@@ -16,7 +16,7 @@ flash/
 simulation/
 hc_output/
 *_pin_model_dump.txt
-
+*.bak
 
 #Software projects
 obj/

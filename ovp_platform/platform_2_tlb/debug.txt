@@ -1,0 +1,6 @@
+proc cpu1
+b *0x004019d4
+continue
+set itrace change
+diagnostics cpu1_fprint 2
+continue
