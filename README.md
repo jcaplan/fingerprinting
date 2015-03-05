@@ -13,3 +13,6 @@ Backup copies of the peripheral models used by the platforms.
 
 #code_gen
 Code generation project to map applications onto platforms and generate code for all cores using uCOS RTOS.
+
+#crc_gen
+Generate arbitrary CRC circuits in VHDL
