@@ -30,11 +30,11 @@ static Bool postPlatformConstruct(void) {
    
     icmSimulationStarting ();
 
-    icmLoadProcessorMemory(handles.cpu0_c, "/data/jcapla9/fprint_ptype_1_3/quartus/full_system_arria_2/software/ucos0/ucos0.elf", 0, 0, 1);
+    icmLoadProcessorMemory(handles.cpu0_c, "../../fprint_fpga/quartus/full_system_arria_c2/software/ucos0/ucos0.elf", 0, 0, 1);
  //   icmLoadProcessorMemory(handles.cpu0_c, "elf/a_ucos0.elf", 0, 0, 1);
-    icmLoadProcessorMemory(handles.cpu1_c, "/data/jcapla9/fprint_ptype_1_3/quartus/full_system_arria_2/software/ucos1/ucos1.elf", 0, 0, 1);
+    icmLoadProcessorMemory(handles.cpu1_c, "../../fprint_fpga/quartus/full_system_arria_c2/software/ucos1/ucos1.elf", 0, 0, 1);
  //   icmLoadProcessorMemory(handles.cpu1_c, "elf/a_ucos1.elf", 0, 0, 1);
-    icmLoadProcessorMemory(handles.cpum_c, "/data/jcapla9/fprint_ptype_1_3/quartus/full_system_arria_2/software/ucosMon/ucosMon.elf", 0, 0, 1);
+    icmLoadProcessorMemory(handles.cpum_c, "../../fprint_fpga/quartus/full_system_arria_c2/software/ucosMon/ucosMon.elf", 0, 0, 1);
  //   icmLoadProcessorMemory(handles.cpum_c, "elf/a_ucosMon.elf", 0, 0, 1);
 
     return True;
