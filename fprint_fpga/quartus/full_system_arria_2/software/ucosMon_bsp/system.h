@@ -4,7 +4,7 @@
  * Machine generated for CPU 'processorM_0_cpuM' in SOPC Builder design 'nios_fprint'
  * SOPC Builder design path: ../../nios_fprint.sopcinfo
  *
- * Generated: Wed Mar 04 18:02:43 EST 2015
+ * Generated: Wed Mar 04 19:04:04 EST 2015
  */
 
 /*
