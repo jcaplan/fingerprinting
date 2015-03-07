@@ -2,11 +2,13 @@
 #QSYS generated non-hdl files
 *.debugingo
 *.regmap
+
 #Non essential Quartus project files
 *.bsf
 *.cmp
 *.html
 *.rpt
+
 #Quartus synthesis generated files
 db/
 incremental_db/
@@ -21,6 +23,7 @@ hc_output/
 #Software projects
 obj/
 *.a
+
 #eclipse
 .cproject
 .project
@@ -29,7 +32,8 @@ obj/
 .force_rebuild
 .force_relink
 *.gdb
-
+Debug/
+.metadata/
 
 #tex files
 *.log
