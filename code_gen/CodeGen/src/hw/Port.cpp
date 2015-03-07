@@ -7,9 +7,9 @@
 
 #include "Port.h"
 #include <stdlib.h>
-
+#include "galloc.h"
 Port::Port(){
-	bus = (Bus*)malloc(sizeof(Bus*));
+	bus = (Bus*)galloc(1,sizeof(Bus*));
 	size = 0;
 	startAddress = 0;
 }

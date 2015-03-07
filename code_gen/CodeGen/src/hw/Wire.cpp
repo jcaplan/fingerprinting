@@ -6,10 +6,10 @@
  */
 
 #include <stdlib.h>
-
+#include "galloc.h"
 #include "Wire.h"
 Wire::Wire(){
-	parameters = (Param*)malloc(sizeof(Param));
+	parameters = (Param*)galloc(1,sizeof(Param));
 }
 Wire::Wire(ParamP p) {
 	parameters = p;

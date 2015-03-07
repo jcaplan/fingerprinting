@@ -33,6 +33,7 @@ obj/
 .force_relink
 *.gdb
 Debug/
+Release/
 .metadata/
 
 #tex files

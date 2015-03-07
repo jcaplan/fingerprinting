@@ -5,10 +5,11 @@
  *      Author: jonah
  */
 
-#include "Task.h"
+#include "galloc.h"
 #include <stdlib.h>
+#include "Task.h"
 Task::Task(){
-	parameters = (ParamP) malloc(sizeof(ParamP));
+	parameters = (ParamP) galloc((size_t)1,(size_t)sizeof(ParamP));
 }
 Task::Task(ParamP p) {
 	parameters = p;

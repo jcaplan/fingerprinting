@@ -7,11 +7,12 @@
 
 #include <stdlib.h>
 #include "Processor.h"
+#include "galloc.h"
 /**********************************************************
  * Constructors
  **********************************************************/
 Processor::Processor() {
-	parameters = (ParamP)malloc(sizeof(Param));
+	parameters = (ParamP)galloc(1,sizeof(Param));
 	parameters->faultTolerant = false;
 	parameters->scratchpadSize = 16384;
 	parameters->timePeriodMS = 10;
