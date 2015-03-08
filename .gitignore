@@ -35,6 +35,11 @@ obj/
 Debug/
 Release/
 .metadata/
+.recommenders/
+.settings
+.classpath
+.project
+/bin/
 
 #tex files
 *.log
