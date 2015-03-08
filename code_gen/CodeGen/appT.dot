@@ -1,0 +1,17 @@
+digraph d {
+	firstTask->Task_2;
+	firstTask->Task_2_copy;
+	Task_2->firstTask;
+	Task_2->print;
+	print->Task_4;
+	print->Task_5;
+	print->Task_6;
+	print->Task_5_copy;
+	print->Task_6_copy;
+	Task_5->Task_4;
+	Task_6->Task_4;
+	Task_2_copy->firstTask;
+	Task_2_copy->print;
+	Task_5_copy->Task_4;
+	Task_6_copy->Task_4;
+}

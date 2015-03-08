@@ -1,5 +1,5 @@
 package codegen.sw;
 
-public class Signals {
+public class Signal {
 
 }
