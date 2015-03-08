@@ -39,15 +39,18 @@ public class Application {
 			}
 		}
 		int count = 0;
+		System.out.println(rankIndex.length);
 		for (int i = 0; i < rankIndex.length; i++) {
+			System.out.println("rankIndex: " + rankIndex[i]);
 			s += "\t{ rank = same; ";
-			for (int j = count; j < rankIndex[i]; j++) {
+			for (int j = count; j < count + rankIndex[i]; j++) {
 				Task t = taskList.get(j);
 				s += t + "; ";
 				if (t.critical && !t.redundant && t.copy != null)
 					s += t.copy + "; ";
 			}
 			s += "}\n";
+			count += rankIndex[i];
 		}
 		s += "}";
 		return s;
@@ -142,7 +145,7 @@ public class Application {
 		// }
 		// }
 
-		DigraphGen g = new DigraphGen(2, 4, 6, 0.3, 0.25);
+		DigraphGen g = new DigraphGen(1, 5, 6, 0.3, 0.25);
 		g.buildGraph(a);
 		a.rankIndex = g.rankIndex;
 		a.printDotFile("app");
