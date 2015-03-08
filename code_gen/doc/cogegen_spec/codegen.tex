@@ -209,5 +209,6 @@ The fingerprint unit has the following features: maximum stack depth, statically
 \section{Application Model}
 \subsection{Synchronous Languages - Building off the past}
 
-
+\subsection{Code Rules}
+Any data passed between tasks must be done through pointers. Functions will return void pointers to predetermined data structures. These pointers will be passed between tasks. If tasks cannot share the same memory space, then the size of the data structure must also be known and the data will be copied to the appropriate location.
 \end{document}

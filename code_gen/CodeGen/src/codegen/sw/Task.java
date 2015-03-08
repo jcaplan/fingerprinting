@@ -14,21 +14,30 @@ public class Task {
 	ArrayList<Signal> startConditions;
 	ArrayList<Task> parents;
 	ArrayList<Task> children;
+	int taskID;
+	Task copy;
 	static int taskCount = 1;
 	
 	public Task(){
+		taskID = taskCount;
 		label = "Task_" +Integer.toString(taskCount++);
 		initLists();
 	}
 	public Task(String label){
 		this.label = label;
-		taskCount++;
+		taskID = taskCount++;
 		initLists();
 	}
 	
 	public Task(boolean critical){
+		taskID = taskCount;
 		label = "Task_" +Integer.toString(taskCount++);
 		this.critical = critical;
+		initLists();
+	}
+	
+	public Task(int id){
+		taskID = id;
 		initLists();
 	}
 	
@@ -38,6 +47,7 @@ public class Task {
 		critical = t.critical;
 		eventTriggered = t.eventTriggered;
 		timeTriggered = t.timeTriggered;
+		taskID = t.taskID;
 		this.redundant = redundant;
 		computationFile = t.computationFile;
 		if(redundant){
@@ -58,6 +68,16 @@ public class Task {
 		parents = new ArrayList<Task>();
 		children = new ArrayList<Task>();
 	}
+	@Override
+	public boolean equals(Object obj){
+		Task t = (Task)obj;
+		return this.taskID == t.taskID;
+	}
+	
+	public boolean equals(int id){
+		return this.taskID == id;
+	}
+	
 	
 	public String toString(){
 		return label;
