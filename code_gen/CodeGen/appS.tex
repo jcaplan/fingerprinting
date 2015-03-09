@@ -9,6 +9,7 @@
 \usepackage{multirow}
 \usepackage{array}
 \usepackage[table]{xcolor}
+\usepackage{arydshln}
 %----------------------------------------------------------------------------------------
 %	CODE INCLUSION CONFIGURATION
 %----------------------------------------------------------------------------------------
@@ -19,18 +20,19 @@
 
 \begin{document}
 
-\begin{tabular}{l|*{5}{C}}
+\begin{tabular}{l|*{5}{C:}}
 Time & 1 & 2 & 3 & 4 & 5 \\
-\hline \\
+\hline 
+& & & & & \\
 \cline{2-3} \cline{6-6}
 CPU1 & \critical{2}{T1} & & & \critical{1}{T2} \\
 \cline{2-3} \cline{6-6}
- \\
+& & & & & \\
 \cline{2-3} \cline{4-6}
 %When the task edges are touching can leave out one of the '|' characters in
 CPU2 & \critical{2}{T1$'$} & \multicolumn{3}{c|}{T3} \\
 \cline{2-3} \cline{4-6}
-\\
+& & & & & \\
 \cline{2-4} \cline{6-6} 
 CPU3 & \multicolumn{3}{|c|}{T4} & & \critical{1}{T2$'$} \\
 \cline{2-4} \cline{6-6}
