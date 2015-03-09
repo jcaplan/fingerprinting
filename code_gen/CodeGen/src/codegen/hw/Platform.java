@@ -9,4 +9,10 @@ public class Platform {
 	public Platform(){
 		processors = new ArrayList<Processor>();
 	}
+	
+	public void addProcessor(boolean faultTolerant, boolean hasFprint, String label){
+		Processor p = new Processor(faultTolerant, hasFprint,label);
+		processors.add(p);
+	}
+	
 }

@@ -9,11 +9,15 @@ public class Processor {
 	boolean hasDCache;
 	boolean hasDMA;
 	int sharedMemorySize;
-	
+	String label;
 	Bus ICache;
 	Bus DCache;
 	Wire Interrupts[] = new Wire[32];
 	
-	
+	public Processor(boolean faultTolerant, boolean hasFprint, String label){
+		this.faultTolerant = faultTolerant;
+		this.hasFprint = hasFprint;
+		this.label = label;
+	}
 	
 }

@@ -3,6 +3,8 @@ package codegen.sw;
 
 import java.util.Random;
 
+import codegen.map.Qsort;
+
 
 public class DigraphGen {
 	int minPerRank;
@@ -29,6 +31,8 @@ public class DigraphGen {
 					+ rand.nextInt(maxPerRank - minPerRank);
 			for (int j = 0; j < newNodes; j++) {
 				Task t = new Task();
+				if(rand.nextDouble() < probCritical)
+					t.critical = true;
 				a.addTask(t);
 				t.rank = i;
 				if(i > 0){
@@ -42,10 +46,6 @@ public class DigraphGen {
 			}
 			nodes += newNodes;
 		}
-		
-		for(int i = 0; i < a.taskList.size(); i++){
-			if(rand.nextDouble() < probCritical)
-				a.taskList.get(i).critical = true;
-		}
+		Qsort.sort(a.taskList);
 	}
 }

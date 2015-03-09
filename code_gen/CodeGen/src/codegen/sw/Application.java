@@ -6,10 +6,20 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import codegen.map.Qsort;
+
 public class Application {
 	ArrayList<Task> taskList;
 	ArrayList<Task> redundantList;
 	int maxRank = 5;
+
+	public ArrayList<Task> getTaskList() {
+		return taskList;
+	}
+
+	public ArrayList<Task> getRedundantList() {
+		return redundantList;
+	}
 
 	public Application() {
 		taskList = new ArrayList<Task>();
@@ -21,17 +31,22 @@ public class Application {
 	}
 
 	void setTaskConnection(Task parent, Task child) {
-		parent.children.add(child);
-		child.parents.add(parent);
-		if(child.rank <= parent.rank){
+		parent.addChild(child);
+		child.addParent(parent);
+		if (child.rank <= parent.rank) {
 			child.rank = parent.rank + 1;
 		}
 	}
 
 	private String printRanks() {
 		String s = new String();
-		for (int i = 0; i < maxRank; i++) {
-			s += "\t{ rank = same; ";
+		// Print the header
+		s += "node [shape=plaintext, fontsize=1, fontcolor=white, fixedsize=1];\n";
+		for (int i = 1; i <= maxRank; i++) {
+			s += i + "->" + (i + 1) + "[color=white];\n";
+		}
+		for (int i = 0; i <= maxRank; i++) {
+			s += "\t{ rank = same; " + (i + 1) + "; ";
 			for (Task t : taskList) {
 				if (t.rank == i) {
 					s += t + "; ";
@@ -40,11 +55,10 @@ public class Application {
 
 			s += "}\n";
 		}
-
 		return s;
 	}
-	
-	private String printConnections(Task t){
+
+	private String printConnections(Task t) {
 		String s = new String();
 		for (Task adj : t.children) {
 			s += "\t" + t + "->" + adj + ";\n";
@@ -52,7 +66,7 @@ public class Application {
 		return s;
 	}
 
-	private String printParameters(Task t){
+	private String printParameters(Task t) {
 		String s = new String();
 		if (t.redundant) {
 			s += "\t" + t + " [style=filled];\n";
@@ -60,11 +74,12 @@ public class Application {
 		if (t.critical && !t.redundant) {
 			s += "\t" + t + " [style=filled,fillcolor=crimson];\n";
 		}
-		if (t.parents.size() == 0 || t.children.size() == 0){
+		if (t.parents.size() == 0 || t.children.size() == 0) {
 			s += "\t" + t + " [peripheries=2];\n";
 		}
 		return s;
 	}
+
 	public String toString() {
 		String s = "digraph d {\n";
 		s += "size=\"8.5,7\";\n";
@@ -78,29 +93,30 @@ public class Application {
 		return s;
 	}
 
-	public void applyTaskTransformation() {
+	public void transformationAllTasks() {
 		ArrayList<Task> newTasks = new ArrayList<Task>();
 		for (Task t : taskList) {
 			if (t.critical && !t.redundant && t.copy == null) {
 				Task redundant = new Task(t, true);
 				newTasks.add(redundant);
 				t.copy = redundant;
+				for (Task c : redundant.children) {
+					c.addParent(redundant);
+				}
+				for (Task p : redundant.parents) {
+					p.addChild(redundant);
+				}
 			}
 		}
 		taskList.addAll(newTasks);
-		for (Task t : newTasks) {
-			for (Task p : t.parents) {
-				p.children.add(t);
-			}
-		}
+		Qsort.sort(taskList);
 		redundantList = newTasks;
 	}
-	
+
 	public void cleanTransformation() {
 		taskList.removeAll(redundantList);
-		for(Task t : taskList){
-			t.children.removeAll(redundantList);
-			t.parents.removeAll(redundantList);
+		for (Task t : taskList) {
+			t.cleanList(redundantList);
 		}
 		redundantList = new ArrayList<Task>();
 	}
@@ -112,11 +128,12 @@ public class Application {
 		writer.close();
 	}
 
-	void generatePDF(String fileName) throws IOException, InterruptedException{
+	void generatePDF(String fileName) throws IOException, InterruptedException {
 		String cmd = "dot -Tpdf " + fileName + ".dot -o " + fileName + ".pdf";
 		Process p = Runtime.getRuntime().exec(cmd);
 		p.waitFor();
 	}
+
 	void openGraphPDF(String fileName) throws IOException, InterruptedException {
 		String cmd;
 		Process p;
@@ -132,14 +149,16 @@ public class Application {
 		}
 		p.waitFor();
 	}
-	
-	void getGraphs(String fileName) throws IOException, InterruptedException{
+
+	public void getGraphs(String fileName) throws IOException,
+			InterruptedException {
 		printDotFile(fileName);
 		generatePDF(fileName);
 		openGraphPDF(fileName);
-		
+
 	}
-	void getGraphs() throws IOException, InterruptedException{
+
+	void getGraphs() throws IOException, InterruptedException {
 		getGraphs("app");
 	}
 
@@ -155,27 +174,27 @@ public class Application {
 	public static void main(String[] args) throws IOException,
 			InterruptedException {
 		Application a = new Application();
-//		Task t1 = new Task("firstTask");
-//		Task t2 = new Task();
-//		Task t3 = new Task("print");
-//		Task t4 = new Task();
-//		Task t5 = new Task(true);
-//		Task t6 = new Task(true);
-//		t2.critical = true;
-//		a.addTask(t1);
-//		a.addTask(t2);
-//		a.addTask(t3);
-//		a.addTask(t4);
-//		a.addTask(t5);
-//		a.addTask(t6);
-//		a.setTaskConnection(t1, t2);
-//		a.setTaskConnection(t2, t3);
-//		a.setTaskConnection(t3, t4);
-//		a.setTaskConnection(t3, t5);
-//		a.setTaskConnection(t3, t6);
-//		a.setTaskConnection(t5, t4);
-//		a.setTaskConnection(t6, t4);
-		
+		// Task t1 = new Task("firstTask");
+		// Task t2 = new Task();
+		// Task t3 = new Task("print");
+		// Task t4 = new Task();
+		// Task t5 = new Task(true);
+		// Task t6 = new Task(true);
+		// t2.critical = true;
+		// a.addTask(t1);
+		// a.addTask(t2);
+		// a.addTask(t3);
+		// a.addTask(t4);
+		// a.addTask(t5);
+		// a.addTask(t6);
+		// a.setTaskConnection(t1, t2);
+		// a.setTaskConnection(t2, t3);
+		// a.setTaskConnection(t3, t4);
+		// a.setTaskConnection(t3, t5);
+		// a.setTaskConnection(t3, t6);
+		// a.setTaskConnection(t5, t4);
+		// a.setTaskConnection(t6, t4);
+
 		// Digraph g = DigraphGenerator.simple(12,20);
 		// Task t[] = new Task[12];
 		// for(int i = 0; i < 12; i++){
@@ -191,11 +210,10 @@ public class Application {
 		// }
 		// }
 
-		 DigraphGen g = new DigraphGen(1, 5, 6, 0.3, 0.25);
-		 g.buildGraph(a);
-		// a.rankIndex = g.rankIndex;
+		DigraphGen g = new DigraphGen(1, 5, 6, 0.3, 0.25);
+		g.buildGraph(a);
 		a.getGraphs("app");
-		a.applyTaskTransformation();
+		a.transformationAllTasks();
 		a.getGraphs("appT");
 		a.cleanTransformation();
 		a.getGraphs("appC");

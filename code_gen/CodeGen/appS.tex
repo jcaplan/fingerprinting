@@ -2,7 +2,7 @@
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
 
-\documentclass{article}
+\documentclass[preview=true,varwidth=true,border=8]{standalone}
 \usepackage[landscape]{geometry}
 \usepackage[usenames,dvipsnames]{color} % Required for custom colors
 \usepackage{booktabs}
@@ -18,11 +18,6 @@
 %----------------------------------------------------------------------------------------
 
 \begin{document}
-
-%Suppose there were 5 time slices
-%cpu1 has task 1 for 1-2 and task 2 for 5
-%CPU2 has task 1' for 1-2 and task 3 for 2-5
-%CPU3 has task 4 for1-3 and task 2 for 5
 
 \begin{tabular}{l|*{5}{C}}
 Time & 1 & 2 & 3 & 4 & 5 \\
@@ -47,5 +42,4 @@ CPU3 & \multicolumn{3}{|c|}{T4} & & \critical{1}{T2$'$} \\
 \item[\textbf{T3}:] \  \texttt{function\_name}
 \item[\textbf{T4}:] \  \texttt{function\_name} 
 \end{itemize}
-
 \end{document}
