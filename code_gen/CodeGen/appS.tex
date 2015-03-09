@@ -10,12 +10,13 @@
 \usepackage{array}
 \usepackage[table]{xcolor}
 \usepackage{arydshln}
+\usepackage{hhline}
 %----------------------------------------------------------------------------------------
 %	CODE INCLUSION CONFIGURATION
 %----------------------------------------------------------------------------------------
 \renewcommand{\arraystretch}{1.5}
 \newcolumntype{C}[0]{>{\centering\arraybackslash}m{0.75cm}}
-\newcommand{\critical}[2]{\multicolumn{#1}{|c|}{\cellcolor{red!65}#2}}
+\newcommand{\critical}[3]{\multicolumn{#1}{#2}{\cellcolor{red!65}#3}}
 %----------------------------------------------------------------------------------------
 
 \begin{document}
@@ -24,18 +25,18 @@
 Time & 1 & 2 & 3 & 4 & 5 \\
 \hline 
 & & & & & \\
-\cline{2-3} \cline{6-6}
-CPU1 & \critical{2}{T1} & & & \critical{1}{T2} \\
-\cline{2-3} \cline{6-6}
+\hhline{~--~~-} 
+CPU1 & \critical{2}{c|}{T1} & & & \critical{1}{|c|}{T2} \\
+\hhline{~--~~-} 
 & & & & & \\
-\cline{2-3} \cline{4-6}
+\hhline{~-----}
 %When the task edges are touching can leave out one of the '|' characters in
-CPU2 & \critical{2}{T1$'$} & \multicolumn{3}{c|}{T3} \\
-\cline{2-3} \cline{4-6}
+CPU2 & \critical{2}{c|}{T1$'$} & \multicolumn{3}{c|}{T3} \\
+\hhline{~-----}
 & & & & & \\
-\cline{2-4} \cline{6-6} 
-CPU3 & \multicolumn{3}{|c|}{T4} & & \critical{1}{T2$'$} \\
-\cline{2-4} \cline{6-6}
+\hhline{~---~-} 
+CPU3 & \multicolumn{3}{|c|}{T4} & & \critical{1}{|c|}{T2$'$} \\
+\hhline{~---~-}
 \end{tabular}
 
 \begin{itemize}
