@@ -16,6 +16,7 @@ public class Task {
 	ArrayList<Task> children;
 	int taskID;
 	Task copy;
+	int rank; //For pretty printing
 	static int taskCount = 1;
 	
 	public Task(){
@@ -55,6 +56,7 @@ public class Task {
 			startConditions = t.startConditions;
 			parents = t.parents;
 			children = t.children;
+			rank = t.rank;
 		}else{
 			label = t.label;
 		}
@@ -71,7 +73,8 @@ public class Task {
 	@Override
 	public boolean equals(Object obj){
 		Task t = (Task)obj;
-		return this.taskID == t.taskID;
+		return this.taskID == t.taskID &&
+				this.redundant == t.redundant;
 	}
 	
 	public boolean equals(int id){

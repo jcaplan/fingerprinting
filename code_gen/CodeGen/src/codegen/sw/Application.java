@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.Random;
 
 public class Application {
 	ArrayList<Task> taskList;
-	int rankIndex[];
+	ArrayList<Task> redundantList;
+	int maxRank = 5;
 
 	public Application() {
 		taskList = new ArrayList<Task>();
+		redundantList = new ArrayList<Task>();
 	}
 
 	void addTask(Task t) {
@@ -23,35 +23,57 @@ public class Application {
 	void setTaskConnection(Task parent, Task child) {
 		parent.children.add(child);
 		child.parents.add(parent);
+		if(child.rank <= parent.rank){
+			child.rank = parent.rank + 1;
+		}
 	}
 
+	private String printRanks() {
+		String s = new String();
+		for (int i = 0; i < maxRank; i++) {
+			s += "\t{ rank = same; ";
+			for (Task t : taskList) {
+				if (t.rank == i) {
+					s += t + "; ";
+				}
+			}
+
+			s += "}\n";
+		}
+
+		return s;
+	}
+	
+	private String printConnections(Task t){
+		String s = new String();
+		for (Task adj : t.children) {
+			s += "\t" + t + "->" + adj + ";\n";
+		}
+		return s;
+	}
+
+	private String printParameters(Task t){
+		String s = new String();
+		if (t.redundant) {
+			s += "\t" + t + " [style=filled];\n";
+		}
+		if (t.critical && !t.redundant) {
+			s += "\t" + t + " [style=filled,fillcolor=crimson];\n";
+		}
+		if (t.parents.size() == 0 || t.children.size() == 0){
+			s += "\t" + t + " [peripheries=2];\n";
+		}
+		return s;
+	}
 	public String toString() {
 		String s = "digraph d {\n";
+		s += "size=\"8.5,7\";\n";
 		for (Task t : taskList) {
-			for (Task adj : t.children) {
-				s += "\t" + t + "->" + adj + ";\n";
-			}
-			if (t.redundant) {
-				s += "\t" + t + " [style=filled];\n";
-			}
-			if (t.critical && !t.redundant) {
-				s += "\t" + t + " [peripheries=2];\n";
-			}
+			s += printConnections(t);
+			s += printParameters(t);
 		}
-		int count = 0;
-		System.out.println(rankIndex.length);
-		for (int i = 0; i < rankIndex.length; i++) {
-			System.out.println("rankIndex: " + rankIndex[i]);
-			s += "\t{ rank = same; ";
-			for (int j = count; j < count + rankIndex[i]; j++) {
-				Task t = taskList.get(j);
-				s += t + "; ";
-				if (t.critical && !t.redundant && t.copy != null)
-					s += t.copy + "; ";
-			}
-			s += "}\n";
-			count += rankIndex[i];
-		}
+		s += printRanks();
+
 		s += "}";
 		return s;
 	}
@@ -59,7 +81,7 @@ public class Application {
 	public void applyTaskTransformation() {
 		ArrayList<Task> newTasks = new ArrayList<Task>();
 		for (Task t : taskList) {
-			if (t.critical) {
+			if (t.critical && !t.redundant && t.copy == null) {
 				Task redundant = new Task(t, true);
 				newTasks.add(redundant);
 				t.copy = redundant;
@@ -67,10 +89,20 @@ public class Application {
 		}
 		taskList.addAll(newTasks);
 		for (Task t : newTasks) {
-			for (Task p : t.parents){
+			for (Task p : t.parents) {
 				p.children.add(t);
 			}
 		}
+		redundantList = newTasks;
+	}
+	
+	public void cleanTransformation() {
+		taskList.removeAll(redundantList);
+		for(Task t : taskList){
+			t.children.removeAll(redundantList);
+			t.parents.removeAll(redundantList);
+		}
+		redundantList = new ArrayList<Task>();
 	}
 
 	void printDotFile(String fileName) throws FileNotFoundException,
@@ -80,10 +112,14 @@ public class Application {
 		writer.close();
 	}
 
-	void openGraphPDF(String fileName) throws IOException, InterruptedException {
+	void generatePDF(String fileName) throws IOException, InterruptedException{
 		String cmd = "dot -Tpdf " + fileName + ".dot -o " + fileName + ".pdf";
 		Process p = Runtime.getRuntime().exec(cmd);
 		p.waitFor();
+	}
+	void openGraphPDF(String fileName) throws IOException, InterruptedException {
+		String cmd;
+		Process p;
 		if (System.getProperty("os.name").equals("Linux")) {
 			cmd = "gnome-open " + fileName + ".pdf";
 			p = Runtime.getRuntime().exec(cmd);
@@ -92,8 +128,19 @@ public class Application {
 			p = Runtime.getRuntime().exec(cmd);
 		} else {
 			cmd = "rundll32 url.dll,FileProtocolHandler " + fileName + ".pdf";
-			Runtime.getRuntime().exec(cmd);
+			p = Runtime.getRuntime().exec(cmd);
 		}
+		p.waitFor();
+	}
+	
+	void getGraphs(String fileName) throws IOException, InterruptedException{
+		printDotFile(fileName);
+		generatePDF(fileName);
+		openGraphPDF(fileName);
+		
+	}
+	void getGraphs() throws IOException, InterruptedException{
+		getGraphs("app");
 	}
 
 	void cleanTempFiles(String fileName) throws IOException,
@@ -108,28 +155,27 @@ public class Application {
 	public static void main(String[] args) throws IOException,
 			InterruptedException {
 		Application a = new Application();
-		// Task t1 = new Task("firstTask");
-		// Task t2 = new Task();
-		// Task t3 = new Task("print");
-		// Task t4 = new Task();
-		// Task t5 = new Task(true);
-		// Task t6 = new Task(true);
-		// t2.critical = true;
-		// a.addTask(t1);
-		// a.addTask(t2);
-		// a.addTask(t3);
-		// a.addTask(t4);
-		// a.addTask(t5);
-		// a.addTask(t6);
-		// a.setTaskConnection(t1, t2);
-		// a.setTaskConnection(t2, t1);
-		// a.setTaskConnection(t2, t3);
-		// a.setTaskConnection(t3, t4);
-		// a.setTaskConnection(t3, t5);
-		// a.setTaskConnection(t3, t6);
-		// a.setTaskConnection(t5, t4);
-		// a.setTaskConnection(t6, t4);
-
+//		Task t1 = new Task("firstTask");
+//		Task t2 = new Task();
+//		Task t3 = new Task("print");
+//		Task t4 = new Task();
+//		Task t5 = new Task(true);
+//		Task t6 = new Task(true);
+//		t2.critical = true;
+//		a.addTask(t1);
+//		a.addTask(t2);
+//		a.addTask(t3);
+//		a.addTask(t4);
+//		a.addTask(t5);
+//		a.addTask(t6);
+//		a.setTaskConnection(t1, t2);
+//		a.setTaskConnection(t2, t3);
+//		a.setTaskConnection(t3, t4);
+//		a.setTaskConnection(t3, t5);
+//		a.setTaskConnection(t3, t6);
+//		a.setTaskConnection(t5, t4);
+//		a.setTaskConnection(t6, t4);
+		
 		// Digraph g = DigraphGenerator.simple(12,20);
 		// Task t[] = new Task[12];
 		// for(int i = 0; i < 12; i++){
@@ -145,17 +191,13 @@ public class Application {
 		// }
 		// }
 
-		DigraphGen g = new DigraphGen(1, 5, 6, 0.3, 0.25);
-		g.buildGraph(a);
-		a.rankIndex = g.rankIndex;
-		a.printDotFile("app");
-		a.openGraphPDF("app");
+		 DigraphGen g = new DigraphGen(1, 5, 6, 0.3, 0.25);
+		 g.buildGraph(a);
+		// a.rankIndex = g.rankIndex;
+		a.getGraphs("app");
 		a.applyTaskTransformation();
-		a.printDotFile("appT");
-		a.openGraphPDF("appT");
-
-		// Thread.sleep(750);
-		// a.cleanTempFiles("app");
-
+		a.getGraphs("appT");
+		a.cleanTransformation();
+		a.getGraphs("appC");
 	}
 }

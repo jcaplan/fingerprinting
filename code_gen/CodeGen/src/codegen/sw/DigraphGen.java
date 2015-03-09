@@ -30,6 +30,7 @@ public class DigraphGen {
 			for (int j = 0; j < newNodes; j++) {
 				Task t = new Task();
 				a.addTask(t);
+				t.rank = i;
 				if(i > 0){
 					for(int k = 0; k < nodes; k++){
 						if(rand.nextDouble() < probEdge){
@@ -40,7 +41,6 @@ public class DigraphGen {
 				
 			}
 			nodes += newNodes;
-			rankIndex[i] = newNodes;
 		}
 		
 		for(int i = 0; i < a.taskList.size(); i++){
