@@ -1,4 +1,4 @@
-package codegen.map;
+package codegen.util;
 
 /*************************************************************************
  *  Compilation:  javac StdRandom.java

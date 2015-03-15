@@ -6,10 +6,11 @@ import codegen.hw.Platform;
 import codegen.sw.Application;
 import codegen.sw.DigraphGen;
 import codegen.sw.Task;
+import codegen.util.Qsort;
 
-public class Mapper {
+public class RAMapper {
 	
-	public Mapper(){
+	public RAMapper(){
 	};
 	
 	

@@ -3,7 +3,7 @@ package codegen.sw;
 
 import java.util.Random;
 
-import codegen.map.Qsort;
+import codegen.util.Qsort;
 
 
 public class DigraphGen {
