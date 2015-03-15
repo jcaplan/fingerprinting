@@ -61,3 +61,12 @@ log.*
 
 #Python
 *.pyc
+
+#jgap
+jgap/
+
+
+#sublime
+*.sublime-project
+*.sublime-workspace
+*.bbl

@@ -30,7 +30,7 @@ public class Mapper {
 		 * The tasks must be mapped onto an architecture.
 		 * A non-critical task can be run on any core.
 		 * A critical task must be run either on a single FTC
-		 * or two PCs *at the same time*. 
+		 * or tawo PCs *at the same time*. 
 		 * 
 		 *
 		 */
@@ -44,9 +44,15 @@ public class Mapper {
 		platform0.addProcessor(false, true,"PC2");
 		platform0.addProcessor(false, true,"PC3");
 		
-		//Rank will be helpful to get off to a good start
-		//Need a data structure that connects tasks and processors...
-		//How to represent the schedule?
+		
+		/*
+		 * Rank will be helpful to get off to a good start. 
+		 * Need a data structure that connects the platform and
+		 * application data structures.
+		 * What is the best way to represent the schedule
+		 * that makes use of preexisting data structures?
+		 */
+		
 	}
 	
 }

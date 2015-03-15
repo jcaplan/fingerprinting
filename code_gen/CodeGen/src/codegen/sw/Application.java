@@ -83,6 +83,7 @@ public class Application {
 	public String toString() {
 		String s = "digraph d {\n";
 		s += "size=\"8.5,7\";\n";
+		s += "splines=ortho\n;";
 		for (Task t : taskList) {
 			s += printConnections(t);
 			s += printParameters(t);
@@ -215,7 +216,7 @@ public class Application {
 		a.getGraphs("app");
 		a.transformationAllTasks();
 		a.getGraphs("appT");
-		a.cleanTransformation();
-		a.getGraphs("appC");
+//		a.cleanTransformation();
+//		a.getGraphs("appC");
 	}
 }

@@ -1,0 +1,16 @@
+digraph g {
+	//splines=ortho;
+	P0 -> PA
+	P0 -> PB
+	PA -> PX [style=dotted,label=<t<SUB>A</SUB>>]
+	PX -> PN [label=<&lambda;<SUB>A</SUB>>]
+	PB -> PY [style=dotted,label=<t<SUB>B</SUB>>]
+	PY -> PN [label=<&lambda;<SUB>B</SUB>>]
+
+	P0 [label=<P<SUB>0</SUB>>];
+	PA [label=<P<SUB>A</SUB>>];
+	PX [label=<P<SUB>X</SUB>>];
+	PB [label=<P<SUB>B</SUB>>];
+	PY [label=<P<SUB>Y</SUB>>];
+	PN [label=<P<SUB>N</SUB>>];
+}

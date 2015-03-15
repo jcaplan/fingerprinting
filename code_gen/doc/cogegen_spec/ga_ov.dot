@@ -1,0 +1,23 @@
+digraph g {
+	splines=ortho;
+	node [shape=box];
+
+	input [label="Input\nPopulation"];
+	func [label="Objective\nFunction"];
+	crit [label="Criteria\nMet?"];
+	best [label="Best\nIndividuals"];
+	input -> func -> crit;
+	crit -> best [label="Y"];
+
+	subgraph cluster_o{
+		label = "Generate new\nPopulation";
+		Selection -> Recombine -> Mutate;
+	}
+
+	crit -> Selection [xlabel="N"];
+	Mutate -> func;
+
+	end [label="",shape=plaintext]
+	best -> end [xlabel="Result"]
+	{rank = same; input; func; crit; best;end;}
+}
