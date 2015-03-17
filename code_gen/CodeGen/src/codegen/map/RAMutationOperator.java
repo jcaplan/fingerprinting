@@ -15,6 +15,7 @@ package codegen.map;
  * 
  */
 
+import java.security.acl.Group;
 import java.util.*;
 
 import org.jgap.*;
@@ -36,6 +37,10 @@ import org.jgap.impl.*;
  * @author Neil Rotstan
  * @author Klaus Meffert
  * @since 1.0
+ * 
+ * 
+ * @author Jonah Caplan
+ * modified 2015
  */
 public class RAMutationOperator
     extends BaseGeneticOperator implements Configurable {
@@ -176,6 +181,99 @@ public class RAMutationOperator
       Gene[] genes = null;
       // For each Chromosome in the population...
       // ----------------------------------------
+      
+      
+      // 0. Pick a strategy
+      
+      int strategy = generator.nextInt(4);
+      RAChromosome.SplitGroup splitGroups = new RAChromosome.SplitGroup();
+      RAChromosome.JoinGroup joinGroups = new RAChromosome.JoinGroup();
+      
+      // Do any setup that should be the same for all genes here
+      // -------------------------------------------------------
+      if(strategy == 0){
+          // 1. Change the group of a task
+          // -----------------------------  
+      } else if (strategy == 1) {
+          // 2. Split a group into two
+          // -------------------------
+    	  // Now that we want to actually modify the Chromosome,
+          // let's make a copy of it (if we haven't already) and
+          // add it to the candidate chromosomes so that it will
+          // be considered for natural selection during the next
+          // phase of evolution. Then we'll set the gene's value
+          // to a random value as the implementation of our
+          // "mutation" of the gene.
+          // ---------------------------------------------------
+          if (copyOfChromosome == null) {
+            // ...take a copy of it...
+            // -----------------------
+            copyOfChromosome = (IChromosome) chrom.clone();
+            // ...add it to the candidate pool...
+            // ----------------------------------
+            a_candidateChromosomes.add(copyOfChromosome);
+            // ...then mutate all its genes...
+            // -------------------------------
+            genes = copyOfChromosome.getGenes();
+            // In case monitoring is active, support it.
+            // -----------------------------------------
+            if (m_monitorActive) {
+              copyOfChromosome.setUniqueIDTemplate(chrom.getUniqueID(), 1);
+            }
+          }
+    	  // get an empty and non empty group
+    	  // --------------------------------
+    	  splitGroups = RAChromosome.getSplitGroups(copyOfChromosome);
+    	  if(splitGroups == null)
+    		  break;
+          // 2. Split a group into two
+          // -------------------------
+    	  int splitCount = 0;
+    	  while(splitCount < splitGroups.sizeNonEmptyGroup/2){
+	    	  int index = generator.nextInt(splitGroups.group.size());
+	    	  Gene g = splitGroups.group.get(index);
+	    	  ((CompositeGene) g).geneAt(RAGene.GROUP_INDEX).setAllele(splitGroups.emptyGroup);
+	    	  splitGroups.group.remove(g);
+	    	  splitCount++;
+    	  }
+    	  break;	  
+      } else if (strategy == 2){
+          // 3. Join two groups
+          // ------------------
+    	  if (copyOfChromosome == null) {
+              // ...take a copy of it...
+              // -----------------------
+              copyOfChromosome = (IChromosome) chrom.clone();
+              // ...add it to the candidate pool...
+              // ----------------------------------
+              a_candidateChromosomes.add(copyOfChromosome);
+              // ...then mutate all its genes...
+              // -------------------------------
+              genes = copyOfChromosome.getGenes();
+              // In case monitoring is active, support it.
+              // -----------------------------------------
+              if (m_monitorActive) {
+                copyOfChromosome.setUniqueIDTemplate(chrom.getUniqueID(), 1);
+              }
+            }
+    	  // get two non-empty groups
+    	  // ------------------------
+    	  joinGroups = RAChromosome.getJoinGroups(copyOfChromosome);
+    	  if(joinGroups.group0 == joinGroups.group1)
+    		  break;
+    	  for (int j = 0; j < genes1.length; j++){
+    		  CompositeGene c = (CompositeGene)genes1[j];
+    		  if((int)c.geneAt(RAGene.GROUP_INDEX).getAllele() == (int)joinGroups.group0)
+    			  c.geneAt(RAGene.GROUP_INDEX).setAllele((int)joinGroups.group1);
+    	  }
+    	  break;
+    	  
+      } else if(strategy == 3){
+          // 4. Change the technique applied to a group
+          // ------------------------------------------  
+      }
+      
+      
       for (int j = 0; j < genes1.length; j++) {
         if (m_mutationRateCalc != null) {
           // If it's a dynamic mutation rate then let the calculator decide
@@ -228,25 +326,33 @@ public class RAMutationOperator
           // would be as many elements as the string is long , for an
           // IntegerGene, it is always one element.
           // --------------------------------------------------------------
-          if (genes[j] instanceof ICompositeGene) {
-            ICompositeGene compositeGene = (ICompositeGene) genes[j];
-            if (m_monitorActive) {
-              compositeGene.setUniqueIDTemplate(chrom.getGene(j).getUniqueID(), 1);
-            }
-            for (int k = 0; k < compositeGene.size(); k++) {
-              mutateGene(compositeGene.geneAt(k), generator);
-              if (m_monitorActive) {
-                compositeGene.geneAt(k).setUniqueIDTemplate(
-                    ( (ICompositeGene) chrom.getGene(j)).geneAt(k).getUniqueID(),
-                    1);
-              }
-            }
-          }
-          else {
-            mutateGene(genes[j], generator);
-            if (m_monitorActive) {
-              genes[j].setUniqueIDTemplate(chrom.getGene(j).getUniqueID(), 1);
-            }
+
+          // Here is where the new mutation goes
+          // -----------------------------------
+          
+          if(strategy == 0){
+              // 1. Change the group of a task
+              // -----------------------------  
+        	  ICompositeGene compositeGene = (ICompositeGene) genes[j];
+        	  if(m_monitorActive) {
+        		  compositeGene.setUniqueIDTemplate(chrom.getGene(j).getUniqueID(), 1);
+        	  }
+        	  mutateGene(compositeGene.geneAt(RAGene.GROUP_INDEX),generator);       	  
+          } else if (strategy == 1) {
+
+        	  
+          } else if (strategy == 2){
+              // 3. Join two groups
+              // ------------------
+          } else if(strategy == 3){
+              // 4. Change the technique applied to a group
+              // ------------------------------------------
+        	  ICompositeGene compositeGene = (ICompositeGene) genes[j];
+        	  if(m_monitorActive) {
+        		  compositeGene.setUniqueIDTemplate(chrom.getGene(j).getUniqueID(), 1);
+        	  }
+        	  mutateGene(compositeGene.geneAt(RAGene.FT_INDEX),generator);
+        	  mutateGene(compositeGene.geneAt(RAGene.FD_INDEX),generator); 	  
           }
         }
       }

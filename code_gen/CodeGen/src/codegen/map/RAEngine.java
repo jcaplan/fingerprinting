@@ -2,19 +2,20 @@ package codegen.map;
 
 import java.io.IOException;
 
+import org.jgap.*;
 import codegen.hw.Platform;
 import codegen.sw.Application;
 import codegen.sw.DigraphGen;
 import codegen.sw.Task;
 import codegen.util.Qsort;
 
-public class RAMapper {
+public class RAEngine {
 	
-	public RAMapper(){
+	public RAEngine(){
 	};
 	
 	
-	public static void main(String[] args) throws IOException, InterruptedException{
+	public static void main(String[] args) throws IOException, InterruptedException, InvalidConfigurationException{
 		Application a = new Application(); 
 		DigraphGen g = new DigraphGen(1, 5, 6, 0.3, 0.25);
 		g.buildGraph(a);
@@ -25,6 +26,27 @@ public class RAMapper {
 		
 		a.getGraphs("appT");
 		
+		/*
+		 * Only thing that matters is the number of tasks to generate an initial mapping.
+		 * 
+		 */
+		
+	
+			  
+			  
+		RAConfiguration config = new RAConfiguration();
+		config.setFitnessFunction(new RAFitnessFunction());
+		RAChromosome chromosome = new  RAChromosome(a.getTaskList().size(), config);
+		
+		config.setSampleChromosome(chromosome.getSampleChromosome());
+		config.setPopulationSize(750);
+		Genotype population = Genotype.randomInitialGenotype(config);
+		for(int i = 0; i < 30; i++){
+			population.evolve();
+			IChromosome bestSolutionSoFar = population.getFittestChromosome();
+			System.out.println("***************************************************");
+			System.out.println(RAChromosome.getChromosomeString(bestSolutionSoFar));
+		}
 		/* 
 		 * Now there is a list of tasks with data dependencies.
 		 * Assume all tasks have equal period of Tms. 
@@ -35,6 +57,7 @@ public class RAMapper {
 		 * 
 		 *
 		 */
+
 		
 		//Mapper can have a platform...
 		

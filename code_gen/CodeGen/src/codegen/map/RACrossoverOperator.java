@@ -41,6 +41,9 @@ import org.jgap.impl.*;
  * @author Klaus Meffert
  * @author Chris Knowles
  * @since 1.0
+ * 
+ * 
+ * @author Jonah Caplan modified 2015
  */
 public class RACrossoverOperator extends CrossoverOperator {
 	/** String containing the CVS revision. Read out via reflection! */
@@ -424,40 +427,42 @@ public class RACrossoverOperator extends CrossoverOperator {
 		Gene gene2;
 		Object firstAllele;
 
-		int geneIndex = generator.nextInt(firstGenes.length);
 		
-		if(!(firstGenes.length ==1 && firstGenes[0] instanceof ICompositeGene)){
-			throw new RuntimeException("Expecting a chromosome of single composite gene");
-		}
+		//Either crossover the first vector, or the other two vectors
+		
+		boolean geneSelect = generator.nextBoolean();
 		
 		
 		for (int j = locus; j < firstGenes.length; j++) {
 			// Make a distinction for ICompositeGene for the first gene.
-			// MODIFIED: Select one of the genes
+			// MODIFIED: Always a composite gene with 3 entries.
+			// Either modify the first gene, or the second AND the third gene.
 			// ---------------------------------------------------------
-			int index = 0;
-			if (firstGenes[j] instanceof ICompositeGene) {
-				// Randomly determine gene to be considered.
-				// -----------------------------------------
-				index = generator.nextInt(firstGenes[j].size());
-				gene1 = ((ICompositeGene) firstGenes[j]).geneAt(index);
+			
+			
+			if(geneSelect){
+				gene1 = ((ICompositeGene) firstGenes[j]).geneAt(RAGene.GROUP_INDEX);
+				gene2 = ((ICompositeGene) secondGenes[j]).geneAt(RAGene.GROUP_INDEX);
+				if (m_monitorActive) {
+					gene1.setUniqueIDTemplate(gene2.getUniqueID(), 1);
+					gene2.setUniqueIDTemplate(gene1.getUniqueID(), 1);
+				}
+				firstAllele = gene1.getAllele();
+				gene1.setAllele(gene2.getAllele());
+				gene2.setAllele(firstAllele);
 			} else {
-				gene1 = firstGenes[j];
+				for(int i = RAGene.FD_INDEX; i <= RAGene.FT_INDEX; i++){
+					gene1 = ((ICompositeGene) firstGenes[j]).geneAt(i);
+					gene2 = ((ICompositeGene) secondGenes[j]).geneAt(i);
+					if (m_monitorActive) {
+						gene1.setUniqueIDTemplate(gene2.getUniqueID(), 1);
+						gene2.setUniqueIDTemplate(gene1.getUniqueID(), 1);
+					}
+					firstAllele = gene1.getAllele();
+					gene1.setAllele(gene2.getAllele());
+					gene2.setAllele(firstAllele);
+				}
 			}
-			// Make a distinction for the second gene if CompositeGene.
-			// --------------------------------------------------------
-			if (secondGenes[j] instanceof ICompositeGene) {
-				gene2 = ((ICompositeGene) secondGenes[j]).geneAt(index);
-			} else {
-				gene2 = secondGenes[j];
-			}
-			if (m_monitorActive) {
-				gene1.setUniqueIDTemplate(gene2.getUniqueID(), 1);
-				gene2.setUniqueIDTemplate(gene1.getUniqueID(), 1);
-			}
-			firstAllele = gene1.getAllele();
-			gene1.setAllele(gene2.getAllele());
-			gene2.setAllele(firstAllele);
 		}
 		// Add the modified chromosomes to the candidate pool so that
 		// they'll be considered for natural selection during the next

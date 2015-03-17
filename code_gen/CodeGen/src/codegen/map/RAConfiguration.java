@@ -68,8 +68,7 @@ public class RAConfiguration
       //----------
       addGeneticOperator(new RACrossoverOperator(this,0.8d));
       addGeneticOperator(new RAMutationOperator(this,10));
-      TournamentSelector tournamentSelector = new TournamentSelector(this,0,0);
-      addNaturalSelector(tournamentSelector, false);
+      addNaturalSelector(new TournamentSelector(this,200,0.8), false);
     }
     catch (InvalidConfigurationException e) {
       throw new RuntimeException(
