@@ -1,81 +1,72 @@
 package codegen.map;
 
 import java.io.IOException;
+import java.util.Random;
 
 import org.jgap.*;
-import codegen.hw.Platform;
-import codegen.sw.Application;
-import codegen.sw.DigraphGen;
-import codegen.sw.Task;
-import codegen.util.Qsort;
+
+import codegen.hw.*;
+import codegen.sw.*;
+import codegen.util.*;
 
 public class RAEngine {
 	
-	public RAEngine(){
-	};
+	Application app;
+	Platform platform;
 	
+	public RAEngine(Platform platform, Application app) {
+		this.platform = platform;
+		this.app = app;
+	}
 	
-	public static void main(String[] args) throws IOException, InterruptedException, InvalidConfigurationException{
-		Application a = new Application(); 
-		DigraphGen g = new DigraphGen(1, 5, 6, 0.3, 0.25);
-		g.buildGraph(a);
-		Qsort.sort(a.getTaskList());
-		for(Task t : a.getTaskList()){
-			t.printTaskStats();
-		}
+	public void findSolution() throws InvalidConfigurationException {
+
+		MSEngine ms = new MSEngine(platform,app);
+
+		int numTasks = app.getTaskList().size();	  
 		
-		a.getGraphs("appT");
+		RAConfiguration config = new RAConfiguration(app);
 		
-		/*
-		 * Only thing that matters is the number of tasks to generate an initial mapping.
-		 * 
-		 */
+		RAChromosome chromosome = new  RAChromosome(numTasks, config);
 		
-	
-			  
-			  
-		RAConfiguration config = new RAConfiguration();
-		config.setFitnessFunction(new RAFitnessFunction());
-		RAChromosome chromosome = new  RAChromosome(a.getTaskList().size(), config);
-		
+		config.setFitnessFunction(new RAFitnessFunction(ms));
 		config.setSampleChromosome(chromosome.getSampleChromosome());
-		config.setPopulationSize(750);
+		config.setPopulationSize(100);
 		Genotype population = Genotype.randomInitialGenotype(config);
 		for(int i = 0; i < 30; i++){
 			population.evolve();
 			IChromosome bestSolutionSoFar = population.getFittestChromosome();
 			System.out.println("***************************************************");
 			System.out.println(RAChromosome.getChromosomeString(bestSolutionSoFar));
+			System.out.println(bestSolutionSoFar.getFitnessValue());
 		}
-		/* 
-		 * Now there is a list of tasks with data dependencies.
-		 * Assume all tasks have equal period of Tms. 
-		 * The tasks must be mapped onto an architecture.
-		 * A non-critical task can be run on any core.
-		 * A critical task must be run either on a single FTC
-		 * or tawo PCs *at the same time*. 
-		 * 
-		 *
-		 */
 
+	}
+
+
+	public static void main(String[] args) throws IOException, InterruptedException, InvalidConfigurationException{
+		Application app = new Application(); 
+		DigraphGen g = new DigraphGen(1, 5, 6, 0.3, 0.25);
+		g.buildGraph(app);
+		app.build();
 		
-		//Mapper can have a platform...
 		
-		Platform platform0 = new Platform();
-		platform0.addProcessor(true, false,"FTC");
-		platform0.addProcessor(false, true,"PC0");
-		platform0.addProcessor(false, true,"PC1");
-		platform0.addProcessor(false, true,"PC2");
-		platform0.addProcessor(false, true,"PC3");
+		Random rand = new Random();
+		//give each task an execution time of 50-100ms
+		for(Task t : app.getTaskList()){
+			t.setExecutionTime(50 + rand.nextInt(50));
+		}
 		
+
+		Platform platform = new Platform();
+		platform.addProcessor(true, false,"FTC");
+		platform.addProcessor(false, true,"PC0");
+		platform.addProcessor(false, true,"PC1");
+		platform.addProcessor(false, true,"PC2");
+		platform.addProcessor(false, true,"PC3");
 		
-		/*
-		 * Rank will be helpful to get off to a good start. 
-		 * Need a data structure that connects the platform and
-		 * application data structures.
-		 * What is the best way to represent the schedule
-		 * that makes use of preexisting data structures?
-		 */
+		RAEngine engine = new RAEngine(platform,app);
+		engine.findSolution();
 		
 	}
 	

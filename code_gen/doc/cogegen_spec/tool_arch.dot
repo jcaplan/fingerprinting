@@ -1,5 +1,6 @@
 digraph g {
-	size="6,8";
+
+	size="6,6";
 	system_desc [style=filled,label="Nios IDE generated\nplatform description"]
 	head_parse [shape=box,label="C Header file\nparser"]
 	plat_model [label="Platform model"]

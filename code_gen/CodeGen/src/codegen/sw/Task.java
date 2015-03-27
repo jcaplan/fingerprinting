@@ -2,6 +2,10 @@ package codegen.sw;
 
 import java.util.ArrayList;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
+import codegen.hw.*;
+import codegen.map.RAGene;
 public class Task implements Comparable<Task>{
 	
 	class MutableInteger {
@@ -9,22 +13,26 @@ public class Task implements Comparable<Task>{
 	}
 
 	
-	int periodMS;
-	int startTime;
+	public int executionTime;
+	public int startTime;
 	boolean critical;
 	boolean eventTriggered;
 	boolean timeTriggered;
-	boolean redundant = false;
+	public boolean redundant = false;
 	String computationFile;
-	String label;
+	public String label;
 	ArrayList<Signal> startConditions;
-	ArrayList<Task> parents;
-	ArrayList<Task> children;
+	public ArrayList<Task> parents;
+	public ArrayList<Task> children;
 	MutableInteger numCriticalChildren;
-	int taskID;
-	Task copy;
-	int rank; //For pretty printing
-	static int taskCount = 1;
+	public int taskID;
+	public Task copy;
+	public int rank; //For pretty printing
+	public ArrayList<Processor> legalProcessors;
+	public boolean scheduled;
+	int fdTechnique;
+	static int taskCount = 0;
+	
 	
 	public void printTaskStats(){
 		System.out.println(label);
@@ -52,15 +60,25 @@ public class Task implements Comparable<Task>{
 		parents.add(t);
 	}
 	
+	public void changeRank(int rank){
+		this.rank = rank;
+	}
+	
 	public void cleanList(ArrayList<Task> list){
-		children.removeAll(list);
-		parents.removeAll(list);
-		numCriticalChildren.value -= list.size();
+		for(Task t : list){
+			if(children.contains(t)){
+				children.remove(t);
+				numCriticalChildren.value--;
+			}
+			if(parents.contains(t))
+				parents.remove(t);
+		}
+		copy = null;
 	}
 	
 	public Task(){
 		taskID = taskCount;
-		label = "Task_" +Integer.toString(taskCount++);
+		label = "T" +Integer.toString(taskCount++);
 		initLists();
 	}
 	public Task(String label){
@@ -71,7 +89,7 @@ public class Task implements Comparable<Task>{
 	
 	public Task(boolean critical){
 		taskID = taskCount;
-		label = "Task_" +Integer.toString(taskCount++);
+		label = "T" +Integer.toString(taskCount++);
 		this.critical = critical;
 		initLists();
 	}
@@ -82,7 +100,7 @@ public class Task implements Comparable<Task>{
 	}
 	
 	public Task(Task t, boolean redundant){
-		periodMS = t.periodMS;
+		executionTime = t.executionTime;
 		startTime = t.startTime;
 		critical = t.critical;
 		eventTriggered = t.eventTriggered;
@@ -92,11 +110,12 @@ public class Task implements Comparable<Task>{
 		this.redundant = redundant;
 		computationFile = t.computationFile;
 		if(redundant){
-			label = t.label + "_copy";
+			label = t.label + "p";
 			startConditions = t.startConditions;
 			parents = t.parents;
 			children = t.children;
 			rank = t.rank;
+			legalProcessors = t.legalProcessors;
 		}else{
 			label = t.label;
 		}
@@ -110,6 +129,7 @@ public class Task implements Comparable<Task>{
 		startConditions = new ArrayList<Signal>();
 		parents = new ArrayList<Task>();
 		children = new ArrayList<Task>();
+		legalProcessors = new ArrayList<Processor>();
 	}
 	@Override
 	public boolean equals(Object obj){
@@ -131,6 +151,7 @@ public class Task implements Comparable<Task>{
 		} else if(!this.critical && t.critical){
 			return 1;
 		}
+		
 		//3. See if one has more critical children
 
 		if(numCriticalChildren.value > t.numCriticalChildren.value)
@@ -143,6 +164,14 @@ public class Task implements Comparable<Task>{
 		else if(t.children.size() < this.children.size())
 			return 1;
 		
+		//If they have the same taskID then put the original first
+		else if(this.taskID == t.taskID){
+			if(this.redundant)
+				return 1;
+			else
+				return -1;
+		}
+		
 		return 0;
 	}
 	
@@ -150,6 +179,25 @@ public class Task implements Comparable<Task>{
 		return this.taskID == id;
 	}
 	
+	public void resetLegalProcessors(){
+		legalProcessors = new ArrayList<Processor>();
+	}
+	
+	public void setExecutionTime(int time){
+		executionTime = time;
+	}
+	
+	public void addLegalProcessor(Processor p){
+		legalProcessors.add(p);
+		if(p.hasFprint)
+			fdTechnique = RAGene.FD_FPRINT;
+		else if(p.faultTolerant)
+			fdTechnique = RAGene.FD_DMR;
+	}
+	
+	public boolean isCritical(){
+		return critical;
+	}
 	
 	public String toString(){
 		return label;

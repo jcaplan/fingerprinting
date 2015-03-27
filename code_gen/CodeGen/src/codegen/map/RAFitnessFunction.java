@@ -1,20 +1,28 @@
 package codegen.map;
 
-import java.util.Random;
 
 import org.jgap.FitnessFunction;
 import org.jgap.IChromosome;
+import org.jgap.InvalidConfigurationException;
 
 @SuppressWarnings("serial")
 public class RAFitnessFunction extends FitnessFunction{
-
+	
+	MSEngine ms;
+	public RAFitnessFunction(MSEngine ms) {
+		this.ms = ms;
+	}
+	
 	@Override
-	protected double evaluate(IChromosome arg0) {
+	protected double evaluate(IChromosome chromosome){
+		try {
+			return ms.getBestSchedule(chromosome);
+		} catch (InvalidConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		Random rand = new Random();
-		return rand.nextDouble();
-		
-		// TODO real fitness function
+		return -1;
 	}
 
 }

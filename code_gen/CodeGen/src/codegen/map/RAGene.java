@@ -18,27 +18,37 @@ public class RAGene  {
 	public final static int FD_FPRINT = 0;
 	public final static int FD_DMR = 1;
 	
-	public static final int GROUP_INDEX = 0;
-	public static final int FD_INDEX = 1;
-	public static final int FT_INDEX = 2;
 	
+	public static final int FD_INDEX = 0;
+	public static final int FT_INDEX = 1;
+	public static final int GROUP_INDEX = 2;
 	
 	public RAGene(Configuration a_configuration,int maxNumGroups) throws InvalidConfigurationException{
 		this.maxNumGroups = maxNumGroups;
 		init(a_configuration);
 	}
 	
+	public RAGene(Gene gene, int maxNumGroups) throws InvalidConfigurationException{
+		this.maxNumGroups = maxNumGroups;
+		init(gene.getConfiguration());
+		ICompositeGene g = (ICompositeGene) gene;
+		raGene.geneAt(FD_INDEX).setAllele(g.geneAt(FD_INDEX).getAllele());
+		raGene.geneAt(FD_INDEX).setAllele(g.geneAt(FD_INDEX).getAllele());
+//		raGene.geneAt(GROUP_INDEX).setAllele(g.geneAt(GROUP_INDEX).getAllele());
+	}
+	
 	private void init(Configuration a_configuration) throws InvalidConfigurationException{
 		raGene = new CompositeGene(a_configuration);
 
-		Gene groupField = new IntegerGene(a_configuration,0,maxNumGroups-1);
-		raGene.addGene(groupField);
-		
+//		Gene groupField = new IntegerGene(a_configuration,0,maxNumGroups-1);
+//		raGene.addGene(groupField);
+//		
 		Gene fdField = new IntegerGene(a_configuration,0,NUM_FD_METHODS-1);
 		raGene.addGene(fdField);
 		
 		Gene ftField = new IntegerGene(a_configuration,0,NUM_FT_METHODS-1);
 		raGene.addGene(ftField);
+
 	}
 	
 	public int getTaskGroup(){
@@ -53,10 +63,18 @@ public class RAGene  {
 		return (int)raGene.geneAt(FT_INDEX).getAllele();
 	}
 	
-	public static String getGeneString(Gene g){
+	public static String getGroupString(Gene g){
 		String s = "";
 		ICompositeGene cg = (ICompositeGene) g;
-		s += "Group: " + cg.geneAt(GROUP_INDEX).getAllele() + "; ";
+		int group = (int)cg.geneAt(GROUP_INDEX).getAllele();
+		s += "Group: " + group + ";";
+		
+		return s;
+	}
+	
+	public static String getFDString(Gene g){
+		String s = "";
+		ICompositeGene cg = (ICompositeGene) g;
 		s += "Detection Type: ";
 		switch((int)cg.geneAt(FD_INDEX).getAllele()){
 		case FD_FPRINT:
@@ -66,7 +84,12 @@ public class RAGene  {
 			s += "Lockstep DMR; ";
 			break;
 		}
-		
+		return s;
+	}
+	
+	public static String getFTString(Gene g){
+		String s = "";
+		ICompositeGene cg = (ICompositeGene) g;
 		s += "Correction Type: ";
 		switch((int)cg.geneAt(FT_INDEX).getAllele()){
 		case FT_FPRINT_DMR_WRETRY:
@@ -79,7 +102,6 @@ public class RAGene  {
 			s += "Lockstep TMR ; ";
 			break;
 		}
-		
 		return s;
 	}
 	public static Gene[] getGeneArray(RAGene[] array){

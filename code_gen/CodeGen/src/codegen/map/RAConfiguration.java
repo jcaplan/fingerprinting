@@ -13,8 +13,11 @@ package codegen.map;
 import org.jgap.*;
 import org.jgap.impl.*;
 import org.jgap.util.*;
+import org.jgap.audit.EvolutionMonitor;
+import org.jgap.audit.IEvolutionMonitor;
 import org.jgap.event.*;
 
+import codegen.sw.*;
 /**
  * The MapConfiguration class simplifies the JGAP configuration
  * process by providing default configuration values for many of the
@@ -35,8 +38,11 @@ public class RAConfiguration
   /** String containing the CVS revision. Read out via reflection!*/
   private final static String CVS_REVISION = "$Revision: 1.26 $";
 
-  public RAConfiguration() {
-    this("","");
+  Application app;
+  public RAConfiguration(Application app){
+	  this("","");
+	  this.app = app;
+	  
   }
 
   /**
@@ -66,9 +72,9 @@ public class RAConfiguration
       setChromosomePool(new ChromosomePool());
       //New values
       //----------
-      addGeneticOperator(new RACrossoverOperator(this,0.8d));
-      addGeneticOperator(new RAMutationOperator(this,10));
-      addNaturalSelector(new TournamentSelector(this,200,0.8), false);
+      addGeneticOperator(new CrossoverOperator(this,0.8d));
+      addGeneticOperator(new MutationOperator(this,10));
+      addNaturalSelector(new TournamentSelector(this,100,0.8), false);
     }
     catch (InvalidConfigurationException e) {
       throw new RuntimeException(

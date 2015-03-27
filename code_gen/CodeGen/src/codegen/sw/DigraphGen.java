@@ -34,7 +34,7 @@ public class DigraphGen {
 				if(rand.nextDouble() < probCritical)
 					t.critical = true;
 				a.addTask(t);
-				t.rank = i;
+//				t.rank = i;
 				if(i > 0){
 					for(int k = 0; k < nodes; k++){
 						if(rand.nextDouble() < probEdge){

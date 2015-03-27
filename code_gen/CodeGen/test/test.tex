@@ -1,0 +1,38 @@
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+\usepackage[landscape]{geometry}
+\usepackage[usenames,dvipsnames]{color} % Required for custom colors
+\usepackage{pgfgantt}
+
+\begin{document}
+\begin{ganttchart}[vgrid,hgrid]{1}{34}
+\ganttbar[inline,bar/.append style={fill=red}]{T2}{1}{6}
+\ganttbar[inline,bar/.append style={fill=red}]{T14}{22}{26}
+\ganttbar[inline,bar/.append style={fill=red}]{T13}{28}{33}
+\ganttnewline
+\ganttbar[inline,bar/.append style={fill=red}]{T1}{1}{5}
+\ganttbar[inline,bar/.append style={fill=red}]{T10'}{18}{22}
+\ganttbar[inline]{T9}{13}{18}
+\ganttbar[inline,bar/.append style={fill=red}]{T11'}{22}{28}
+\ganttbar[inline,bar/.append style={fill=red}]{T12'}{28}{33}
+\ganttnewline
+\ganttbar[inline,bar/.append style={fill=red}]{T1'}{1}{5}
+\ganttbar[inline]{T0}{5}{10}
+\ganttbar[inline]{T4}{10}{13}
+\ganttbar[inline]{T5}{13}{18}
+\ganttbar[inline,bar/.append style={fill=red}]{T10}{18}{22}
+\ganttbar[inline,bar/.append style={fill=red}]{T11}{22}{28}
+\ganttbar[inline]{T15}{28}{34}
+\ganttnewline
+\ganttbar[inline]{T3}{1}{7}
+\ganttbar[inline]{T6}{7}{11}
+\ganttbar[inline]{T7}{18}{22}
+\ganttbar[inline]{T8}{13}{18}
+\ganttnewline
+\ganttbar[inline,bar/.append style={fill=red}]{T12}{28}{33}
+\ganttnewline
+\end{ganttchart}
+\end{document}

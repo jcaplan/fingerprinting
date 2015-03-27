@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Platform {
 
-	ArrayList<Processor> processors;
+	public ArrayList<Processor> processors;
 	
 	public Platform(){
 		processors = new ArrayList<Processor>();
@@ -14,5 +14,6 @@ public class Platform {
 		Processor p = new Processor(faultTolerant, hasFprint,label);
 		processors.add(p);
 	}
+	
 	
 }

@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 
+import codegen.map.RAGene;
 import codegen.util.Qsort;
 
 public class Application {
@@ -113,14 +115,63 @@ public class Application {
 		Qsort.sort(taskList);
 		redundantList = newTasks;
 	}
+	
+	public void transformTasks() {
+		ArrayList<Task> newTasks = new ArrayList<Task>();
+		for (Task t : taskList) {
+			if (t.critical && !t.redundant && t.copy == null
+					&& t.fdTechnique == RAGene.FD_FPRINT) {
+				Task redundant = new Task(t, true);
+				newTasks.add(redundant);
+				t.copy = redundant;
+				for (Task c : redundant.children) {
+					c.addParent(redundant);
+				}
+				for (Task p : redundant.parents) {
+					p.addChild(redundant);
+				}
+			}
+		}
+		taskList.addAll(newTasks);
+		Qsort.sort(taskList);
+		redundantList = newTasks;	
+	}
 
 	public void cleanTransformation() {
+		if(redundantList == null){
+			return;
+		}
 		taskList.removeAll(redundantList);
 		for (Task t : taskList) {
 			t.cleanList(redundantList);
 		}
 		redundantList = new ArrayList<Task>();
 	}
+	
+	public void build(){
+		for(Task t : taskList){
+			if(t.parents.isEmpty())
+				t.changeRank(0);
+			else
+				t.changeRank(1);
+		}	
+		
+		for(Task t : taskList){
+			if(t.rank == 0){
+				setRanks(t, 1);
+			}
+		}
+		Qsort.sort(taskList);
+	}
+	
+	private void setRanks(Task t, int rank){
+		for(Task child : t.children){
+			setRanks(child, rank + 1);
+			if(rank > child.rank)
+				child.changeRank(rank);
+		}
+	}
+	
 
 	void printDotFile(String fileName) throws FileNotFoundException,
 			UnsupportedEncodingException {
@@ -211,12 +262,16 @@ public class Application {
 		// }
 		// }
 
+		
 		DigraphGen g = new DigraphGen(1, 5, 6, 0.3, 0.25);
 		g.buildGraph(a);
+		a.build();
 		a.getGraphs("app");
 		a.transformationAllTasks();
 		a.getGraphs("appT");
 //		a.cleanTransformation();
 //		a.getGraphs("appC");
 	}
+
+
 }
