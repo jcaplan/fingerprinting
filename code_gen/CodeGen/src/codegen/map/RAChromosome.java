@@ -13,7 +13,7 @@ public class RAChromosome {
 
 	int numTasks;
 	RAGene[] sampleGenes;
-	static Configuration config;
+	Configuration config;
 	public RAChromosome(int numTasks, Configuration config)
 			throws InvalidConfigurationException {
 		this.numTasks = numTasks;
@@ -21,9 +21,16 @@ public class RAChromosome {
 		for(int i = 0; i < numTasks; i++){
 			sampleGenes[i] = new RAGene(config,numTasks);
 		}
-		if(RAChromosome.config == null) 
-			RAChromosome.config = config;
+			this.config = config;
 	}
+	
+	
+	public void setAllFDtoLockstep(){
+		for(RAGene gene : sampleGenes){
+			gene.setDetectionType(RAGene.FD_DMR);
+		}
+	}
+	
 	/**
 	 * Take an IChromosome and build an RAChromosome with 
 	 * an RAGene array

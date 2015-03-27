@@ -111,5 +111,9 @@ public class RAGene  {
 		}
 		return newArray;
 	}
+
+	public void setDetectionType(int detType) {
+		raGene.geneAt(RAGene.FD_INDEX).setAllele(detType);	
+	}
 	
 }

@@ -53,11 +53,7 @@ public class MSEngine {
 		//Create a copy of any tasks that require FTC and 
 		//add them to the task List
 		app.transformTasks();
-		try {
-			app.getGraphs("appT");
-		} catch (IOException | InterruptedException e) {
-			e.printStackTrace();
-		}
+
 		
 		//Now the task list has been updated
 		String name = "MS" + count++;
@@ -74,24 +70,33 @@ public class MSEngine {
 		//The integer points to the index in the legalProcessor ArrayList,
 		//*not* to a specific processor.
 		
+		
+		config.setPopulationSize( 50 );
+
 		Chromosome sampleChromosome = new Chromosome(config, sampleGenes );
 		config.setSampleChromosome( sampleChromosome );
-		config.setPopulationSize( 100 );
-		config.setFitnessFunction(new MSFitnessFunction(platform, app));
+		MSFitnessFunction ff = new MSFitnessFunction(platform,app);
+		config.setFitnessFunction(ff);
 		Genotype population = Genotype.randomInitialGenotype( config );
-		
 		IChromosome bestSolutionSoFar;
-
+		double lastFitness = 0;
+		int sameCount = 0;
 		for( int i = 0; i < 30; i++ )
 		{
 		    population.evolve();
-		    bestSolutionSoFar = population.getFittestChromosome();
-		    //The best solution so far should be copied to a list
-		    //so that the schedule is not lost
-		    //the task objects are reinitialized at the start of each round
+		    double newFitness = population.getFittestChromosome().getFitnessValue();
+		    if(lastFitness == newFitness){
+		    	sameCount++;
+		    } else {
+		    	lastFitness = newFitness;
+		    	sameCount = 0;
+		    }
+		    
+		    if(sameCount > 4){
+				break;
+			}
 		}
 		
-
 		
 		return population.getFittestChromosome().getFitnessValue();
 	}

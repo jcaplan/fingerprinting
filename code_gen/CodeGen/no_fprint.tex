@@ -1,0 +1,37 @@
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+\usepackage[landscape]{geometry}
+\usepackage[usenames,dvipsnames]{color} % Required for custom colors
+\usepackage{rtsched/rtsched}
+
+\begin{document}
+\begin{RTGrid}[width=\linewidth,nosymbols=1]{3}{39}
+\RowLabel{1}{CPU0}
+\TaskExecution[execlabel=T0,color=red]{1}{0}{5}
+\TaskExecution[execlabel=T2,color=red]{1}{5}{10}
+\TaskExecution[execlabel=T10,color=red]{1}{18}{23}
+\TaskExecution[execlabel=T9,color=white]{1}{11}{17}
+\TaskExecution[execlabel=T11,color=red]{1}{23}{27}
+\TaskExecution[execlabel=T14,color=red]{1}{27}{33}
+\RowLabel{2}{CPU1}
+\TaskExecution[execlabel=T1,color=red]{2}{0}{5}
+\TaskExecution[execlabel=T6,color=white]{2}{5}{10}
+\TaskExecution[execlabel=T8,color=red]{2}{11}{17}
+\TaskExecution[execlabel=T7,color=white]{2}{17}{23}
+\TaskExecution[execlabel=T12,color=red]{2}{23}{29}
+\TaskExecution[execlabel=T15,color=red]{2}{29}{33}
+\RowLabel{3}{CPU2}
+\TaskExecution[execlabel=T4,color=white]{3}{0}{6}
+\TaskExecution[execlabel=T5,color=white]{3}{6}{11}
+\TaskExecution[execlabel=T3,color=white]{3}{11}{18}
+\TaskExecution[execlabel=T13,color=red]{3}{18}{23}
+\TaskExecution[execlabel=T16,color=white]{3}{23}{28}
+\TaskExecution[execlabel=T18,color=red]{3}{28}{32}
+\TaskExecution[execlabel=T17,color=red]{3}{33}{36}
+\end{RTGrid}
+
+\end{document}
+

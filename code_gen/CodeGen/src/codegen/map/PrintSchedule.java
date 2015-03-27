@@ -2,6 +2,7 @@ package codegen.map;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
@@ -11,8 +12,8 @@ import codegen.sw.Task;
 public class PrintSchedule {
 
 	static final int SCALE = 15;
-	public static void print(int numCores, int[] coreAssignments,
-			int[] startTimes, Application app, String fileName) throws IOException, InterruptedException {
+	public void print(int numCores, int[] coreAssignments,
+			int[] startTimes, Application app, int[] executionTimes, String[] taskLabels, String fileName){
 		String s = "";
 		s += printTopMatter();
 		//What is the execution time?
@@ -31,27 +32,32 @@ public class PrintSchedule {
 			for(int j = 0; j < numTasks; j++){
 				Task task = app.getTaskList().get(j);
 				if(coreAssignments[j] == i){
-					s += "\\TaskExecution[execlabel=" + task.label;
-					if(task.isCritical())
+					s += "\\TaskExecution[execlabel=" + taskLabels[j];
+					if(!task.isCritical())
+						s += ",color=white";
+					else if(!task.redundant)
 						s += ",color=red";
 					s += "]";
 					s += "{" + (i + 1) + "}{" + startTimes[j]/SCALE + 
-								"}{" + (startTimes[j] + task.executionTime)/SCALE + "}\n";
+								"}{" + (startTimes[j] + executionTimes[j])/SCALE + "}\n";
 				}
 			}
 		}
 		s += "\\end{RTGrid}\n";
 		s += "\n\\end{document}\n";
 		
-		PrintWriter writer = new PrintWriter(fileName + ".tex", "UTF-8");
-		writer.println(s);
-		writer.close();
-		
-		generatePDF(fileName);
-		openGraphPDF(fileName);
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(fileName + ".tex", "UTF-8");
+			writer.println(s);
+			writer.close();
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	static void openGraphPDF(String fileName) throws IOException, InterruptedException {
+	void openGraphPDF(String fileName) throws IOException, InterruptedException {
 		String cmd;
 		Process p;
 		if (System.getProperty("os.name").equals("Linux")) {
@@ -67,16 +73,16 @@ public class PrintSchedule {
 		p.waitFor();
 	}
 	
-	static void generatePDF(String fileName) throws IOException, InterruptedException {
+	void generatePDF(String fileName) throws IOException, InterruptedException {
 		String cmd = "latex " + fileName + ".tex";
-		Process p = Runtime.getRuntime().exec(cmd);
-		p.waitFor();
+		Process p1 = Runtime.getRuntime().exec(cmd);
+		p1.waitFor();
 		cmd = "dvips " + fileName + ".dvi";
-		p = Runtime.getRuntime().exec(cmd);
-		p.waitFor();
+		Process p2 = Runtime.getRuntime().exec(cmd);
+		p2.waitFor();
 		cmd = "ps2pdf " + fileName + ".ps";
-		p = Runtime.getRuntime().exec(cmd);
-		p.waitFor();
+		Process p3 = Runtime.getRuntime().exec(cmd);
+		p3.waitFor();
 	}
 	
 	

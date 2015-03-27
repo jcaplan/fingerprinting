@@ -173,7 +173,7 @@ public class Application {
 	}
 	
 
-	void printDotFile(String fileName) throws FileNotFoundException,
+	public void printDotFile(String fileName) throws FileNotFoundException,
 			UnsupportedEncodingException {
 		PrintWriter writer = new PrintWriter(fileName + ".dot", "UTF-8");
 		writer.println(this);

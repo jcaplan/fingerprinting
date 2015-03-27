@@ -107,14 +107,12 @@ public class MSFitnessFunction extends FitnessFunction {
 			sanityCheckReady();
 
 		}
-
-		try {
-			PrintSchedule.print(numCores, coreAssignments, startTimes, app, "sched");
-		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return 10000 - currentTime;
+		
+		int fitness = 10000 - currentTime;
+		
+		Schedule.submitSchedule(numCores, coreAssignments, startTimes, app, fitness);
+		
+		return fitness;
 	}
 	
 	public void sanityCheck(String s){
