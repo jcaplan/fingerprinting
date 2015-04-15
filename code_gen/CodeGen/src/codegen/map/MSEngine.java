@@ -19,6 +19,12 @@ public class MSEngine {
 		this.app = application;
 	}
 	
+	/**
+	 * This function finds the best schedule for a given technique chromosome. 
+	 * @param chromosome
+	 * @return
+	 * @throws InvalidConfigurationException
+	 */
 	public double getBestSchedule(IChromosome chromosome) throws InvalidConfigurationException {
 		
 		RAChromosome chrom = new RAChromosome(chromosome);
@@ -31,8 +37,11 @@ public class MSEngine {
 		//Now each task has a mechanism
 		//Each task should have a list of legal processors that it can run on.
 		
+		//Make sure any transformations on the application task graph were cleaned
 		app.cleanTransformation();
 		
+		
+		//Build the list of legal processors for each task
 		for(Task task : app.getTaskList()){
 			task.resetLegalProcessors();
 			if(task.isCritical()){
@@ -60,6 +69,8 @@ public class MSEngine {
 		MSConfiguration.reset();
 		MSConfiguration config = new MSConfiguration(name,null);
 		Gene[] sampleGenes = new Gene[app.getTaskList().size()];
+		
+		//Build the sample gene, each gene for each task is mapped to the possible legal processors only
 		for(int i = 0; i < sampleGenes.length; i++){
 			sampleGenes[i] = new IntegerGene(
 					config,0,app.getTaskList().get(i).legalProcessors.size()-1);
@@ -73,6 +84,7 @@ public class MSEngine {
 		
 		config.setPopulationSize( 50 );
 
+		//Set up the JGAP library and do the DSE
 		Chromosome sampleChromosome = new Chromosome(config, sampleGenes );
 		config.setSampleChromosome( sampleChromosome );
 		MSFitnessFunction ff = new MSFitnessFunction(platform,app);

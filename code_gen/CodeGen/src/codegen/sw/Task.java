@@ -2,8 +2,6 @@ package codegen.sw;
 
 import java.util.ArrayList;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 import codegen.hw.*;
 import codegen.map.RAGene;
 public class Task implements Comparable<Task>{

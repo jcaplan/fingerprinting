@@ -23,6 +23,10 @@ public class DigraphGen {
 		rankIndex = new int[numRanks];
 	}
 
+	/**
+	 * Generates a random task graph to belong to application a
+	 * @param a
+	 */
 	public void buildGraph(Application a) {
 		Random rand = new Random();
 		int nodes = 0;
@@ -34,7 +38,6 @@ public class DigraphGen {
 				if(rand.nextDouble() < probCritical)
 					t.critical = true;
 				a.addTask(t);
-//				t.rank = i;
 				if(i > 0){
 					for(int k = 0; k < nodes; k++){
 						if(rand.nextDouble() < probEdge){

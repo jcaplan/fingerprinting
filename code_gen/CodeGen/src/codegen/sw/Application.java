@@ -11,6 +11,14 @@ import codegen.map.RAGene;
 import codegen.util.Qsort;
 
 public class Application {
+	
+	/**
+	 * The application is a collection of tasks.
+	 * The task graph is transformed in the application class.
+	 * Also the printing to .dot files.
+	 * 
+	 * 
+	 */
 	ArrayList<Task> taskList;
 	ArrayList<Task> redundantList;
 	int maxRank = 5;
@@ -24,6 +32,7 @@ public class Application {
 	}
 
 	public Application() {
+		Task.taskCount = 0;
 		taskList = new ArrayList<Task>();
 		redundantList = new ArrayList<Task>();
 	}

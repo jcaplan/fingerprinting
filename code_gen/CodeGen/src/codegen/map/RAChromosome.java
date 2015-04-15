@@ -11,6 +11,11 @@ import codegen.sw.*;
 import codegen.hw.*;
 public class RAChromosome {
 
+	
+	/**
+	 * The RAChromosome class is useful to translate between a more convenient representation of the application model
+	 * and the chromosome understood by JGAP. This was quite a bit easier than writing a new Chromosome class extension.
+	 */
 	int numTasks;
 	RAGene[] sampleGenes;
 	Configuration config;

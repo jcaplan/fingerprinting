@@ -20,9 +20,15 @@ public class RAEngine {
 		this.app = app;
 	}
 	
+	/**
+	 * This is the top level function responsible for doing DSE
+	 * @return the fitness of the best solution
+	 * @throws InvalidConfigurationException
+	 */
 	public double findSolution() throws InvalidConfigurationException {
 
 		
+		//The MS engine is required to find the best schedule for a given mapping
 		
 		MSEngine ms = new MSEngine(platform,app);
 
@@ -35,14 +41,14 @@ public class RAEngine {
 			}
 		}
 
-		
+		//Just some random stuff to make JGAP work over several
+		//iterations
 		int numTasks = app.getTaskList().size();	
 		String name = "RA" + count++;
 		RAConfiguration config = new RAConfiguration(name,app);
 		
 		//If there are no fingerprint units, all cores are lockstep
 		//skip straight to a single iteration of MS
-		
 		if(!hasFprint){
 			RAChromosome chrom = new RAChromosome(numTasks,config);
 			chrom.setAllFDtoLockstep();
@@ -50,27 +56,36 @@ public class RAEngine {
 		}
 		
 		
-		
-		
+		//Set up the RA chromosome
 		RAChromosome chromosome = new  RAChromosome(numTasks, config);
+		//The chromosome takes a sample template
 		config.setSampleChromosome(chromosome.getSampleChromosome());
+		//The fitness function is defined
 		RAFitnessFunction ff = new RAFitnessFunction(ms);
 		config.setFitnessFunction(ff);
+		//Set the population size
 		config.setPopulationSize(50);
+
+		//The main loop that does the GA
 		Genotype population = Genotype.randomInitialGenotype(config);
 		double lastFitness = 0;
 		int sameCount = 0;
 		for(int i = 0; i < 30; i++){
+			//Check how long the iteration takes
 			long time = System.currentTimeMillis();
+			//Do the iteration
 			population.evolve();
 			IChromosome bestSolutionSoFar = population.getFittestChromosome();
 			
+			//Check if the answer changed from last iteration
 			if(lastFitness == bestSolutionSoFar.getFitnessValue()){
 				sameCount++;
 			} else {
 				lastFitness = bestSolutionSoFar.getFitnessValue();
 				sameCount = 0;
 			}
+			
+			//Print out diagnostics
 			System.out.println("***************************************************");
 			System.out.println(RAChromosome.getChromosomeString(bestSolutionSoFar));
 			System.out.println("Fitness: " +bestSolutionSoFar.getFitnessValue());
@@ -84,56 +99,8 @@ public class RAEngine {
 		}
 		return lastFitness;
 	}
+	
 
 
-	public static void main(String[] args) throws IOException, InterruptedException, InvalidConfigurationException{
-		Application app = new Application(); 
-		DigraphGen g = new DigraphGen(1, 5, 6, 0.25, 0.4);
-		g.buildGraph(app);
-		app.build();
-		
-		
-		Random rand = new Random();
-		//give each task an execution time of 50-100ms
-		for(Task t : app.getTaskList()){
-			t.setExecutionTime(50 + rand.nextInt(50));
-		}
-		
-		Platform platform = new Platform();
-		
-
-			platform.addProcessor(true, false,"FTC");
-			platform.addProcessor(false, true,"PC0");
-			platform.addProcessor(false, true,"PC1");
-			platform.addProcessor(false, true,"PC2");
-			platform.addProcessor(false, true,"PC3");
-		
-			
-		Schedule.fileName = "fprint";
-		RAEngine engine = new RAEngine(platform,app);
-		double fprintSol = engine.findSolution();
-		
-		System.out.println("best time with fingerprinting: " + fprintSol);
-		
-		platform = new Platform();
-		Schedule.fileName = "no_fprint";
-		
-		platform.addProcessor(true, false,"FTC0");
-		platform.addProcessor(true, false,"FTC1");
-		platform.addProcessor(true, false,"FTC2");
-		
-		engine = new RAEngine(platform,app);
-		double sol = engine.findSolution();
-		
-		double fprintTime = 10000 - fprintSol;
-		double nofprintTime = 10000 - sol;
-		System.out.println("best time with fingerprinting: " + fprintTime);
-		System.out.println("best time without fingerprinting: " + nofprintTime);
-		double reduction = 100*(nofprintTime - fprintTime)/nofprintTime;
-		System.out.println("reduction of " + reduction + "%");
-		
-		
-		
-	}
 	
 }

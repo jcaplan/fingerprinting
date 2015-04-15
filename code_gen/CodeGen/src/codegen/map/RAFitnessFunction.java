@@ -13,6 +13,9 @@ public class RAFitnessFunction extends FitnessFunction{
 		this.ms = ms;
 	}
 	
+	/**
+	 * Very simple function. Call the MS engine.
+	 */
 	@Override
 	protected double evaluate(IChromosome chromosome){
 		try {

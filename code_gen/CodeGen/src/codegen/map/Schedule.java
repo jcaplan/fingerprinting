@@ -1,11 +1,19 @@
 package codegen.map;
 
 import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import codegen.sw.*;
+
+/**
+ * The schedule class is a static collection that is used to keep track of the best
+ * schedule produced by the GA and also printing the schedule along with the PrintSchedule class.
+ * @author jonah
+ *
+ */
 public class Schedule {
 	static int numCores;
 	static int[] coreAssignment;
@@ -14,12 +22,12 @@ public class Schedule {
 	static String[] taskLabels;
 	static Application app;
 	static int fitnessValue;
-	static String fileName;
+	public static String fileName;
 	
 	static boolean submitSchedule(int numCores,int[] coreAssignment,int[] startTimes,Application app,int fitnessValue){
 		if(fitnessValue > Schedule.fitnessValue){
 			Schedule.fitnessValue = fitnessValue;
-			System.out.println("Time" + System.currentTimeMillis()/1000 + ": " + fitnessValue);
+//			System.out.println("Time" + System.currentTimeMillis()/1000 + ": " + fitnessValue);
 			Schedule.numCores = numCores;
 			int numTasks = coreAssignment.length;
 			Schedule.coreAssignment = new int[numTasks];
