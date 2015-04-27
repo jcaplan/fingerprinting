@@ -93,7 +93,7 @@ generate
 endgenerate
 
 /******************************
-Arbitration simulation -TDMA
+Arbitration simulation 
 *******************************/
 
 //Just make a simple priority scheme

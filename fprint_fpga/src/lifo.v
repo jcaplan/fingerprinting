@@ -1,5 +1,4 @@
 
-`timescale 1ns/1ns
 module lifo
   #(
     parameter depth = 32,
