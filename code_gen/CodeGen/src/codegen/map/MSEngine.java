@@ -1,7 +1,5 @@
 package codegen.map;
 
-import java.io.IOException;
-import java.util.ArrayList;
 
 import org.jgap.*;
 import org.jgap.impl.*;
@@ -90,7 +88,6 @@ public class MSEngine {
 		MSFitnessFunction ff = new MSFitnessFunction(platform,app);
 		config.setFitnessFunction(ff);
 		Genotype population = Genotype.randomInitialGenotype( config );
-		IChromosome bestSolutionSoFar;
 		double lastFitness = 0;
 		int sameCount = 0;
 		for( int i = 0; i < 30; i++ )

@@ -1,6 +1,5 @@
 package codegen.map;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import codegen.sw.Task;
@@ -9,8 +8,8 @@ import org.jgap.*;
 
 import codegen.hw.*;
 import codegen.sw.*;
-import codegen.util.Qsort;
 
+@SuppressWarnings("serial")
 public class MSFitnessFunction extends FitnessFunction {
 	public Platform platform;
 	public Application app;

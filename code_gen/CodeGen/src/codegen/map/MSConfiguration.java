@@ -30,10 +30,9 @@ import org.jgap.event.*;
  * @author Jonah
  * modified 2015
  */
+@SuppressWarnings("serial")
 public class MSConfiguration
     extends Configuration implements ICloneable {
-  /** String containing the CVS revision. Read out via reflection!*/
-  private final static String CVS_REVISION = "$Revision: 1.26 $";
 
   public MSConfiguration() {
     this("","");

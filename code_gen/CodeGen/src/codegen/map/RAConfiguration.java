@@ -13,8 +13,6 @@ package codegen.map;
 import org.jgap.*;
 import org.jgap.impl.*;
 import org.jgap.util.*;
-import org.jgap.audit.EvolutionMonitor;
-import org.jgap.audit.IEvolutionMonitor;
 import org.jgap.event.*;
 
 import codegen.sw.*;
@@ -33,10 +31,9 @@ import codegen.sw.*;
  * @author Jonah
  * modified 2015
  */
+@SuppressWarnings("serial")
 public class RAConfiguration
     extends Configuration implements ICloneable {
-  /** String containing the CVS revision. Read out via reflection!*/
-  private final static String CVS_REVISION = "$Revision: 1.26 $";
 
   Application app;
   public RAConfiguration(String name, Application app){

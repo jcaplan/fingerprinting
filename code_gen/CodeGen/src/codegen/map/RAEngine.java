@@ -1,13 +1,10 @@
 package codegen.map;
 
-import java.io.IOException;
-import java.util.Random;
 
 import org.jgap.*;
 
 import codegen.hw.*;
 import codegen.sw.*;
-import codegen.util.*;
 
 public class RAEngine {
 	

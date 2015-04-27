@@ -2,7 +2,6 @@ package codegen.map;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
