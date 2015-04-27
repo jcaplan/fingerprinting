@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import codegen.map.RAGene;
 import codegen.util.Qsort;
@@ -231,56 +230,5 @@ public class Application {
 		cmd = "rm " + fileName + ".pdf";
 		p = Runtime.getRuntime().exec(cmd);
 	}
-
-	public static void main(String[] args) throws IOException,
-			InterruptedException {
-		Application a = new Application();
-		// Task t1 = new Task("firstTask");
-		// Task t2 = new Task();
-		// Task t3 = new Task("print");
-		// Task t4 = new Task();
-		// Task t5 = new Task(true);
-		// Task t6 = new Task(true);
-		// t2.critical = true;
-		// a.addTask(t1);
-		// a.addTask(t2);
-		// a.addTask(t3);
-		// a.addTask(t4);
-		// a.addTask(t5);
-		// a.addTask(t6);
-		// a.setTaskConnection(t1, t2);
-		// a.setTaskConnection(t2, t3);
-		// a.setTaskConnection(t3, t4);
-		// a.setTaskConnection(t3, t5);
-		// a.setTaskConnection(t3, t6);
-		// a.setTaskConnection(t5, t4);
-		// a.setTaskConnection(t6, t4);
-
-		// Digraph g = DigraphGenerator.simple(12,20);
-		// Task t[] = new Task[12];
-		// for(int i = 0; i < 12; i++){
-		// t[i] = new Task();
-		// if(i%3 == 0)
-		// t[i].critical = true;
-		// a.addTask(t[i]);
-		// }
-		//
-		// for(int i = 0; i < 12; i++){
-		// for(int j : g.adj(i)) {
-		// a.setTaskConnection(t[i], t[j]);
-		// }
-		// }
-
-		
-		DigraphGen g = new DigraphGen(1, 5, 6, 0.3, 0.25);
-		g.buildGraph(a);
-		a.build();
-		a.getGraphs("app");
-		a.transformationAllTasks();
-		a.getGraphs("appT");
-//		a.cleanTransformation();
-//		a.getGraphs("appC");
-	}
-
 
 }

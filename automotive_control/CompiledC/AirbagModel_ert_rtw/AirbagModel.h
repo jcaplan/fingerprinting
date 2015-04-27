@@ -72,22 +72,22 @@ struct tag_RTM_AirbagModel_T {
 };
 
 /* Imported (extern) block signals */
-extern real_T ab_sensor_displacement;  /* '<Root>/Discrete-Time Integrator1' */
-extern real_T ab_force;                /* '<Root>/Force' */
+real_T ab_sensor_displacement;  /* '<Root>/Discrete-Time Integrator1' */
+real_T ab_force;                /* '<Root>/Force' */
 
 /* Block parameters (auto storage) */
-extern P_AirbagModel_T AirbagModel_P;
+P_AirbagModel_T AirbagModel_P;
 
 /* Block states (auto storage) */
-extern DW_AirbagModel_T AirbagModel_DW;
+DW_AirbagModel_T AirbagModel_DW;
 
 /* Model entry point functions */
-extern void AirbagModel_initialize(void);
-extern void AirbagModel_step(void);
-extern void AirbagModel_terminate(void);
+void AirbagModel_initialize(void);
+void AirbagModel_step(void);
+void AirbagModel_terminate(void);
 
 /* Real-time Model object */
-extern RT_MODEL_AirbagModel_T *const AirbagModel_M;
+RT_MODEL_AirbagModel_T *const AirbagModel_M;
 
 /*-
  * The generated code includes comments that allow you to trace directly

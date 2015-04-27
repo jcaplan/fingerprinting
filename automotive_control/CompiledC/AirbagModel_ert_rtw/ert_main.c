@@ -81,10 +81,10 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep();
    */
-  printf("Warning: The simulation will run forever. "
-         "Generated ERT main won't simulate model step behavior. "
-         "To change this behavior select the 'MAT-file logging' option.\n");
-  fflush((NULL));
+  // printf("Warning: The simulation will run forever. "
+  //        "Generated ERT main won't simulate model step behavior. "
+  //        "To change this behavior select the 'MAT-file logging' option.\n");
+  // fflush((NULL));
   while (rtmGetErrorStatus(AirbagModel_M) == (NULL)) {
     /*  Perform other application tasks here */
   }
