@@ -1,0 +1,14 @@
+#TeXlipse project settings
+#Tue Apr 28 23:58:31 EDT 2015
+markTmpDer=true
+builderNum=2
+outputDir=
+makeIndSty=
+bibrefDir=
+outputFormat=pdf
+tempDir=tmp
+mainTexFile=codegen.tex
+outputFile=codegen.pdf
+langSpell=
+markDer=true
+srcDir=

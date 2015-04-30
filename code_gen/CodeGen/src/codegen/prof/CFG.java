@@ -1,11 +1,14 @@
 package codegen.prof;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import javax.management.RuntimeErrorException;
+
+import codegen.prof.BasicBlock.bbType;
+import codegen.sw.Task;
 
 public class CFG {
 
@@ -42,6 +45,23 @@ public class CFG {
 		}
 	}
 	
+	public void printDotCFG(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
+		PrintWriter writer = new PrintWriter(fileName + ".dot", "UTF-8");
+		writer.println(getDotCFG());
+		writer.close();
+	}
+	
+	private String getDotCFG() {
+		String s = "digraph d {\n";
+		s += "size=\"8.5,7\";\n\n";
+//		s += "splines=ortho\n;";
+		for (Function f : fList) {
+			s += f.printDot();
+		}
+		s += "}";
+		return s;
+	}
+
 	public void printFunctionBounds(){
 		for(Function f : fList){
 			System.out.println("Function " + f.label + "; start address: " + f.getStartAddressHex() +
@@ -49,47 +69,7 @@ public class CFG {
 		}
 	}
 
-	void getFunctions(String filename) throws IOException {
-
-		FileReader fr = new FileReader(filename);
-		BufferedReader reader = new BufferedReader(fr);
-
-		// initialize the reader and cfg
-		reader = new BufferedReader(fr);
-		// Skip the symboltable
-		while (!reader.readLine().contains("Disassembly of section .text:"))
-			;
-		// Parse each line
-		String line;
-
-		boolean functionStarted = false;
-		while ((line = reader.readLine()) != null) {
-			//If you haven't found a function name yet
-			if (functionStarted == false) {
-				String[] tokens = line.split("[ \t]+");
-				// extract function name
-				if (tokens.length == 2) {
-					Pattern pattern = Pattern.compile("<(.*)>:");
-					Matcher matcher = pattern.matcher(tokens[1]);
-					if (matcher.find()) {
-						functionStarted = true;
-						addFunction(Integer.parseInt(tokens[0],16),
-								matcher.group(1));
-					}
-				}
-			} else { // Inside function body
-				// Blank line signals end of function
-				if (line.equals("")) {
-					// empty line means that the function is over
-					functionStarted = false;
-				} else {
-					// Add line to function code
-					getLastFunction().addLine(line);
-				}
-			}
-		}
-		reader.close();
-	}
+	
 
 	public void build() {
 		//Identify basic blocks
@@ -97,10 +77,76 @@ public class CFG {
 			f.buildBlocks();
 		}
 		
-		//Calls, only have to search functions
-		//branches need to search all the functions
+		Function mainF = getFunction("main");
 		
-		//do returns on separate pass once branches and calls are all done
+		//Build the tree from main, this should naturally prune the tree
+		//of all the extra functions 
+		buildCallTree(mainF);
+		
+		//Delete functions not part of the main call tree
+		//buildCallTree is a recursive function so pruning must 
+		//be done separately afterwards
+		pruneCFG(mainF);
+		
+		//Do branches after pruning to avoid weird jmp instructions
+		//for the preamble stuff
+		for(Function f: fList){
+			f.splitBasicBlock();
+		}
+		//TODO
+		
+		//Connect basic blocks 
+		for(Function f : fList){
+			f.connectBlocks();
+		}
+		
+		
+		//Identify loops
+		for(Function f : fList){
+			f.findLoops();
+		}
+		
+	}
 
+	public void printLoops(){
+		for(Function f : fList){
+			f.printLoops();
+		}
+	}
+
+	private void pruneCFG(Function root) {
+		ArrayList<Function> rootList = root.getAllCalledFunctions();
+		ArrayList<Function> removeList = new ArrayList<>();
+		for(Function f : fList){
+			if(!rootList.contains(f)){
+				removeList.add(f);
+			}
+		}
+		
+		fList.removeAll(removeList);
+	}
+
+	private void buildCallTree(Function root) {
+		for(BasicBlock bb : root.bbList){
+			if(bb.type == bbType.CALL){
+				//Need to establish a reference to callee function
+				//has to be done at this level
+				String[] ops = bb.getCalleeString();
+					bb.callee = getFunction(ops[1]);	
+					buildCallTree(bb.callee);
+			} else if(bb.type == bbType.JUMP){
+				String[] ops = bb.getJumpDest();
+				bb.callee = getFunction(ops[1]);
+			}
+		}
+	}
+
+	private Function getFunction(String name) {
+		for(Function f : fList){
+			if(f.equals(name)){
+				return f;
+			}
+		}
+		throw new RuntimeErrorException(new Error(), "Function not found in table");
 	}
 }

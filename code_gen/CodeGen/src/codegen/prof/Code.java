@@ -1,5 +1,12 @@
 package codegen.prof;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.management.RuntimeErrorException;
+
+import codegen.prof.BasicBlock.bbType;
+
 
 public class Code {
 
@@ -9,11 +16,13 @@ public class Code {
 	String[] operands;
 	CodeType type;
 	static enum CodeType {
-		callT,
-		indirectCallT,
-		returnT,
-		branchT,
-		otherT
+		CALL,
+		INDIRECTCALL,
+		JUMP,
+		RETURN,
+		COND_BRANCH,
+		UNCOND_BRANCH,
+		OTHER
 	};
 	public Code(String line) {
 		this.line = line;
@@ -30,17 +39,46 @@ public class Code {
 		}
 		
 		if(instruction.equals("call")){
-			type = CodeType.callT;
+			type = CodeType.CALL;
+			String[] ops = {operands[0], tokens[5]};
+			operands = ops;
+			operands[1] = parseFuncName(operands[1]);
 		} else if(instruction.equals("callr")){
-			type = CodeType.indirectCallT;
+			type = CodeType.INDIRECTCALL;
 		} else if(instruction.equals("ret")){	
-			type = CodeType.returnT;
-		} else if(instruction.startsWith("b") ||
-				instruction.contains("jmp")){
-			type = CodeType.branchT;
+			type = CodeType.RETURN;
+		} else if(instruction.startsWith("b") &&
+				!instruction.equals("br")){
+			type = CodeType.COND_BRANCH;
+		} else if (instruction.equals("br")) {
+			type = CodeType.UNCOND_BRANCH;
+		} else if (instruction.equals("jmp")){
+			type = CodeType.JUMP;
+		} else if (instruction.equals("jmpi")){
+			type = CodeType.JUMP;
+			String[] ops = {operands[0], new String()};
+			operands = ops;
+			operands[1] = parseFuncName(tokens[5]);
 		} else {
-			type = CodeType.otherT;
+			type = CodeType.OTHER;
 		}
+	}
+	
+	private String parseFuncName(String name) {
+		Pattern pattern = Pattern.compile("<(.*)>");
+		Matcher matcher = pattern.matcher(name);
+		if (matcher.find()) {
+			return matcher.group(1);
+		}
+		return null;
+	}
+
+	public int getBranchDest(){
+		if(this.type != CodeType.COND_BRANCH &&
+				this.type != CodeType.UNCOND_BRANCH){
+			throw new RuntimeErrorException(new Error("Attempted to find a destination for non-branch basic block"));
+		}
+		return Integer.parseInt(operands[operands.length-1],16);
 	}
 	
 	@Override

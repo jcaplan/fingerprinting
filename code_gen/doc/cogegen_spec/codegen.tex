@@ -18,7 +18,7 @@
 % CONFIGURATION" section.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+ 
 %----------------------------------------------------------------------------------------
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
@@ -142,6 +142,9 @@ This tool will not initially be geared towards solving codesign problems. We wil
 
 This document will provide the specification for the currently supported hardware models, the platform built from these components currently under study, the application models for analysis of software requirements, the mapping procedure combining both hardware and software models to generate a schedule, and the abstract template requirements for code generation.
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Tool Structure}
 
 This key to success for this project in the given time frame is to leverage open source, take advantage of the wealth of prior work in the field from the 1990s in synchronous language design, and more current work on automated DSE and code generation. Furthermore, the wealth of generated code that describes the platform, as well as a very well structured RTOS uC/OS-II integrated into the BSP make the job of template development and hardware platform specification much easier. While the code can be a bit cumbersome to navigate for a human user because it is generated, this actually makes it much easier to parse for an automated process.
@@ -203,6 +206,8 @@ Figure \ref{f:tool_arch} depicts the tool architecture. From this figure we can 
 \caption{Timeline for development of main tool components}
 \label{f:gantt}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Hardware Model}
 Hardware models are specified using an object-oriented semantics. The system is divided into hierarchical levels that are interpreted using static scoping rules to aid in the specification of larger models. 
 
@@ -267,6 +272,9 @@ The fingerprint unit has the following features: maximum stack depth, statically
 
 \subsubsection{$\mu$TLB}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Application Model}
 \subsection{Synchronous Languages - Building off the past}
 
@@ -274,7 +282,14 @@ The fingerprint unit has the following features: maximum stack depth, statically
 Any data passed between tasks must be done through pointers. Functions will return void pointers to predetermined data structures. These pointers will be passed between tasks. If tasks cannot share the same memory space, then the size of the data structure must also be known and the data will be copied to the appropriate location.
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\section{Code Profiling}
+ 
+The disassembly of a simple benchmark that runs the main computation loop will be parsed to analyse code to estimate the WCET and maximum stack height of each critical task. All functions that are called by the critical task will be identified in order to partition code through linker script modifications, thus enabling the use of instruction scratchpads.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Application Mapping}
 
 The initial scheduling algorithm will be taken from Bolchini and  Miele \cite{bolchini2013reliability}. A genetic algorithm (GA) is used to explore the design space. The general details that follow on genetic algorithms are based on the overview in \cite{geatbx}.
@@ -324,6 +339,9 @@ Recovery only necessary in the case of correction. Detection implies no retry.
 
 Why? Application where delivering the wrong answer can be catastrophic but dropping a frame is acceptable (i.e. not sensitive to jitter)
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Code Generation}
 
 Code generation will be decomposed into several phases.
