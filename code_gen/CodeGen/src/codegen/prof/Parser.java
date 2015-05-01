@@ -38,7 +38,7 @@ public class Parser {
 					Matcher matcher = pattern.matcher(tokens[1]);
 					if (matcher.find()) {
 						functionStarted = true;
-						cfg.addFunction(Integer.parseInt(tokens[0],16),
+						getCfg().addFunction(Integer.parseInt(tokens[0],16),
 								matcher.group(1));
 					}
 				}
@@ -51,33 +51,45 @@ public class Parser {
 					// Add line to function code
 					//The method for parsing the individual line is 
 					//found in the Code class
-					cfg.getLastFunction().addLine(line);
+					getCfg().getLastFunction().addLine(line);
 				}
 			}
 		}
 		reader.close();
 	}
-	public void parse() throws IOException {
+	public CFG parse(String topName) throws IOException {
 	
-		cfg = new CFG();
+		setCfg(new CFG());
 
 		//Get functions and associated assembly code
 		parseFunctions(filename);
 
-		System.out.println(cfg);
-		cfg.build();
-		cfg.printFunctions();
+		System.out.println(getCfg());
+		getCfg().build(topName);
+		getCfg().printFunctions();
 
 //		System.out.println(cfg);
 //		cfg.printFunctionBounds();
-		cfg.printLoops();
-		cfg.printDotCFG("cfg");
-		
+		getCfg().printLoops();
+		getCfg().printDotCFG("cfg");
+		return cfg;
+	}
+
+	public CFG getCFG(){
+		return this.getCfg();
 	}
 
 
-	public static void main(String[] args) throws IOException {
-		Parser parser = new Parser("stacktest.objdump");
-		parser.parse();
+	public CFG getCfg() {
+		return cfg;
 	}
+
+	public void setCfg(CFG cfg) {
+		this.cfg = cfg;
+	}
+	
+//	public static void main(String[] args) throws IOException {
+//		Parser parser = new Parser("stacktest.objdump");
+//		parser.parse();
+//	}
 }

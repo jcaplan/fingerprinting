@@ -195,7 +195,25 @@ public class BasicBlock {
 			break;
 		
 		}
-		s += "\"];\n";
+		s += "\"";
+		if(type == bbType.JUMP && callee == null){
+			s += ", color=red";
+		}
+		if(predecessors.isEmpty()){
+			s += ", color=blue";
+		}
+				
+		s += "];\n";
+		
 		return s;
+	}
+
+	public int getStackSize() {
+		Code c = code.get(0); 
+		int size = 0;
+		if(c.instruction.equals("addi") && c.operands[1].equals("sp")){
+			size = -Integer.parseInt(c.operands[2]);
+		}
+		return size;
 	}
 }

@@ -119,6 +119,7 @@ public class Function {
 		
 		//block 2 is the same type as the old one
 		newBlock2.type = bb.type;
+		newBlock2.callee = bb.callee;
 		
 		int index = bbList.indexOf(bb);
 		bbList.remove(bb);
@@ -184,7 +185,7 @@ public class Function {
 		ArrayList<Function> fList = new ArrayList<>();
 		fList.add(this);
 		for (BasicBlock bb : bbList) {
-			if (bb.type == bbType.CALL) {
+			if (bb.type == bbType.CALL && bb.callee != this) {
 				fList.add(bb.callee);
 				for (Function f : bb.callee.getAllCalledFunctions()) {
 					if (!fList.contains(f)) {
@@ -256,7 +257,7 @@ public class Function {
 		
 		ArrayList<BasicBlock> blocks = new ArrayList<>(bbList);
 		s += "\tnode_" + bbList.get(0).getStartAddressHex();
-		s += " [color = blue]\n";
+		s += " [peripheries=2]\n";
 		for(Loop l : loops){
 			blocks.removeAll(l.body);
 			s += l.getDotGraphString();
@@ -374,4 +375,6 @@ public class Function {
 		}
 		
 	}
+
+
 }

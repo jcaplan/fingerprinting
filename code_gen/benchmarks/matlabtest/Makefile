@@ -5,4 +5,4 @@ all: $(APP_NAME)
 	@echo "Build Complete"
 
 $(APP_NAME): $(OBJ)
-	@$(CC) $(OBJ) -fomit-frame-pointer -ggdb -o $(APP_NAME)
+	@$(CC) $(OBJ) -O2 -fomit-frame-pointer -ggdb -pie -o $(APP_NAME)

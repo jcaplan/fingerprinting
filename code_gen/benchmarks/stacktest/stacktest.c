@@ -19,6 +19,7 @@ int main() {
 	int x[52];
 	int i;
 	for(i = 0; i < 52; i++){
+		int y[30];
 		x[i] = f();
 	}
 

@@ -8,7 +8,6 @@ import java.util.*;
 import javax.management.RuntimeErrorException;
 
 import codegen.prof.BasicBlock.bbType;
-import codegen.sw.Task;
 
 public class CFG {
 
@@ -71,13 +70,13 @@ public class CFG {
 
 	
 
-	public void build() {
+	public void build(String fName) {
 		//Identify basic blocks
 		for(Function f : fList){
 			f.buildBlocks();
 		}
 		
-		Function mainF = getFunction("main");
+		Function mainF = getFunction(fName);
 		
 		//Build the tree from main, this should naturally prune the tree
 		//of all the extra functions 
@@ -133,15 +132,18 @@ public class CFG {
 				//has to be done at this level
 				String[] ops = bb.getCalleeString();
 					bb.callee = getFunction(ops[1]);	
-					buildCallTree(bb.callee);
+					if(!bb.callee.equals(root))
+						buildCallTree(bb.callee);
 			} else if(bb.type == bbType.JUMP){
 				String[] ops = bb.getJumpDest();
-				bb.callee = getFunction(ops[1]);
+				if(ops.length > 1){
+					bb.callee = getFunction(ops[1]);
+				}
 			}
 		}
 	}
 
-	private Function getFunction(String name) {
+	public Function getFunction(String name) {
 		for(Function f : fList){
 			if(f.equals(name)){
 				return f;
