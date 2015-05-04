@@ -1,11 +1,15 @@
 /*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
  * File: TractionControl.h
  *
  * Code generated for Simulink model 'TractionControl'.
  *
- * Model version                  : 1.6
- * Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
- * C/C++ source code generated on : Sun Mar 22 13:37:13 2015
+ * Model version                  : 1.8
+ * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
+ * C/C++ source code generated on : Mon May  4 13:55:05 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ASIC/FPGA->ASIC/FPGA
@@ -19,9 +23,10 @@
 #define RTW_HEADER_TractionControl_h_
 #include "rtwtypes.h"
 #include "multiword_types.h"
-#include <stddef.h>
+#include <string.h>
 #ifndef TractionControl_COMMON_INCLUDES_
 # define TractionControl_COMMON_INCLUDES_
+#include "rtwtypes.h"
 #endif                                 /* TractionControl_COMMON_INCLUDES_ */
 
 /* Shared type includes */
@@ -39,6 +44,17 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_TractionControl_T RT_MODEL_TractionControl_T;
 
+/* External inputs (root inport signals with auto storage) */
+typedef struct {
+  real_T CurrentSpeedPoweredAxle;      /* '<Root>/Current Speed(Powered Axle)' */
+  real_T SpeedUnpoweredAxle;           /* '<Root>/Speed(Unpowered Axle)' */
+} ExtU_TractionControl_T;
+
+/* External outputs (root outports fed by signals with auto storage) */
+typedef struct {
+  real_T ControlFeedback;              /* '<Root>/Control Feedback' */
+} ExtY_TractionControl_T;
+
 /* Parameters (auto storage) */
 struct P_TractionControl_T_ {
   real_T CompareToConstant_const;      /* Mask Parameter: CompareToConstant_const
@@ -52,23 +68,26 @@ typedef struct P_TractionControl_T_ P_TractionControl_T;
 /* Real-time Model Data Structure */
 struct tag_RTM_TractionControl_T {
   const char_T * volatile errorStatus;
+
+  /*
+   * ModelData:
+   * The following substructure contains information regarding
+   * the data used in the model.
+   */
+  struct {
+    P_TractionControl_T *defaultParam;
+  } ModelData;
 };
 
-/* Imported (extern) block signals */
-extern real_T traction_control_feedback;/* '<Root>/Product' */
-extern real_T current_speed_powered;   /* '<Root>/Current Speed(Powered Axle)' */
-extern real_T current_speed_unpowered; /* '<Root>/Speed(Unpowered Axle)' */
-
-/* Block parameters (auto storage) */
-extern P_TractionControl_T TractionControl_P;
-
 /* Model entry point functions */
-extern void TractionControl_initialize(void);
-extern void TractionControl_step(void);
-extern void TractionControl_terminate(void);
-
-/* Real-time Model object */
-extern RT_MODEL_TractionControl_T *const TractionControl_M;
+extern void TractionControl_initialize(RT_MODEL_TractionControl_T *const
+  TractionControl_M, ExtU_TractionControl_T *TractionControl_U,
+  ExtY_TractionControl_T *TractionControl_Y);
+extern void TractionControl_step(RT_MODEL_TractionControl_T *const
+  TractionControl_M, ExtU_TractionControl_T *TractionControl_U,
+  ExtY_TractionControl_T *TractionControl_Y);
+extern void TractionControl_terminate(RT_MODEL_TractionControl_T *const
+  TractionControl_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly

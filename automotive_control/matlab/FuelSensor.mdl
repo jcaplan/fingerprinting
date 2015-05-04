@@ -1,30 +1,27 @@
 Model {
   Name			  "FuelSensor"
-  Version		  8.3
+  Version		  8.5
   MdlSubVersion		  0
-  SavedCharacterEncoding  "ISO-8859-1"
+  SavedCharacterEncoding  "UTF-8"
   GraphicalInterface {
     NumRootInports	    1
     Inport {
-      BusObject		      ""
-      SignalName	      "fs_fuel_level"
       Name		      "Fuel Level"
+      BusObject		      ""
     }
     NumRootOutports	    2
     Outport {
+      Name		      "Fuel Display"
       BusObject		      ""
       BusOutputAsStruct	      "off"
-      SignalName	      "fs_fuel_level"
-      Name		      "Fuel Display"
     }
     Outport {
+      Name		      "Warning Light"
       BusObject		      ""
       BusOutputAsStruct	      "off"
-      SignalName	      "fs_warning_light"
-      Name		      "Warning Light"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.6"
+    ComputedModelVersion    "1.9"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -39,9 +36,8 @@ Model {
       PropName		      "mdlProps"
     }
   }
-  SaveDefaultBlockParams  on
   ScopeRefreshTime	  0.035000
-  OverrideScopeRefreshTime on
+  OverrideScopeRefreshTime off
   DisableAllScopes	  off
   DataTypeOverride	  "UseLocalSettings"
   DataTypeOverrideAppliesTo "AllNumericTypes"
@@ -58,7 +54,7 @@ Model {
       $ObjectID		      3
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [409.0, 189.0, 808.0, 527.0]
+      Location		      [824.0, 392.0, 808.0, 527.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		4
@@ -82,7 +78,7 @@ Model {
 	IsActive		[1]
 	ViewObjType		"SimulinkTopLevel"
 	LoadSaveID		"0"
-	Extents			[774.0, 357.0]
+	Extents			[768.0, 354.0]
 	ZoomFactor		[1.0]
 	Offset			[0.0, 0.0]
       }
@@ -92,11 +88,11 @@ Model {
   Creator		  "gwilli10"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
-  LastModifiedBy	  "anthonydelage"
+  LastModifiedBy	  "jonah.caplan"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Sun Mar 22 14:03:56 2015"
-  RTWModifiedTimeStamp	  348933756
-  ModelVersionFormat	  "1.%<AutoIncrement:6>"
+  LastModifiedDate	  "Mon May 04 13:59:33 2015"
+  RTWModifiedTimeStamp	  352648725
+  ModelVersionFormat	  "1.%<AutoIncrement:9>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -114,6 +110,7 @@ Model {
   SortedOrder		  off
   ExecutionContextIcon	  off
   ShowLinearizationAnnotations on
+  ShowMarkup		  on
   BlockNameDataTip	  off
   BlockParametersDataTip  off
   BlockDescriptionStringDataTip	off
@@ -171,6 +168,9 @@ Model {
   CovSFcnEnable		  off
   CovBoundaryAbsTol	  0.000010
   CovBoundaryRelTol	  0.010000
+  CovUseTimeInterval	  off
+  CovStartTime		  0
+  CovStopTime		  0
   ExtModeBatchMode	  off
   ExtModeEnableFloating	  on
   ExtModeTrigType	  "manual"
@@ -192,7 +192,6 @@ Model {
   ExtModeSkipDownloadWhenConnect off
   ExtModeLogAll		  on
   ExtModeAutoUpdateStatusClock on
-  BufferReuse		  on
   ShowModelReferenceBlockVersion off
   ShowModelReferenceBlockIO off
   Array {
@@ -200,13 +199,13 @@ Model {
     Dimension		    1
     Simulink.ConfigSet {
       $ObjectID		      8
-      Version		      "1.14.2"
+      Version		      "1.15.0"
       Array {
 	Type			"Handle"
 	Dimension		9
 	Simulink.SolverCC {
 	  $ObjectID		  9
-	  Version		  "1.14.2"
+	  Version		  "1.15.0"
 	  StartTime		  "0.0"
 	  StopTime		  "10.0"
 	  AbsTol		  "auto"
@@ -241,7 +240,7 @@ Model {
 	}
 	Simulink.DataIOCC {
 	  $ObjectID		  10
-	  Version		  "1.14.2"
+	  Version		  "1.15.0"
 	  Decimation		  "1"
 	  ExternalInput		  "[t, u]"
 	  FinalStateName	  "xFinal"
@@ -274,12 +273,12 @@ Model {
 	}
 	Simulink.OptimizationCC {
 	  $ObjectID		  11
-	  Version		  "1.14.2"
+	  Version		  "1.15.0"
 	  BlockReduction	  on
 	  BooleanDataType	  on
 	  ConditionallyExecuteInputs on
 	  InlineParams		  off
-	  UseIntDivNetSlope	  off
+	  UseDivisionForNetSlopeComputation "off"
 	  UseFloatMulNetSlope	  off
 	  DefaultUnderspecifiedDataType	"single"
 	  UseSpecifiedMinMax	  off
@@ -296,15 +295,13 @@ Model {
 	  EnableMemcpy		  on
 	  MemcpyThreshold	  64
 	  PassReuseOutputArgsAs	  "Structure reference"
+	  PassReuseOutputArgsThreshold 12
 	  ExpressionDepthLimit	  128
-	  FoldNonRolledExpr	  on
 	  LocalBlockOutputs	  on
 	  RollThreshold		  5
-	  SystemCodeInlineAuto	  off
 	  StateBitsets		  off
 	  DataBitsets		  off
 	  ActiveStateOutputEnumStorageType "Native Integer"
-	  UseTempVars		  off
 	  ZeroExternalMemoryAtStartup on
 	  ZeroInternalMemoryAtStartup on
 	  InitFltsAndDblsToZero	  off
@@ -315,13 +312,12 @@ Model {
 	  LifeSpan		  "1"
 	  MaxStackSize		  "Inherit from target"
 	  BufferReusableBoundary  on
-	  SimCompilerOptimization "Off"
+	  SimCompilerOptimization "off"
 	  AccelVerboseBuild	  off
-	  ParallelExecutionInRapidAccelerator on
 	}
 	Simulink.DebuggingCC {
 	  $ObjectID		  12
-	  Version		  "1.14.2"
+	  Version		  "1.15.0"
 	  RTPrefix		  "error"
 	  ConsistencyChecking	  "none"
 	  ArrayBoundsChecking	  "none"
@@ -336,7 +332,7 @@ Model {
 	  SaveWithParameterizedLinksMsg	"warning"
 	  CheckSSInitialOutputMsg on
 	  UnderspecifiedInitializationDetection	"Simplified"
-	  MergeDetectMultiDrivingBlocksExec "none"
+	  MergeDetectMultiDrivingBlocksExec "error"
 	  CheckExecutionContextPreStartOutputMsg off
 	  CheckExecutionContextRuntimeOutputMsg	off
 	  SignalResolutionControl "UseLocalSettings"
@@ -376,17 +372,15 @@ Model {
 	  UnconnectedOutputMsg	  "warning"
 	  UnconnectedLineMsg	  "warning"
 	  SFcnCompatibilityMsg	  "none"
-	  FrameProcessingCompatibilityMsg "warning"
+	  FrameProcessingCompatibilityMsg "error"
 	  UniqueDataStoreMsg	  "none"
 	  BusObjectLabelMismatch  "warning"
 	  RootOutportRequireBusObject "warning"
 	  AssertControl		  "UseLocalSettings"
-	  EnableOverflowDetection off
 	  ModelReferenceIOMsg	  "none"
 	  ModelReferenceMultiInstanceNormalModeStructChecksumCheck "error"
 	  ModelReferenceVersionMismatchMessage "none"
 	  ModelReferenceIOMismatchMessage "none"
-	  ModelReferenceCSMismatchMessage "none"
 	  UnknownTsInhSupMsg	  "warning"
 	  ModelReferenceDataLoggingMessage "warning"
 	  ModelReferenceSymbolNameMessage "warning"
@@ -398,7 +392,6 @@ Model {
 	  StrictBusMsg		  "ErrorLevel1"
 	  BusNameAdapt		  "WarnAndRepair"
 	  NonBusSignalsTreatedAsBus "none"
-	  LoggingUnavailableSignals "error"
 	  BlockIODiagnostic	  "none"
 	  SFUnusedDataAndEventsDiag "warning"
 	  SFUnexpectedBacktrackingDiag "warning"
@@ -408,10 +401,12 @@ Model {
 	  SFUnconditionalTransitionShadowingDiag "warning"
 	  SFUndirectedBroadcastEventsDiag "warning"
 	  SFTransitionActionBeforeConditionDiag	"warning"
+	  SFOutputUsedAsStateInMooreChartDiag "error"
+	  IntegerSaturationMsg	  "warning"
 	}
 	Simulink.HardwareCC {
 	  $ObjectID		  13
-	  Version		  "1.14.2"
+	  Version		  "1.15.0"
 	  ProdBitPerChar	  8
 	  ProdBitPerShort	  16
 	  ProdBitPerInt		  32
@@ -443,7 +438,6 @@ Model {
 	  TargetIntDivRoundTo	  "Undefined"
 	  TargetEndianess	  "Unspecified"
 	  TargetWordSize	  32
-	  TargetTypeEmulationWarnSuppressLevel 0
 	  TargetPreprocMaxBitsSint 32
 	  TargetPreprocMaxBitsUint 32
 	  TargetHWDeviceType	  "Specified"
@@ -452,7 +446,7 @@ Model {
 	}
 	Simulink.ModelReferenceCC {
 	  $ObjectID		  14
-	  Version		  "1.14.2"
+	  Version		  "1.15.0"
 	  UpdateModelReferenceTargets "IfOutOfDateOrStructuralChange"
 	  CheckModelReferenceTargetMessage "error"
 	  EnableParallelModelReferenceBuilds off
@@ -467,13 +461,10 @@ Model {
 	}
 	Simulink.SFSimCC {
 	  $ObjectID		  15
-	  Version		  "1.14.2"
-	  SFSimEnableDebug	  on
+	  Version		  "1.15.0"
 	  SFSimOverflowDetection  on
 	  SFSimEcho		  on
-	  SimBlas		  on
 	  SimCtrlC		  on
-	  SimExtrinsic		  on
 	  SimIntegrity		  on
 	  SimUseLocalCustomCode	  off
 	  SimParseCustomCode	  on
@@ -483,10 +474,10 @@ Model {
 	Simulink.RTWCC {
 	  $BackupClass		  "Simulink.RTWCC"
 	  $ObjectID		  16
-	  Version		  "1.14.2"
+	  Version		  "1.15.0"
 	  SystemTargetFile	  "ert.tlc"
 	  TLCOptions		  ""
-	  GenCodeOnly		  off
+	  GenCodeOnly		  on
 	  MakeCommand		  "make_rtw"
 	  GenerateMakefile	  on
 	  PackageGeneratedCodeAndArtifacts off
@@ -502,11 +493,6 @@ Model {
 	  TLCDebug		  off
 	  TLCCoverage		  off
 	  TLCAssert		  off
-	  ProcessScriptMode	  "Default"
-	  ConfigurationMode	  "Optimized"
-	  ProcessScript		  "ert_make_rtw_hook"
-	  ConfigurationScript	  ""
-	  ConfigAtBuild		  off
 	  RTWUseLocalCustomCode	  off
 	  RTWUseSimCustomCode	  off
 	  CustomSourceCode	  ""
@@ -529,28 +515,25 @@ Model {
 	  SILDebugging		  off
 	  TargetLang		  "C"
 	  IncludeBusHierarchyInRTWFileBlockHierarchyMap	off
-	  IncludeERTFirstTime	  off
 	  GenerateTraceInfo	  off
 	  GenerateTraceReport	  off
 	  GenerateTraceReportSl	  off
 	  GenerateTraceReportSf	  off
 	  GenerateTraceReportEml  off
-	  GenerateCodeInfo	  off
 	  GenerateWebview	  off
 	  GenerateCodeMetricsReport off
 	  GenerateCodeReplacementReport	off
-	  RTWCompilerOptimization "Off"
+	  GenerateMissedCodeReplacementReport off
+	  RTWCompilerOptimization "off"
 	  RTWCustomCompilerOptimizations ""
 	  CheckMdlBeforeBuild	  "Off"
-	  CustomRebuildMode	  "OnUpdate"
-	  DataInitializer	  ""
 	  SharedConstantsCachingThreshold 1024
 	  Array {
 	    Type		    "Handle"
 	    Dimension		    2
 	    Simulink.CodeAppCC {
 	      $ObjectID		      17
-	      Version		      "1.14.2"
+	      Version		      "1.15.0"
 	      ForceParamTrailComments off
 	      GenerateComments	      on
 	      CommentStyle	      "Auto"
@@ -593,7 +576,7 @@ Model {
 	    Simulink.ERTTargetCC {
 	      $BackupClass	      "Simulink.TargetCC"
 	      $ObjectID		      18
-	      Version		      "1.14.2"
+	      Version		      "1.15.0"
 	      TargetFcnLib	      "ansi_tfl_table_tmw.mat"
 	      TargetLibSuffix	      ""
 	      TargetPreCompLibLocation ""
@@ -605,6 +588,7 @@ Model {
 	      ERTMultiwordLength      256
 	      MultiwordLength	      2048
 	      GenerateFullHeader      on
+	      InferredTypesCompatibility off
 	      GenerateSampleERTMain   on
 	      GenerateTestInterfaces  off
 	      ModelReferenceCompliant on
@@ -622,22 +606,23 @@ Model {
 	      SupportAbsoluteTime     on
 	      LogVarNameModifier      "rt_"
 	      MatFileLogging	      off
-	      MultiInstanceERTCode    off
-	      CodeInterfacePackaging  "Nonreusable function"
+	      MultiInstanceERTCode    on
+	      CodeInterfacePackaging  "Reusable function"
 	      SupportNonFinite	      on
 	      SupportComplex	      on
 	      PurelyIntegerCode	      off
 	      SupportContinuousTime   off
 	      SupportNonInlinedSFcns  off
 	      SupportVariableSizeSignals off
-	      EnableShiftOperators    on
 	      ParenthesesLevel	      "Nominal"
+	      CastingMode	      "Nominal"
 	      MATLABClassNameForMDSCustomization "Simulink.SoftwareTarget.ERTCustomization"
 	      ModelStepFunctionPrototypeControlCompliant on
 	      CPPClassGenCompliant    on
 	      AutosarCompliant	      off
 	      GRTInterface	      off
 	      GenerateAllocFcn	      off
+	      GenerateSharedConstants on
 	      GenerateASAP2	      off
 	      ExtMode		      off
 	      ExtModeTransport	      0
@@ -650,7 +635,7 @@ Model {
 	      TargetOS		      "BareBoardExample"
 	      MultiInstanceErrorCode  "Error"
 	      RateGroupingCode	      on
-	      RootIOFormat	      "Individual arguments"
+	      RootIOFormat	      "Structure reference"
 	      RTWCAPISignals	      off
 	      RTWCAPIParams	      off
 	      RTWCAPIStates	      off
@@ -673,6 +658,7 @@ Model {
 	      ConvertIfToSwitch	      on
 	      PreserveExternInFcnDecls on
 	      SuppressUnreachableDefaultCases off
+	      EnableSignedLeftShifts  on
 	      IndentStyle	      "K&R"
 	      IndentSize	      "2"
 	      EnableUserReplacementTypes off
@@ -695,6 +681,17 @@ Model {
 		}
 		PropName		"ReplacementTypes"
 	      }
+	      MaxIdInt32	      "MAX_int32_T"
+	      MinIdInt32	      "MIN_int32_T"
+	      MaxIdUint32	      "MAX_uint32_T"
+	      MaxIdInt16	      "MAX_int16_T"
+	      MinIdInt16	      "MIN_int16_T"
+	      MaxIdUint16	      "MAX_uint16_T"
+	      MaxIdInt8		      "MAX_int8_T"
+	      MinIdInt8		      "MIN_int8_T"
+	      MaxIdUint8	      "MAX_uint8_T"
+	      BooleanTrueId	      "true"
+	      BooleanFalseId	      "false"
 	      MemSecPackage	      "--- None ---"
 	      MemSecDataConstants     "Default"
 	      MemSecDataIO	      "Default"
@@ -709,7 +706,7 @@ Model {
 	}
 	hdlcoderui.hdlcc {
 	  $ObjectID		  19
-	  Version		  "1.14.2"
+	  Version		  "1.15.0"
 	  Description		  "HDL Coder custom configuration component"
 	  Name			  "HDL Coder"
 	  Array {
@@ -724,8 +721,8 @@ Model {
       }
       Name		      "Configuration"
       ExtraOptions	      "-aGenerateTraceInfo=0 -aIgnoreTestpoints=0 "
-      CurrentDlgPage	      "Code Generation/Memory Sections"
-      ConfigPrmDlgPosition     [ 204, 103, 1057, 658 ] 
+      CurrentDlgPage	      "Code Generation/Interface"
+      ConfigPrmDlgPosition     [ 0, 0, 1088, 700 ] 
     }
     PropName		    "ConfigurationSets"
   }
@@ -842,7 +839,7 @@ Model {
   }
   System {
     Name		    "FuelSensor"
-    Location		    [409, 189, 1217, 716]
+    Location		    [824, 392, 1632, 919]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -864,52 +861,6 @@ Model {
       Position		      [210, 128, 240, 142]
       ZOrder		      5
       IconDisplay	      "Port number"
-      Port {
-	PortNumber		1
-	Name			"fs_fuel_level"
-	Object {
-	  $PropName		  "SignalObject"
-	  $ObjectID		  21
-	  $ClassName		  "Simulink.Signal"
-	  Simulink.CoderInfo {
-	    $PropName		    "CoderInfo"
-	    $ObjectID		    22
-	    StorageClass	    "ImportedExtern"
-	    Alignment		    -1
-	    CSCPackageName	    "Simulink"
-	    ParameterOrSignal	    "Signal"
-	    CustomStorageClass	    "Default"
-	    SimulinkCSC.AttribClass_Simulink_Default {
-	      $PropName		      "CustomAttributes"
-	      $ObjectID		      23
-	    }
-	  }
-	  Description		  ""
-	  DataType		  "auto"
-	  Min			  []
-	  Max			  []
-	  DocUnits		  ""
-	  Dimensions		  [-1.0]
-	  DimensionsMode	  "auto"
-	  Complexity		  "auto"
-	  SampleTime		  [-1.0]
-	  SamplingMode		  "auto"
-	  InitialValue		  ""
-	  Simulink.LoggingInfo {
-	    $PropName		    "LoggingInfo"
-	    $ObjectID		    24
-	    DataLogging		    0
-	    NameMode		    0
-	    LoggingName		    ""
-	    DecimateData	    0
-	    Decimation		    2
-	    LimitDataPoints	    0
-	    MaxPoints		    5000
-	  }
-	}
-	RTWStorageClass		"Auto"
-	DataLoggingNameMode	"SignalName"
-      }
     }
     Block {
       BlockType		      UnitDelay
@@ -919,52 +870,6 @@ Model {
       ZOrder		      2
       InputProcessing	      "Elements as channels (sample based)"
       SampleTime	      "-1"
-      Port {
-	PortNumber		1
-	Name			"fs_warning_light"
-	Object {
-	  $PropName		  "SignalObject"
-	  $ObjectID		  25
-	  $ClassName		  "Simulink.Signal"
-	  Simulink.CoderInfo {
-	    $PropName		    "CoderInfo"
-	    $ObjectID		    26
-	    StorageClass	    "ImportedExtern"
-	    Alignment		    -1
-	    CSCPackageName	    "Simulink"
-	    ParameterOrSignal	    "Signal"
-	    CustomStorageClass	    "Default"
-	    SimulinkCSC.AttribClass_Simulink_Default {
-	      $PropName		      "CustomAttributes"
-	      $ObjectID		      27
-	    }
-	  }
-	  Description		  ""
-	  DataType		  "auto"
-	  Min			  []
-	  Max			  []
-	  DocUnits		  ""
-	  Dimensions		  [-1.0]
-	  DimensionsMode	  "auto"
-	  Complexity		  "auto"
-	  SampleTime		  [-1.0]
-	  SamplingMode		  "auto"
-	  InitialValue		  ""
-	  Simulink.LoggingInfo {
-	    $PropName		    "LoggingInfo"
-	    $ObjectID		    28
-	    DataLogging		    0
-	    NameMode		    0
-	    LoggingName		    ""
-	    DecimateData	    0
-	    Decimation		    2
-	    LimitDataPoints	    0
-	    MaxPoints		    5000
-	  }
-	}
-	RTWStorageClass		"Auto"
-	DataLoggingNameMode	"SignalName"
-      }
     }
     Block {
       BlockType		      Reference
@@ -973,7 +878,7 @@ Model {
       Ports		      [1, 1]
       Position		      [290, 120, 320, 150]
       ZOrder		      1
-      LibraryVersion	      "1.287"
+      LibraryVersion	      "1.356"
       SourceBlock	      "simulink/Logic and Bit\nOperations/Compare\nTo Constant"
       SourceType	      "Compare To Constant"
       ContentPreviewEnabled   off
@@ -1000,9 +905,7 @@ Model {
       IconDisplay	      "Port number"
     }
     Line {
-      Name		      "fs_fuel_level"
       ZOrder		      9
-      Labels		      [0, 0]
       SrcBlock		      "Fuel Level"
       SrcPort		      1
       Points		      [19, 0]
@@ -1026,9 +929,7 @@ Model {
       DstPort		      1
     }
     Line {
-      Name		      "fs_warning_light"
       ZOrder		      14
-      Labels		      [0, 0]
       SrcBlock		      "Light on \n"
       SrcPort		      1
       DstBlock		      "Warning Light"

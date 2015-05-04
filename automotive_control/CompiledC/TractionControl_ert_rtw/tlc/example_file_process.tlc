@@ -31,13 +31,13 @@
   
   %assign cFile = LibCreateSourceFile("Source", "Custom", "timestwo")
   
-  %openfile tmwtypesBuf
+  %openfile typesBuf
   
-  #include "tmwtypes.h"
+  #include "rtwtypes.h"
   
-  %closefile tmwtypesBuf
+  %closefile typesBuf
   
-  %<LibSetSourceFileSection(cFile,"Includes",tmwtypesBuf)>
+  %<LibSetSourceFileSection(cFile,"Includes",typesBuf)>
 
   %openfile tmpBuf
 
@@ -61,7 +61,7 @@
   
   %closefile tmpBuf
   
-  %<LibSetSourceFileSection(hFile,"Includes",tmwtypesBuf)>
+  %<LibSetSourceFileSection(hFile,"Includes",typesBuf)>
   %<LibSetSourceFileSection(hFile,"Declarations",tmpBuf)>
   
   %% Add a #define to the model's public header file model.h

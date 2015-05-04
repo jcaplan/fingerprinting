@@ -1,11 +1,15 @@
 /*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
  * File: rtwtypes.h
  *
  * Code generated for Simulink model 'TransmissionControl'.
  *
- * Model version                  : 1.4
- * Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
- * C/C++ source code generated on : Sun Mar 22 13:54:15 2015
+ * Model version                  : 1.5
+ * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
+ * C/C++ source code generated on : Mon May  4 13:55:47 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ASIC/FPGA->ASIC/FPGA
@@ -28,8 +32,6 @@
 #   define true                        (1U)
 #  endif
 #endif
-
-#define __TMWTYPES__
 
 /*=======================================================================*
  * Target hardware information
@@ -141,47 +143,16 @@ typedef struct {
 #define MAX_int8_T                     ((int8_T)(127))
 #define MIN_int8_T                     ((int8_T)(-128))
 #define MAX_uint8_T                    ((uint8_T)(255U))
-#define MIN_uint8_T                    ((uint8_T)(0U))
 #define MAX_int16_T                    ((int16_T)(32767))
 #define MIN_int16_T                    ((int16_T)(-32768))
 #define MAX_uint16_T                   ((uint16_T)(65535U))
-#define MIN_uint16_T                   ((uint16_T)(0U))
 #define MAX_int32_T                    ((int32_T)(2147483647))
 #define MIN_int32_T                    ((int32_T)(-2147483647-1))
 #define MAX_uint32_T                   ((uint32_T)(0xFFFFFFFFU))
-#define MIN_uint32_T                   ((uint32_T)(0U))
 
 /* Block D-Work pointer type */
 typedef void * pointer_T;
 
-/* Simulink specific types */
-#ifndef __ZERO_CROSSING_TYPES__
-#define __ZERO_CROSSING_TYPES__
-
-/* Trigger directions: falling, either, and rising */
-typedef enum {
-  FALLING_ZERO_CROSSING = -1,
-  ANY_ZERO_CROSSING = 0,
-  RISING_ZERO_CROSSING = 1
-} ZCDirection;
-
-/* Previous state of a trigger signal */
-typedef uint8_T ZCSigState;
-
-/* Initial value of a trigger zero crossing signal */
-#define UNINITIALIZED_ZCSIG            0x03U
-#define NEG_ZCSIG                      0x02U
-#define POS_ZCSIG                      0x01U
-#define ZERO_ZCSIG                     0x00U
-
-/* Current state of a trigger signal */
-typedef enum {
-  FALLING_ZCEVENT = -1,
-  NO_ZCEVENT = 0,
-  RISING_ZCEVENT = 1
-} ZCEventType;
-
-#endif                                 /* __ZERO_CROSSING_TYPES__ */
 #endif                                 /* __RTWTYPES_H__ */
 
 /*

@@ -1,11 +1,15 @@
 /*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
  * File: AirbagModel.h
  *
  * Code generated for Simulink model 'AirbagModel'.
  *
- * Model version                  : 1.8
- * Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
- * C/C++ source code generated on : Sat Apr  4 15:17:57 2015
+ * Model version                  : 1.11
+ * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
+ * C/C++ source code generated on : Mon May  4 13:22:36 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -15,13 +19,13 @@
 
 #ifndef RTW_HEADER_AirbagModel_h_
 #define RTW_HEADER_AirbagModel_h_
-#include "rtwtypes.h"
-#include <stddef.h>
 #include <string.h>
 #ifndef AirbagModel_COMMON_INCLUDES_
 # define AirbagModel_COMMON_INCLUDES_
 #include "rtwtypes.h"
 #endif                                 /* AirbagModel_COMMON_INCLUDES_ */
+
+#include "AirbagModel_types.h"
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetErrorStatus
@@ -32,17 +36,27 @@
 # define rtmSetErrorStatus(rtm, val)   ((rtm)->errorStatus = (val))
 #endif
 
-/* Forward declaration for rtModel */
-typedef struct tag_RTM_AirbagModel_T RT_MODEL_AirbagModel_T;
-
 /* Block states (auto storage) for system '<Root>' */
 typedef struct {
   real_T DiscreteTimeIntegrator1_DSTATE;/* '<Root>/Discrete-Time Integrator1' */
   real_T DiscreteTimeIntegrator_DSTATE;/* '<Root>/Discrete-Time Integrator' */
 } DW_AirbagModel_T;
 
+/* External inputs (root inport signals with auto storage) */
+typedef struct {
+  real_T Force;                        /* '<Root>/Force' */
+} ExtU_AirbagModel_T;
+
+/* External outputs (root outports fed by signals with auto storage) */
+typedef struct {
+  boolean_T ActivateAirbag;            /* '<Root>/Activate Airbag ' */
+} ExtY_AirbagModel_T;
+
 /* Parameters (auto storage) */
 struct P_AirbagModel_T_ {
+  real_T CompareToConstant_const;      /* Mask Parameter: CompareToConstant_const
+                                        * Referenced by: '<S1>/Constant'
+                                        */
   real_T DiscreteTimeIntegrator1_gainval;/* Computed Parameter: DiscreteTimeIntegrator1_gainval
                                           * Referenced by: '<Root>/Discrete-Time Integrator1'
                                           */
@@ -63,31 +77,27 @@ struct P_AirbagModel_T_ {
                                         */
 };
 
-/* Parameters (auto storage) */
-typedef struct P_AirbagModel_T_ P_AirbagModel_T;
-
 /* Real-time Model Data Structure */
 struct tag_RTM_AirbagModel_T {
   const char_T * volatile errorStatus;
+
+  /*
+   * ModelData:
+   * The following substructure contains information regarding
+   * the data used in the model.
+   */
+  struct {
+    P_AirbagModel_T *defaultParam;
+    DW_AirbagModel_T *dwork;
+  } ModelData;
 };
 
-/* Imported (extern) block signals */
-real_T ab_sensor_displacement;  /* '<Root>/Discrete-Time Integrator1' */
-real_T ab_force;                /* '<Root>/Force' */
-
-/* Block parameters (auto storage) */
-P_AirbagModel_T AirbagModel_P;
-
-/* Block states (auto storage) */
-DW_AirbagModel_T AirbagModel_DW;
-
 /* Model entry point functions */
-void AirbagModel_initialize(void);
-void AirbagModel_step(void);
-void AirbagModel_terminate(void);
-
-/* Real-time Model object */
-RT_MODEL_AirbagModel_T *const AirbagModel_M;
+extern void AirbagModel_initialize(RT_MODEL_AirbagModel_T *const AirbagModel_M,
+  ExtU_AirbagModel_T *AirbagModel_U, ExtY_AirbagModel_T *AirbagModel_Y);
+extern void AirbagModel_step(RT_MODEL_AirbagModel_T *const AirbagModel_M,
+  ExtU_AirbagModel_T *AirbagModel_U, ExtY_AirbagModel_T *AirbagModel_Y);
+extern void AirbagModel_terminate(RT_MODEL_AirbagModel_T *const AirbagModel_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly
@@ -104,6 +114,7 @@ RT_MODEL_AirbagModel_T *const AirbagModel_M;
  * Here is the system hierarchy for this model
  *
  * '<Root>' : 'AirbagModel'
+ * '<S1>'   : 'AirbagModel/Compare To Constant'
  */
 #endif                                 /* RTW_HEADER_AirbagModel_h_ */
 

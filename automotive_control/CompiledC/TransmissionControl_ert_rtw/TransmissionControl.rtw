@@ -1,20 +1,25 @@
 CompiledModel {
   Name			  "TransmissionControl"
   OrigName		  "TransmissionControl"
-  Version		  "8.6 (R2014a) 27-Dec-2013"
-  SimulinkVersion	  "8.3"
-  ModelVersion		  "1.4"
-  GeneratedOn		  "Sun Mar 22 13:54:14 2015"
+  Version		  "8.8 (R2015a) 09-Feb-2015"
+  SimulinkVersion	  "8.5"
+  ModelVersion		  "1.5"
+  GeneratedOn		  "Mon May  4 13:55:47 2015"
   HasSimStructVars	  0
   HasCodeVariants	  0
+  HasInlineVariants	  0
   PreserveExternInFcnDecls 1
   DataDictionary	  ""
   DataDictionarySet	  ""
-  UseModelRefSIMTargetForRAccel	"1"
+  ModelRefAccelModeSimState "2"
+  HasBlocksWithCustomSimState "0"
+  VirtualBusAcrossModelReferenceAllowed	"0"
   ParallelExecutionInRapidAccelerator "0"
+  SubsystemInitializationOrderChangeLevel2 "0"
   ExprFolding		  1
   TargetStyle		  "StandAloneTarget"
   NumDataStoresGlobalDSM  0
+  ZeroCrossingDefinitionsRequired 0
   RightClickBuild	  0
   ModelReferenceTargetType "NONE"
   IsExportFcnDiagram	  no
@@ -24,7 +29,6 @@ CompiledModel {
   PadderActive		  0
   DWorkAndBlockIOCombined 0
   PrmModelName		  SLDataModelName(TransmissionControl)
-  TrigSSSplitOutUpd	  1
   UniqueFromFiles	  []
   UniqueToFiles		  []
   ErrorXMLMode		  0
@@ -45,6 +49,7 @@ CompiledModel {
     tParametersType	    "P_TransmissionControl_T"
     tBlockIOType	    "B_TransmissionControl_T"
     tContStateType	    "X_TransmissionControl_T"
+    tPeriodicContStateType  "Periodic_X_TransmissionContro_T"
     tXdotType		    "XDot_TransmissionControl_T"
     tXdisType		    "XDis_TransmissionControl_T"
     tXAbsTolType	    "CStateAbsTol_TransmissionCont_T"
@@ -61,6 +66,7 @@ CompiledModel {
     tDefaultParameters	    "TransmissionControl_DefaultP"
     tBlockIO		    "TransmissionControl_B"
     tContState		    "TransmissionControl_X"
+    tPeriodicContState	    "TransmissionControl_Periodic_X"
     tXdot		    "TransmissionControl_XDot"
     tXdis		    "TransmissionControl_XDis"
     tXAbsTol		    "TransmissionControl_XAbsTol"
@@ -95,14 +101,16 @@ CompiledModel {
     BitfieldContainerType   "uint_T"
     BlockReduction	    1
     BooleanDataType	    0
+    BooleanFalseId	    "false"
+    BooleanTrueId	    "true"
     BooleansAsBitfields	    0
     BufferReusableBoundary  1
     BufferReuse		    1
     BuildConfiguration	    "Faster Builds"
     CPPClassGenCompliant    1
+    CastingMode		    "Nominal"
     CodeExecutionProfiling  0
-    CodeGenDirectory	    ""
-    CodeInterfacePackaging  "Nonreusable function"
+    CodeInterfacePackaging  "Reusable function"
     CodeProfilingInstrumentation 0
     CodeReplacementLibrary  "None"
     CombineOutputUpdateFcns 1
@@ -131,7 +139,6 @@ CompiledModel {
     CustomTerminator	    ""
     DataBitsets		    0
     DataDefinitionFile	    "global.c"
-    DataInitializer	    ""
     DataReferenceFile	    "global.h"
     DefaultUnderspecifiedDataType "single"
     DefineNamingFcn	    ""
@@ -152,6 +159,7 @@ CompiledModel {
     EnableDataOwnership	    0
     EnableMemcpy	    1
     EnableParallelModelReferenceBuilds 0
+    EnableSignedLeftShifts  1
     EnableUserReplacementTypes 0
     EvaledLifeSpan	    1.0
     ExpressionFolding	    1
@@ -163,14 +171,11 @@ CompiledModel {
     ExtModeStaticAllocSize  1000000
     ExtModeTesting	    0
     ExtModeTransport	    0
-    FoldNonRolledExpr	    1
     ForceParamTrailComments 0
     GRTInterface	    0
     GenFloatMathFcnCalls    "NOT IN USE"
     GenerateASAP2	    0
     GenerateAllocFcn	    0
-    GenerateClassInterface  0
-    GenerateCodeInfo	    0
     GenerateCodeMetricsReport 0
     GenerateCodeReplacementReport 0
     GenerateComments	    1
@@ -178,7 +183,6 @@ CompiledModel {
     GenerateReport	    0
     GenerateSampleERTMain   1
     GenerateTestInterfaces  0
-    GenerateTraceInfo	    0
     GenerateTraceReport	    0
     GenerateTraceReportEml  0
     GenerateTraceReportSf   0
@@ -193,14 +197,12 @@ CompiledModel {
     IncAutoGenComments	    0
     IncDataTypeInIds	    0
     IncHierarchyInIds	    0
-    IncludeERTFirstTime	    0
     IncludeFileDelimiter    "Auto"
-    IncludeHyperlinkInReport 0
     IncludeMdlTerminateFcn  1
     IndentSize		    "2"
     IndentStyle		    "K&R"
+    InferredTypesCompatibility 0
     InitFltsAndDblsToZero   0
-    InitialValueSource	    "Model"
     InlineInvariantSignals  0
     InlineParams	    0
     InlinedParameterPlacement "Hierarchical"
@@ -215,7 +217,13 @@ CompiledModel {
     LogVarNameModifier	    "rt_"
     MangleLength	    1
     MatFileLogging	    0
+    MaxIdInt16		    "MAX_int16_T"
+    MaxIdInt32		    "MAX_int32_T"
+    MaxIdInt8		    "MAX_int8_T"
     MaxIdLength		    31
+    MaxIdUint16		    "MAX_uint16_T"
+    MaxIdUint32		    "MAX_uint32_T"
+    MaxIdUint8		    "MAX_uint8_T"
     MemSecDataConstants	    "Default"
     MemSecDataIO	    "Default"
     MemSecDataInternal	    "Default"
@@ -225,12 +233,12 @@ CompiledModel {
     MemSecFuncSharedUtil    "Default"
     MemSecPackage	    "--- None ---"
     MemcpyThreshold	    64
-    MisraCompliance	    0
+    MinIdInt16		    "MIN_int16_T"
+    MinIdInt32		    "MIN_int32_T"
+    MinIdInt8		    "MIN_int8_T"
     ModelReferenceCompliant 1
     ModelStepFunctionPrototypeControlCompliant 1
-    ModuleName		    ""
-    ModuleNamingRule	    "Unspecified"
-    MultiInstanceERTCode    0
+    MultiInstanceERTCode    1
     MultiInstanceErrorCode  "Error"
     MultiwordLength	    2048
     NoFixptDivByZeroProtection 0
@@ -291,7 +299,7 @@ CompiledModel {
     }
     ReqsInCode		    0
     RollThreshold	    5
-    RootIOFormat	    "Individual arguments"
+    RootIOFormat	    "Structure reference"
     SFDataObjDesc	    0
     SILDebugging	    0
     ShowEliminatedStatement 0
@@ -311,7 +319,6 @@ CompiledModel {
     SupportVariableSizeSignals 0
     SuppressErrorStatus	    0
     SuppressUnreachableDefaultCases 0
-    SystemCodeInlineAuto    0
     SystemTargetFile	    "ert.tlc"
     TLCAssert		    0
     TLCCoverage		    0
@@ -339,15 +346,14 @@ CompiledModel {
     TargetPreprocMaxBitsSint 32
     TargetPreprocMaxBitsUint 32
     TargetShiftRightIntArith 1
-    TargetTypeEmulationWarnSuppressLevel 0
     TargetUnknown	    0
     TargetWordSize	    32
     Toolchain		    "Automatically locate an installed toolchain"
+    TypeLimitIdReplacementHeaderFile ""
+    UseDivisionForNetSlopeComputation "off"
     UseFloatMulNetSlope	    0
-    UseIntDivNetSlope	    0
     UseSimReservedNames	    0
     UseSpecifiedMinMax	    0
-    UseTempVars		    0
     UseToolchainInfoCompliant 1
     UtilityFuncGeneration   "Auto"
     ZeroCrossAlgorithm	    "Nonadaptive"
@@ -370,17 +376,18 @@ CompiledModel {
       FixptConstOverflowMsg   "none"
       FixptConstPrecisionLossMsg "none"
       FixptConstUnderflowMsg  "none"
-      FrameProcessingCompatibilityMsg "warning"
+      FrameProcessingCompatibilityMsg "error"
       IgnoredZcDiagnostic     "warning"
       InheritedTsInSrcMsg     "warning"
       InitInArrayFormatMsg    "warning"
       Int32ToFloatConvMsg     "warning"
       IntegerOverflowMsg      "warning"
+      IntegerSaturationMsg    "warning"
       InvalidFcnCallConnMsg   "error"
       LoggingUnavailableSignals	"error"
       MaskedZcDiagnostic      "warning"
       MaxConsecutiveZCsMsg    "error"
-      MergeDetectMultiDrivingBlocksExec	"none"
+      MergeDetectMultiDrivingBlocksExec	"error"
       MinStepSizeMsg	      "warning"
       ModelReferenceCSMismatchMessage "none"
       ModelReferenceDataLoggingMessage "warning"
@@ -405,6 +412,7 @@ CompiledModel {
       SFInvalidInputDataAccessInChartInitDiag "warning"
       SFMismatchInSimAndRtwBecauseOfMissingDataTypeDiag	"warning"
       SFNoUnconditionalDefaultTransitionDiag "warning"
+      SFOutputUsedAsStateInMooreChartDiag "error"
       SFTransitionActionBeforeConditionDiag "warning"
       SFTransitionOutsideNaturalParentDiag "warning"
       SFUnconditionalTransitionShadowingDiag "warning"
@@ -465,11 +473,11 @@ CompiledModel {
     DisableBuildDirOverride "no"
     DivideStackByRate	    "0"
     GenRTModel		    "1"
+    GenerateEnableDisable   "0"
     GeneratedTLCSubDir	    "tlc"
     MaxConstBOSize	    "Inf"
     MaxStackSize	    "Inf"
     MaxStackVariableSize    "4096"
-    ModelRefGenIndividualGlobals "0"
     ModelReferenceDirSuffix ""
     ModelReferenceTargetType "NONE"
     ProfileGenCode	    "0"
@@ -485,12 +493,13 @@ CompiledModel {
     tlcLanguage		    "C"
     tlcTargetType	    "RT"
   }
-  RTWContext		  [1033843200, 32640]
+  RTWContext		  [-2146328080, 32701]
   RTWCGIR		  1
   TLCBlkFcnInCGIR	  1
   SLCI			  off
   SubsystemHdlForRightClickBuild 0.0
-  LocalSharedCodeManagerFile "/Users/anthonydelage/Documents/MATLAB/slprj/ert/_sharedutils/shared_file.dmr"
+  LocalSharedCodeManagerFile "/data/jcapla9/fingerprinting/automotive_control/CompiledC/slprj/ert/_sharedutils/shared_"
+  "file.dmr"
   DataLoggingOpts {
     SaveFormat		    0
     MaxRows		    1000
@@ -503,12 +512,14 @@ CompiledModel {
     NumLoggedStates	    0
     SignalLoggingSaveFormat "Dataset"
     CompiledSignalLoggingSaveFormat "Dataset"
+    CompiledLoggingSaveFormat "Array"
   }
   NumModelInputs	  1
   NumModelOutputs	  1
   NumNonVirtBlocksInModel 3
   DirectFeedthrough	  yes
   NumContStates		  0
+  NumPeriodicContStates	  0
   ModelHasProjections	  no
   ModelIsLinearlyImplicit no
   ModelMassMatrixType	  0
@@ -525,9 +536,15 @@ CompiledModel {
   RootTriggerType	  ""
   IsAPERRootTriggeredSystem no
   RootTriggerTsType	  ""
+  RootHardwareSemantics	  no
+  HasPotentialStates	  no
+  HasHardwareSemantics	  no
+  HasClientsOrServers	  no
+  SuppressSimulinkFunctionArgumentControl no
+  NumSimulinkFunctions	  0
   PositivePriority	  no
   ConcurrentTasks	  no
-  SingleTimeDomainApplication "ClockDomain {\nContinuous Clock\nTask0 : { \nSampleTime [0.2, 0]\n }\n }\n"
+  SingleTimeDomainApplication "ClockDomain {\n_task0 : { \nSampleTime [0, 1]\nSampleTime [0.2, 0]\n }\n }\n"
   AllSampleTimesInherited yes
   ModelSampleTimeInheritanceDetails {
     AllowedOverall	    yes
@@ -540,33 +557,42 @@ CompiledModel {
     ConstInterfaceNonConstContents no
     InheritanceForcedForFcnCall	no
   }
+  NumTasks		  1
+  ModelRefTsInheritance	  USE_DEFAULT_FOR_DISCRETE_INHERITANCE
+  HasNonVirtualConstantTs no
+  FixedStepSizeBasedOnHeuristic	yes
   InvariantConstants	  no
   FundamentalStepSize	  0.2
   SingleRate		  yes
   NumSampleTimes	  1
   SampleTime {
+    TaskIdx		    0
     TID			    0
     PriorityAssigned	    yes
     Priority		    40
     PeriodAndOffset	    [0.2, 0.0]
-    IsVirtualTs		    no
-    Asynchronous	    no
     IsUnionTs		    no
+    IsModelWideEvent	    no
+    Asynchronous	    no
+    IsVirtualTs		    no
     TimeSource		    Self_internal
     AsyncPromotedTID	    0
     TimerUpdateCode	    ""
     ClockTickStepSize	    0.2
     NeedAbsoluteTime	    no
+    IsInlined		    no
     NeedFloatTime	    no
     ClockTickDataTypeId	    7
     ClockTickDataTypeAtomic 0
     TaskCounterDataTypeId   3
+    TaskName		    "_task0"
   }
   NumVariableSampleTimes  0
   NumAsynchronousSampleTimes 0
+  NumUnionAsynchronousSampleTimes 0
   NumSynchronousSampleTimes 1
   HasBlocksWithDiscreteSampleTime yes
-  MdlGenRateGroupingCode  no
+  MdlGenPeriodicRateGroupingCode no
   DataTypes {
     NumDataTypes	    14
     NumSLBuiltInDataTypes   9
@@ -601,6 +627,7 @@ CompiledModel {
       Max		      rtInf
       Min		      rtMinusInf
       Description	      ""
+      Units		      ""
       DocUnits		      ""
     }
     DataType {
@@ -635,6 +662,8 @@ CompiledModel {
       GroundValueBin	      [0U]
       StorageId		      2
       RequiredBits	      8
+      TypeMaxId		      "MAX_int8_T"
+      TypeMinId		      "MIN_int8_T"
     }
     DataType {
       DTName		      "uint8"
@@ -647,6 +676,8 @@ CompiledModel {
       StorageId		      3
       IsSigned		      0
       RequiredBits	      8
+      TypeMaxId		      "MAX_uint8_T"
+      TypeMinId		      "MIN_uint8_T"
     }
     DataType {
       DTName		      "int16"
@@ -658,6 +689,8 @@ CompiledModel {
       GroundValueBin	      [0U, 0U]
       StorageId		      4
       RequiredBits	      16
+      TypeMaxId		      "MAX_int16_T"
+      TypeMinId		      "MIN_int16_T"
     }
     DataType {
       DTName		      "uint16"
@@ -670,6 +703,8 @@ CompiledModel {
       StorageId		      5
       IsSigned		      0
       RequiredBits	      16
+      TypeMaxId		      "MAX_uint16_T"
+      TypeMinId		      "MIN_uint16_T"
     }
     DataType {
       DTName		      "int32"
@@ -681,6 +716,8 @@ CompiledModel {
       GroundValueBin	      [0U, 0U, 0U, 0U]
       StorageId		      6
       RequiredBits	      32
+      TypeMaxId		      "MAX_int32_T"
+      TypeMinId		      "MIN_int32_T"
     }
     DataType {
       DTName		      "uint32"
@@ -693,6 +730,8 @@ CompiledModel {
       StorageId		      7
       IsSigned		      0
       RequiredBits	      32
+      TypeMaxId		      "MAX_uint32_T"
+      TypeMinId		      "MIN_uint32_T"
     }
     DataType {
       DTName		      "boolean"
@@ -705,6 +744,8 @@ CompiledModel {
       StorageId		      8
       IsSigned		      0
       RequiredBits	      8
+      BooleanTrueId	      "true"
+      BooleanFalseId	      "false"
     }
     DataType {
       DTName		      "fcn_call"
@@ -751,6 +792,13 @@ CompiledModel {
       StorageId		      13
       IsNumericType	      0
     }
+  }
+  Units {
+    isLoggingEnabled	    0
+  }
+  SymbolicDimsConstraints {
+    NumEquivalentSymbolicDims 0
+    NumGreaterThanSymbolicDims 0
   }
   TargetProperties {
     HasObject		    0
@@ -841,6 +889,8 @@ CompiledModel {
     }
     ParameterDefaults {
       IsReference	      0
+      IsUsedInTrivialExpr     1
+      UsedElement	      ""
       MemoryMapIdx	      [-1, -1, -1]
       StringType	      ""
       String		      ""
@@ -900,8 +950,8 @@ CompiledModel {
 	Type			SubSystem
 	Parameter {
 	  Name			  "const"
+	  SLName		  "const"
 	  _idx			  0
-	  IsReference		  1
 	}
 	NumParameters		1
       }
@@ -918,6 +968,14 @@ CompiledModel {
 	SLName			"Constant"
 	SID			"2:3"
 	Type			Constant
+	Parameter {
+	  Name			  "const"
+	  SLName		  "Value"
+	  _idx			  0
+	  IsReference		  1
+	  IsUsedInTrivialExpr	  1
+	}
+	NumParameters		1
       }
       Block {
 	Name			"<S1>/Compare"
@@ -946,6 +1004,10 @@ CompiledModel {
       TestPoint		      no
       StorageTypeQualifier    ""
       InitialValue	      []
+      PropagatedStorageClass  "Auto"
+      PropagatedStorageTypeQualifier ""
+      PropagatedRTWIdentifier ""
+      ResolvedToSignalObject  no
       FunctionCallInitiator   no
       Padding		      0
       Alignment		      -1
@@ -957,68 +1019,13 @@ CompiledModel {
     StructAlignment	    -1
     ExternalInput {
       BlockName		      "<Root>/Fluid Sensor"
-      Identifier	      "fluid_sensor"
+      Identifier	      "FluidSensor"
       TID		      0
       CGTypeIdx		      1
       RequiresGlobalAccess    no
-      SigLabel		      "fluid_sensor"
-      StorageClass	      "ImportedExtern"
+      VarGroupIdx	      [0,0]
       IsEliminated	      false
-      HasObject		      1
-      Object {
-	Package			Simulink
-	Class			Signal
-	ObjectProperties {
-	  CoderInfo {
-	    Object {
-	      Package		      Simulink
-	      Class		      CoderInfo
-	      ObjectProperties {
-		StorageClass		"ImportedExtern"
-		Alias			""
-		Alignment		-1
-		CSCPackageName		"Simulink"
-		ParameterOrSignal	"Signal"
-		CustomStorageClass	"Default"
-		CustomAttributes {
-		  Object {
-		    Package		    SimulinkCSC
-		    Class		    AttribClass_Simulink_Default
-		    ObjectProperties {
-		    }
-		  }
-		}
-	      }
-	    }
-	  }
-	  Description		  ""
-	  DataType		  "auto"
-	  Min			  []
-	  Max			  []
-	  DocUnits		  ""
-	  Dimensions		  -1.0
-	  DimensionsMode	  "auto"
-	  Complexity		  "auto"
-	  SampleTime		  -1.0
-	  SamplingMode		  "auto"
-	  InitialValue		  ""
-	  LoggingInfo {
-	    Object {
-	      Package		      Simulink
-	      Class		      LoggingInfo
-	      ObjectProperties {
-		DataLogging		0
-		NameMode		0
-		LoggingName		""
-		DecimateData		0
-		Decimation		2.0
-		LimitDataPoints		0
-		MaxPoints		5000.0
-	      }
-	    }
-	  }
-	}
-      }
+      PropagatedRTWIdentifier ""
     }
   }
   ExternalOutputs {
@@ -1030,6 +1037,11 @@ CompiledModel {
       HasObject		      0
       FrameData		      no
       RequiresGlobalAccess    yes
+      PropagatedStorageClass  "Auto"
+      PropagatedStorageTypeQualifier ""
+      PropagatedRTWIdentifier ""
+      ResolvedToSignalObject  no
+      TestPoint		      no
       Padding		      0
       Alignment		      -1
     }
@@ -1038,10 +1050,11 @@ CompiledModel {
     ExternalOutput {
       Block		      [0,1]
       CGTypeIdx		      8
-      SigLabel		      "warning_light"
+      VarGroupIdx	      [1,0]
       RequiresGlobalAccess    no
     }
   }
+  HasDescExpFcnMdl	  false
   BlockOutputs {
     GlobalBlockOutputDefaults {
       RecordType	      BlockOutput
@@ -1069,6 +1082,7 @@ CompiledModel {
       BitFieldWidth	      0
       InitialValue	      []
       InitInStart	      0
+      ConstantValueOutputChecksum []
       CGTypeIdx		      0
       SigLabel		      ""
       SigConnected	      all
@@ -1104,6 +1118,7 @@ CompiledModel {
       BitFieldWidth	      0
       InitialValue	      []
       InitInStart	      0
+      ConstantValueOutputChecksum []
       CGTypeIdx		      0
       SigLabel		      ""
       SigConnected	      all
@@ -1114,7 +1129,10 @@ CompiledModel {
       SysNum		      0
       DeclareInStartFcnScope  0
       DeclareInVirtualOutportStartFcnScope 0
+      DeclareInInitializeOnceFcnScope 0
       DeclareInInitializeFcnScope 0
+      DeclareInSystemInitializeFcnScope	0
+      DeclareInSystemResetFcnScope 0
       DeclareInOutputFcnScope 0
       DeclareInUpdateFcnScope 0
       DeclareInDerivativeFcnScope 0
@@ -1127,6 +1145,8 @@ CompiledModel {
       DeclareInFinalizeDimsFcnScope 0
       DeclareInSetDimsFcnScope 0
       DeclareInTerminateFcnScope 0
+      DeclareInModelInitializeFcnScope 0
+      DeclareInModelPrevZCStateInitFcnScope 0
       DeclareInConstCodeFcnScope 0
       Autosar4p0ImplicitRead  no
       VarGroupVarIdx	      -1
@@ -1157,6 +1177,7 @@ CompiledModel {
       BitFieldWidth	      0
       InitialValue	      []
       InitInStart	      0
+      ConstantValueOutputChecksum []
       CGTypeIdx		      0
       SigLabel		      ""
       SigConnected	      all
@@ -1230,6 +1251,7 @@ CompiledModel {
       BitFieldWidth	      0
       InitialValue	      []
       InitInStart	      0
+      ConstantValueOutputChecksum []
       CGTypeIdx		      0
       SigLabel		      ""
       SigConnected	      all
@@ -1240,74 +1262,19 @@ CompiledModel {
       SysNum		      0
     }
     NumGlobalBlockOutputs   0
-    NumLocalBlockOutputs    0
-    NumExternalBlockOutputs 1
+    NumLocalBlockOutputs    1
+    NumExternalBlockOutputs 0
     NumConstBlockOutputs    0
     NumConstOutputExpr	    1
-    ExternalBlockOutput {
-      Identifier	      "warning_light"
+    LocalBlockOutput {
+      Identifier	      "rtb_Compare"
       SysCsIdx		      [0, -1]
       CGTypeIdx		      8
       LogicalSrc	      B0
-      StorageClass	      "ImportedExtern"
       DrivesRootOutport	      yes
+      SigDeclSysIdx	      0
       GrSrc		      [1, 1, 0, -1]
       SigSrc		      [0, -1, 2, -1]
-      HasObject		      1
-      Object {
-	Package			Simulink
-	Class			Signal
-	ObjectProperties {
-	  CoderInfo {
-	    Object {
-	      Package		      Simulink
-	      Class		      CoderInfo
-	      ObjectProperties {
-		StorageClass		"ImportedExtern"
-		Alias			""
-		Alignment		-1
-		CSCPackageName		"Simulink"
-		ParameterOrSignal	"Signal"
-		CustomStorageClass	"Default"
-		CustomAttributes {
-		  Object {
-		    Package		    SimulinkCSC
-		    Class		    AttribClass_Simulink_Default
-		    ObjectProperties {
-		    }
-		  }
-		}
-	      }
-	    }
-	  }
-	  Description		  ""
-	  DataType		  "auto"
-	  Min			  []
-	  Max			  []
-	  DocUnits		  ""
-	  Dimensions		  -1.0
-	  DimensionsMode	  "auto"
-	  Complexity		  "auto"
-	  SampleTime		  -1.0
-	  SamplingMode		  "auto"
-	  InitialValue		  ""
-	  LoggingInfo {
-	    Object {
-	      Package		      Simulink
-	      Class		      LoggingInfo
-	      ObjectProperties {
-		DataLogging		0
-		NameMode		0
-		LoggingName		""
-		DecimateData		0
-		Decimation		2.0
-		LimitDataPoints		0
-		MaxPoints		5000.0
-	      }
-	    }
-	  }
-	}
-      }
     }
     ConstOutputExpr {
       Identifier	      "Constant"
@@ -1325,6 +1292,8 @@ CompiledModel {
       MemoryMapIdx	      [-1,-1,-1]
       OrigIdentifier	      ""
       LogStateName	      ""
+      DSMVariantCondition     ""
+      IsDataStoreMemory	      0
       StorageClass	      "Auto"
       Alignment		      -1
       CustomStorageClassVersion	0
@@ -1334,7 +1303,10 @@ CompiledModel {
       IsLocalScratchDWork     0
       DeclareInStartFcnScope  0
       DeclareInVirtualOutportStartFcnScope 0
+      DeclareInInitializeOnceFcnScope 0
       DeclareInInitializeFcnScope 0
+      DeclareInSystemInitializeFcnScope	0
+      DeclareInSystemResetFcnScope 0
       DeclareInOutputFcnScope 0
       DeclareInUpdateFcnScope 0
       DeclareInDerivativeFcnScope 0
@@ -1347,6 +1319,8 @@ CompiledModel {
       DeclareInFinalizeDimsFcnScope 0
       DeclareInSetDimsFcnScope 0
       DeclareInTerminateFcnScope 0
+      DeclareInModelInitializeFcnScope 0
+      DeclareInModelPrevZCStateInitFcnScope 0
       DeclareInConstCodeFcnScope 0
       Autosar4p0ImplicitRead  no
       VarGroupVarIdx	      -1
@@ -1355,6 +1329,7 @@ CompiledModel {
       DeclareAsPointer	      no
       Origin		      "DWORK"
       UsedAs		      "DWORK"
+      SafeToIgnoreForSimState 0
       DataLoggingOn	      "0"
       InitialValue	      []
       Padding		      0
@@ -1465,13 +1440,14 @@ CompiledModel {
     ArgDefIdx		    -1
     MemoryMapIdx	    [-1, -1, -1]
     OriginalDataTypeIdx	    0
-    CGTypeIdx		    19
+    CGTypeIdx		    21
     Tunable		    on
     OrigIdentifier	    ""
     StorageClass	    Auto
     NeedParenthesis	    0
     StringTransformed	    ""
     NumPrmValues	    1
+    NeedExpansion	    0
     Value		    [0.0]
   }
   DataInputPortDefaults {
@@ -1536,7 +1512,10 @@ CompiledModel {
     HasInstanceSetup	    0
     HasStart		    0
     HasVirtualOutportStart  0
+    HasInitializeOnce	    0
     HasInitializeConditions 0
+    HasSystemInitialize	    0
+    HasSystemReset	    0
     HasOutputs		    0
     HasUpdate		    0
     HasDerivatives	    0
@@ -1549,6 +1528,8 @@ CompiledModel {
     HasFinalizeDims	    0
     HasSetDims		    0
     HasTerminate	    0
+    HasModelInitialize	    0
+    HasModelPrevZCStateInit 0
     HasConstCode	    0
     HasDeadCode		    0
   }
@@ -1566,6 +1547,7 @@ CompiledModel {
     CGTypeIdx		    0
     StorageClass	    Auto
     DeclareAsPointer	    no
+    ConnectedToSimulinkFunction	no
     IsCustomConst	    no
   }
   CanonicalOutputArgDefaults {
@@ -1582,6 +1564,7 @@ CompiledModel {
     PassByReturn	    no
     DeclareAsPointer	    yes
     DeclareAsReference	    no
+    ConnectedToSimulinkFunction	no
   }
   CanonicalDWorkArgDefaults {
     SignalSrc		    []
@@ -1610,7 +1593,7 @@ CompiledModel {
       MemoryMapIdx	      [-1, -1, -1]
       HasObject		      0
       OriginalDataTypeIdx     0
-      CGTypeIdx		      19
+      CGTypeIdx		      21
       WorkspaceVarName	      ""
       IsPseudoWorkspaceVar    no
       Tunable		      yes
@@ -1639,12 +1622,13 @@ CompiledModel {
       IsPseudoWorkspaceVar    yes
       Value		      [3.0F]
       OriginalDataTypeIdx     1
-      CGTypeIdx		      18
-      ContainerCGTypeIdx      20
+      CGTypeIdx		      20
+      ContainerCGTypeIdx      22
       ReferencedBy	      Matrix(1,4)
 [[0, -1, 0, 0];]
       GraphicalRef	      Matrix(1,2)
 [[1, 0];]
+      GraphicalSource	      [0, 2]
       OwnerSysIdx	      [0, -1]
       WasAccessedAsVariable   1
     }
@@ -1682,68 +1666,16 @@ CompiledModel {
       Type		      "header"
       IsCustom		      "no"
     }
-    NumDataObjects	    [2]
-    NumSignalObjects	    [2]
+    NumDataObjects	    [0]
+    NumSignalObjects	    [0]
     FirstSignalObjectIdx    [0]
     NumParameterObjects	    [0]
     FirstParameterObjectIdx [0]
     NumStateObjects	    [0]
     FirstStateObjectIdx	    [0]
-    DataObject {
-      Name		      "fluid_sensor"
-      Type		      "Signal"
-      ReadFromFile	      [0]
-      RootIOSignal	      [1]
-      HasMPTAttributes	      [0]
-      PortHandle	      [1932.000244140625]
-      BlockHandle	      [0.0]
-      DataStore		      [0]
-    }
-    DataObject {
-      Name		      "warning_light"
-      Type		      "Signal"
-      WrittenInFile	      [0]
-      RootIOSignal	      [1]
-      HasMPTAttributes	      [0]
-      PortHandle	      [1931.000244140625]
-      BlockHandle	      [0.0]
-      DataStore		      [0]
-    }
     DataObjectSymbols {
-      fluid_sensor	      [0]
-      warning_light	      [1]
     }
-    NumTemplateSymbols	    [10]
-    TemplateSymbol {
-      Name		      "Declarations"
-    }
-    TemplateSymbol {
-      Name		      "Define"
-    }
-    TemplateSymbol {
-      Name		      "Defines"
-    }
-    TemplateSymbol {
-      Name		      "Definitions"
-    }
-    TemplateSymbol {
-      Name		      "ExternalCalibrationScalar"
-    }
-    TemplateSymbol {
-      Name		      "ExternalVariableScalar"
-    }
-    TemplateSymbol {
-      Name		      "FilescopeCalibrationScalar"
-    }
-    TemplateSymbol {
-      Name		      "FilescopeVariableScalar"
-    }
-    TemplateSymbol {
-      Name		      "GlobalCalibrationScalar"
-    }
-    TemplateSymbol {
-      Name		      "GlobalVariableScalar"
-    }
+    NumTemplateSymbols	    [0]
     UsageCheckError {
     }
     totalFileList	    []
@@ -1756,12 +1688,16 @@ CompiledModel {
   ModelHasStateInsideForEachSS 0
   InterfaceDefaults {
     NumCanonicalPrmArgDefs  0
+    CacheCanonicalPrmInStart 0
     NumCanonicalDWorkArgDefs 0
   }
   InstanceCacheDefaults {
     StartHeader		    ""
     VirtualOutportStartHeader ""
+    InitializeOnceHeader    ""
     InitializeHeader	    ""
+    SystemInitializeHeader  ""
+    SystemResetHeader	    ""
     OutputHeader	    ""
     UpdateHeader	    ""
     DerivativeHeader	    ""
@@ -1774,11 +1710,16 @@ CompiledModel {
     FinalizeDimsHeader	    ""
     SetDimsHeader	    ""
     TerminateHeader	    ""
+    ModelInitializeHeader   ""
+    ModelPrevZCStateInitHeader ""
     ConstCodeHeader	    ""
     OutputUpdateHeader	    ""
     StartBody		    ""
     VirtualOutportStartBody ""
+    InitializeOnceBody	    ""
     InitializeBody	    ""
+    SystemInitializeBody    ""
+    SystemResetBody	    ""
     OutputBody		    ""
     UpdateBody		    ""
     DerivativeBody	    ""
@@ -1791,11 +1732,16 @@ CompiledModel {
     FinalizeDimsBody	    ""
     SetDimsBody		    ""
     TerminateBody	    ""
+    ModelInitializeBody	    ""
+    ModelPrevZCStateInitBody ""
     ConstCodeBody	    ""
     OutputUpdateBody	    ""
     StartTrailer	    ""
     VirtualOutportStartTrailer ""
+    InitializeOnceTrailer   ""
     InitializeTrailer	    ""
+    SystemInitializeTrailer ""
+    SystemResetTrailer	    ""
     OutputTrailer	    ""
     UpdateTrailer	    ""
     DerivativeTrailer	    ""
@@ -1808,11 +1754,16 @@ CompiledModel {
     FinalizeDimsTrailer	    ""
     SetDimsTrailer	    ""
     TerminateTrailer	    ""
+    ModelInitializeTrailer  ""
+    ModelPrevZCStateInitTrailer	""
     ConstCodeTrailer	    ""
     OutputUpdateTrailer	    ""
     StartCacheAssert	    0
     VirtualOutportStartCacheAssert 0
+    InitializeOnceCacheAssert 0
     InitializeCacheAssert   0
+    SystemInitializeCacheAssert	0
+    SystemResetCacheAssert  0
     OutputCacheAssert	    0
     UpdateCacheAssert	    0
     DerivativeCacheAssert   0
@@ -1825,11 +1776,16 @@ CompiledModel {
     FinalizeDimsCacheAssert 0
     SetDimsCacheAssert	    0
     TerminateCacheAssert    0
+    ModelInitializeCacheAssert 0
+    ModelPrevZCStateInitCacheAssert 0
     ConstCodeCacheAssert    0
     OutputUpdateCacheAssert 0
     CachedStartFcn	    ""
     CachedVirtualOutportStartFcn ""
+    CachedInitializeOnceFcn ""
     CachedInitializeFcn	    ""
+    CachedSystemInitializeFcn ""
+    CachedSystemResetFcn    ""
     CachedOutputFcn	    ""
     CachedUpdateFcn	    ""
     CachedDerivativeFcn	    ""
@@ -1842,11 +1798,16 @@ CompiledModel {
     CachedFinalizeDimsFcn   ""
     CachedSetDimsFcn	    ""
     CachedTerminateFcn	    ""
+    CachedModelInitializeFcn ""
+    CachedModelPrevZCStateInitFcn ""
     CachedConstCodeFcn	    ""
     CachedOutputUpdateFcn   ""
     CachedStartSSVars	    ""
     CachedVirtualOutportStartSSVars ""
+    CachedInitializeOnceSSVars ""
     CachedInitializeSSVars  ""
+    CachedSystemInitializeSSVars ""
+    CachedSystemResetSSVars ""
     CachedOutputSSVars	    ""
     CachedUpdateSSVars	    ""
     CachedDerivativeSSVars  ""
@@ -1859,11 +1820,16 @@ CompiledModel {
     CachedFinalizeDimsSSVars ""
     CachedSetDimsSSVars	    ""
     CachedTerminateSSVars   ""
+    CachedModelInitializeSSVars	""
+    CachedModelPrevZCStateInitSSVars ""
     CachedConstCodeSSVars   ""
     CachedOutputUpdateSSVars ""
     CachedStartGlobalVars   ""
     CachedVirtualOutportStartGlobalVars	""
+    CachedInitializeOnceGlobalVars ""
     CachedInitializeGlobalVars ""
+    CachedSystemInitializeGlobalVars ""
+    CachedSystemResetGlobalVars	""
     CachedOutputGlobalVars  ""
     CachedUpdateGlobalVars  ""
     CachedDerivativeGlobalVars ""
@@ -1876,11 +1842,16 @@ CompiledModel {
     CachedFinalizeDimsGlobalVars ""
     CachedSetDimsGlobalVars ""
     CachedTerminateGlobalVars ""
+    CachedModelInitializeGlobalVars ""
+    CachedModelPrevZCStateInitGlobalVars ""
     CachedConstCodeGlobalVars ""
     CachedOutputUpdateGlobalVars ""
     CachedStartLocalBO	    ""
     CachedVirtualOutportStartLocalBO ""
+    CachedInitializeOnceLocalBO	""
     CachedInitializeLocalBO ""
+    CachedSystemInitializeLocalBO ""
+    CachedSystemResetLocalBO ""
     CachedOutputLocalBO	    ""
     CachedUpdateLocalBO	    ""
     CachedDerivativeLocalBO ""
@@ -1893,11 +1864,16 @@ CompiledModel {
     CachedFinalizeDimsLocalBO ""
     CachedSetDimsLocalBO    ""
     CachedTerminateLocalBO  ""
+    CachedModelInitializeLocalBO ""
+    CachedModelPrevZCStateInitLocalBO ""
     CachedConstCodeLocalBO  ""
     CachedOutputUpdateLocalBO ""
     CachedStartLocalVars    ""
     CachedVirtualOutportStartLocalVars ""
+    CachedInitializeOnceLocalVars ""
     CachedInitializeLocalVars ""
+    CachedSystemInitializeLocalVars ""
+    CachedSystemResetLocalVars ""
     CachedOutputLocalVars   ""
     CachedUpdateLocalVars   ""
     CachedDerivativeLocalVars ""
@@ -1910,11 +1886,16 @@ CompiledModel {
     CachedFinalizeDimsLocalVars	""
     CachedSetDimsLocalVars  ""
     CachedTerminateLocalVars ""
+    CachedModelInitializeLocalVars ""
+    CachedModelPrevZCStateInitLocalVars	""
     CachedConstCodeLocalVars ""
     CachedOutputUpdateLocalVars	""
     CachedStartProfileDeclsCode	""
     CachedVirtualOutportStartProfileDeclsCode ""
+    CachedInitializeOnceProfileDeclsCode ""
     CachedInitializeProfileDeclsCode ""
+    CachedSystemInitializeProfileDeclsCode ""
+    CachedSystemResetProfileDeclsCode ""
     CachedOutputProfileDeclsCode ""
     CachedUpdateProfileDeclsCode ""
     CachedDerivativeProfileDeclsCode ""
@@ -1927,11 +1908,16 @@ CompiledModel {
     CachedFinalizeDimsProfileDeclsCode ""
     CachedSetDimsProfileDeclsCode ""
     CachedTerminateProfileDeclsCode ""
+    CachedModelInitializeProfileDeclsCode ""
+    CachedModelPrevZCStateInitProfileDeclsCode ""
     CachedConstCodeProfileDeclsCode ""
     CachedOutputUpdateProfileDeclsCode ""
     CachedStartProfileStartCode	""
     CachedVirtualOutportStartProfileStartCode ""
+    CachedInitializeOnceProfileStartCode ""
     CachedInitializeProfileStartCode ""
+    CachedSystemInitializeProfileStartCode ""
+    CachedSystemResetProfileStartCode ""
     CachedOutputProfileStartCode ""
     CachedUpdateProfileStartCode ""
     CachedDerivativeProfileStartCode ""
@@ -1944,11 +1930,16 @@ CompiledModel {
     CachedFinalizeDimsProfileStartCode ""
     CachedSetDimsProfileStartCode ""
     CachedTerminateProfileStartCode ""
+    CachedModelInitializeProfileStartCode ""
+    CachedModelPrevZCStateInitProfileStartCode ""
     CachedConstCodeProfileStartCode ""
     CachedOutputUpdateProfileStartCode ""
     CachedStartProfileEndCode ""
     CachedVirtualOutportStartProfileEndCode ""
+    CachedInitializeOnceProfileEndCode ""
     CachedInitializeProfileEndCode ""
+    CachedSystemInitializeProfileEndCode ""
+    CachedSystemResetProfileEndCode ""
     CachedOutputProfileEndCode ""
     CachedUpdateProfileEndCode ""
     CachedDerivativeProfileEndCode ""
@@ -1961,6 +1952,8 @@ CompiledModel {
     CachedFinalizeDimsProfileEndCode ""
     CachedSetDimsProfileEndCode	""
     CachedTerminateProfileEndCode ""
+    CachedModelInitializeProfileEndCode	""
+    CachedModelPrevZCStateInitProfileEndCode ""
     CachedConstCodeProfileEndCode ""
     CachedOutputUpdateProfileEndCode ""
     Output0Fcn		    ""
@@ -2042,6 +2035,7 @@ CompiledModel {
     HasParametersArg	    0
     HasZCEventArg	    0
     HasCStatesArg	    0
+    HasPeriodicCStatesArg   0
     HasCStatesDerivArg	    0
     HasContStatesDisabledArg 0
     HasContStatesAbsoluteToleranceArg 0
@@ -2062,7 +2056,10 @@ CompiledModel {
     HasRTWUserData	    0
     StartMethodHasUserData  0
     VirtualOutportStartMethodHasUserData 0
+    InitializeOnceMethodHasUserData 0
     InitializeMethodHasUserData	0
+    SystemInitializeMethodHasUserData 0
+    SystemResetMethodHasUserData 0
     OutputMethodHasUserData 0
     UpdateMethodHasUserData 0
     DerivativeMethodHasUserData	0
@@ -2075,11 +2072,16 @@ CompiledModel {
     FinalizeDimsMethodHasUserData 0
     SetDimsMethodHasUserData 0
     TerminateMethodHasUserData 0
+    ModelInitializeMethodHasUserData 0
+    ModelPrevZCStateInitMethodHasUserData 0
     ConstCodeMethodHasUserData 0
     OutputUpdateMethodHasUserData 0
     StartUserDataTLCInserted 0
     VirtualOutportStartUserDataTLCInserted 0
+    InitializeOnceUserDataTLCInserted 0
     InitializeUserDataTLCInserted 0
+    SystemInitializeUserDataTLCInserted	0
+    SystemResetUserDataTLCInserted 0
     OutputUserDataTLCInserted 0
     UpdateUserDataTLCInserted 0
     DerivativeUserDataTLCInserted 0
@@ -2092,11 +2094,15 @@ CompiledModel {
     FinalizeDimsUserDataTLCInserted 0
     SetDimsUserDataTLCInserted 0
     TerminateUserDataTLCInserted 0
+    ModelInitializeUserDataTLCInserted 0
+    ModelPrevZCStateInitUserDataTLCInserted 0
     ConstCodeUserDataTLCInserted 0
     OutputUpdateUserDataTLCInserted 0
-    NetPreprocessorCondition ""
+    SystemPreprocessorCondition	""
     NetPreprocessorInstanceConditions ""
     NetPreprocessorConditionForDefaultVariantExists "0"
+    SystemInlineVariantPreprocessorCondition ""
+    NetInlineVariantPreprocessorInstanceConditions ""
     CurrentTID		    -1
     GeneratingSubFunctions  0
     ArgumentReplacements    []
@@ -2110,7 +2116,7 @@ CompiledModel {
   }
   CanonicalPrmArgDefDefaults {
     OriginalDataTypeIdx	    0
-    CGTypeIdx		    19
+    CGTypeIdx		    21
     IsUsed		    yes
     DeclareAsPointer	    no
   }
@@ -2120,13 +2126,17 @@ CompiledModel {
     Name		    "<Root>"
     Identifier		    "TransmissionControl"
     RTWSystemCode	    2
+    IsService		    0
+    IsPublic		    0
     Synthesized		    0
     CrossNoArgFcnBound	    0
     ContainsNonreusedFcn    0
     ForceNonInline	    0
     SystemIdx		    0
     SL_SystemIdx	    0
-    ParameterVarGroupIndex  [0]
+    ExternalInputVarGroupIndex [0]
+    ExternalOutputVarGroupIndex	[1]
+    ParameterVarGroupIndex  [2]
     HStructDeclSystemIdx    0
     ReusedParentSystemIdx   0
     NonInlinedParentSystemIdx 0
@@ -2143,7 +2153,7 @@ CompiledModel {
       ParameterArgDef {
 	FirstLocation		0
 	NumFlatFields		1
-	PassthroughSystemIdx	-1
+	PassthroughSystemIdx	0
       }
       DWorkArgDef {
       }
@@ -2168,9 +2178,9 @@ CompiledModel {
     }
     Variables {
       LocalBlockIODef {
+	NumFlatFields		1
       }
       ExternBlockIODef {
-	NumFlatFields		1
       }
     }
     RunFcnCallSSInMinorStep no
@@ -2223,8 +2233,8 @@ CompiledModel {
 	}
 	Value			[3.0F]
 	OriginalDataTypeIdx	1
-	CGTypeIdx		18
-	ContainerCGTypeIdx	20
+	CGTypeIdx		20
+	ContainerCGTypeIdx	22
 	String			"const"
 	StringType		"Expression"
       }
@@ -2246,13 +2256,12 @@ CompiledModel {
       RollRegions	      [0]
       NumDataInputPorts	      1
       DataInputPort {
-	SignalSrc		[E0]
+	SignalSrc		[L0]
 	SignalRegion		[0@1]
 	CGTypeIdx		8
       }
       NumDataOutputPorts      0
       OutportParamSettings {
-	VirtualizableRoot	yes
 	PortNumber		1
 	OutputLocation		Y0
       }
@@ -2270,10 +2279,10 @@ CompiledModel {
       TID		      0
       firstEntryOfTsMapIsGCD  yes
       NumDataOutputPorts      0
-      TLCFileName	      "s0_b0_o8hfe"
+      TLCFileName	      "s0_b0_9y4mg"
       OpaqueBlockMethode {
-	HasInitializeConditions	1
 	HasOutputs		1
+	HasModelInitialize	1
       }
       Parameters	      [1, 1]
       Parameter {
@@ -2281,8 +2290,8 @@ CompiledModel {
 	MdlPrmIdx		0
 	Value			[3.0F]
 	OriginalDataTypeIdx	1
-	CGTypeIdx		18
-	ContainerCGTypeIdx	20
+	CGTypeIdx		20
+	ContainerCGTypeIdx	22
 	String			"const"
 	StringType		"Expression"
       }
@@ -2291,10 +2300,18 @@ CompiledModel {
       NumRTWdatas	      0
     }
   }
+  ChildMdls {
+    NumChildMdls	    1
+    ChildMdl {
+      MdlName		      "TransmissionControl"
+      RefPath		      "TransmissionControl"
+      IsSingleInst	      0
+    }
+  }
   StateflowAutoEnumInfoList {
   }
   BlockParamChecksum	  ["1298341836U", "2391506010U", "2325467062U", "1500287141U"]
-  ModelChecksum		  ["138699705U", "2182029860U", "2717249201U", "1573211430U"]
+  ModelChecksum		  ["370342891U", "3581058290U", "3352710077U", "241119209U"]
   IncludeCodeGenSettings  1
   CGTypes {
     CGTypeDefaults {
@@ -2310,8 +2327,9 @@ CompiledModel {
       CGTypeIdx		      0
       Alignment		      -1
     }
-    NumCGTypes		    21
+    NumCGTypes		    23
     DeclareUsedMultiWordBits 0
+    IndexType		    6
     CGType {
       Name		      "real_T"
       SLTypeIdx		      0
@@ -2382,8 +2400,10 @@ CompiledModel {
       Name		      "timer_uint32_pair"
       SLTypeIdx		      13
       Width		      2
-      Constructor	      "array"
+      Constructor	      "matrix"
       BaseIdx		      7
+      NumDimensions	      1
+      Dimensions	      [2]
     }
     CGType {
       Name		      "void"
@@ -2396,6 +2416,28 @@ CompiledModel {
     CGType {
       Name		      "ZCDirection"
       Constructor	      "enum"
+    }
+    CGType {
+      Name		      "ExtU_TransmissionControl_T"
+      Constructor	      "struct"
+      Members {
+	NumMembers		1
+	Member {
+	  Name			  "FluidSensor"
+	  CGTypeIdx		  1
+	}
+      }
+    }
+    CGType {
+      Name		      "ExtY_TransmissionControl_T"
+      Constructor	      "struct"
+      Members {
+	NumMembers		1
+	Member {
+	  Name			  "WarningLight"
+	  CGTypeIdx		  8
+	}
+      }
     }
     CGType {
       Name		      "P_TransmissionControl_T"
@@ -2465,23 +2507,25 @@ CompiledModel {
       PassThroughArgs	      ""
       NumFcnCalls	      0
       FcnHeaders	      []
+      MdlRefChildFcnNames     []
     }
     NumRTWCGModules	    1
     TestInterfaceFcnIdx	    -1
     RTWCGModule {
-      TLCFileName	      "s0_b0_o8hfe"
+      RateGrouping	      0
+      TLCFileName	      "s0_b0_9y4mg"
       RTWFcnConst {
 	HasInstanceSetup	"no"
-	InitializeConditions_Function {
-	  HasTidArg		  0
-	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_o8hfe_InitializeConditions"
-	  StackSize		  0
-	}
 	Outputs_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_o8hfe_Outputs"
+	  TLCFileName		  "s0_b0_9y4mg_Outputs"
+	  StackSize		  0
+	}
+	ModelInitialize_Function {
+	  HasTidArg		  0
+	  HasCpiArg		  0
+	  TLCFileName		  "s0_b0_9y4mg_ModelInitialize"
 	  StackSize		  0
 	}
       }
@@ -2490,26 +2534,26 @@ CompiledModel {
       NumFunctions	      2
       NumSubFunctions	      0
       SystemFunctions {
-	InitializeConditions	0
-	Outputs			1
+	Outputs			0
+	ModelInitialize		1
       }
       SystemFunctionTypes {
-	InitializeConditions	0
-	Outputs			1
-      }
-      Function {
-	Name			"InitializeConditions"
-	FunctionType		"Initialize"
+	Outputs			0
+	ModelInitialize		1
       }
       Function {
 	Name			"Outputs"
 	FunctionType		"Output"
       }
+      Function {
+	Name			"ModelInitialize"
+	FunctionType		"ModelInitialize"
+      }
     }
   }
   RTWCGStrings		  []
   VarGroups {
-    NumVarGroups	    1
+    NumVarGroups	    3
     VarGroupDefaults {
       IsPointer		      0
       InstanceIdx	      0
@@ -2524,13 +2568,38 @@ CompiledModel {
       HasElement	      ""
     }
     VarGroup {
+      Name		      "TransmissionControl_U"
+      Category		      "ExternalInput"
+      SysIdx		      0
+      HasElement	      "EXTU_TRANSMISSIONCONTROL_T_VARIANT_EXISTS"
+      InstanceIdx	      -1
+      IsPointer		      1
+      CGTypeIdx		      17
+      GlobalOffset	      0
+      NumVarGroupElements     1
+      VarGroupElements	      [U0]
+    }
+    VarGroup {
+      Name		      "TransmissionControl_Y"
+      Category		      "ExternalOutput"
+      SysIdx		      0
+      HasElement	      "EXTY_TRANSMISSIONCONTROL_T_VARIANT_EXISTS"
+      InstanceIdx	      -1
+      IsPointer		      1
+      CGTypeIdx		      18
+      GlobalOffset	      0
+      NumVarGroupElements     1
+      VarGroupElements	      [Y1]
+    }
+    VarGroup {
       Name		      "TransmissionControl_P"
       Category		      "Parameter"
       LocalName		      "localP"
       SysIdx		      0
       HasElement	      "P_TRANSMISSIONCONTROL_T_VARIANT_EXISTS"
       InstanceIdx	      -1
-      CGTypeIdx		      17
+      IsPointer		      1
+      CGTypeIdx		      19
       GlobalOffset	      0
       NumVarGroupElements     1
       VarGroupElements	      [P0]

@@ -1,11 +1,15 @@
 /*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
  * File: ert_main.c
  *
  * Code generated for Simulink model 'TransmissionControl'.
  *
- * Model version                  : 1.4
- * Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
- * C/C++ source code generated on : Sun Mar 22 13:54:15 2015
+ * Model version                  : 1.5
+ * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
+ * C/C++ source code generated on : Mon May  4 13:55:47 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ASIC/FPGA->ASIC/FPGA
@@ -21,6 +25,18 @@
 #include "rtwtypes.h"
 #include "multiword_types.h"
 
+static RT_MODEL_TransmissionControl_T TransmissionControl_M_;
+static RT_MODEL_TransmissionControl_T *const TransmissionControl_M =
+  &TransmissionControl_M_;             /* Real-time model */
+static P_TransmissionControl_T TransmissionControl_P = {
+  3.0F                                 /* Mask Parameter: LowFuelSensor_const
+                                        * Referenced by: '<S1>/Constant'
+                                        */
+};                                     /* Modifiable parameters */
+
+static ExtU_TransmissionControl_T TransmissionControl_U;/* External inputs */
+static ExtY_TransmissionControl_T TransmissionControl_Y;/* External outputs */
+
 /*
  * Associating rt_OneStep with a real-time clock or interrupt service routine
  * is what makes the generated code "real-time".  The function rt_OneStep is
@@ -32,9 +48,10 @@
  * your application needs.  This example simply sets an error status in the
  * real-time model and returns from rt_OneStep.
  */
-void rt_OneStep(void)
+void rt_OneStep(RT_MODEL_TransmissionControl_T *const TransmissionControl_M);
+void rt_OneStep(RT_MODEL_TransmissionControl_T *const TransmissionControl_M)
 {
-  static boolean_T OverrunFlag = 0;
+  static boolean_T OverrunFlag = false;
 
   /* Disable interrupts here */
 
@@ -51,7 +68,8 @@ void rt_OneStep(void)
   /* Set model inputs here */
 
   /* Step the model */
-  TransmissionControl_step();
+  TransmissionControl_step(TransmissionControl_M, &TransmissionControl_U,
+    &TransmissionControl_Y);
 
   /* Get model outputs here */
 
@@ -75,14 +93,18 @@ int_T main(int_T argc, const char *argv[])
   (void)(argc);
   (void)(argv);
 
+  /* Pack model data into RTM */
+  TransmissionControl_M->ModelData.defaultParam = &TransmissionControl_P;
+
   /* Initialize model */
-  TransmissionControl_initialize();
+  TransmissionControl_initialize(TransmissionControl_M, &TransmissionControl_U,
+    &TransmissionControl_Y);
 
   /* Attach rt_OneStep to a timer or interrupt service routine with
    * period 0.2 seconds (the model's base sample time) here.  The
    * call syntax for rt_OneStep is
    *
-   *  rt_OneStep();
+   *  rt_OneStep(TransmissionControl_M);
    */
   printf("Warning: The simulation will run forever. "
          "Generated ERT main won't simulate model step behavior. "
@@ -95,7 +117,7 @@ int_T main(int_T argc, const char *argv[])
   /* Disable rt_OneStep() here */
 
   /* Terminate model */
-  TransmissionControl_terminate();
+  TransmissionControl_terminate(TransmissionControl_M);
   return 0;
 }
 

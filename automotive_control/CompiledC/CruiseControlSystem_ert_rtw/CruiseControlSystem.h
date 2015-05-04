@@ -1,11 +1,15 @@
 /*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
  * File: CruiseControlSystem.h
  *
  * Code generated for Simulink model 'CruiseControlSystem'.
  *
- * Model version                  : 1.8
- * Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
- * C/C++ source code generated on : Mon Mar 23 13:31:51 2015
+ * Model version                  : 1.10
+ * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
+ * C/C++ source code generated on : Mon May  4 13:53:44 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -16,7 +20,6 @@
 #ifndef RTW_HEADER_CruiseControlSystem_h_
 #define RTW_HEADER_CruiseControlSystem_h_
 #include "rtwtypes.h"
-#include <stddef.h>
 #include <string.h>
 #ifndef CruiseControlSystem_COMMON_INCLUDES_
 # define CruiseControlSystem_COMMON_INCLUDES_
@@ -40,6 +43,17 @@ typedef struct {
   real_T DiscreteTimeIntegrator_DSTATE;/* '<S2>/Discrete-Time Integrator' */
   real_T DiscreteTimeIntegrator_DSTATE_o;/* '<S1>/Discrete-Time Integrator' */
 } DW_CruiseControlSystem_T;
+
+/* External inputs (root inport signals with auto storage) */
+typedef struct {
+  real_T In1;                          /* '<Root>/In1' */
+  real_T In2;                          /* '<Root>/In2' */
+} ExtU_CruiseControlSystem_T;
+
+/* External outputs (root outports fed by signals with auto storage) */
+typedef struct {
+  real_T Out1;                         /* '<Root>/Out1' */
+} ExtY_CruiseControlSystem_T;
 
 /* Parameters (auto storage) */
 struct P_CruiseControlSystem_T_ {
@@ -75,25 +89,27 @@ typedef struct P_CruiseControlSystem_T_ P_CruiseControlSystem_T;
 /* Real-time Model Data Structure */
 struct tag_RTM_CruiseControlSystem_T {
   const char_T * volatile errorStatus;
+
+  /*
+   * ModelData:
+   * The following substructure contains information regarding
+   * the data used in the model.
+   */
+  struct {
+    P_CruiseControlSystem_T *defaultParam;
+    DW_CruiseControlSystem_T *dwork;
+  } ModelData;
 };
 
-/* Imported (extern) block signals */
-extern real_T cc_current_speed;        /* '<S2>/Discrete-Time Integrator' */
-extern real_T cc_desired_speed;        /* '<Root>/In1' */
-
-/* Block parameters (auto storage) */
-extern P_CruiseControlSystem_T CruiseControlSystem_P;
-
-/* Block states (auto storage) */
-extern DW_CruiseControlSystem_T CruiseControlSystem_DW;
-
 /* Model entry point functions */
-extern void CruiseControlSystem_initialize(void);
-extern void CruiseControlSystem_step(void);
-extern void CruiseControlSystem_terminate(void);
-
-/* Real-time Model object */
-extern RT_MODEL_CruiseControlSystem_T *const CruiseControlSystem_M;
+extern void CruiseControlSystem_initialize(RT_MODEL_CruiseControlSystem_T *const
+  CruiseControlSystem_M, ExtU_CruiseControlSystem_T *CruiseControlSystem_U,
+  ExtY_CruiseControlSystem_T *CruiseControlSystem_Y);
+extern void CruiseControlSystem_step(RT_MODEL_CruiseControlSystem_T *const
+  CruiseControlSystem_M, ExtU_CruiseControlSystem_T *CruiseControlSystem_U,
+  ExtY_CruiseControlSystem_T *CruiseControlSystem_Y);
+extern void CruiseControlSystem_terminate(RT_MODEL_CruiseControlSystem_T *const
+  CruiseControlSystem_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly

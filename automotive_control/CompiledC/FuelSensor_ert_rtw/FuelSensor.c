@@ -1,11 +1,15 @@
 /*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
  * File: FuelSensor.c
  *
  * Code generated for Simulink model 'FuelSensor'.
  *
- * Model version                  : 1.5
- * Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
- * C/C++ source code generated on : Sun Mar 22 14:02:44 2015
+ * Model version                  : 1.8
+ * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
+ * C/C++ source code generated on : Mon May  4 13:58:52 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -15,48 +19,96 @@
 
 #include "FuelSensor.h"
 
-/* Block states (auto storage) */
-DW_FuelSensor_T FuelSensor_DW;
+/*===========*
+ * Constants *
+ *===========*/
+#define RT_PI                          3.14159265358979323846
+#define RT_PIF                         3.1415927F
+#define RT_LN_10                       2.30258509299404568402
+#define RT_LN_10F                      2.3025851F
+#define RT_LOG10E                      0.43429448190325182765
+#define RT_LOG10EF                     0.43429449F
+#define RT_E                           2.7182818284590452354
+#define RT_EF                          2.7182817F
 
-/* Real-time model */
-RT_MODEL_FuelSensor_T FuelSensor_M_;
-RT_MODEL_FuelSensor_T *const FuelSensor_M = &FuelSensor_M_;
+/*
+ * UNUSED_PARAMETER(x)
+ *   Used to specify that a function parameter (argument) is required but not
+ *   accessed by the function body.
+ */
+#ifndef UNUSED_PARAMETER
+# if defined(__LCC__)
+#   define UNUSED_PARAMETER(x)                                   /* do nothing */
+# else
+
+/*
+ * This is the semi-ANSI standard way of indicating that an
+ * unused function parameter is required.
+ */
+#   define UNUSED_PARAMETER(x)         (void) (x)
+# endif
+#endif
 
 /* Model step function */
-void FuelSensor_step(void)
+void FuelSensor_step(RT_MODEL_FuelSensor_T *const FuelSensor_M,
+                     ExtU_FuelSensor_T *FuelSensor_U, ExtY_FuelSensor_T
+                     *FuelSensor_Y)
 {
-  /* UnitDelay: '<Root>/Light on  ' */
-  fs_warning_light = FuelSensor_DW.Lighton_DSTATE;
+  P_FuelSensor_T *FuelSensor_P = ((P_FuelSensor_T *)
+    FuelSensor_M->ModelData.defaultParam);
+  DW_FuelSensor_T *FuelSensor_DW = ((DW_FuelSensor_T *)
+    FuelSensor_M->ModelData.dwork);
+
+  /* Outport: '<Root>/Fuel Display' incorporates:
+   *  Inport: '<Root>/Fuel Level'
+   */
+  FuelSensor_Y->FuelDisplay = FuelSensor_U->FuelLevel;
+
+  /* Outport: '<Root>/Warning Light' incorporates:
+   *  UnitDelay: '<Root>/Light on  '
+   */
+  FuelSensor_Y->WarningLight = FuelSensor_DW->Lighton_DSTATE;
 
   /* Update for UnitDelay: '<Root>/Light on  ' incorporates:
    *  Constant: '<S1>/Constant'
-   *  Update for Inport: '<Root>/Fuel Level'
+   *  Inport: '<Root>/Fuel Level'
    *  RelationalOperator: '<S1>/Compare'
    */
-  FuelSensor_DW.Lighton_DSTATE = (fs_fuel_level <=
-    FuelSensor_P.LowFuelSensor_const);
+  FuelSensor_DW->Lighton_DSTATE = (FuelSensor_U->FuelLevel <=
+    FuelSensor_P->LowFuelSensor_const);
 }
 
 /* Model initialize function */
-void FuelSensor_initialize(void)
+void FuelSensor_initialize(RT_MODEL_FuelSensor_T *const FuelSensor_M,
+  ExtU_FuelSensor_T *FuelSensor_U, ExtY_FuelSensor_T *FuelSensor_Y)
 {
+  P_FuelSensor_T *FuelSensor_P = ((P_FuelSensor_T *)
+    FuelSensor_M->ModelData.defaultParam);
+  DW_FuelSensor_T *FuelSensor_DW = ((DW_FuelSensor_T *)
+    FuelSensor_M->ModelData.dwork);
+
   /* Registration code */
 
-  /* initialize error status */
-  rtmSetErrorStatus(FuelSensor_M, (NULL));
-
   /* states (dwork) */
-  (void) memset((void *)&FuelSensor_DW, 0,
+  (void) memset((void *)FuelSensor_DW, 0,
                 sizeof(DW_FuelSensor_T));
 
+  /* external inputs */
+  FuelSensor_U->FuelLevel = 0.0F;
+
+  /* external outputs */
+  (void) memset((void *)FuelSensor_Y, 0,
+                sizeof(ExtY_FuelSensor_T));
+
   /* InitializeConditions for UnitDelay: '<Root>/Light on  ' */
-  FuelSensor_DW.Lighton_DSTATE = FuelSensor_P.Lighton_InitialCondition;
+  FuelSensor_DW->Lighton_DSTATE = FuelSensor_P->Lighton_InitialCondition;
 }
 
 /* Model terminate function */
-void FuelSensor_terminate(void)
+void FuelSensor_terminate(RT_MODEL_FuelSensor_T *const FuelSensor_M)
 {
   /* (no terminate code required) */
+  UNUSED_PARAMETER(FuelSensor_M);
 }
 
 /*

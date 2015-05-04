@@ -1,11 +1,15 @@
 /*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
  * File: TransmissionControl.h
  *
  * Code generated for Simulink model 'TransmissionControl'.
  *
- * Model version                  : 1.4
- * Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
- * C/C++ source code generated on : Sun Mar 22 13:54:15 2015
+ * Model version                  : 1.5
+ * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
+ * C/C++ source code generated on : Mon May  4 13:55:47 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ASIC/FPGA->ASIC/FPGA
@@ -19,9 +23,9 @@
 #define RTW_HEADER_TransmissionControl_h_
 #include "rtwtypes.h"
 #include "multiword_types.h"
-#include <stddef.h>
 #ifndef TransmissionControl_COMMON_INCLUDES_
 # define TransmissionControl_COMMON_INCLUDES_
+#include "rtwtypes.h"
 #endif                                 /* TransmissionControl_COMMON_INCLUDES_ */
 
 /* Shared type includes */
@@ -39,6 +43,16 @@
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_TransmissionControl_T RT_MODEL_TransmissionControl_T;
 
+/* External inputs (root inport signals with auto storage) */
+typedef struct {
+  real32_T FluidSensor;                /* '<Root>/Fluid Sensor' */
+} ExtU_TransmissionControl_T;
+
+/* External outputs (root outports fed by signals with auto storage) */
+typedef struct {
+  boolean_T WarningLight;              /* '<Root>/Warning Light' */
+} ExtY_TransmissionControl_T;
+
 /* Parameters (auto storage) */
 struct P_TransmissionControl_T_ {
   real32_T LowFuelSensor_const;        /* Mask Parameter: LowFuelSensor_const
@@ -52,22 +66,26 @@ typedef struct P_TransmissionControl_T_ P_TransmissionControl_T;
 /* Real-time Model Data Structure */
 struct tag_RTM_TransmissionControl_T {
   const char_T * volatile errorStatus;
+
+  /*
+   * ModelData:
+   * The following substructure contains information regarding
+   * the data used in the model.
+   */
+  struct {
+    P_TransmissionControl_T *defaultParam;
+  } ModelData;
 };
 
-/* Imported (extern) block signals */
-extern boolean_T warning_light;        /* '<S1>/Compare' */
-extern real32_T fluid_sensor;          /* '<Root>/Fluid Sensor' */
-
-/* Block parameters (auto storage) */
-extern P_TransmissionControl_T TransmissionControl_P;
-
 /* Model entry point functions */
-extern void TransmissionControl_initialize(void);
-extern void TransmissionControl_step(void);
-extern void TransmissionControl_terminate(void);
-
-/* Real-time Model object */
-extern RT_MODEL_TransmissionControl_T *const TransmissionControl_M;
+extern void TransmissionControl_initialize(RT_MODEL_TransmissionControl_T *const
+  TransmissionControl_M, ExtU_TransmissionControl_T *TransmissionControl_U,
+  ExtY_TransmissionControl_T *TransmissionControl_Y);
+extern void TransmissionControl_step(RT_MODEL_TransmissionControl_T *const
+  TransmissionControl_M, ExtU_TransmissionControl_T *TransmissionControl_U,
+  ExtY_TransmissionControl_T *TransmissionControl_Y);
+extern void TransmissionControl_terminate(RT_MODEL_TransmissionControl_T *const
+  TransmissionControl_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly

@@ -1,5 +1,5 @@
 %function FcnLoadCodeIRInfo() Output 
-codeIRInfoStruct = load('/Users/anthonydelage/Documents/MATLAB/TractionControl_ert_rtw/tlc/codeIRInfo.mat');
+codeIRInfoStruct = load('/data/jcapla9/fingerprinting/automotive_control/CompiledC/TractionControl_ert_rtw/tlc/codeIRInfo.mat');
 codeInfo = codeIRInfoStruct.codeInfo;
 %endfunction
 
@@ -14,7 +14,7 @@ codeInfo = codeIRInfoStruct.codeInfo;
 %endfunction
 
 %function FcnGetUnsetEIIdxFromIRInfo() void
-%assign tmpIdx = [0, 1]
+%assign tmpIdx = []
 %return tmpIdx 
 %endfunction
 
@@ -24,7 +24,7 @@ codeInfo = codeIRInfoStruct.codeInfo;
 %endfunction
 
 %function FcnGetUnsetEOIdxFromIRInfo() void
-%assign tmpIdx = [0]
+%assign tmpIdx = []
 %return tmpIdx 
 %endfunction
 

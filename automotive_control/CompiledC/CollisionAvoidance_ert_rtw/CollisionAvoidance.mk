@@ -2,8 +2,8 @@
 ## Makefile generated for Simulink model 'CollisionAvoidance'. 
 ## 
 ## Makefile     : CollisionAvoidance.mk
-## Generated on : Mon Mar 23 13:29:03 2015
-## MATLAB Coder version: 2.6 (R2014a)
+## Generated on : Mon May 04 13:01:40 2015
+## MATLAB Coder version: 2.8 (R2015a)
 ## 
 ## Build Info:
 ## 
@@ -24,41 +24,46 @@
 
 PRODUCT_NAME              = CollisionAvoidance
 MAKEFILE                  = CollisionAvoidance.mk
-COMPUTER                  = MACI64
-MATLAB_ROOT               = /Applications/MATLAB_R2014a.app
-MATLAB_BIN                = /Applications/MATLAB_R2014a.app/bin
-MATLAB_ARCH_BIN           = /Applications/MATLAB_R2014a.app/bin/maci64
+COMPUTER                  = GLNXA64
+MATLAB_ROOT               = /data/jcapla9/matlab
+MATLAB_BIN                = /data/jcapla9/matlab/bin
+MATLAB_ARCH_BIN           = /data/jcapla9/matlab/bin/glnxa64
 MASTER_ANCHOR_DIR         = 
-START_DIR                 = /Users/anthonydelage/Documents/MATLAB
-ARCH                      = maci64
+START_DIR                 = /data/jcapla9/fingerprinting/automotive_control/CompiledC
+ARCH                      = glnxa64
 SOLVER                    = 
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0
 TGT_FCN_LIB               = None
 MODELREF_LINK_RSPFILE_NAME = CollisionAvoidance_ref.rsp
 RELATIVE_PATH_TO_ANCHOR   = ..
+ANSI_OPTS                 = -ansi -pedantic -Wno-long-long -fwrapv
+CPP_ANSI_OPTS             = -std=c++98 -pedantic -Wno-long-long -fwrapv
 
 ###########################################################################
 ## TOOLCHAIN SPECIFICATIONS
 ###########################################################################
 
-# Toolchain Name:          Clang v3.1 | gmake (64-bit Mac)
-# Supported Version(s):    3.1
-# ToolchainInfo Version:   R2014a
+# Toolchain Name:          GNU gcc/g++ v4.4.x | gmake (64-bit Linux)
+# Supported Version(s):    4.4.x
+# ToolchainInfo Version:   R2015a
 # Specification Revision:  1.0
 # 
+#-------------------------------------------
+# Macros assumed to be defined elsewhere
+#-------------------------------------------
+
+# ANSI_OPTS
+# CPP_ANSI_OPTS
 
 #-----------
 # MACROS
 #-----------
 
-ANSI_OPTS       = -fno-common -fexceptions
-CPP_ANSI_OPTS   = -fno-common -fexceptions
-ARCHS           = x86_64
-XCODE_SDK_VER   = $(shell xcodebuild -showsdks | perl -anle 'BEGIN{@l = "";} push @l, $$F[-1] if /macosx/; END{ sort @l; $$_ = $$l[1]; s/macosx//; print $$_;}')
-XCODE_SDK       = MacOSX$(XCODE_SDK_VER).sdk
-XCODE_DEVEL_DIR = $(shell xcode-select -print-path)
-XCODE_SDK_ROOT  = $(shell find $(XCODE_DEVEL_DIR) -name $(XCODE_SDK))
+WARN_FLAGS         = -Wall -W -Wwrite-strings -Winline -Wstrict-prototypes -Wnested-externs -Wpointer-arith -Wcast-align
+WARN_FLAGS_MAX     = $(WARN_FLAGS) -Wcast-qual -Wshadow
+CPP_WARN_FLAGS     = -Wall -W -Wwrite-strings -Winline -Wpointer-arith -Wcast-align
+CPP_WARN_FLAGS_MAX = $(CPP_WARN_FLAGS) -Wcast-qual -Wshadow
 
 TOOLCHAIN_SRCS = 
 TOOLCHAIN_INCS = 
@@ -68,20 +73,20 @@ TOOLCHAIN_LIBS =
 # BUILD TOOL COMMANDS
 #------------------------
 
-# C Compiler: Clang C Compiler
-CC = xcrun clang
+# C Compiler: GNU C Compiler
+CC = gcc
 
-# Linker: Clang Linker
-LD = xcrun clang
+# Linker: GNU Linker
+LD = gcc
 
-# C++ Compiler: Clang C++ Compiler
-CPP = xcrun clang++
+# C++ Compiler: GNU C++ Compiler
+CPP = g++
 
-# C++ Linker: Clang C++ Linker
-CPP_LD = xcrun clang++
+# C++ Linker: GNU C++ Linker
+CPP_LD = g++
 
-# Archiver: Clang Archiver
-AR = xcrun ar
+# Archiver: GNU Archiver
+AR = ar
 
 # MEX Tool: MEX Tool
 MEX_PATH = $(MATLAB_BIN)
@@ -94,7 +99,7 @@ DOWNLOAD =
 EXECUTE = $(PRODUCT)
 
 # Builder: GMAKE Utility
-MAKE_PATH = %MATLAB%/bin/maci64
+MAKE_PATH = %MATLAB%/bin/glnxa64
 MAKE = $(MAKE_PATH)/gmake
 
 
@@ -123,16 +128,15 @@ RUN                 =
 #----------------------------------------
 
 ARFLAGS              = ruvs
-CFLAGS               = -c -isysroot $(XCODE_SDK_ROOT) -arch $(ARCHS) $(ANSI_OPTS) \
+CFLAGS               = -c $(ANSI_OPTS) -fPIC \
                        -O0
-CPPFLAGS             = -c -isysroot $(XCODE_SDK_ROOT) -arch $(ARCHS) $(CPP_ANSI_OPTS) \
+CPPFLAGS             = -c $(CPP_ANSI_OPTS) -fPIC \
                        -O0
-CPP_LDFLAGS          = -arch $(ARCHS) -isysroot $(XCODE_SDK_ROOT) -L"$(MATLAB_ARCH_BIN)"
-CPP_SHAREDLIB_LDFLAGS  = -dynamiclib -isysroot $(XCODE_SDK_ROOT) -L"$(MATLAB_ARCH_BIN)" \
-                         -Wl,$(LD_NAMESPACE) $(LD_UNDEFS)
+CPP_LDFLAGS          = -Wl,-rpath,"$(MATLAB_ARCH_BIN)",-L"$(MATLAB_ARCH_BIN)"
+CPP_SHAREDLIB_LDFLAGS  = -shared -Wl,-rpath,"$(MATLAB_ARCH_BIN)",-L"$(MATLAB_ARCH_BIN)" -Wl,--no-undefined
 DOWNLOAD_FLAGS       =
 EXECUTE_FLAGS        =
-LDFLAGS              = -arch $(ARCHS) -isysroot $(XCODE_SDK_ROOT) -L"$(MATLAB_ARCH_BIN)"
+LDFLAGS              = -Wl,-rpath,"$(MATLAB_ARCH_BIN)",-L"$(MATLAB_ARCH_BIN)"
 MEX_CFLAGS           = -MATLAB_ARCH=$(ARCH) $(INCLUDES) \
                          \
                        COPTIMFLAGS="$(ANSI_OPTS)  \
@@ -142,8 +146,7 @@ MEX_CFLAGS           = -MATLAB_ARCH=$(ARCH) $(INCLUDES) \
                        -silent
 MEX_LDFLAGS          = LDFLAGS=='$$LDFLAGS'
 MAKE_FLAGS           = -f $(MAKEFILE)
-SHAREDLIB_LDFLAGS    = -dynamiclib -isysroot $(XCODE_SDK_ROOT) -L"$(MATLAB_ARCH_BIN)" \
-                       -Wl,$(LD_NAMESPACE) $(LD_UNDEFS)
+SHAREDLIB_LDFLAGS    = -shared -Wl,-rpath,"$(MATLAB_ARCH_BIN)",-L"$(MATLAB_ARCH_BIN)" -Wl,--no-undefined
 
 #--------------------
 # File extensions
@@ -160,7 +163,7 @@ CPP_EXT             = .cpp
 EXE_EXT             =
 SHAREDLIB_EXT       = .so
 STATICLIB_EXT       = .a
-MEX_EXT             = .mexmaci64
+MEX_EXT             = .mexa64
 MAKE_EXT            = .mk
 
 
@@ -176,7 +179,7 @@ BUILD_TYPE = "Top-Level Standalone Executable"
 ## INCLUDE PATHS
 ###########################################################################
 
-INCLUDES_BUILDINFO = -I$(START_DIR)/CollisionAvoidance_ert_rtw -I$(START_DIR) -I$(START_DIR)/DesignProject -I$(MATLAB_ROOT)/extern/include -I$(MATLAB_ROOT)/simulink/include -I$(MATLAB_ROOT)/rtw/c/src -I$(MATLAB_ROOT)/rtw/c/src/ext_mode/common -I$(MATLAB_ROOT)/rtw/c/ert
+INCLUDES_BUILDINFO = -I$(START_DIR)/CollisionAvoidance_ert_rtw -I$(START_DIR) -I/data/jcapla9/fingerprinting/automotive_control/matlab -I$(MATLAB_ROOT)/extern/include -I$(MATLAB_ROOT)/simulink/include -I$(MATLAB_ROOT)/rtw/c/src -I$(MATLAB_ROOT)/rtw/c/src/ext_mode/common -I$(MATLAB_ROOT)/rtw/c/ert
 
 INCLUDES = $(INCLUDES_BUILDINFO)
 
@@ -184,7 +187,7 @@ INCLUDES = $(INCLUDES_BUILDINFO)
 ## DEFINES
 ###########################################################################
 
-DEFINES_BUILD_ARGS = -DONESTEPFCN=1 -DTERMFCN=1 -DMAT_FILE=0 -DMULTI_INSTANCE_CODE=0 -DINTEGER_CODE=0 -DMT=0 -DCLASSIC_INTERFACE=0 -DALLOCATIONFCN=0
+DEFINES_BUILD_ARGS = -DONESTEPFCN=1 -DTERMFCN=1 -DMAT_FILE=0 -DMULTI_INSTANCE_CODE=1 -DINTEGER_CODE=0 -DMT=0 -DCLASSIC_INTERFACE=0 -DALLOCATIONFCN=0
 DEFINES_IMPLIED = -DTID01EQ=0
 DEFINES_STANDARD = -DMODEL=CollisionAvoidance -DNUMST=1 -DNCSTATES=0 -DHAVESTDIO -DUNIX
 
@@ -194,17 +197,15 @@ DEFINES = $(DEFINES_BUILD_ARGS) $(DEFINES_IMPLIED) $(DEFINES_STANDARD)
 ## SOURCE FILES
 ###########################################################################
 
-SRCS = $(START_DIR)/CollisionAvoidance_ert_rtw/CollisionAvoidance.c $(START_DIR)/CollisionAvoidance_ert_rtw/CollisionAvoidance_data.c
+SRCS = $(START_DIR)/CollisionAvoidance_ert_rtw/CollisionAvoidance.c $(START_DIR)/CollisionAvoidance_ert_rtw/ert_main.c
 
-MAIN_SRC = $(START_DIR)/CollisionAvoidance_ert_rtw/ert_main.c
-
-ALL_SRCS = $(SRCS) $(MAIN_SRC)
+ALL_SRCS = $(SRCS)
 
 ###########################################################################
 ## OBJECTS
 ###########################################################################
 
-OBJS = CollisionAvoidance.o CollisionAvoidance_data.o
+OBJS = CollisionAvoidance.o
 
 MAIN_OBJ = ert_main.o
 

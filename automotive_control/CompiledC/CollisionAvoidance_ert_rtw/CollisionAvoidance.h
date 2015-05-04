@@ -1,11 +1,15 @@
 /*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
  * File: CollisionAvoidance.h
  *
  * Code generated for Simulink model 'CollisionAvoidance'.
  *
- * Model version                  : 1.4
- * Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
- * C/C++ source code generated on : Mon Mar 23 13:28:59 2015
+ * Model version                  : 1.6
+ * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
+ * C/C++ source code generated on : Mon May  4 13:02:04 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -16,10 +20,10 @@
 #ifndef RTW_HEADER_CollisionAvoidance_h_
 #define RTW_HEADER_CollisionAvoidance_h_
 #include "rtwtypes.h"
-#include <stddef.h>
 #include <string.h>
 #ifndef CollisionAvoidance_COMMON_INCLUDES_
 # define CollisionAvoidance_COMMON_INCLUDES_
+#include "rtwtypes.h"
 #endif                                 /* CollisionAvoidance_COMMON_INCLUDES_ */
 
 /* Macros for accessing real-time model data structure */
@@ -39,6 +43,17 @@ typedef struct {
   real_T UD_DSTATE;                    /* '<S3>/UD' */
   real_T UD_DSTATE_g;                  /* '<S4>/UD' */
 } DW_CollisionAvoidance_T;
+
+/* External inputs (root inport signals with auto storage) */
+typedef struct {
+  real_T In1;                          /* '<Root>/In1' */
+  real_T In2;                          /* '<Root>/In2' */
+} ExtU_CollisionAvoidance_T;
+
+/* External outputs (root outports fed by signals with auto storage) */
+typedef struct {
+  boolean_T Out1;                      /* '<Root>/Out1' */
+} ExtY_CollisionAvoidance_T;
 
 /* Parameters (auto storage) */
 struct P_CollisionAvoidance_T_ {
@@ -65,26 +80,27 @@ typedef struct P_CollisionAvoidance_T_ P_CollisionAvoidance_T;
 /* Real-time Model Data Structure */
 struct tag_RTM_CollisionAvoidance_T {
   const char_T * volatile errorStatus;
+
+  /*
+   * ModelData:
+   * The following substructure contains information regarding
+   * the data used in the model.
+   */
+  struct {
+    P_CollisionAvoidance_T *defaultParam;
+    DW_CollisionAvoidance_T *dwork;
+  } ModelData;
 };
 
-/* Imported (extern) block signals */
-extern boolean_T ca_light_on;          /* '<S2>/Compare' */
-extern real_T ca_radar_sensor;         /* '<Root>/In1' */
-extern real_T ca_acceleration;         /* '<Root>/In2' */
-
-/* Block parameters (auto storage) */
-extern P_CollisionAvoidance_T CollisionAvoidance_P;
-
-/* Block states (auto storage) */
-extern DW_CollisionAvoidance_T CollisionAvoidance_DW;
-
 /* Model entry point functions */
-extern void CollisionAvoidance_initialize(void);
-extern void CollisionAvoidance_step(void);
-extern void CollisionAvoidance_terminate(void);
-
-/* Real-time Model object */
-extern RT_MODEL_CollisionAvoidance_T *const CollisionAvoidance_M;
+extern void CollisionAvoidance_initialize(RT_MODEL_CollisionAvoidance_T *const
+  CollisionAvoidance_M, ExtU_CollisionAvoidance_T *CollisionAvoidance_U,
+  ExtY_CollisionAvoidance_T *CollisionAvoidance_Y);
+extern void CollisionAvoidance_step(RT_MODEL_CollisionAvoidance_T *const
+  CollisionAvoidance_M, ExtU_CollisionAvoidance_T *CollisionAvoidance_U,
+  ExtY_CollisionAvoidance_T *CollisionAvoidance_Y);
+extern void CollisionAvoidance_terminate(RT_MODEL_CollisionAvoidance_T *const
+  CollisionAvoidance_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly

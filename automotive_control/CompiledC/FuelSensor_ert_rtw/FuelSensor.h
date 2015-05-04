@@ -1,11 +1,15 @@
 /*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
  * File: FuelSensor.h
  *
  * Code generated for Simulink model 'FuelSensor'.
  *
- * Model version                  : 1.5
- * Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
- * C/C++ source code generated on : Sun Mar 22 14:02:44 2015
+ * Model version                  : 1.8
+ * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
+ * C/C++ source code generated on : Mon May  4 13:58:52 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -16,10 +20,10 @@
 #ifndef RTW_HEADER_FuelSensor_h_
 #define RTW_HEADER_FuelSensor_h_
 #include "rtwtypes.h"
-#include <stddef.h>
 #include <string.h>
 #ifndef FuelSensor_COMMON_INCLUDES_
 # define FuelSensor_COMMON_INCLUDES_
+#include "rtwtypes.h"
 #endif                                 /* FuelSensor_COMMON_INCLUDES_ */
 
 /* Macros for accessing real-time model data structure */
@@ -39,6 +43,17 @@ typedef struct {
   boolean_T Lighton_DSTATE;            /* '<Root>/Light on  ' */
 } DW_FuelSensor_T;
 
+/* External inputs (root inport signals with auto storage) */
+typedef struct {
+  real32_T FuelLevel;                  /* '<Root>/Fuel Level' */
+} ExtU_FuelSensor_T;
+
+/* External outputs (root outports fed by signals with auto storage) */
+typedef struct {
+  real32_T FuelDisplay;                /* '<Root>/Fuel Display' */
+  boolean_T WarningLight;              /* '<Root>/Warning Light' */
+} ExtY_FuelSensor_T;
+
 /* Parameters (auto storage) */
 struct P_FuelSensor_T_ {
   real32_T LowFuelSensor_const;        /* Mask Parameter: LowFuelSensor_const
@@ -55,25 +70,24 @@ typedef struct P_FuelSensor_T_ P_FuelSensor_T;
 /* Real-time Model Data Structure */
 struct tag_RTM_FuelSensor_T {
   const char_T * volatile errorStatus;
+
+  /*
+   * ModelData:
+   * The following substructure contains information regarding
+   * the data used in the model.
+   */
+  struct {
+    P_FuelSensor_T *defaultParam;
+    DW_FuelSensor_T *dwork;
+  } ModelData;
 };
 
-/* Imported (extern) block signals */
-extern boolean_T fs_warning_light;     /* '<Root>/Light on  ' */
-extern real32_T fs_fuel_level;         /* '<Root>/Fuel Level' */
-
-/* Block parameters (auto storage) */
-extern P_FuelSensor_T FuelSensor_P;
-
-/* Block states (auto storage) */
-extern DW_FuelSensor_T FuelSensor_DW;
-
 /* Model entry point functions */
-extern void FuelSensor_initialize(void);
-extern void FuelSensor_step(void);
-extern void FuelSensor_terminate(void);
-
-/* Real-time Model object */
-extern RT_MODEL_FuelSensor_T *const FuelSensor_M;
+extern void FuelSensor_initialize(RT_MODEL_FuelSensor_T *const FuelSensor_M,
+  ExtU_FuelSensor_T *FuelSensor_U, ExtY_FuelSensor_T *FuelSensor_Y);
+extern void FuelSensor_step(RT_MODEL_FuelSensor_T *const FuelSensor_M,
+  ExtU_FuelSensor_T *FuelSensor_U, ExtY_FuelSensor_T *FuelSensor_Y);
+extern void FuelSensor_terminate(RT_MODEL_FuelSensor_T *const FuelSensor_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly

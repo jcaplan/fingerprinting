@@ -1,11 +1,15 @@
 /*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
  * File: Derivative.h
  *
  * Code generated for Simulink model 'Derivative'.
  *
- * Model version                  : 1.3
- * Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
- * C/C++ source code generated on : Mon Mar 23 13:34:32 2015
+ * Model version                  : 1.5
+ * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
+ * C/C++ source code generated on : Mon May  4 13:58:04 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -16,7 +20,6 @@
 #ifndef RTW_HEADER_Derivative_h_
 #define RTW_HEADER_Derivative_h_
 #include "rtwtypes.h"
-#include <stddef.h>
 #include <string.h>
 #ifndef Derivative_COMMON_INCLUDES_
 # define Derivative_COMMON_INCLUDES_
@@ -40,6 +43,16 @@ typedef struct {
   real_T UD_DSTATE;                    /* '<S2>/UD' */
 } DW_Derivative_T;
 
+/* External inputs (root inport signals with auto storage) */
+typedef struct {
+  real_T In1;                          /* '<Root>/In1' */
+} ExtU_Derivative_T;
+
+/* External outputs (root outports fed by signals with auto storage) */
+typedef struct {
+  real_T Out1;                         /* '<Root>/Out1' */
+} ExtY_Derivative_T;
+
 /* Parameters (auto storage) */
 struct P_Derivative_T_ {
   real_T DiscreteDerivative_ICPrevScaled;/* Mask Parameter: DiscreteDerivative_ICPrevScaled
@@ -56,25 +69,24 @@ typedef struct P_Derivative_T_ P_Derivative_T;
 /* Real-time Model Data Structure */
 struct tag_RTM_Derivative_T {
   const char_T * volatile errorStatus;
+
+  /*
+   * ModelData:
+   * The following substructure contains information regarding
+   * the data used in the model.
+   */
+  struct {
+    P_Derivative_T *defaultParam;
+    DW_Derivative_T *dwork;
+  } ModelData;
 };
 
-/* Imported (extern) block signals */
-extern real_T deriv_out;               /* '<S2>/Diff' */
-extern real_T deriv_in;                /* '<Root>/In1' */
-
-/* Block parameters (auto storage) */
-extern P_Derivative_T Derivative_P;
-
-/* Block states (auto storage) */
-extern DW_Derivative_T Derivative_DW;
-
 /* Model entry point functions */
-extern void Derivative_initialize(void);
-extern void Derivative_step(void);
-extern void Derivative_terminate(void);
-
-/* Real-time Model object */
-extern RT_MODEL_Derivative_T *const Derivative_M;
+extern void Derivative_initialize(RT_MODEL_Derivative_T *const Derivative_M,
+  ExtU_Derivative_T *Derivative_U, ExtY_Derivative_T *Derivative_Y);
+extern void Derivative_step(RT_MODEL_Derivative_T *const Derivative_M,
+  ExtU_Derivative_T *Derivative_U, ExtY_Derivative_T *Derivative_Y);
+extern void Derivative_terminate(RT_MODEL_Derivative_T *const Derivative_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly

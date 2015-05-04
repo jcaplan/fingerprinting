@@ -1,11 +1,15 @@
 /*
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
  * File: ert_main.c
  *
  * Code generated for Simulink model 'FuelSensor'.
  *
- * Model version                  : 1.5
- * Simulink Coder version         : 8.6 (R2014a) 27-Dec-2013
- * C/C++ source code generated on : Sun Mar 22 14:02:44 2015
+ * Model version                  : 1.8
+ * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
+ * C/C++ source code generated on : Mon May  4 13:58:52 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -18,6 +22,21 @@
 #include "FuelSensor.h"                /* Model's header file */
 #include "rtwtypes.h"
 
+static RT_MODEL_FuelSensor_T FuelSensor_M_;
+static RT_MODEL_FuelSensor_T *const FuelSensor_M = &FuelSensor_M_;/* Real-time model */
+static P_FuelSensor_T FuelSensor_P = {
+  3.0F,                                /* Mask Parameter: LowFuelSensor_const
+                                        * Referenced by: '<S1>/Constant'
+                                        */
+  0                                    /* Computed Parameter: Lighton_InitialCondition
+                                        * Referenced by: '<Root>/Light on  '
+                                        */
+};                                     /* Modifiable parameters */
+
+static DW_FuelSensor_T FuelSensor_DW;  /* Observable states */
+static ExtU_FuelSensor_T FuelSensor_U; /* External inputs */
+static ExtY_FuelSensor_T FuelSensor_Y; /* External outputs */
+
 /*
  * Associating rt_OneStep with a real-time clock or interrupt service routine
  * is what makes the generated code "real-time".  The function rt_OneStep is
@@ -29,9 +48,10 @@
  * your application needs.  This example simply sets an error status in the
  * real-time model and returns from rt_OneStep.
  */
-void rt_OneStep(void)
+void rt_OneStep(RT_MODEL_FuelSensor_T *const FuelSensor_M);
+void rt_OneStep(RT_MODEL_FuelSensor_T *const FuelSensor_M)
 {
-  static boolean_T OverrunFlag = 0;
+  static boolean_T OverrunFlag = false;
 
   /* Disable interrupts here */
 
@@ -48,7 +68,7 @@ void rt_OneStep(void)
   /* Set model inputs here */
 
   /* Step the model */
-  FuelSensor_step();
+  FuelSensor_step(FuelSensor_M, &FuelSensor_U, &FuelSensor_Y);
 
   /* Get model outputs here */
 
@@ -72,14 +92,18 @@ int_T main(int_T argc, const char *argv[])
   (void)(argc);
   (void)(argv);
 
+  /* Pack model data into RTM */
+  FuelSensor_M->ModelData.defaultParam = &FuelSensor_P;
+  FuelSensor_M->ModelData.dwork = &FuelSensor_DW;
+
   /* Initialize model */
-  FuelSensor_initialize();
+  FuelSensor_initialize(FuelSensor_M, &FuelSensor_U, &FuelSensor_Y);
 
   /* Attach rt_OneStep to a timer or interrupt service routine with
    * period 0.2 seconds (the model's base sample time) here.  The
    * call syntax for rt_OneStep is
    *
-   *  rt_OneStep();
+   *  rt_OneStep(FuelSensor_M);
    */
   printf("Warning: The simulation will run forever. "
          "Generated ERT main won't simulate model step behavior. "
@@ -92,7 +116,7 @@ int_T main(int_T argc, const char *argv[])
   /* Disable rt_OneStep() here */
 
   /* Terminate model */
-  FuelSensor_terminate();
+  FuelSensor_terminate(FuelSensor_M);
   return 0;
 }
 

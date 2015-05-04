@@ -1,0 +1,35 @@
+%implements s0_b0_2x4mg_Outputs "C"
+
+%function Outputs(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%openfile localVarDecl
+real_T rtb_Subtract;
+%closefile localVarDecl
+%<SLibCG_TrackParam(0)>\
+%<SLibCG_TrackEO(0)>\
+%<SLibCG_TrackEI(1)>\
+%<SLibCG_TrackEI(0)>\
+/* Sum: '<Root>/Subtract' incorporates:
+ *  Inport: '<Root>/Current Speed(Powered Axle)'
+ *  Inport: '<Root>/Speed(Unpowered Axle)'
+ */
+rtb_Subtract = TractionControl_U->CurrentSpeedPoweredAxle - TractionControl_U->SpeedUnpoweredAxle;
+/* Outport: '<Root>/Control Feedback' incorporates:
+ *  Constant: '<S1>/Constant'
+ *  Product: '<Root>/Product'
+ *  RelationalOperator: '<S1>/Compare'
+ */
+TractionControl_Y->ControlFeedback = (real_T)(rtb_Subtract <= TractionControl_P->CompareToConstant_const) * rtb_Subtract;
+%<SLibInsertSolverResetCode()>\
+%closefile cfgTxt
+%<cfgTxt>
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void Outputs(\
+%assign comma = ""
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(0, 0, fcnProtoType)>
+%<LibSetSystemField(system, "CachedOutputLocalVars", localVarDecl)>
+%endfunction
