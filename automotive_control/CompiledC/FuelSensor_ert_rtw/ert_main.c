@@ -57,7 +57,7 @@ void rt_OneStep(RT_MODEL_FuelSensor_T *const FuelSensor_M)
 
   /* Check for overrun */
   if (OverrunFlag) {
-    rtmSetErrorStatus(FuelSensor_M, "Overrun");
+    // rtmSetErrorStatus(FuelSensor_M, "Overrun");
     return;
   }
 
@@ -105,10 +105,10 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep(FuelSensor_M);
    */
-  printf("Warning: The simulation will run forever. "
-         "Generated ERT main won't simulate model step behavior. "
-         "To change this behavior select the 'MAT-file logging' option.\n");
-  fflush((NULL));
+  // printf("Warning: The simulation will run forever. "
+  //        "Generated ERT main won't simulate model step behavior. "
+  //        "To change this behavior select the 'MAT-file logging' option.\n");
+  // fflush((NULL));
   while (rtmGetErrorStatus(FuelSensor_M) == (NULL)) {
     /*  Perform other application tasks here */
   }

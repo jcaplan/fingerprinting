@@ -76,7 +76,7 @@ void rt_OneStep(RT_MODEL_CruiseControlSystem_T *const CruiseControlSystem_M)
 
   /* Check for overrun */
   if (OverrunFlag) {
-    rtmSetErrorStatus(CruiseControlSystem_M, "Overrun");
+    // rtmSetErrorStatus(CruiseControlSystem_M, "Overrun");
     return;
   }
 
@@ -126,10 +126,10 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep(CruiseControlSystem_M);
    */
-  printf("Warning: The simulation will run forever. "
-         "Generated ERT main won't simulate model step behavior. "
-         "To change this behavior select the 'MAT-file logging' option.\n");
-  fflush((NULL));
+  // printf("Warning: The simulation will run forever. "
+  //        "Generated ERT main won't simulate model step behavior. "
+  //        "To change this behavior select the 'MAT-file logging' option.\n");
+  // fflush((NULL));
   while (rtmGetErrorStatus(CruiseControlSystem_M) == (NULL)) {
     /*  Perform other application tasks here */
   }

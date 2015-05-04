@@ -72,7 +72,7 @@ void rt_OneStep(RT_MODEL_AirbagModel_T *const AirbagModel_M)
 
   /* Check for overrun */
   if (OverrunFlag) {
-    rtmSetErrorStatus(AirbagModel_M, "Overrun");
+    // rtmSetErrorStatus(dAirbagModel_M, "Overrun");
     return;
   }
 
@@ -120,18 +120,10 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep(AirbagModel_M);
    */
-  printf("Warning: The simulation will run forever. "
-         "Generated ERT main won't simulate model step behavior. "
-         "To change this behavior select the 'MAT-file logging' option.\n");
-  fflush((NULL));
-  while (rtmGetErrorStatus(AirbagModel_M) == (NULL)) {
-    /*  Perform other application tasks here */
-  }
+  // printf("Warning: The simulation will run forever. "
+  //        "Generated ERT main won't simulate model step behavior. "
+  //        "To change this behavior select the 'MAT-file logging' option.\n");
 
-  /* Disable rt_OneStep() here */
-
-  /* Terminate model */
-  AirbagModel_terminate(AirbagModel_M);
   return 0;
 }
 

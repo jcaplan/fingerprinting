@@ -56,7 +56,7 @@ void rt_OneStep(RT_MODEL_TractionControl_T *const TractionControl_M)
 
   /* Check for overrun */
   if (OverrunFlag) {
-    rtmSetErrorStatus(TractionControl_M, "Overrun");
+    // rtmSetErrorStatus(TractionControl_M, "Overrun");
     return;
   }
 
@@ -104,10 +104,10 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep(TractionControl_M);
    */
-  printf("Warning: The simulation will run forever. "
-         "Generated ERT main won't simulate model step behavior. "
-         "To change this behavior select the 'MAT-file logging' option.\n");
-  fflush((NULL));
+  // printf("Warning: The simulation will run forever. "
+  //        "Generated ERT main won't simulate model step behavior. "
+  //        "To change this behavior select the 'MAT-file logging' option.\n");
+  // fflush((NULL));
   while (rtmGetErrorStatus(TractionControl_M) == (NULL)) {
     /*  Perform other application tasks here */
   }

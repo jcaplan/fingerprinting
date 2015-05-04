@@ -57,7 +57,7 @@ void rt_OneStep(RT_MODEL_Derivative_T *const Derivative_M)
 
   /* Check for overrun */
   if (OverrunFlag) {
-    rtmSetErrorStatus(Derivative_M, "Overrun");
+    // rtmSetErrorStatus(Derivative_M, "Overrun");
     return;
   }
 
@@ -105,10 +105,10 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep(Derivative_M);
    */
-  printf("Warning: The simulation will run forever. "
-         "Generated ERT main won't simulate model step behavior. "
-         "To change this behavior select the 'MAT-file logging' option.\n");
-  fflush((NULL));
+  // printf("Warning: The simulation will run forever. "
+  //        "Generated ERT main won't simulate model step behavior. "
+  //        "To change this behavior select the 'MAT-file logging' option.\n");
+  // fflush((NULL));
   while (rtmGetErrorStatus(Derivative_M) == (NULL)) {
     /*  Perform other application tasks here */
   }

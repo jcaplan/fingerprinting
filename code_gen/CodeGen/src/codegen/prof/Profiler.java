@@ -1,9 +1,9 @@
 package codegen.prof;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+
+import javax.management.RuntimeErrorException;
 
 import codegen.prof.BasicBlock.bbType;
 
@@ -235,18 +235,7 @@ public class Profiler {
 	
 	
 	
-	
-	public static void main(String[] args) throws IOException{
-		Profiler prof = new Profiler("matlabtest.objdump");
-		prof.parseFile("main");
-		System.out.println("Max stack height of main: " + prof.getMaxStackSize("main") + " bytes");
-		System.out.println("WCET of main: " + prof.getWCET("main") + " clock cycles");
-		System.out.println("Library functions are: " + prof.getLibFunctions());
-		System.out.println("Add the following lines to linker file: ");
-		System.out.println(prof.getLibs());
-		
-		
-	}
+
 
 	private String getLibs() {
 		String s = "";
@@ -269,6 +258,24 @@ public class Profiler {
 	}
 
 
-	
+	public static void main(String[] args) throws IOException{
+		if(args.length != 2){
+			throw new RuntimeErrorException(new Error("Usage java -jar Codegen.jar file entry_function"));
+			
+		}
+		
+		String filename=args[0];
+		String entryPoint = args[1];
+		System.out.println("results for " + filename + " from function " + entryPoint);
+		Profiler prof = new Profiler(filename);
+		prof.parseFile(entryPoint);
+		System.out.println("Max stack height of main: " + prof.getMaxStackSize(entryPoint) + " bytes");
+		System.out.println("WCET of main: " + prof.getWCET(entryPoint) + " clock cycles");
+		System.out.println("Library functions are: " + prof.getLibFunctions());
+		System.out.println("Add the following lines to linker file: ");
+		System.out.println(prof.getLibs());
+		
+		
+	}	
 	
 }

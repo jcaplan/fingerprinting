@@ -63,14 +63,14 @@ public class Parser {
 
 		//Get functions and associated assembly code
 		parseFunctions(filename);
-
-		System.out.println(getCfg());
+//
+//		System.out.println(getCfg());
 		getCfg().build(topName);
-		getCfg().printFunctions();
+//		getCfg().printFunctions();
 
 //		System.out.println(cfg);
 //		cfg.printFunctionBounds();
-		getCfg().printLoops();
+//		getCfg().printLoops();
 		getCfg().printDotCFG("cfg");
 		return cfg;
 	}

@@ -26,4 +26,4 @@ done
 
 cd ..
 
-rm -rf obj/
+# rm -rf obj/

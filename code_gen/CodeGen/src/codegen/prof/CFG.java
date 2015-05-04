@@ -149,6 +149,6 @@ public class CFG {
 				return f;
 			}
 		}
-		throw new RuntimeErrorException(new Error(), "Function not found in table");
+		throw new RuntimeErrorException(new Error(), "Function " + name + " not found in table");
 	}
 }

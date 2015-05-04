@@ -67,7 +67,7 @@ void rt_OneStep(RT_MODEL_CollisionAvoidance_T *const CollisionAvoidance_M)
 
   /* Check for overrun */
   if (OverrunFlag) {
-    rtmSetErrorStatus(CollisionAvoidance_M, "Overrun");
+    // rtmSetErrorStatus(CollisionAvoidance_M, "Overrun");
     return;
   }
 
@@ -117,10 +117,10 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep(CollisionAvoidance_M);
    */
-  printf("Warning: The simulation will run forever. "
-         "Generated ERT main won't simulate model step behavior. "
-         "To change this behavior select the 'MAT-file logging' option.\n");
-  fflush((NULL));
+  // printf("Warning: The simulation will run forever. "
+         // "Generated ERT main won't simulate model step behavior. "
+         // "To change this behavior select the 'MAT-file logging' option.\n");
+  // fflush((NULL));
   while (rtmGetErrorStatus(CollisionAvoidance_M) == (NULL)) {
     /*  Perform other application tasks here */
   }
