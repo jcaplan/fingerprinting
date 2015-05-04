@@ -1,0 +1,59 @@
+digraph g {
+
+	size="6,6";
+	system_desc [style=filled,label="Nios IDE generated\nplatform description"]
+	head_parse [shape=box,label="C Header file\nparser"]
+	plat_model [label="Platform model"]
+	plat_model -> code_gen
+
+	func_model [label="Functional\napplication model"]
+	Simulink [shape=box,style=filled]
+	func_model -> Simulink -> app_code
+	system_desc -> head_parse -> plat_model
+
+
+	app_desc [style=filled,fillcolor="red",label="Data, timing, reliability\napplication description"]
+	parser [style=filled,fillcolor="red",shape=box,label="Custom language\nparser"]
+	abstract_model [label="Application constraints\n(data, timing, reliability)"]
+	app_code [label="C code for\ntask computations"]
+	heptane [style=filled,shape=box,label="Heptane open-source\nWCET estimation tool"]
+	wcet_est [label="WCET estimation"]
+	app_builder [shape=box,label="Application model\nbuilder"]
+	app_mod [label="Application model"]
+
+	app_desc -> parser
+	parser -> abstract_model
+	abstract_model -> app_builder
+	app_code -> heptane
+	app_code -> app_builder
+	heptane -> wcet_est
+	wcet_est -> app_builder
+	app_builder -> app_mod
+
+	templates [label="RTOS templates"]
+	mapper [shape=box,label="GA-based\ntask mapping"]
+	plat_model -> mapper
+	app_mod -> mapper
+	templates -> code_gen
+	sched [label="Platform schedule"]
+	code_gen [shape=box,label="Code generation\ntool"]
+
+	mapper -> sched -> code_gen
+
+	task0 [label="Core 0 code"]
+	task1 [label="Core 1 code"]
+	taske [shape=plaintext,label="...",fontsize=30]
+	taskn [label="Core N code"]
+	code_gen -> task0
+	code_gen -> task1
+	code_gen -> taske [color=none]
+	code_gen -> taskn
+
+
+	Tools [shape=box]
+	Tools -> Code [color=none]
+	Code -> exists [color=none]
+	exists [style=filled,label="Already\nExists"]
+	exists -> Optional [color=none]
+	Optional [style=filled,fillcolor="red"]
+}	

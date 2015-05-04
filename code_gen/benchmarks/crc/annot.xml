@@ -1,0 +1,10 @@
+<CFG name="icrc1">
+  <LOOP maxiter="8">
+  </LOOP>
+</CFG>
+<CFG name="icrc">
+  <LOOP maxiter="42">
+  </LOOP>
+</CFG>
+<CFG name="main">
+</CFG>

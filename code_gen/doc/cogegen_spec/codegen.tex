@@ -18,7 +18,7 @@
 % CONFIGURATION" section.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+ 
 %----------------------------------------------------------------------------------------
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
@@ -32,9 +32,9 @@
 \usepackage{graphicx} % Required to insert images
 \usepackage{listings} % Required for insertion of code
 \usepackage{courier} % Required for the courier font
-\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
-
+\usepackage{url}
 \usepackage{paralist}
+\usepackage{pgfgantt}
 % Margins
 \topmargin=-0.45in
 \evensidemargin=0in
@@ -142,10 +142,76 @@ This tool will not initially be geared towards solving codesign problems. We wil
 
 This document will provide the specification for the currently supported hardware models, the platform built from these components currently under study, the application models for analysis of software requirements, the mapping procedure combining both hardware and software models to generate a schedule, and the abstract template requirements for code generation.
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Tool Structure}
+
+This key to success for this project in the given time frame is to leverage open source, take advantage of the wealth of prior work in the field from the 1990s in synchronous language design, and more current work on automated DSE and code generation. Furthermore, the wealth of generated code that describes the platform, as well as a very well structured RTOS uC/OS-II integrated into the BSP make the job of template development and hardware platform specification much easier. While the code can be a bit cumbersome to navigate for a human user because it is generated, this actually makes it much easier to parse for an automated process.
+
+
+Figure \ref{f:tool_arch} depicts the tool architecture. From this figure we can begin to derive a timeline for development by identifying and prioritizing milestones. Figure \ref{f:gantt} depicts an equivalent Gantt chart.
+
+\begin{enumerate}
+\item Define model classes for application and processors.
+\item Integrate models with GA library to build task mapper.
+\item Test mapper extensively with randomly generated task graphs, including timing data and fault-tolerance requirements.
+\item Write RTOS templates.
+  \begin{enumerate}
+  \item Deconstruct existing code into discrete units with well-defined functionality.
+  \item Formalize inter-core communication protocols.
+  \item Write new templates for non-existing features (e.g. killing erroneous tasks, setting MPU parameters).
+  \item Rewrite all drivers for fingerprint unit, comparator and TLB.
+  \end{enumerate}
+\item Build code generation tool.
+\item Port Heptane from MIPS to Nios architecture.
+\item Define QSYS naming conventions and write system.h BSP parser.
+\item Write language specification for high level model input.
+\item Write scanner/parser using SableCC3 to build abstract Java application model from user input. 
+\end{enumerate}
+
+
+
+
+% \newpage
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{figures/tool_arch}
+\caption{The proposed tool architecture.}
+\label{f:tool_arch}
+\end{figure}
+
+
+\begin{figure}[h]
+% \begin{center}
+\begin{ganttchart}{1}{8}
+% \gantttitle{Development Timeline}{8} \\
+\gantttitlelist{1,...,8}{1} \\
+\ganttbar{Define Model Classes}{1}{1} \\
+\ganttlinkedbar{Build task mapper}{2}{2} \\
+\ganttlinkedbar{Write RTOS templates}{3}{3} \\
+\ganttlinkedbar{Code generation tool}{4}{4} \\
+\ganttlinkedbar{Port Heptane}{5}{5} \\
+\ganttlinkedbar{Nios BSP parser}{6}{6} \\
+\ganttlinkedbar{Specify application modelling language}{7}{7} \\
+\ganttlinkedbar{Scanner/Parser for modelling language}{8}{8} \\
+% \ganttgroup{Group 1}{1}{7} \\
+% \ganttlinkedbar{Task 2}{3}{7} \ganttnewline
+% \ganttbar{Final Task}{8}{12}
+
+\end{ganttchart}
+% \end{center}
+\caption{Timeline for development of main tool components}
+\label{f:gantt}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Hardware Model}
 Hardware models are specified using an object-oriented semantics. The system is divided into hierarchical levels that are interpreted using static scoping rules to aid in the specification of larger models. 
 
-The cost in time of transmitting over communication channel models is omitted at this stage beyond specifying the connections between elements. Issues related to resource arbitration and interference are also not considered. The underlying infrastructure is assumed to be sufficiently quick and deterministic.
+The cost in tiucme of transmitting over communication channel models is omitted at this stage beyond specifying the connections between elements. Issues related to resource arbitration and interference are also not considered. The underlying infrastructure is assumed to be sufficiently quick and deterministic.
 
 There are four categories of hardware models in the system: processor cores, peripheral cores, and memory and buses.
 
@@ -206,8 +272,84 @@ The fingerprint unit has the following features: maximum stack depth, statically
 
 \subsubsection{$\mu$TLB}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Application Model}
 \subsection{Synchronous Languages - Building off the past}
+
+\subsection{Code Rules}
+Any data passed between tasks must be done through pointers. Functions will return void pointers to predetermined data structures. These pointers will be passed between tasks. If tasks cannot share the same memory space, then the size of the data structure must also be known and the data will be copied to the appropriate location.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Code Profiling}
+ 
+The disassembly of a simple benchmark that runs the main computation loop will be parsed to analyse code to estimate the WCET and maximum stack height of each critical task. All functions that are called by the critical task will be identified in order to partition code through linker script modifications, thus enabling the use of instruction scratchpads.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Application Mapping}
+
+The initial scheduling algorithm will be taken from Bolchini and  Miele \cite{bolchini2013reliability}. A genetic algorithm (GA) is used to explore the design space. The general details that follow on genetic algorithms are based on the overview in \cite{geatbx}.
+
+Figure \ref{f:ga_ov} shows an overview of how to implement a genetic algorithm. There are two stages of GA in the given process. First tasks must be organized into groups of tasks, and each group of tasks must be assigned a fault detection technique or fault tolerance technique. DMR Fingerprinting is an example of a detection mechanism. This work will remain agnostic about the method of implementation of fault tolerance. We assume that appropriate hardening measures are applied to a single core.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=12cm]{figures/ga_ov}
+\caption{The basic structure of a genetic algorithm \cite{geatbx}.}
+\label{f:ga_ov}
+\end{figure}
+
+Once a population of various groupings and associated fault-handling mechanisms has been generated it is necessary to test their fitness. This must be done by generating a system schedule for each member of the population. 
+
+The generation of the schedule is itself done with a second round of GA. Each task is assigned to an appropriate core based on the fault-handling requirements of its group. The group adopts the most stringent requirements of any of its members. Various mappings are generated as the GA population. Then it is necessary to order the tasks on each core. This is complicated by the fact that there may be inter-core data dependencies. For now, we will neglect the overhead associated with data transfer between cores.
+
+The first step for scheduling on each core once groups have been assigned is to generate a list of tasks for which all the start conditions have been met (i.e. data dependencies on previously executed tasks). The highest priority task is chosen from this list for each core. This process cycles through all the cores and then proceeds to the next event in time (i.e. a task has ended) to repeat the process. 
+
+The priority of a task is determined using \emph{modified partial critical path priority} \cite{eles2000scheduling}. The method consists of choosing tasks that minimize the critical path on \emph{other cores}. It is possible that a successor to a task will be in the pool of tasks. Therefore, the critical path length is only considered from the first successor task that will execute on a different core. 
+
+Consider the example from \cite{eles2000scheduling} in Figure~\ref{f:crit_path}. From a start point $P_0$, either task $P_A$ or $P_B$ must be selected. The chain of tasks from $P_A$ to $P_X$ represents a series of successor tasks that will all be executed on the same core in time $t_A$. The time $\lambda_A$ represents the time from the first successor on a different core to the terminal or sink task $P_N$. The scheduler must determine whether to assign $P_A$ or $P_B$ higher priority. This is done by choosing the option that minimizes the critical path \emph{on other cores}. This means that $t_A$ and $t_B$ are neglected and the path with shorter $\lambda$ is chosen. One interesting question is whether it would be simpler and more effective on a system with \emph{many} cores to simply choose the task with the largest number of critical children nodes or non-critical children nodes (in that order) since this will most likely facilitate parallel execution on a large system.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.7]{figures/crit_path}
+\caption{Example of modified partial critical path priority selection \cite{eles2000scheduling}.}
+\label{f:crit_path}
+\end{figure}
+
+
+
+The implementation details of the genetic algorithm will be adopted from \cite{bolchini2013reliability}. Tournament selection and single-point crossover operator recombination will be used. Mutations will be applied randomly. There are four mutations at the task level: change the group of a task, split a group in two, join two groups, or change the fault-management technique applied to a group. The mutation for the mapping phase consists of switching a task to another processor that can meet the assigned fault-management requirements.
+
+Tournament selection means choosing a subset of the population and selecting the most fit member. This is repeated as many times as necessary. Single-point crossover cuts two parent chromosomes into two pieces and then exchanges the second substrings between the chromosomes. 
+
+The initial parameters for the GA will be the ones suggested in \cite{bolchini2010multi}. The crossover rate is 80\%, the mutation rate is 10\%. The program will run for 30 generations. The population size will be between one and two thousand.
+
+The JGAP library \cite{jgap} is used to implement the genetic algorithm. 
+
+\subsection{Recovery}
+Fault model: can't fail twice.
+Need to leave room for reexecution. 
+Fill up the retry slots with soft tasks. Just cancel them if the retry slot is needed.
+
+Recovery only necessary in the case of correction. Detection implies no retry. 
+
+Why? Application where delivering the wrong answer can be catastrophic but dropping a frame is acceptable (i.e. not sensitive to jitter)
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Code Generation}
+
+Code generation will be decomposed into several phases.
+
+
+
+\bibliographystyle{ieeetr}
+\bibliography{codegen}
 
 
 \end{document}
