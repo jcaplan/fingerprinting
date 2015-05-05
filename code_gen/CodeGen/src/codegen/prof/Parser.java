@@ -71,7 +71,7 @@ public class Parser {
 //		System.out.println(cfg);
 //		cfg.printFunctionBounds();
 //		getCfg().printLoops();
-		getCfg().printDotCFG("cfg");
+		getCfg().printDotCFG(filename);
 		return cfg;
 	}
 
