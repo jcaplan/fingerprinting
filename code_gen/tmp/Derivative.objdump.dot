@@ -1,0 +1,457 @@
+digraph d {
+size="8.5,7";
+
+subgraph cluster_Derivative_step {
+	graph [label = "Derivative_step"];
+	node_10a8 [peripheries=2]
+	node_10a8 [label = "@10a8(Call __muldf3)", color=blue];
+	node_1100 [label = "@1100(Call __subdf3)"];
+	node_1130 [label = "@1130(Return)"];
+}
+node_10a8 -> node_1100;
+node_1100 -> node_1130;
+
+subgraph cluster__fpadd_parts {
+	graph [label = "_fpadd_parts"];
+	node_12a8 [peripheries=2]
+subgraph cluster_loop_13b8 {
+	graph [label = "loop"];
+	node_13b8 [color = green]
+	node_13b8 [label = "@13b8(BB)"];
+	node_13b4 [label = "@13b4(BB)"];
+}
+subgraph cluster_loop_13b8 {
+	graph [label = "loop"];
+	node_13b8 [color = green]
+	node_13b8 [label = "@13b8(BB)"];
+	node_14e0 [label = "@14e0(BB)"];
+	node_13b4 [label = "@13b4(BB)"];
+}
+	node_12a8 [label = "@12a8(BB)", color=blue];
+	node_12b8 [label = "@12b8(BB)"];
+	node_12c0 [label = "@12c0(BB)"];
+	node_12c8 [label = "@12c8(BB)"];
+	node_12cc [label = "@12cc(BB)"];
+	node_12d4 [label = "@12d4(BB)"];
+	node_12d8 [label = "@12d8(BB)"];
+	node_12fc [label = "@12fc(BB)"];
+	node_1304 [label = "@1304(BB)"];
+	node_1308 [label = "@1308(BB)"];
+	node_1310 [label = "@1310(BB)"];
+	node_1318 [label = "@1318(BB)"];
+	node_131c [label = "@131c(BB)"];
+	node_1328 [label = "@1328(BB)"];
+	node_134c [label = "@134c(BB)"];
+	node_1358 [label = "@1358(BB)"];
+	node_135c [label = "@135c(BB)"];
+	node_1370 [label = "@1370(BB)"];
+	node_1380 [label = "@1380(BB)"];
+	node_1398 [label = "@1398(BB)"];
+	node_139c [label = "@139c(BB)"];
+	node_13e8 [label = "@13e8(BB)"];
+	node_13f4 [label = "@13f4(BB)"];
+	node_1408 [label = "@1408(BB)"];
+	node_1434 [label = "@1434(Return)"];
+	node_143c [label = "@143c(BB)"];
+	node_1440 [label = "@1440(Return)"];
+	node_1444 [label = "@1444(BB)"];
+	node_1448 [label = "@1448(BB)"];
+	node_145c [label = "@145c(BB)"];
+	node_1480 [label = "@1480(BB)"];
+	node_1484 [label = "@1484(Return)"];
+	node_14c0 [label = "@14c0(BB)"];
+	node_14d0 [label = "@14d0(BB)"];
+	node_14dc [label = "@14dc(BB)"];
+	node_14e4 [label = "@14e4(BB)"];
+	node_14e8 [label = "@14e8(BB)"];
+	node_14fc [label = "@14fc(BB)"];
+	node_1524 [label = "@1524(BB)"];
+	node_1528 [label = "@1528(BB)"];
+	node_1534 [label = "@1534(BB)"];
+	node_153c [label = "@153c(BB)"];
+	node_1540 [label = "@1540(BB)"];
+	node_154c [label = "@154c(BB)"];
+	node_1574 [label = "@1574(BB)"];
+	node_1594 [label = "@1594(BB)"];
+	node_15a4 [label = "@15a4(BB)"];
+	node_15ac [label = "@15ac(BB)"];
+	node_15b0 [label = "@15b0(BB)"];
+	node_15c0 [label = "@15c0(BB)"];
+	node_15e0 [label = "@15e0(BB)"];
+	node_15e4 [label = "@15e4(BB)"];
+	node_15f0 [label = "@15f0(Return)"];
+}
+node_12a8 -> node_1440;
+node_12a8 -> node_12b8;
+node_12b8 -> node_143c;
+node_12b8 -> node_12c0;
+node_12c0 -> node_15e0;
+node_12c0 -> node_12c8;
+node_12c8 -> node_143c;
+node_12c8 -> node_12cc;
+node_12cc -> node_1480;
+node_12cc -> node_12d4;
+node_12d4 -> node_143c;
+node_12d4 -> node_12d8;
+node_12d8 -> node_14d0;
+node_12d8 -> node_12fc;
+node_12fc -> node_1444;
+node_12fc -> node_1304;
+node_1304 -> node_1524;
+node_1304 -> node_1308;
+node_1308 -> node_1574;
+node_1308 -> node_1310;
+node_1310 -> node_1318;
+node_1318 -> node_1594;
+node_1318 -> node_131c;
+node_131c -> node_1328;
+node_1328 -> node_134c;
+node_134c -> node_145c;
+node_134c -> node_1358;
+node_1358 -> node_14e8;
+node_1358 -> node_135c;
+node_135c -> node_14fc;
+node_135c -> node_1370;
+node_1370 -> node_1380;
+node_1380 -> node_13f4;
+node_1380 -> node_1398;
+node_1398 -> node_15a4;
+node_1398 -> node_139c;
+node_139c -> node_13b8;
+node_13b4 -> node_14e0;
+node_13b4 -> node_13b8[color=red];
+node_13b8 -> node_13b4;
+node_13b8 -> node_13e8;
+node_13e8 -> node_13f4;
+node_13f4 -> node_1434;
+node_13f4 -> node_1408;
+node_1408 -> node_1434;
+node_143c -> node_1440;
+node_1444 -> node_14c0;
+node_1444 -> node_1448;
+node_1448 -> node_1358;
+node_1448 -> node_145c;
+node_145c -> node_13f4;
+node_1480 -> node_1440;
+node_1480 -> node_1484;
+node_14c0 -> node_134c;
+node_14d0 -> node_1444;
+node_14d0 -> node_14dc;
+node_14dc -> node_1304;
+node_14e0 -> node_13b8[color=red];
+node_14e0 -> node_14e4;
+node_14e4 -> node_13e8;
+node_14e8 -> node_1370;
+node_14e8 -> node_14fc;
+node_14fc -> node_1380;
+node_1524 -> node_134c;
+node_1524 -> node_1528;
+node_1528 -> node_15c0;
+node_1528 -> node_1534;
+node_1534 -> node_153c;
+node_153c -> node_15b0;
+node_153c -> node_1540;
+node_1540 -> node_154c;
+node_154c -> node_134c;
+node_1574 -> node_1318;
+node_1594 -> node_1328;
+node_15a4 -> node_139c;
+node_15a4 -> node_15ac;
+node_15ac -> node_13f4;
+node_15b0 -> node_154c;
+node_15c0 -> node_153c;
+node_15e0 -> node_1440;
+node_15e0 -> node_15e4;
+node_15e4 -> node_1440;
+node_15e4 -> node_15f0;
+
+subgraph cluster___subdf3 {
+	graph [label = "__subdf3"];
+	node_1650 [peripheries=2]
+	node_1650 [label = "@1650(Call __unpack_d)", color=blue];
+	node_1674 [label = "@1674(Call __unpack_d)"];
+	node_1680 [label = "@1680(Call _fpadd_parts)"];
+	node_169c [label = "@169c(Call __pack_d)"];
+	node_16a4 [label = "@16a4(Return)"];
+}
+node_1650 -> node_1674;
+node_1674 -> node_1680;
+node_1680 -> node_169c;
+node_169c -> node_16a4;
+
+subgraph cluster___muldf3 {
+	graph [label = "__muldf3"];
+	node_16b0 [peripheries=2]
+subgraph cluster_loop_18a8 {
+	graph [label = "loop"];
+	node_18a8 [color = green]
+	node_18a8 [label = "@18a8(BB)"];
+	node_18d4 [label = "@18d4(BB)"];
+	node_18cc [label = "@18cc(BB)"];
+}
+subgraph cluster_loop_18f8 {
+	graph [label = "loop"];
+	node_18f8 [color = green]
+	node_18f8 [label = "@18f8(BB)"];
+	node_1928 [label = "@1928(BB)"];
+	node_1924 [label = "@1924(BB)"];
+}
+	node_16b0 [label = "@16b0(Call __unpack_d)", color=blue];
+	node_16f4 [label = "@16f4(Call __unpack_d)"];
+	node_1700 [label = "@1700(BB)"];
+	node_170c [label = "@170c(BB)"];
+	node_1720 [label = "@1720(Call __pack_d)"];
+	node_1724 [label = "@1724(Return)"];
+	node_1750 [label = "@1750(BB)"];
+	node_1758 [label = "@1758(BB)"];
+	node_1770 [label = "@1770(BB)"];
+	node_1778 [label = "@1778(BB)"];
+	node_1780 [label = "@1780(BB)"];
+	node_178c [label = "@178c(BB)"];
+	node_1790 [label = "@1790(BB)"];
+	node_1798 [label = "@1798(BB)"];
+	node_179c [label = "@179c(BB)"];
+	node_17a4 [label = "@17a4(BB)"];
+	node_17a8 [label = "@17a8(Call __muldi3)"];
+	node_17c8 [label = "@17c8(Call __muldi3)"];
+	node_17e8 [label = "@17e8(Call __muldi3)"];
+	node_1804 [label = "@1804(Call __muldi3)"];
+	node_1820 [label = "@1820(BB)"];
+	node_1834 [label = "@1834(BB)"];
+	node_1838 [label = "@1838(BB)"];
+	node_183c [label = "@183c(BB)"];
+	node_1844 [label = "@1844(BB)"];
+	node_1850 [label = "@1850(BB)"];
+	node_1854 [label = "@1854(BB)"];
+	node_18a4 [label = "@18a4(BB)"];
+	node_18e0 [label = "@18e0(BB)"];
+	node_18e4 [label = "@18e4(BB)"];
+	node_18f0 [label = "@18f0(BB)"];
+	node_1938 [label = "@1938(BB)"];
+	node_193c [label = "@193c(BB)"];
+	node_1948 [label = "@1948(BB)"];
+	node_1960 [label = "@1960(BB)"];
+	node_196c [label = "@196c(BB)"];
+	node_1974 [label = "@1974(BB)"];
+	node_197c [label = "@197c(BB)"];
+}
+node_16b0 -> node_16f4;
+node_16f4 -> node_1700;
+node_1700 -> node_1750;
+node_1700 -> node_170c;
+node_170c -> node_1720;
+node_1720 -> node_1724;
+node_1750 -> node_1770;
+node_1750 -> node_1758;
+node_1758 -> node_1720;
+node_1770 -> node_178c;
+node_1770 -> node_1778;
+node_1778 -> node_170c;
+node_1778 -> node_1780;
+node_1780 -> node_1720;
+node_178c -> node_179c;
+node_178c -> node_1790;
+node_1790 -> node_1780;
+node_1790 -> node_1798;
+node_1798 -> node_1758;
+node_179c -> node_170c;
+node_179c -> node_17a4;
+node_17a4 -> node_1758;
+node_17a4 -> node_17a8;
+node_17a8 -> node_17c8;
+node_17c8 -> node_17e8;
+node_17e8 -> node_1804;
+node_1804 -> node_1820;
+node_1820 -> node_1960;
+node_1820 -> node_1834;
+node_1834 -> node_183c;
+node_1834 -> node_1838;
+node_1838 -> node_1960;
+node_1838 -> node_183c;
+node_183c -> node_1844;
+node_1844 -> node_1854;
+node_1844 -> node_1850;
+node_1850 -> node_1854;
+node_1854 -> node_18e4;
+node_1854 -> node_18a4;
+node_18a4 -> node_18a8;
+node_18a8 -> node_18d4;
+node_18a8 -> node_18cc;
+node_18cc -> node_18d4;
+node_18d4 -> node_18a8[color=red];
+node_18d4 -> node_18e0;
+node_18e0 -> node_18e4;
+node_18e4 -> node_193c;
+node_18e4 -> node_18f0;
+node_18f0 -> node_18f8;
+node_18f8 -> node_1928;
+node_18f8 -> node_1924;
+node_1924 -> node_1928;
+node_1928 -> node_18f8[color=red];
+node_1928 -> node_1938;
+node_1938 -> node_193c;
+node_193c -> node_196c;
+node_193c -> node_1948;
+node_1948 -> node_1720;
+node_1960 -> node_1844;
+node_196c -> node_1948;
+node_196c -> node_1974;
+node_1974 -> node_1948;
+node_1974 -> node_197c;
+node_197c -> node_1948;
+
+subgraph cluster___muldi3 {
+	graph [label = "__muldi3"];
+	node_1994 [peripheries=2]
+	node_1994 [label = "@1994(BB)", color=blue];
+	node_19c4 [label = "@19c4(BB)"];
+	node_19cc [label = "@19cc(Return)"];
+}
+node_1994 -> node_19cc;
+node_1994 -> node_19c4;
+node_19c4 -> node_19cc;
+
+subgraph cluster___pack_d {
+	graph [label = "__pack_d"];
+	node_19f4 [peripheries=2]
+	node_19f4 [label = "@19f4(BB)", color=blue];
+	node_1a30 [label = "@1a30(BB)"];
+	node_1a38 [label = "@1a38(BB)"];
+	node_1a40 [label = "@1a40(BB)"];
+	node_1a48 [label = "@1a48(BB)"];
+	node_1a54 [label = "@1a54(BB)"];
+	node_1a5c [label = "@1a5c(BB)"];
+	node_1a68 [label = "@1a68(BB)"];
+	node_1a78 [label = "@1a78(BB)"];
+	node_1a84 [label = "@1a84(BB)"];
+	node_1a88 [label = "@1a88(BB)"];
+	node_1aa4 [label = "@1aa4(BB)"];
+	node_1ab0 [label = "@1ab0(Return)"];
+	node_1af4 [label = "@1af4(BB)"];
+	node_1b0c [label = "@1b0c(BB)"];
+	node_1b14 [label = "@1b14(BB)"];
+	node_1b28 [label = "@1b28(BB)"];
+	node_1b38 [label = "@1b38(BB)"];
+	node_1b54 [label = "@1b54(BB)"];
+	node_1b60 [label = "@1b60(Call __lshrdi3)"];
+	node_1b70 [label = "@1b70(Call __ashldi3)"];
+	node_1b88 [label = "@1b88(BB)"];
+	node_1bb8 [label = "@1bb8(BB)"];
+	node_1bc0 [label = "@1bc0(BB)"];
+	node_1bd0 [label = "@1bd0(BB)"];
+	node_1bf4 [label = "@1bf4(BB)"];
+	node_1bfc [label = "@1bfc(BB)"];
+	node_1c04 [label = "@1c04(BB)"];
+}
+node_19f4 -> node_1b38;
+node_19f4 -> node_1a30;
+node_1a30 -> node_1b28;
+node_1a30 -> node_1a38;
+node_1a38 -> node_1aa4;
+node_1a38 -> node_1a40;
+node_1a40 -> node_1aa4;
+node_1a40 -> node_1a48;
+node_1a48 -> node_1b54;
+node_1a48 -> node_1a54;
+node_1a54 -> node_1b28;
+node_1a54 -> node_1a5c;
+node_1a5c -> node_1b0c;
+node_1a5c -> node_1a68;
+node_1a68 -> node_1a78;
+node_1a78 -> node_1af4;
+node_1a78 -> node_1a84;
+node_1a84 -> node_1a88;
+node_1a88 -> node_1ab0;
+node_1aa4 -> node_1ab0;
+node_1af4 -> node_1a88;
+node_1b0c -> node_1a78;
+node_1b0c -> node_1b14;
+node_1b14 -> node_1a78;
+node_1b28 -> node_1ab0;
+node_1b38 -> node_1ab0;
+node_1b54 -> node_1bfc;
+node_1b54 -> node_1b60;
+node_1b60 -> node_1b70;
+node_1b70 -> node_1b88;
+node_1b88 -> node_1c04;
+node_1b88 -> node_1bb8;
+node_1bb8 -> node_1bd0;
+node_1bb8 -> node_1bc0;
+node_1bc0 -> node_1bd0;
+node_1bd0 -> node_1ab0;
+node_1bd0 -> node_1bf4;
+node_1bf4 -> node_1ab0;
+node_1bfc -> node_1c04;
+node_1c04 -> node_1bd0;
+
+subgraph cluster___unpack_d {
+	graph [label = "__unpack_d"];
+	node_1c18 [peripheries=2]
+	node_1c18 [label = "@1c18(BB)", color=blue];
+	node_1c40 [label = "@1c40(BB)"];
+	node_1c48 [label = "@1c48(BB)"];
+	node_1c74 [label = "@1c74(BB)"];
+	node_1c78 [label = "@1c78(BB)"];
+	node_1c98 [label = "@1c98(Return)"];
+	node_1ca8 [label = "@1ca8(BB)"];
+	node_1cb0 [label = "@1cb0(BB)"];
+	node_1cd4 [label = "@1cd4(Return)"];
+	node_1ce0 [label = "@1ce0(Return)"];
+	node_1cec [label = "@1cec(BB)"];
+	node_1cf4 [label = "@1cf4(BB)"];
+	node_1cfc [label = "@1cfc(BB)"];
+	node_1d08 [label = "@1d08(Return)"];
+	node_1d14 [label = "@1d14(BB)"];
+}
+node_1c18 -> node_1ca8;
+node_1c18 -> node_1c40;
+node_1c40 -> node_1ce0;
+node_1c40 -> node_1c48;
+node_1c48 -> node_1cd4;
+node_1c48 -> node_1c74;
+node_1c74 -> node_1c78;
+node_1c78 -> node_1c78;
+node_1c78 -> node_1c98;
+node_1ca8 -> node_1cec;
+node_1ca8 -> node_1cb0;
+node_1cb0 -> node_1cd4;
+node_1cec -> node_1d08;
+node_1cec -> node_1cf4;
+node_1cf4 -> node_1d14;
+node_1cf4 -> node_1cfc;
+node_1cfc -> node_1cd4;
+node_1d14 -> node_1cd4;
+
+subgraph cluster___lshrdi3 {
+	graph [label = "__lshrdi3"];
+	node_1d1c [peripheries=2]
+	node_1d1c [label = "@1d1c(BB)", color=blue];
+	node_1d28 [label = "@1d28(BB)"];
+	node_1d34 [label = "@1d34(BB)"];
+	node_1d48 [label = "@1d48(Return)"];
+	node_1d4c [label = "@1d4c(BB)"];
+}
+node_1d1c -> node_1d48;
+node_1d1c -> node_1d28;
+node_1d28 -> node_1d4c;
+node_1d28 -> node_1d34;
+node_1d34 -> node_1d48;
+node_1d4c -> node_1d48;
+
+subgraph cluster___ashldi3 {
+	graph [label = "__ashldi3"];
+	node_1d60 [peripheries=2]
+	node_1d60 [label = "@1d60(BB)", color=blue];
+	node_1d6c [label = "@1d6c(BB)"];
+	node_1d78 [label = "@1d78(BB)"];
+	node_1d8c [label = "@1d8c(Return)"];
+	node_1d90 [label = "@1d90(BB)"];
+}
+node_1d60 -> node_1d8c;
+node_1d60 -> node_1d6c;
+node_1d6c -> node_1d90;
+node_1d6c -> node_1d78;
+node_1d78 -> node_1d8c;
+node_1d90 -> node_1d8c;
+
+}

@@ -29,8 +29,9 @@ do
 	NAME=$(basename $f)
 	echo "$NAME"
 	NAME=${NAME%.objdump}
+	DIR=$(dirname "${f}")
 	java  -jar CodeGen.jar $f ${NAME}_step
-	dot -Tpdf $f.dot -o $NAME.pdf
+	dot -Tpdf $f.dot -o tmp/${NAME}.pdf
 done
 
 
