@@ -2,9 +2,9 @@
  * linker.h - Linker script mapping information
  *
  * Machine generated for CPU 'processor1_0_cpu1' in SOPC Builder design 'nios_fprint'
- * SOPC Builder design path: ../../nios_fprint.sopcinfo
+ * SOPC Builder design path: ../../../../../automotive_control/nios_fprint.sopcinfo
  *
- * Generated: Tue Oct 07 16:43:44 EDT 2014
+ * Generated: Mon May 11 16:41:24 EDT 2015
  */
 
 /*
@@ -70,13 +70,15 @@
 #define MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_BASE 0x400000
 #define MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_SPAN 204800
 #define MEMORY_0_ONCHIP_MEMORYMAIN_REGION_BASE 0x432020
-#define MEMORY_0_ONCHIP_MEMORYMAIN_REGION_SPAN 204768
+#define MEMORY_0_ONCHIP_MEMORYMAIN_REGION_SPAN 200672
 #define PROCESSOR1_0_SCRATCHPAD_REGION_BASE 0x4200000
 #define PROCESSOR1_0_SCRATCHPAD_REGION_SPAN 12288
 #define RESET_REGION_BASE 0x432000
 #define RESET_REGION_SPAN 32
 #define SHARED_MEMORY_REGION_BASE 0x2500000
 #define SHARED_MEMORY_REGION_SPAN 1024
+#define STACK_BIN_REGION_BASE 0x463000
+#define STACK_BIN_REGION_SPAN 4096
 
 
 /*

@@ -87,7 +87,7 @@ ACDS_VERSION := 13.1
 
 # Qsys--generated SOPCINFO file. Required for resolving node instance ID's with 
 # design component names. 
-SOPCINFO_FILE := $(ABS_BSP_ROOT_DIR)/../../nios_fprint.sopcinfo
+SOPCINFO_FILE := $(ABS_BSP_ROOT_DIR)/../../../../../automotive_control/nios_fprint.sopcinfo
 
 # Big-Endian operation. 
 # setting BIG_ENDIAN is false
@@ -152,9 +152,9 @@ SOPC_SYSID_FLAG += --sidp=0x1001020
 ELF_PATCH_FLAG  += --sidp 0x1001020
 
 # The SOPC Timestamp 
-# setting SOPC_TIMESTAMP is 1425515143
-SOPC_SYSID_FLAG += --timestamp=1425515143
-ELF_PATCH_FLAG  += --timestamp 1425515143
+# setting SOPC_TIMESTAMP is 1417446642
+SOPC_SYSID_FLAG += --timestamp=1417446642
+ELF_PATCH_FLAG  += --timestamp 1417446642
 
 # Enable JTAG UART driver to recover when host is inactive causing buffer to 
 # full without returning error. Printf will not fail with this recovery. none 

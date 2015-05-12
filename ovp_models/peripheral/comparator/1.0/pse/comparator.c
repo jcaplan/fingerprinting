@@ -262,6 +262,7 @@ PPM_WRITE_CB(fprintWr) {
  	 				else
  	 					checkin[1][d.state.task_id] = 1;
  	 				do_comparison();
+ 	 				
  	 				break;
  	 			case CH_OUT:
  	 				if(a.bits.core_id == assignment[0][d.state.task_id])

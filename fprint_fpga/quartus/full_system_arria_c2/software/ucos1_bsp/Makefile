@@ -102,8 +102,8 @@ ACDS_VERSION := 13.1
 # used to generate this makefile. 
 # BUILD_NUMBER: 162
 
-SETTINGS_FILE := settings.bsp
-SOPC_FILE := ../../nios_fprint.sopcinfo
+SETTINGS_FILE := ../../../../../automotive_control/rtos/ucos1_bsp/settings.bsp
+SOPC_FILE := ../../../../../automotive_control/nios_fprint.sopcinfo
 
 #-------------------------------------------------------------------------------
 #                             TOOL & COMMAND DEFINITIONS

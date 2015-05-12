@@ -2,9 +2,9 @@
  * linker.x - Linker script
  *
  * Machine generated for CPU 'processor0_0_cpu0' in SOPC Builder design 'nios_fprint'
- * SOPC Builder design path: ../../nios_fprint.sopcinfo
+ * SOPC Builder design path: ../../../../../automotive_control/nios_fprint.sopcinfo
  *
- * Generated: Tue Oct 07 16:43:38 EDT 2014
+ * Generated: Mon May 11 14:12:57 EDT 2015
  */
 
 /*
@@ -52,7 +52,8 @@ MEMORY
 {
     memory_0_onchip_memoryMain_BEFORE_RESET : ORIGIN = 0x400000, LENGTH = 409600
     reset : ORIGIN = 0x464000, LENGTH = 32
-    memory_0_onchip_memoryMain : ORIGIN = 0x464020, LENGTH = 204768
+    memory_0_onchip_memoryMain : ORIGIN = 0x464020, LENGTH = 200672
+    stack_bin : ORIGIN = 0x495000, LENGTH = 4096
     shared_memory : ORIGIN = 0x2500000, LENGTH = 1024
     processor0_0_scratchpad : ORIGIN = 0x4200000, LENGTH = 12288
     global : ORIGIN = 0x4203000, LENGTH = 4096
@@ -136,6 +137,14 @@ SECTIONS
         . = ALIGN(4);
         PROVIDE (_alt_partition_global_end = ABSOLUTE(.));
     } > global
+
+    .stack_bin :
+    {
+        PROVIDE (_alt_partition_stack_bin_start = ABSOLUTE(.));
+        *(.stack_bin .stack_bin.*)
+        . = ALIGN(4);
+        PROVIDE (_alt_partition_stack_bin_end = ABSOLUTE(.));
+    } > stack_bin
 
     .text :
     {
@@ -423,7 +432,7 @@ SECTIONS
 /*
  * Don't override this, override the __alt_stack_* symbols instead.
  */
-__alt_data_end = 0x496000;
+__alt_data_end = 0x495000;
 
 /*
  * The next two symbols define the location of the default stack.  You can
@@ -439,4 +448,4 @@ PROVIDE( __alt_stack_limit   = __alt_stack_base );
  * Override this symbol to put the heap in a different memory.
  */
 PROVIDE( __alt_heap_start    = end );
-PROVIDE( __alt_heap_limit    = 0x496000 );
+PROVIDE( __alt_heap_limit    = 0x495000 );

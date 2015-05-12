@@ -37,46 +37,28 @@ typedef struct vmiosObjectS {
     Uns32 totalWriteBytes;
 } vmiosObject;
 
-//
-// Read callback - triggered on every memory read
-//
-// static VMI_MEM_WATCH_FN(readCB) {
 
-//     // we are interested only in reads made by processors (not artifacts of
-//     // simulation or memory accesses by other plugins, for example) so take
-//     // action only if processor is non null
-//     if(processor) {
-
-//         vmiosObjectP object = userData;
-
-//         // vmiPrintf(
-//         //     "*** mtrace-plugin: cpu %s reads %u bytes (after "FMT_64u" instructions)\n",
-//         //     vmirtProcessorName(processor),
-//         //     bytes,
-//         //     vmirtGetICount(processor)
-//         // );
-
-//         object->totalReads++;
-//         object->totalReadBytes += bytes;
-
-//     }
-// }
-
-//
-// Write callback - triggered on every memory write
-//
 int count = 0;
+
+int oldAddress = 0;
+unsigned *old_value = 0;
 static VMI_MEM_WATCH_FN(writeCB) {
 
     // we are interested only in writes made by processors (not artifacts of
     // simulation or memory accesses by other plugins, for example) so take
     // action only if processor is non null
+    if(address == oldAddress && value == old_value){
+        return;
+    }
+
+    oldAddress = address;
+    old_value = (unsigned*)value;
     if(processor) {
 
+        //Don't send the same info twice in a row...
+        
 
-        // trigger watchdog signal
-
-      //  vmiPrintf("processor %s writes %x to %x\n", vmirtProcessorName(processor),*((unsigned *)value),(int)address);        
+       // vmiPrintf("processor %s writes %x to %x\n", vmirtProcessorName(processor),*((unsigned *)value),(int)address);        
 
             vmirtWriteNetPort(processor, vmirtGetNetPortHandle(processor, "fprint_write_out_address"), address);
             vmirtWriteNetPort(processor, vmirtGetNetPortHandle(processor, "fprint_write_out_data"), *((unsigned *)value));

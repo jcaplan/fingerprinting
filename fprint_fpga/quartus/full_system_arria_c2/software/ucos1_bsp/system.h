@@ -2,9 +2,9 @@
  * system.h - SOPC Builder system and BSP software package information
  *
  * Machine generated for CPU 'processor1_0_cpu1' in SOPC Builder design 'nios_fprint'
- * SOPC Builder design path: ../../nios_fprint.sopcinfo
+ * SOPC Builder design path: ../../../../../automotive_control/nios_fprint.sopcinfo
  *
- * Generated: Wed Mar 04 19:41:54 EST 2015
+ * Generated: Mon May 11 16:41:24 EDT 2015
  */
 
 /*
@@ -474,7 +474,7 @@
 #define SYS_ID_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define SYS_ID_NAME "/dev/sys_id"
 #define SYS_ID_SPAN 8
-#define SYS_ID_TIMESTAMP 1425515143
+#define SYS_ID_TIMESTAMP 1417446642
 #define SYS_ID_TYPE "altera_avalon_sysid_qsys"
 
 
