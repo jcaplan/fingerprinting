@@ -293,14 +293,16 @@ void TransferResult_TASK(void* pdata) {
 			handleDMAStruct_0.code = DMA_CODE_DERIVATIVE;
 			sendDMA(&dmaPackageStruct_0, CORE0_SCRATCHPAD_STARTADDRESS,
 					sizeof(DMAPackageStruct), &handleDMAStruct_0);
-			//core 0 must be notified when DMA is complete
+
+			sendDMA((void *)(0x495000), CORE0_SCRATCHPAD_STARTADDRESS + 1024,
+					sizeof(DMAPackageStruct), &handleDMAStruct_0);
+
 
 			//Derivative -> Core 1
 			//--------------------
 			handleDMAStruct_1.code = DMA_CODE_DERIVATIVE;
 			sendDMA(&dmaPackageStruct_0, CORE1_SCRATCHPAD_STARTADDRESS,
 					sizeof(DMAPackageStruct), &handleDMAStruct_1);
-			//Core 1 must be notified when DMA is complete
 			printf("sender 1\n");
 			OSSemPost(TractionControl_SEM0);
 			break;

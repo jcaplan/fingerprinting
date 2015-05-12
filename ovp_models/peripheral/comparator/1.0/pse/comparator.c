@@ -89,6 +89,11 @@ void increase_pointer(int array[2][16], int core, int task){
 		array[core][task] = start[core][task];
 	else
 		array[core][task]++;
+
+	if(diagnosticLevel == 3){
+		bhmPrintf("task %d core %d head pointer increased: %d\n",task,core,array[core][task]);
+	}
+
 }
 
 int check_fprint(int task){
@@ -107,10 +112,14 @@ int check_fprint(int task){
 		increase_pointer(tail,0,task);
 		increase_pointer(tail,1,task);
 		//INCREASE THE TAIL POINTER
-		//}
-
-		
+		//}	
 	}
+	if(diagnosticLevel == 3){
+		bhmPrintf("finished comparing fingerprints in buffer for task %d\n",task);
+	}
+	
+
+
 	for(i = 0; i < 2; i++){
 		fprints_ready[i][task] = 0;
 	}
@@ -262,7 +271,6 @@ PPM_WRITE_CB(fprintWr) {
  	 				else
  	 					checkin[1][d.state.task_id] = 1;
  	 				do_comparison();
- 	 				
  	 				break;
  	 			case CH_OUT:
  	 				if(a.bits.core_id == assignment[0][d.state.task_id])
@@ -291,6 +299,11 @@ PPM_WRITE_CB(fprintWr) {
 	 	 	 	if(index != 16)
 	 				break;
  	 		} 	 	
+
+ 	 		if(diagnosticLevel == 3){
+				bhmPrintf("comparator receives core %d fingerprint %x\n",a.bits.core_id,data);
+			}
+
  	 		 //use the head pointer to update the fingerprint buffer then increment it
  	 		 fprint[core][head[core][index]]=data;
 // 			 bhmPrintf("virtual core = %d, actual core = %d, task = %d, crc = %x\n",core,assignment[core][task],task,fprint[core][head[core][index]]);
