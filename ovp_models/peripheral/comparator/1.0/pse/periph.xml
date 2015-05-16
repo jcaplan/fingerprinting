@@ -7,11 +7,19 @@
     name="comparator"
     vendor="mcgill.ca"
     version="1.0">
-    <documentation name="Description">Comparator peripheral model</documentation>
+    <docsection name="doc"
+        text="Description">
+        <doctext name="txt"
+            text="Comparator peripheral model"/>
+    </docsection>
     <busslaveport addresswidth="32"
         name="COMP_CSR_SLAVE"
         size="0x1000">
-        <documentation name="Description">Comparator control register slave port</documentation>
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="Comparator control register slave port"/>
+        </docsection>
         <addressblock name="ab32"
             size="0x200"
             width="32">
@@ -24,7 +32,11 @@
     <busslaveport addresswidth="32"
         name="COMP_FPRINT_SLAVE"
         size="0x1000">
-        <documentation name="Description">Comparator fprint slave port</documentation>
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="Comparator fprint slave port"/>
+        </docsection>
         <addressblock name="ab32"
             size="0x1000"
             width="32">
@@ -36,7 +48,11 @@
     <netport name="COMP_IRQ"
         type="output"
         updatefunctionargument="0">
-        <documentation name="Description">comparator interrupt</documentation>
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="comparator interrupt"/>
+        </docsection>
     </netport>
     <fileversion major="1"
         minor="0"
