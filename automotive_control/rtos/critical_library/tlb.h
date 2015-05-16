@@ -27,7 +27,7 @@ unsigned int tlb_is_on();
 
 //Enable register functions
 void enableTlbLine(unsigned int line);
-void disableLine(unsigned int line);
+void disableTlbLine(unsigned int line);
 void reset_enable();
 unsigned int get_enable();
 

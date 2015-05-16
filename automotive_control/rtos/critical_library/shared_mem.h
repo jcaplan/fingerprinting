@@ -48,8 +48,10 @@ typedef struct CriticalFunctionData{
 
 	//The TLB must be set appropriately for the function to run correctly
 	//Each core locally manages its own TLB, only the start address is required
-	unsigned int tlbTranslationPhys;
-	unsigned int tlbTranslationVirt;
+	void *tlbDataAddressPhys;
+	void *tlbDataAddressVirt;
+	void *tlbStackAddressPhys;
+	void *tlbStackAddressVirt;
 	int partnerCore;
 	int checkout;
 

@@ -93,13 +93,16 @@ OS_EVENT *derivative_AirbagModel_SEM0;
  *****************************************************************************/
 static void handleCPU(void* context) {
 	if (critFuncData[1].tableIndex == DERIVATIVE_FUNC_TABLE_INDEX){
-		//initiate the critical task execution
-		//The stack is statically allocated in the scratchpad for now
-		//main memory transfers may occur later
-		//Use DMA, send pointers for tasks through shared memory to monitor
-		//The monitor will move the task stacks into the scratchpad at the appropriate location
-		//and send the translation info back to the core
-		//The stacks will be packed as closely as possible into 4kB
+		//The monitor will provide a translation mapping for the stack
+		//and for the global data... two translations received in data structure
+		set_cputable_entry(0, critFuncData[0].tlbDataAddressVirt);
+		set_spmtable_entry(0, critFuncData[0].tlbDataAddressPhys);
+		enableTlbLine(0);
+
+		set_cputable_entry(1, critFuncData[0].tlbStackAddressVirt);
+		set_spmtable_entry(1, critFuncData[0].tlbStackAddressPhys);
+		enableTlbLine(1);
+
 		*core1_IRQ = 0;
 		OSSemPost(derivative_AirbagModel_SEM0);
 	}
@@ -157,8 +160,8 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		//Set the global pointer in case of compilation issues related
 		//to global variables
 		set_gp(gp);
-
-		derivativeFunc(0,functionTable[DERIVATIVE_FUNC_TABLE_INDEX].args);
+		int priority = critFuncData->priority;
+		derivativeFunc(priority,functionTable[DERIVATIVE_FUNC_TABLE_INDEX].args);
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();
@@ -178,7 +181,7 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		//to global variables
 		set_gp(gp);
 
-		airbagModelFunc(1,functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].args);
+		airbagModelFunc(priority+1,functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].args);
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();

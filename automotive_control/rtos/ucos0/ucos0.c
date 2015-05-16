@@ -94,13 +94,19 @@ OS_EVENT *derivative_AirbagModel_SEM0;
  *****************************************************************************/
 static void handleCPU(void* context) {
 	if (critFuncData[0].tableIndex == DERIVATIVE_FUNC_TABLE_INDEX){
-		//initiate the critical task execution
-		//The stack is statically allocated in the scratchpad for now
-		//main memory transfers may occur later
-		//Use DMA, send pointers for tasks through shared memory to monitor
-		//The monitor will move the task stacks into the scratchpad at the appropriate location
-		//and send the translation info back to the core
-		//The stacks will be packed as closely as possible into 4kB
+		//The monitor will provide a translation mapping for the stack
+		//and for the global data... two translations received in data structure
+
+		disableTlbLine(20);
+
+		set_cputable_entry(0, critFuncData[0].tlbDataAddressVirt);
+		set_spmtable_entry(0, critFuncData[0].tlbDataAddressPhys);
+		enableTlbLine(0);
+
+		set_cputable_entry(1, critFuncData[0].tlbStackAddressVirt);
+		set_spmtable_entry(1, critFuncData[0].tlbStackAddressPhys);
+		enableTlbLine(1);
+
 		*core0_IRQ = 0;
 		OSSemPost(derivative_AirbagModel_SEM0);
 	}
@@ -167,23 +173,18 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		//Do the derivative part
 		// Set default block size for fingerprinting
 		fprint_set_block_size(derivative_blocksize);
-		//TODO The TLB must be appropriately configured
 
-
-		set_cputable_entry(0, 0x00431000);
-		set_spmtable_entry(0, 0x04203000);
-		enableTlbLine(0);
 		activateTlb();
 
 		//Set the global pointer in case of compilation issues related
 		//to global variables
 		set_gp(gp);
 
-		derivativeFunc(0,functionTable[DERIVATIVE_FUNC_TABLE_INDEX].args);
+		int priority = critFuncData->priority;
+		derivativeFunc(priority,functionTable[DERIVATIVE_FUNC_TABLE_INDEX].args);
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();
-		deactivateTlb();
 
 
 		//Do the airbag part
@@ -191,17 +192,14 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		fprint_set_block_size(airbagModel_blocksize);
 		//TODO The TLB must be appropriately configured
 
-		enableTlbLine(0);
-		activateTlb();
 		//Set the global pointer in case of compilation issues related
 		//to global variables
 		set_gp(gp);
 
-		airbagModelFunc(1,functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].args);
+		airbagModelFunc(priority+1,functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].args);
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();
-		deactivateTlb();
 
 		//Restore the callee saved registers
 		context_restore(registers);

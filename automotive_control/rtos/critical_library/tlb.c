@@ -48,7 +48,7 @@ void enableTlbLine(unsigned int line) {
 	*LINE_ENABLE_REG = *LINE_ENABLE_REG | (1 << line);
 }
 
-void disableLine(unsigned int line) {
+void disableTlbLine(unsigned int line) {
 	*LINE_ENABLE_REG = *LINE_ENABLE_REG &~(1 << line);
 }
 /*

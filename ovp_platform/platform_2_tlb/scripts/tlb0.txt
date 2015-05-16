@@ -1,0 +1,5 @@
+proc cpu0
+b handleCPU
+continue
+set itrace change
+continue
