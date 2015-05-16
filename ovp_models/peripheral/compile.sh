@@ -5,7 +5,7 @@
 LIST=`find ./*/ -name 'compile.sh'`
 echo "$LIST"
 
-HOME='pwd'
+HOME=`pwd`
 for f in $LIST
 do
 	DIR=$(dirname "$f")
