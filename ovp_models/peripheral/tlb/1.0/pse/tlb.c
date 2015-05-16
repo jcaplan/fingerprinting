@@ -49,7 +49,7 @@ void update_mapping(void){
     int en_reg = TLB_CSR_ab32_data.lineEnableReg.value;
     int i; 
     for(i = 0; i < 32; i++){
-        if((en_reg & (1 << i)) == (1 << i)){
+        if(en_reg & (1 << i)){
             fprint_table[++fprint_table[0]] = physical_address[i];
             ppmCreateDynamicBridge("TLB_SLAVE",virtual_address[i] << 12,0x1000, "TLB_MASTER", physical_address[i] << 12);
             
@@ -72,12 +72,21 @@ void update_mapping(void){
     Uns32 low = 0;
     Uns32 high;
     //For each line
+
+    if(enabled[31] == 0){
+       ppmCreateDynamicBridge("TLB_SLAVE",0,0xffffffff, "TLB_MASTER", 0x0);
+        if(diagnosticLevel == 3){
+            bhmPrintf("Dynamic bridge create %x,%x -> %x,%x\n", 0,0xffffffff,0,0xffffffff);
+        }
+        return; 
+    }
+
     for(i = 0; i < 32; i ++){
         
         //First deal with all the zeros and the first non-zero entry:
         high = enabled[i];
         if(high > low && low == 0){
-            ppmCreateDynamicBridge("TLB_SLAVE",low,high - low, "TLB_MASTER", low);
+            ppmCreateDynamicBridge("TLB_SLAVE",0,high, "TLB_MASTER", 0);
             if(diagnosticLevel == 3){
                 bhmPrintf("Dynamic bridge create %x,%x -> %x,%x\n", low,high,low,high);
             }
@@ -85,9 +94,9 @@ void update_mapping(void){
         //Then skip consecutive translations (hence the 0x1000 offset)
         //And plug in any gaps in the bridging
         else if(high > low + 0x1000){
-            ppmCreateDynamicBridge("TLB_SLAVE",low+0x1000,high - low + 0x1000, "TLB_MASTER", low + 0x1000);
+            ppmCreateDynamicBridge("TLB_SLAVE",low+0x1000,high - (low + 0x1000), "TLB_MASTER", low + 0x1000);
             if(diagnosticLevel == 3){
-                bhmPrintf("Dynamic bridge create %x,%x -> %x,%x\n", low,high,low,high);    
+                bhmPrintf("Dynamic bridge create %x,%x -> %x,%x\n", low+0x1000,high,low+0x1000,high);    
             }
         }
         low = high;
@@ -171,4 +180,3 @@ PPM_CONSTRUCTOR_CB(constructor) {
 
     // YOUR CODE HERE (post constructor)
 }
-

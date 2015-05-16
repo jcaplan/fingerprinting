@@ -1,0 +1,66 @@
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//                W R I T T E N   B Y   I M P E R A S   I G E N
+//
+//                             Version 20150205.0
+//                          Sat May 16 13:15:06 2015
+//
+////////////////////////////////////////////////////////////////////////////////
+
+
+#include <string.h>
+#include <stdlib.h>
+
+#include "icm/icmCpuManager.h"
+
+// Be careful to avoid overwriting any edits if igen is run a second time.
+// Only use -overwrite if you wish to overwrite this file.
+
+#include "platform.options.igen.h"
+#include "platform.handles.igen.h"
+#include "platform.constructor.igen.h"
+
+static Bool postCmdParser(void) {
+    // postCmdParser code goes here
+    return True;
+}
+
+static Bool postPlatformConstruct(void) {
+    // postPlatformConstruct code goes here
+    icmSimulationStarting();
+    return True;
+}
+
+static Bool postSimulate(void) {
+    // postSimulate code goes here
+    return True;
+}
+
+
+#include "platform.clp.igen.h"
+////////////////////////////////////////////////////////////////////////////////
+//                                   M A I N
+////////////////////////////////////////////////////////////////////////////////
+
+int main(int argc, const char *argv[]) {
+    if(!cmdParser(argc, argv)) {
+        return 1;
+    }
+    if(!postCmdParser())  {
+        return 1;
+    }
+    platformConstructor();
+
+    if(!postPlatformConstruct()) {
+        return 1;
+    }
+    icmSimulatePlatform();
+    if(!postSimulate()) {
+        return 1;
+    }
+    icmTerminate();
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
