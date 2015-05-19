@@ -119,6 +119,13 @@ isetattribute -handle cpu0 -name INCLUDE_MMU                     -value 0
 isetattribute -handle cpu0 -name DATA_ADDR_WIDTH                 -value ${CPU0_DATA_ADDR_WIDTH}
 isetattribute -handle cpu0 -name INST_ADDR_WIDTH                 -value ${CPU0_INST_ADDR_WIDTH}
 isetattribute -handle cpu0 -name TEST_HALT_EXIT                  -value 1
+isetattribute -handle cpu0 -name INCLUDE_MPU 					 -value 1
+isetattribute -handle cpu0 -name MPU_USE_LIMIT_FOR_REGION_RANGE  -value 0
+isetattribute -handle cpu0 -name MPU_NUMBER_DATA_REGIONS         -value 16
+isetattribute -handle cpu0 -name MPU_MINIMUM_DATA_REGION_SIZE    -value 1024
+isetattribute -handle cpu0 -name MPU_NUMBER_INSTRUCTION_REGIONS  -value 8
+isetattribute -handle cpu0 -name MPU_MINIMUM_INSTRUCTION_REGION_SIZE -value 4096
+
 
 
 
@@ -292,6 +299,12 @@ isetattribute -handle cpu1 -name INCLUDE_MMU                     -value 0
 isetattribute -handle cpu1 -name DATA_ADDR_WIDTH                 -value ${CPU1_DATA_ADDR_WIDTH}
 isetattribute -handle cpu1 -name INST_ADDR_WIDTH                 -value ${CPU1_INST_ADDR_WIDTH}
 isetattribute -handle cpu1 -name TEST_HALT_EXIT                  -value 1
+isetattribute -handle cpu1 -name INCLUDE_MPU 					 -value 1
+isetattribute -handle cpu1 -name MPU_USE_LIMIT_FOR_REGION_RANGE  -value 0
+isetattribute -handle cpu1 -name MPU_NUMBER_DATA_REGIONS         -value 16
+isetattribute -handle cpu1 -name MPU_MINIMUM_DATA_REGION_SIZE    -value 1024
+isetattribute -handle cpu1 -name MPU_NUMBER_INSTRUCTION_REGIONS  -value 8
+isetattribute -handle cpu1 -name MPU_MINIMUM_INSTRUCTION_REGION_SIZE -value 4096
 
 
 

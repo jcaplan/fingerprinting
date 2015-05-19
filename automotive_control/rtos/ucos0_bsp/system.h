@@ -97,7 +97,7 @@
 #define ALT_CPU_NAME "processor0_0_cpu0"
 #define ALT_CPU_NUM_OF_SHADOW_REG_SETS 0
 #define ALT_CPU_RESET_ADDR 0x00464000
-
+#define ALT_INCLUDE_INSTRUCTION_RELATED_EXCEPTION_API
 
 /*
  * CPU configuration (with legacy prefix - don't use these anymore)
