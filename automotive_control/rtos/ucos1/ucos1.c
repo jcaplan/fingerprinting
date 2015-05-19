@@ -152,11 +152,6 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		//TODO The TLB must be appropriately configured
 
 
-		set_cputable_entry(0, 0x00431000);
-		set_spmtable_entry(0, 0x04203000);
-		enableTlbLine(0);
-		activateTlb();
-
 		//Set the global pointer in case of compilation issues related
 		//to global variables
 		set_gp(gp);
@@ -165,7 +160,6 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();
-		deactivateTlb();
 
 
 
@@ -174,9 +168,6 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		// Set default block size for fingerprinting
 		fprint_set_block_size(airbagModel_blocksize);
 		//TODO The TLB must be appropriately configured
-
-		enableTlbLine(0);
-		activateTlb();
 		//Set the global pointer in case of compilation issues related
 		//to global variables
 		set_gp(gp);
@@ -185,7 +176,6 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();
-		deactivateTlb();
 
 		//Restore the callee saved registers
 		context_restore(registers);

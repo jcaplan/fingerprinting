@@ -200,7 +200,7 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();
-
+		disableTlbLine(0);
 		//Restore the callee saved registers
 		context_restore(registers);
 

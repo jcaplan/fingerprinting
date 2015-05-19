@@ -39,10 +39,10 @@
 
 #define STACKSIZE_MINOFFSET   				314
 #define STACKSIZE_MARGINERROR 				15
-#define CruiseControlSystem_STACKSIZE 		(156 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-#define TransferResult_STACKSIZE 			(208 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-#define TractionControl_STACKSIZE 			(136 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-#define DMA_STACKSIZE 						(136 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
+#define CruiseControlSystem_STACKSIZE 		(200 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
+#define TransferResult_STACKSIZE 			(220 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
+#define TractionControl_STACKSIZE 			(200 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
+#define DMA_STACKSIZE 						(200 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
 
 /*****************************************************************************
  * Task Priorities
@@ -65,8 +65,11 @@
 
 #define TractionControl_SEM0_INITCOND 			0
 
-#define CORE0_SCRATCHPAD_STARTADDRESS 			((void*)0x4203000)
-#define CORE1_SCRATCHPAD_STARTADDRESS 			((void*)0x4203000)
+#define CORE0_SCRATCHPAD_GLOBAL_ADDRESS 			((void*)0x4203000)
+#define CORE1_SCRATCHPAD_GLOBAL_ADDRESS 			((void*)0x4203000)
+#define CORE0_SCRATCHPAD_START_ADDRESS 			((void*)0x4200000)
+#define CORE1_SCRATCHPAD_START_ADDRESS 			((void*)0x4200000)
+
 
 #define AirbagModel_COMPSTATUS_MASK 					0x2
 
@@ -207,7 +210,7 @@ void TractionControl_TASK(void* pdata) {
 				&TractionControl_Y);
 		OSFlagPost(TransferResult_FLAG0, TransferResult_FLAG0_SENDER2_BITMASK,
 				OS_FLAG_SET, &perr);
-		printf("did traction control\n");
+		printf("did traction control %d\n",perr);
 	}
 }
 
@@ -233,27 +236,27 @@ void dma_TASK(void* pdata) {
 
 	handleDMAStruct_0[0].action = DMA_CODE_NOACTION;
 	handleDMAStruct_0[0].sourceAddress = &dmaPackageStruct_0;
-	handleDMAStruct_0[0].destAddress = CORE0_SCRATCHPAD_STARTADDRESS;
+	handleDMAStruct_0[0].destAddress = CORE0_SCRATCHPAD_GLOBAL_ADDRESS;
 	handleDMAStruct_0[0].size = sizeof(DMAPackageStruct);
 
 	handleDMAStruct_0[1].action = DMA_CODE_DERIVATIVE;
 	handleDMAStruct_0[1].sourceAddress = (void *) (0x495000);
-	handleDMAStruct_0[1].destAddress = CORE0_SCRATCHPAD_STARTADDRESS + 4096;
+	handleDMAStruct_0[1].destAddress = CORE0_SCRATCHPAD_START_ADDRESS;
 	handleDMAStruct_0[1].size = 4096;
 
 	handleDMAStruct_0[2].action = DMA_CODE_AIRBAGMODEL;
-	handleDMAStruct_0[2].sourceAddress = CORE0_SCRATCHPAD_STARTADDRESS;
+	handleDMAStruct_0[2].sourceAddress = CORE0_SCRATCHPAD_GLOBAL_ADDRESS;
 	handleDMAStruct_0[2].destAddress = &dmaPackageStruct_0;
 	handleDMAStruct_0[2].size = sizeof(DMAPackageStruct);
 
 	handleDMAStruct_1[0].action = DMA_CODE_NOACTION;
 	handleDMAStruct_1[0].sourceAddress = &dmaPackageStruct_0;
-	handleDMAStruct_1[0].destAddress = CORE1_SCRATCHPAD_STARTADDRESS;
+	handleDMAStruct_1[0].destAddress = CORE1_SCRATCHPAD_GLOBAL_ADDRESS;
 	handleDMAStruct_1[0].size = sizeof(DMAPackageStruct);
 
 	handleDMAStruct_1[1].action = DMA_CODE_DERIVATIVE;
-	handleDMAStruct_1[1].sourceAddress = (void *) (0x464000);
-	handleDMAStruct_1[1].destAddress = CORE1_SCRATCHPAD_STARTADDRESS + 1024;
+	handleDMAStruct_1[1].sourceAddress = (void *) (0x463000);
+	handleDMAStruct_1[1].destAddress = CORE1_SCRATCHPAD_START_ADDRESS;
 	handleDMAStruct_1[1].size = 4096;
 
 	INT8U perr;
@@ -369,15 +372,15 @@ void handleDMA(void* handle, void* data) {
 				critFuncData[i].priority = 0;
 				critFuncData[i].tableIndex = DERIVATIVE_FUNC_TABLE_INDEX;
 				critFuncData[i].tlbDataAddressPhys =
-						CORE0_SCRATCHPAD_STARTADDRESS;
+						CORE0_SCRATCHPAD_GLOBAL_ADDRESS;
 				critFuncData[i].tlbDataAddressVirt =
 						(void *) GLOBAL_DATA_REGION_BASE;
-				critFuncData[i].tlbStackAddressPhys = CORE0_SCRATCHPAD_STARTADDRESS + 4096;
+				critFuncData[i].tlbStackAddressPhys = CORE0_SCRATCHPAD_START_ADDRESS;
 				critFuncData[i].tlbStackAddressVirt = (void *) (0x463000);
 			}
 
-			printf("TLB data address... virt: %x, phys: %x\n",CORE0_SCRATCHPAD_STARTADDRESS,GLOBAL_DATA_REGION_BASE);
-			printf("TLB stack address... virt: %x, phys: %x\n",CORE0_SCRATCHPAD_STARTADDRESS + 4096,0x463000);
+			printf("TLB data address... virt: %x, phys: %x\n",CORE0_SCRATCHPAD_GLOBAL_ADDRESS,GLOBAL_DATA_REGION_BASE);
+			printf("TLB stack address... virt: %x, phys: %x\n",CORE0_SCRATCHPAD_GLOBAL_ADDRESS + 4096,0x463000);
 
 
 			critFuncData[0].partnerCore = 1;
@@ -426,7 +429,7 @@ void sendDMA(void* sourceAddress, void* destAddress, int size, void *handle) {
 		//Failure
 	}
 }
-
+int result = 0;
 /*****************************************************************************
  * TransferResult Task wrapper
  *
@@ -435,7 +438,6 @@ void sendDMA(void* sourceAddress, void* destAddress, int size, void *handle) {
 void TransferResult_TASK(void* pdata) {
 
 	while (1) {
-		printf("hi\n");
 		INT8U perr;
 		OS_FLAGS sender = OSFlagPend(TransferResult_FLAG0,
 				TransferResult_FLAG0_CONDITION, TransferResult_FLAG0_WAITTYPE,
@@ -482,8 +484,7 @@ void TransferResult_TASK(void* pdata) {
 		case TransferResult_FLAG0_SENDER3_BITMASK:
 			//Core 0 -> AirbagModel_Y.output
 			//------------------------------
-			OSFlagPost(dmaReady_FLAG0, 0x4, OS_FLAG_SET, &perr);
-			//TODO AirbagModel_address... needs to be assigned at startup
+			OSFlagPost(dmaReady_FLAG0, dmaReady_FLAG0_CORE0_M2_BITMASK, OS_FLAG_SET, &perr);
 			printf("sender 3\n");
 			break;
 		}
@@ -505,6 +506,7 @@ static void handleCompISR(void* context) {
 	if (status.successful_reg & AirbagModel_COMPSTATUS_MASK) {
 		OSFlagPost(TransferResult_FLAG0, TransferResult_FLAG0_SENDER3_BITMASK,
 				OS_FLAG_SET, &perr);
+		result = status.successful_reg;
 	} else if (status.failed_reg & AirbagModel_COMPSTATUS_MASK) {
 		//take failed action
 		printf("failed\n");
