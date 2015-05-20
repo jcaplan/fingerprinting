@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>May 11, 2015 2:13:12 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1431367992420</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>May 20, 2015 12:59:00 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1432141140893</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>/data/jcapla9/fingerprinting/automotive_control/rtos/ucos0_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../nios_fprint.sopcinfo</SopcDesignFile>
@@ -50,7 +50,7 @@
                 <SettingName>hal.enable_instruction_related_exceptions_api</SettingName>
                 <Identifier>ALT_INCLUDE_INSTRUCTION_RELATED_EXCEPTION_API</Identifier>
                 <Type>BooleanDefineOnly</Type>
-                <Value>false</Value>
+                <Value>true</Value>
                 <DefaultValue>false</DefaultValue>
                 <DestinationFile>system_h_define</DestinationFile>
                 <Description>Enables API for registering handlers to service instruction-related exceptions. Enabling this setting increases the size of the exception entry code.</Description>
@@ -974,7 +974,7 @@
                 <SettingName>ucosii.miscellaneous.os_max_events</SettingName>
                 <Identifier>OS_MAX_EVENTS</Identifier>
                 <Type>DecimalNumber</Type>
-                <Value>60</Value>
+                <Value>20</Value>
                 <DefaultValue>60</DefaultValue>
                 <DestinationFile>system_h_define</DestinationFile>
                 <Description>Maximum number of event control blocks</Description>
@@ -1250,7 +1250,7 @@
                 <SettingName>ucosii.event_flag.os_max_flags</SettingName>
                 <Identifier>OS_MAX_FLAGS</Identifier>
                 <Type>DecimalNumber</Type>
-                <Value>20</Value>
+                <Value>10</Value>
                 <DefaultValue>20</DefaultValue>
                 <DestinationFile>system_h_define</DestinationFile>
                 <Description>Maximum number of Event Flags groups. CAUTION: This is required by the HAL and many Altera device drivers; use caution in reducing this value.</Description>
@@ -1598,7 +1598,7 @@
                 <SettingName>ucosii.os_tmr_en</SettingName>
                 <Identifier>OS_TMR_EN</Identifier>
                 <Type>Boolean</Type>
-                <Value>0</Value>
+                <Value>1</Value>
                 <DefaultValue>0</DefaultValue>
                 <DestinationFile>system_h_define</DestinationFile>
                 <Description>Enable code for timers</Description>

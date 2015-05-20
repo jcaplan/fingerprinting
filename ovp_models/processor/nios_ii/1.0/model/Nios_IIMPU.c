@@ -264,25 +264,31 @@ void Nios_IIWriteMPU(Nios_IIP Nios_II) {
     }
 
     entry->base = Nios_II->mpubase.bits.BASE << 6;
-    if (Nios_II->params.MPU_USE_LIMIT_FOR_REGION_RANGE) {
-        vmiMessage("F", "Nios_IIWriteMPU","MPU_USE_LIMIT_FOR_REGION_RANGE");
-    } else {
-        //
-        // and add leading 1s for the address size
-        //
-        Uns32 bits   = Nios_II->sizeInstDataBus;
-        Uns32 orBits = (bits==32) ? 0 : (~0 << bits);
-        entry->size  = -(orBits | (Nios_II->mpuacc.bits.MASK_LIMIT << 6));
-    }
+    
+    Uns32 bits   = Nios_II->sizeInstDataBus;
+    Uns32 orBits = (bits==32) ? 0 : (~0 << bits);
+
+
+    
     entry->C = Nios_II->mpuacc.bits.C;
     entry->priv[VM_MODE_USER_MPU]   = user;
     entry->priv[VM_MODE_KERNEL_MPU] = kernel;
 
+    if (Nios_II->params.MPU_USE_LIMIT_FOR_REGION_RANGE) {
+        low = entry->base;
+        high = Nios_II->mpuacc.bits.MASK_LIMIT << 6;
+        entry->size = high - low;
+         vmiPrintf("MPU address low: %x, high: %x\n",low,high);
+    } else {
+        entry->size  = -(orBits | (Nios_II->mpuacc.bits.MASK_LIMIT << 6));
+        low  = entry->base;
+        high = low + (entry->size - 1);
+         vmiPrintf("MPU address low: %x, high: %x, size: %x\n",low,high,entry->size);
+    }
+
     //
     // Remove New mapping from USER & KERNEL (even if it does not yet exist)
     //
-    low  = entry->base;
-    high = low + (entry->size - 1);
     if (isData) {
         vmirtProtectMemory(Nios_II->virtDomainD[VM_MODE_USER_MPU],   low, high, MEM_PRIV_NONE, MEM_PRIV_SET);
         vmirtProtectMemory(Nios_II->virtDomainD[VM_MODE_KERNEL_MPU], low, high, MEM_PRIV_NONE, MEM_PRIV_SET);

@@ -116,14 +116,6 @@
          type = "String";
       }
    }
-   element button_pio.s1
-   {
-      datum baseAddress
-      {
-         value = "134225920";
-         type = "String";
-      }
-   }
    element timestamp.s1
    {
       datum baseAddress
@@ -132,19 +124,27 @@
          type = "String";
       }
    }
-   element timer.s1
-   {
-      datum baseAddress
-      {
-         value = "134252800";
-         type = "String";
-      }
-   }
    element scratchpad.s1
    {
       datum baseAddress
       {
          value = "69206016";
+         type = "String";
+      }
+   }
+   element button_pio.s1
+   {
+      datum baseAddress
+      {
+         value = "134225920";
+         type = "String";
+      }
+   }
+   element timer.s1
+   {
+      datum baseAddress
+      {
+         value = "134252800";
          type = "String";
       }
    }
@@ -271,7 +271,7 @@
   <parameter name="setting_HBreakTest" value="false" />
   <parameter name="setting_breakslaveoveride" value="false" />
   <parameter name="muldiv_divider" value="false" />
-  <parameter name="mpu_useLimit" value="false" />
+  <parameter name="mpu_useLimit" value="true" />
   <parameter name="mpu_enabled" value="true" />
   <parameter name="mmu_enabled" value="false" />
   <parameter name="mmu_autoAssignTlbPtrSz" value="true" />
@@ -303,8 +303,8 @@
   <parameter name="setting_branchPredictionType" value="Automatic" />
   <parameter name="setting_bhtPtrSz" value="8" />
   <parameter name="muldiv_multiplierType" value="NoneSmall" />
-  <parameter name="mpu_minInstRegionSize" value="12" />
-  <parameter name="mpu_minDataRegionSize" value="10" />
+  <parameter name="mpu_minInstRegionSize" value="6" />
+  <parameter name="mpu_minDataRegionSize" value="6" />
   <parameter name="mmu_uitlbNumEntries" value="4" />
   <parameter name="mmu_udtlbNumEntries" value="6" />
   <parameter name="mmu_tlbPtrSz" value="7" />

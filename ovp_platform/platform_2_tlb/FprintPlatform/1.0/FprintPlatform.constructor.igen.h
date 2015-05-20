@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20140430.0
-//                          Tue May 19 15:20:18 2015
+//                          Wed May 20 15:51:44 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -208,11 +208,12 @@ void platformConstructor(void) {
     icmAddUns64Attr(cpu0_attrList, "BREAK_VECTOR", 0x8000820);
     icmAddStringAttr(cpu0_attrList, "INCLUDE_MMU", "0");
     icmAddStringAttr(cpu0_attrList, "INCLUDE_MPU", "1");
-    icmAddStringAttr(cpu0_attrList, "MPU_USE_LIMIT_FOR_REGION_RANGE", "0");
+    icmAddStringAttr(cpu0_attrList, "EXCEPTION_EXTRA_INFORMATION", "1");
+    icmAddStringAttr(cpu0_attrList, "MPU_USE_LIMIT_FOR_REGION_RANGE", "1");
     icmAddUns64Attr(cpu0_attrList, "MPU_NUMBER_DATA_REGIONS", 0x10);
-    icmAddUns64Attr(cpu0_attrList, "MPU_MINIMUM_DATA_REGION_SIZE", 0x400);
+    icmAddUns64Attr(cpu0_attrList, "MPU_MINIMUM_DATA_REGION_SIZE", 0x40);
     icmAddUns64Attr(cpu0_attrList, "MPU_NUMBER_INSTRUCTION_REGIONS", 0x8);
-    icmAddUns64Attr(cpu0_attrList, "MPU_MINIMUM_INSTRUCTION_REGION_SIZE", 0x1000);
+    icmAddUns64Attr(cpu0_attrList, "MPU_MINIMUM_INSTRUCTION_REGION_SIZE", 0x40);
     icmAddDoubleAttr(cpu0_attrList, "mips", 125.000000);
     icmAddStringAttr(cpu0_attrList, "endian", "little");
     icmNewProcAttrs cpu0_attrs = ICM_ATTR_SIMEX;
@@ -260,11 +261,12 @@ void platformConstructor(void) {
     icmAddUns64Attr(cpu1_attrList, "BREAK_VECTOR", 0x8008020);
     icmAddStringAttr(cpu1_attrList, "INCLUDE_MMU", "0");
     icmAddStringAttr(cpu1_attrList, "INCLUDE_MPU", "1");
-    icmAddStringAttr(cpu1_attrList, "MPU_USE_LIMIT_FOR_REGION_RANGE", "0");
+    icmAddStringAttr(cpu1_attrList, "EXCEPTION_EXTRA_INFORMATION", "1");
+    icmAddStringAttr(cpu1_attrList, "MPU_USE_LIMIT_FOR_REGION_RANGE", "1");
     icmAddUns64Attr(cpu1_attrList, "MPU_NUMBER_DATA_REGIONS", 0x10);
-    icmAddUns64Attr(cpu1_attrList, "MPU_MINIMUM_DATA_REGION_SIZE", 0x400);
+    icmAddUns64Attr(cpu1_attrList, "MPU_MINIMUM_DATA_REGION_SIZE", 0x40);
     icmAddUns64Attr(cpu1_attrList, "MPU_NUMBER_INSTRUCTION_REGIONS", 0x8);
-    icmAddUns64Attr(cpu1_attrList, "MPU_MINIMUM_INSTRUCTION_REGION_SIZE", 0x1000);
+    icmAddUns64Attr(cpu1_attrList, "MPU_MINIMUM_INSTRUCTION_REGION_SIZE", 0x40);
     icmAddDoubleAttr(cpu1_attrList, "mips", 125.000000);
     icmAddStringAttr(cpu1_attrList, "endian", "little");
     icmNewProcAttrs cpu1_attrs = ICM_ATTR_SIMEX;

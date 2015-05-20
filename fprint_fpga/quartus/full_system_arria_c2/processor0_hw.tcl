@@ -55,7 +55,7 @@ proc compose { } {
     set_instance_parameter_value cpu0 {setting_HBreakTest} {0}
     set_instance_parameter_value cpu0 {setting_breakslaveoveride} {0}
     set_instance_parameter_value cpu0 {muldiv_divider} {0}
-    set_instance_parameter_value cpu0 {mpu_useLimit} {0}
+    set_instance_parameter_value cpu0 {mpu_useLimit} {1}
     set_instance_parameter_value cpu0 {mpu_enabled} {1}
     set_instance_parameter_value cpu0 {mmu_enabled} {0}
     set_instance_parameter_value cpu0 {mmu_autoAssignTlbPtrSz} {1}
@@ -87,8 +87,8 @@ proc compose { } {
     set_instance_parameter_value cpu0 {setting_branchPredictionType} {Automatic}
     set_instance_parameter_value cpu0 {setting_bhtPtrSz} {8}
     set_instance_parameter_value cpu0 {muldiv_multiplierType} {NoneSmall}
-    set_instance_parameter_value cpu0 {mpu_minInstRegionSize} {12}
-    set_instance_parameter_value cpu0 {mpu_minDataRegionSize} {10}
+    set_instance_parameter_value cpu0 {mpu_minInstRegionSize} {6}
+    set_instance_parameter_value cpu0 {mpu_minDataRegionSize} {6}
     set_instance_parameter_value cpu0 {mmu_uitlbNumEntries} {4}
     set_instance_parameter_value cpu0 {mmu_udtlbNumEntries} {6}
     set_instance_parameter_value cpu0 {mmu_tlbPtrSz} {7}

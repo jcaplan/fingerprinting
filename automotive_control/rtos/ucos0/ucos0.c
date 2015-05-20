@@ -256,8 +256,8 @@ int main(){
 
 	//Start up the MPU
 	//----------------
-	nios2_mpu_data_init();
-	nios2_mpu_inst_init();
+//	nios2_mpu_data_init();
+//	nios2_mpu_inst_init();
 
 	//Declare the OS tasks
 	///-------------------

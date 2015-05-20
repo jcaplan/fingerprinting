@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="nios_fprint" kind="system" version="13.1" fabric="QSYS">
  <!-- Format version 13.1 162 (Future versions may contain additional information.) -->
- <!-- 2015.03.04.19:26:52 -->
+ <!-- 2015.05.20.12:54:49 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1425515143</value>
+  <value>1432140813</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -732,7 +732,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1425515143</value>
+   <value>1432140813</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -752,7 +752,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1425515143</value>
+   <value>1432140813</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -768,7 +768,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1425515143</value>
+   <value>1432140813</value>
    <derived>false</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -3501,7 +3501,7 @@ parameters are a RESULT of the module parameters. -->
 the requested settings for a module instance. -->
   <parameter name="AUTO_GENERATION_ID">
    <type>java.lang.Integer</type>
-   <value>1425515143</value>
+   <value>1432140813</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -7067,7 +7067,7 @@ parameters are a RESULT of the module parameters. -->
 the requested settings for a module instance. -->
   <parameter name="AUTO_GENERATION_ID">
    <type>java.lang.Integer</type>
-   <value>1425515143</value>
+   <value>1432140813</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -9251,19 +9251,19 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.MPU_MIN_DATA_REGION_SIZE</name>
-   <value>1024</value>
+   <value>64</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.MPU_MIN_DATA_REGION_SIZE_LOG2</name>
-   <value>10</value>
+   <value>6</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.MPU_MIN_INST_REGION_SIZE</name>
-   <value>4096</value>
+   <value>64</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.MPU_MIN_INST_REGION_SIZE_LOG2</name>
-   <value>12</value>
+   <value>6</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.MPU_NUM_DATA_REGIONS</name>
@@ -9275,6 +9275,10 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.MPU_PRESENT</name>
+   <value></value>
+  </assignment>
+  <assignment>
+   <name>embeddedsw.CMacro.MPU_REGION_USES_LIMIT</name>
    <value></value>
   </assignment>
   <assignment>
@@ -9631,7 +9635,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="mpu_useLimit">
    <type>boolean</type>
-   <value>false</value>
+   <value>true</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -9887,7 +9891,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="mpu_minInstRegionSize">
    <type>int</type>
-   <value>12</value>
+   <value>6</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -9895,7 +9899,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="mpu_minDataRegionSize">
    <type>int</type>
-   <value>10</value>
+   <value>6</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -20842,7 +20846,7 @@ parameters are a RESULT of the module parameters. -->
 the requested settings for a module instance. -->
   <parameter name="AUTO_GENERATION_ID">
    <type>java.lang.Integer</type>
-   <value>1425515143</value>
+   <value>1432140813</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -23026,19 +23030,19 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.MPU_MIN_DATA_REGION_SIZE</name>
-   <value>1024</value>
+   <value>64</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.MPU_MIN_DATA_REGION_SIZE_LOG2</name>
-   <value>10</value>
+   <value>6</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.MPU_MIN_INST_REGION_SIZE</name>
-   <value>4096</value>
+   <value>64</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.MPU_MIN_INST_REGION_SIZE_LOG2</name>
-   <value>12</value>
+   <value>6</value>
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.MPU_NUM_DATA_REGIONS</name>
@@ -23050,6 +23054,10 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.MPU_PRESENT</name>
+   <value></value>
+  </assignment>
+  <assignment>
+   <name>embeddedsw.CMacro.MPU_REGION_USES_LIMIT</name>
    <value></value>
   </assignment>
   <assignment>
@@ -23406,7 +23414,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="mpu_useLimit">
    <type>boolean</type>
-   <value>false</value>
+   <value>true</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -23662,7 +23670,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="mpu_minInstRegionSize">
    <type>int</type>
-   <value>12</value>
+   <value>6</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -23670,7 +23678,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="mpu_minDataRegionSize">
    <type>int</type>
-   <value>10</value>
+   <value>6</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -34617,7 +34625,7 @@ parameters are a RESULT of the module parameters. -->
 the requested settings for a module instance. -->
   <parameter name="AUTO_GENERATION_ID">
    <type>java.lang.Integer</type>
-   <value>1425515143</value>
+   <value>1432140813</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -57905,11 +57913,11 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>irq</endConnectionPoint>
  </connection>
  <connection
-   name="mm_interconnect_0.cfpu_0_fprint/cfpu_0.fprint"
+   name="mm_interconnect_0.sys_id_control_slave/sys_id.control_slave"
    kind="avalon"
    version="13.1"
-   start="mm_interconnect_0.cfpu_0_fprint"
-   end="cfpu_0.fprint">
+   start="mm_interconnect_0.sys_id_control_slave"
+   end="sys_id.control_slave">
   <parameter name="arbitrationPriority">
    <type>int</type>
    <value>1</value>
@@ -57951,36 +57959,9 @@ parameters are a RESULT of the module parameters. -->
    <valid>true</valid>
   </parameter>
   <startModule>mm_interconnect_0</startModule>
-  <startConnectionPoint>cfpu_0_fprint</startConnectionPoint>
-  <endModule>cfpu_0</endModule>
-  <endConnectionPoint>fprint</endConnectionPoint>
- </connection>
- <connection
-   name="clk_0.clk/mm_interconnect_0.clk_0_clk"
-   kind="clock"
-   version="13.1"
-   start="clk_0.clk"
-   end="mm_interconnect_0.clk_0_clk">
-  <parameter name="deviceFamily">
-   <type>java.lang.String</type>
-   <value>UNKNOWN</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="generateLegacySim">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <startModule>clk_0</startModule>
-  <startConnectionPoint>clk</startConnectionPoint>
-  <endModule>mm_interconnect_0</endModule>
-  <endConnectionPoint>clk_0_clk</endConnectionPoint>
+  <startConnectionPoint>sys_id_control_slave</startConnectionPoint>
+  <endModule>sys_id</endModule>
+  <endConnectionPoint>control_slave</endConnectionPoint>
  </connection>
  <connection
    name="mm_interconnect_0.memory_0_mm_bridge_0_s0/memory_0_mm_bridge_0.s0"
@@ -58034,35 +58015,11 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>s0</endConnectionPoint>
  </connection>
  <connection
-   name="mm_interconnect_0.sys_id_control_slave/sys_id.control_slave"
-   kind="avalon"
+   name="clk_0.clk/mm_interconnect_0.clk_0_clk"
+   kind="clock"
    version="13.1"
-   start="mm_interconnect_0.sys_id_control_slave"
-   end="sys_id.control_slave">
-  <parameter name="arbitrationPriority">
-   <type>int</type>
-   <value>1</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="baseAddress">
-   <type>java.math.BigInteger</type>
-   <value>0x0000</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="defaultConnection">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
+   start="clk_0.clk"
+   end="mm_interconnect_0.clk_0_clk">
   <parameter name="deviceFamily">
    <type>java.lang.String</type>
    <value>UNKNOWN</value>
@@ -58079,10 +58036,10 @@ parameters are a RESULT of the module parameters. -->
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
-  <startModule>mm_interconnect_0</startModule>
-  <startConnectionPoint>sys_id_control_slave</startConnectionPoint>
-  <endModule>sys_id</endModule>
-  <endConnectionPoint>control_slave</endConnectionPoint>
+  <startModule>clk_0</startModule>
+  <startConnectionPoint>clk</startConnectionPoint>
+  <endModule>mm_interconnect_0</endModule>
+  <endConnectionPoint>clk_0_clk</endConnectionPoint>
  </connection>
  <connection
    name="mm_bridge_0.m0/mm_interconnect_0.mm_bridge_0_m0"
@@ -58136,11 +58093,11 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>mm_bridge_0_m0</endConnectionPoint>
  </connection>
  <connection
-   name="mm_interconnect_1.shared_memory_s1/shared_memory.s1"
+   name="mm_interconnect_0.cfpu_0_fprint/cfpu_0.fprint"
    kind="avalon"
    version="13.1"
-   start="mm_interconnect_1.shared_memory_s1"
-   end="shared_memory.s1">
+   start="mm_interconnect_0.cfpu_0_fprint"
+   end="cfpu_0.fprint">
   <parameter name="arbitrationPriority">
    <type>int</type>
    <value>1</value>
@@ -58181,10 +58138,10 @@ parameters are a RESULT of the module parameters. -->
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
-  <startModule>mm_interconnect_1</startModule>
-  <startConnectionPoint>shared_memory_s1</startConnectionPoint>
-  <endModule>shared_memory</endModule>
-  <endConnectionPoint>s1</endConnectionPoint>
+  <startModule>mm_interconnect_0</startModule>
+  <startConnectionPoint>cfpu_0_fprint</startConnectionPoint>
+  <endModule>cfpu_0</endModule>
+  <endConnectionPoint>fprint</endConnectionPoint>
  </connection>
  <connection
    name="mm_interconnect_1.processor1_0_dma_0_control_port_slave/processor1_0_dma_0.control_port_slave"
@@ -58238,11 +58195,62 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>control_port_slave</endConnectionPoint>
  </connection>
  <connection
-   name="mm_interconnect_1.cfpu_0_csr/cfpu_0.csr"
+   name="processorM_0_out_system_bridge.m0/mm_interconnect_1.processorM_0_outgoing_master"
    kind="avalon"
    version="13.1"
-   start="mm_interconnect_1.cfpu_0_csr"
-   end="cfpu_0.csr">
+   start="processorM_0_out_system_bridge.m0"
+   end="mm_interconnect_1.processorM_0_outgoing_master">
+  <parameter name="arbitrationPriority">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="baseAddress">
+   <type>java.math.BigInteger</type>
+   <value>0x0000</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="defaultConnection">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>processorM_0_out_system_bridge</startModule>
+  <startConnectionPoint>m0</startConnectionPoint>
+  <endModule>mm_interconnect_1</endModule>
+  <endConnectionPoint>processorM_0_outgoing_master</endConnectionPoint>
+ </connection>
+ <connection
+   name="mm_interconnect_1.shared_memory_s1/shared_memory.s1"
+   kind="avalon"
+   version="13.1"
+   start="mm_interconnect_1.shared_memory_s1"
+   end="shared_memory.s1">
   <parameter name="arbitrationPriority">
    <type>int</type>
    <value>1</value>
@@ -58284,9 +58292,9 @@ parameters are a RESULT of the module parameters. -->
    <valid>true</valid>
   </parameter>
   <startModule>mm_interconnect_1</startModule>
-  <startConnectionPoint>cfpu_0_csr</startConnectionPoint>
-  <endModule>cfpu_0</endModule>
-  <endConnectionPoint>csr</endConnectionPoint>
+  <startConnectionPoint>shared_memory_s1</startConnectionPoint>
+  <endModule>shared_memory</endModule>
+  <endConnectionPoint>s1</endConnectionPoint>
  </connection>
  <connection
    name="mm_interconnect_1.processorM_0_cpu_irq_0_s0/processorM_0_cpu_irq_0.s0"
@@ -58338,6 +58346,108 @@ parameters are a RESULT of the module parameters. -->
   <startConnectionPoint>processorM_0_cpu_irq_0_s0</startConnectionPoint>
   <endModule>processorM_0_cpu_irq_0</endModule>
   <endConnectionPoint>s0</endConnectionPoint>
+ </connection>
+ <connection
+   name="mm_interconnect_1.processor0_0_cpu_irq_0_s0/processor0_0_cpu_irq_0.s0"
+   kind="avalon"
+   version="13.1"
+   start="mm_interconnect_1.processor0_0_cpu_irq_0_s0"
+   end="processor0_0_cpu_irq_0.s0">
+  <parameter name="arbitrationPriority">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="baseAddress">
+   <type>java.math.BigInteger</type>
+   <value>0x0000</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="defaultConnection">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>mm_interconnect_1</startModule>
+  <startConnectionPoint>processor0_0_cpu_irq_0_s0</startConnectionPoint>
+  <endModule>processor0_0_cpu_irq_0</endModule>
+  <endConnectionPoint>s0</endConnectionPoint>
+ </connection>
+ <connection
+   name="processor1_0_out_system_bridge.m0/mm_interconnect_1.processor1_0_outgoing_master"
+   kind="avalon"
+   version="13.1"
+   start="processor1_0_out_system_bridge.m0"
+   end="mm_interconnect_1.processor1_0_outgoing_master">
+  <parameter name="arbitrationPriority">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="baseAddress">
+   <type>java.math.BigInteger</type>
+   <value>0x0000</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="defaultConnection">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>processor1_0_out_system_bridge</startModule>
+  <startConnectionPoint>m0</startConnectionPoint>
+  <endModule>mm_interconnect_1</endModule>
+  <endConnectionPoint>processor1_0_outgoing_master</endConnectionPoint>
  </connection>
  <connection
    name="mm_interconnect_1.mutex_0_s1/mutex_0.s1"
@@ -58442,11 +58552,11 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>s0</endConnectionPoint>
  </connection>
  <connection
-   name="mm_interconnect_1.processor0_0_dma_0_control_port_slave/processor0_0_dma_0.control_port_slave"
+   name="mm_interconnect_1.cfpu_0_csr/cfpu_0.csr"
    kind="avalon"
    version="13.1"
-   start="mm_interconnect_1.processor0_0_dma_0_control_port_slave"
-   end="processor0_0_dma_0.control_port_slave">
+   start="mm_interconnect_1.cfpu_0_csr"
+   end="cfpu_0.csr">
   <parameter name="arbitrationPriority">
    <type>int</type>
    <value>1</value>
@@ -58488,111 +58598,9 @@ parameters are a RESULT of the module parameters. -->
    <valid>true</valid>
   </parameter>
   <startModule>mm_interconnect_1</startModule>
-  <startConnectionPoint>processor0_0_dma_0_control_port_slave</startConnectionPoint>
-  <endModule>processor0_0_dma_0</endModule>
-  <endConnectionPoint>control_port_slave</endConnectionPoint>
- </connection>
- <connection
-   name="processor0_0_Fingerprint_0.avalon_master/mm_interconnect_1.processor0_0_fingerprint_0_avalon_master"
-   kind="avalon"
-   version="13.1"
-   start="processor0_0_Fingerprint_0.avalon_master"
-   end="mm_interconnect_1.processor0_0_fingerprint_0_avalon_master">
-  <parameter name="arbitrationPriority">
-   <type>int</type>
-   <value>1</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="baseAddress">
-   <type>java.math.BigInteger</type>
-   <value>0x0000</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="defaultConnection">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="deviceFamily">
-   <type>java.lang.String</type>
-   <value>UNKNOWN</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="generateLegacySim">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <startModule>processor0_0_Fingerprint_0</startModule>
-  <startConnectionPoint>avalon_master</startConnectionPoint>
-  <endModule>mm_interconnect_1</endModule>
-  <endConnectionPoint>processor0_0_fingerprint_0_avalon_master</endConnectionPoint>
- </connection>
- <connection
-   name="processor1_0_out_system_bridge.m0/mm_interconnect_1.processor1_0_outgoing_master"
-   kind="avalon"
-   version="13.1"
-   start="processor1_0_out_system_bridge.m0"
-   end="mm_interconnect_1.processor1_0_outgoing_master">
-  <parameter name="arbitrationPriority">
-   <type>int</type>
-   <value>1</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="baseAddress">
-   <type>java.math.BigInteger</type>
-   <value>0x0000</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="defaultConnection">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="deviceFamily">
-   <type>java.lang.String</type>
-   <value>UNKNOWN</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="generateLegacySim">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <startModule>processor1_0_out_system_bridge</startModule>
-  <startConnectionPoint>m0</startConnectionPoint>
-  <endModule>mm_interconnect_1</endModule>
-  <endConnectionPoint>processor1_0_outgoing_master</endConnectionPoint>
+  <startConnectionPoint>cfpu_0_csr</startConnectionPoint>
+  <endModule>cfpu_0</endModule>
+  <endConnectionPoint>csr</endConnectionPoint>
  </connection>
  <connection
    name="processor0_0_out_system_bridge.m0/mm_interconnect_1.processor0_0_out_system_bridge_m0"
@@ -58646,33 +58654,6 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>processor0_0_out_system_bridge_m0</endConnectionPoint>
  </connection>
  <connection
-   name="clk_0.clk/mm_interconnect_1.clk_0_clk"
-   kind="clock"
-   version="13.1"
-   start="clk_0.clk"
-   end="mm_interconnect_1.clk_0_clk">
-  <parameter name="deviceFamily">
-   <type>java.lang.String</type>
-   <value>UNKNOWN</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="generateLegacySim">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <startModule>clk_0</startModule>
-  <startConnectionPoint>clk</startConnectionPoint>
-  <endModule>mm_interconnect_1</endModule>
-  <endConnectionPoint>clk_0_clk</endConnectionPoint>
- </connection>
- <connection
    name="processor1_0_Fingerprint_0.avalon_master/mm_interconnect_1.processor1_0_fingerprint_0_avalon_master"
    kind="avalon"
    version="13.1"
@@ -58722,6 +58703,84 @@ parameters are a RESULT of the module parameters. -->
   <startConnectionPoint>avalon_master</startConnectionPoint>
   <endModule>mm_interconnect_1</endModule>
   <endConnectionPoint>processor1_0_fingerprint_0_avalon_master</endConnectionPoint>
+ </connection>
+ <connection
+   name="clk_0.clk/mm_interconnect_1.clk_0_clk"
+   kind="clock"
+   version="13.1"
+   start="clk_0.clk"
+   end="mm_interconnect_1.clk_0_clk">
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>clk_0</startModule>
+  <startConnectionPoint>clk</startConnectionPoint>
+  <endModule>mm_interconnect_1</endModule>
+  <endConnectionPoint>clk_0_clk</endConnectionPoint>
+ </connection>
+ <connection
+   name="mm_interconnect_1.processor0_0_dma_0_control_port_slave/processor0_0_dma_0.control_port_slave"
+   kind="avalon"
+   version="13.1"
+   start="mm_interconnect_1.processor0_0_dma_0_control_port_slave"
+   end="processor0_0_dma_0.control_port_slave">
+  <parameter name="arbitrationPriority">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="baseAddress">
+   <type>java.math.BigInteger</type>
+   <value>0x0000</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="defaultConnection">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>mm_interconnect_1</startModule>
+  <startConnectionPoint>processor0_0_dma_0_control_port_slave</startConnectionPoint>
+  <endModule>processor0_0_dma_0</endModule>
+  <endConnectionPoint>control_port_slave</endConnectionPoint>
  </connection>
  <connection
    name="mm_interconnect_1.processor1_0_cpu1_irq_0_s0/processor1_0_cpu_irq_0.s0"
@@ -58775,11 +58834,11 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>s0</endConnectionPoint>
  </connection>
  <connection
-   name="processorM_0_out_system_bridge.m0/mm_interconnect_1.processorM_0_outgoing_master"
+   name="processor0_0_Fingerprint_0.avalon_master/mm_interconnect_1.processor0_0_fingerprint_0_avalon_master"
    kind="avalon"
    version="13.1"
-   start="processorM_0_out_system_bridge.m0"
-   end="mm_interconnect_1.processorM_0_outgoing_master">
+   start="processor0_0_Fingerprint_0.avalon_master"
+   end="mm_interconnect_1.processor0_0_fingerprint_0_avalon_master">
   <parameter name="arbitrationPriority">
    <type>int</type>
    <value>1</value>
@@ -58820,61 +58879,10 @@ parameters are a RESULT of the module parameters. -->
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
-  <startModule>processorM_0_out_system_bridge</startModule>
-  <startConnectionPoint>m0</startConnectionPoint>
+  <startModule>processor0_0_Fingerprint_0</startModule>
+  <startConnectionPoint>avalon_master</startConnectionPoint>
   <endModule>mm_interconnect_1</endModule>
-  <endConnectionPoint>processorM_0_outgoing_master</endConnectionPoint>
- </connection>
- <connection
-   name="mm_interconnect_1.processor0_0_cpu_irq_0_s0/processor0_0_cpu_irq_0.s0"
-   kind="avalon"
-   version="13.1"
-   start="mm_interconnect_1.processor0_0_cpu_irq_0_s0"
-   end="processor0_0_cpu_irq_0.s0">
-  <parameter name="arbitrationPriority">
-   <type>int</type>
-   <value>1</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="baseAddress">
-   <type>java.math.BigInteger</type>
-   <value>0x0000</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="defaultConnection">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="deviceFamily">
-   <type>java.lang.String</type>
-   <value>UNKNOWN</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <parameter name="generateLegacySim">
-   <type>boolean</type>
-   <value>false</value>
-   <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
-   <valid>true</valid>
-  </parameter>
-  <startModule>mm_interconnect_1</startModule>
-  <startConnectionPoint>processor0_0_cpu_irq_0_s0</startConnectionPoint>
-  <endModule>processor0_0_cpu_irq_0</endModule>
-  <endConnectionPoint>s0</endConnectionPoint>
+  <endConnectionPoint>processor0_0_fingerprint_0_avalon_master</endConnectionPoint>
  </connection>
  <connection
    name="irq_mapper.receiver0/processor0_0_dma_0.irq"
@@ -59719,299 +59727,11 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>clk</endConnectionPoint>
  </connection>
  <plugin>
-  <instanceCount>46</instanceCount>
-  <name>clock_sink</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
-  <displayName>Clock Input</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>5</instanceCount>
-  <name>clock_source</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
-  <displayName>Clock Output</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>3</instanceCount>
-  <name>nios_custom_instruction_master</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
-  <displayName>Custom Instruction Master</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>39</instanceCount>
-  <name>reset</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IConnection</subtype>
-  <displayName>Reset Connection</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>1</instanceCount>
-  <name>processor1</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>processor1</displayName>
-  <version>1.0</version>
- </plugin>
- <plugin>
-  <instanceCount>9</instanceCount>
-  <name>clock_sink</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
-  <displayName>Clock Input</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>2</instanceCount>
-  <name>Fingerprint</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>Fingerprint</displayName>
-  <version>1.0</version>
- </plugin>
- <plugin>
-  <instanceCount>3</instanceCount>
-  <name>conduit</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IConnection</subtype>
-  <displayName>Conduit Connection</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>3</instanceCount>
-  <name>altera_nios2_qsys</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>Nios II Processor</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>15</instanceCount>
-  <name>interrupt</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IConnection</subtype>
-  <displayName>Interrupt Connection</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>1</instanceCount>
-  <name>processor0</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>processor0</displayName>
-  <version>1.0</version>
- </plugin>
- <plugin>
-  <instanceCount>3</instanceCount>
-  <name>cpu_irq</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>cpu_irq</displayName>
-  <version>1.0</version>
- </plugin>
- <plugin>
-  <instanceCount>1</instanceCount>
-  <name>memory</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>memory</displayName>
-  <version>1.0</version>
- </plugin>
- <plugin>
-  <instanceCount>18</instanceCount>
-  <name>avalon</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IConnection</subtype>
-  <displayName>Avalon Memory Mapped Connection</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>1</instanceCount>
-  <name>altera_avalon_mutex</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>Altera Avalon Mutex</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
   <instanceCount>1</instanceCount>
   <name>altera_avalon_sysid_qsys</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IModule</subtype>
   <displayName>System ID Peripheral</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>6</instanceCount>
-  <name>altera_avalon_timer</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>Interval Timer</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>2</instanceCount>
-  <name>altera_irq_mapper</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>Merlin IRQ Mapper</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>5</instanceCount>
-  <name>altera_avalon_onchip_memory2</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>On-Chip Memory (RAM or ROM)</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>5</instanceCount>
-  <name>clock_source</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>Clock Source</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>9</instanceCount>
-  <name>interrupt_receiver</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
-  <displayName>Interrupt Receiver</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>3</instanceCount>
-  <name>altera_avalon_pio</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>PIO (Parallel I/O)</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>1</instanceCount>
-  <name>processorM</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>processorM</displayName>
-  <version>1.0</version>
- </plugin>
- <plugin>
-  <instanceCount>2</instanceCount>
-  <name>altera_merlin_interconnect_wrapper</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>Interconnect Wrapper</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>1</instanceCount>
-  <name>fprint_irq</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>fprint_irq</displayName>
-  <version>1.0</version>
- </plugin>
- <plugin>
-  <instanceCount>8</instanceCount>
-  <name>reset_source</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
-  <displayName>Reset Output</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>1</instanceCount>
-  <name>altera_reset_translator</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>Reset Translator</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>2</instanceCount>
-  <name>altera_irq_bridge</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>IRQ Bridge</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>2</instanceCount>
-  <name>altera_avalon_dma</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>DMA Controller</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>3</instanceCount>
-  <name>altera_avalon_jtag_uart</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>JTAG UART</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>4</instanceCount>
-  <name>interrupt</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IConnection</subtype>
-  <displayName>Interrupt Connection</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>48</instanceCount>
-  <name>reset_sink</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
-  <displayName>Reset Input</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>36</instanceCount>
-  <name>avalon_master</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
-  <displayName>Avalon Memory Mapped Master</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>44</instanceCount>
-  <name>clock</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IConnection</subtype>
-  <displayName>Clock Connection</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>6</instanceCount>
-  <name>clock</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IConnection</subtype>
-  <displayName>Clock Connection</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>9</instanceCount>
-  <name>reset_sink</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
-  <displayName>Reset Input</displayName>
-  <version>13.1</version>
- </plugin>
- <plugin>
-  <instanceCount>22</instanceCount>
-  <name>reset</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IConnection</subtype>
-  <displayName>Reset Connection</displayName>
   <version>13.1</version>
  </plugin>
  <plugin>
@@ -60023,11 +59743,123 @@ parameters are a RESULT of the module parameters. -->
   <version>13.1</version>
  </plugin>
  <plugin>
+  <instanceCount>44</instanceCount>
+  <name>clock</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IConnection</subtype>
+  <displayName>Clock Connection</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>3</instanceCount>
+  <name>cpu_irq</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>cpu_irq</displayName>
+  <version>1.0</version>
+ </plugin>
+ <plugin>
+  <instanceCount>3</instanceCount>
+  <name>altera_nios2_qsys</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>Nios II Processor</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>1</instanceCount>
+  <name>processor0</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>processor0</displayName>
+  <version>1.0</version>
+ </plugin>
+ <plugin>
+  <instanceCount>9</instanceCount>
+  <name>reset_sink</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
+  <displayName>Reset Input</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>3</instanceCount>
+  <name>conduit</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IConnection</subtype>
+  <displayName>Conduit Connection</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>5</instanceCount>
+  <name>clock_source</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>Clock Source</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>8</instanceCount>
+  <name>reset_source</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
+  <displayName>Reset Output</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>2</instanceCount>
+  <name>altera_irq_bridge</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>IRQ Bridge</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>1</instanceCount>
+  <name>processor1</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>processor1</displayName>
+  <version>1.0</version>
+ </plugin>
+ <plugin>
   <instanceCount>5</instanceCount>
   <name>altera_avalon_mm_bridge</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IModule</subtype>
   <displayName>Avalon-MM Pipeline Bridge</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>4</instanceCount>
+  <name>interrupt</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IConnection</subtype>
+  <displayName>Interrupt Connection</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>41</instanceCount>
+  <name>avalon</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IConnection</subtype>
+  <displayName>Avalon Memory Mapped Connection</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>46</instanceCount>
+  <name>clock_sink</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
+  <displayName>Clock Input</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>2</instanceCount>
+  <name>altera_irq_mapper</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>Merlin IRQ Mapper</displayName>
   <version>13.1</version>
  </plugin>
  <plugin>
@@ -60040,11 +59872,75 @@ parameters are a RESULT of the module parameters. -->
  </plugin>
  <plugin>
   <instanceCount>1</instanceCount>
-  <name>cfpu</name>
+  <name>fprint_irq</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName>CFPU</displayName>
+  <displayName>fprint_irq</displayName>
   <version>1.0</version>
+ </plugin>
+ <plugin>
+  <instanceCount>48</instanceCount>
+  <name>reset_sink</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
+  <displayName>Reset Input</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>2</instanceCount>
+  <name>altera_avalon_dma</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>DMA Controller</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>15</instanceCount>
+  <name>interrupt</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IConnection</subtype>
+  <displayName>Interrupt Connection</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>9</instanceCount>
+  <name>clock_sink</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
+  <displayName>Clock Input</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>9</instanceCount>
+  <name>interrupt_receiver</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
+  <displayName>Interrupt Receiver</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>6</instanceCount>
+  <name>altera_avalon_timer</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>Interval Timer</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>1</instanceCount>
+  <name>altera_avalon_mutex</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>Altera Avalon Mutex</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>5</instanceCount>
+  <name>clock_source</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
+  <displayName>Clock Output</displayName>
+  <version>13.1</version>
  </plugin>
  <plugin>
   <instanceCount>5</instanceCount>
@@ -60055,11 +59951,107 @@ parameters are a RESULT of the module parameters. -->
   <version>13.1</version>
  </plugin>
  <plugin>
+  <instanceCount>1</instanceCount>
+  <name>processorM</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>processorM</displayName>
+  <version>1.0</version>
+ </plugin>
+ <plugin>
+  <instanceCount>3</instanceCount>
+  <name>altera_avalon_jtag_uart</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>JTAG UART</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>5</instanceCount>
+  <name>altera_avalon_onchip_memory2</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>On-Chip Memory (RAM or ROM)</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>1</instanceCount>
+  <name>memory</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>memory</displayName>
+  <version>1.0</version>
+ </plugin>
+ <plugin>
+  <instanceCount>1</instanceCount>
+  <name>altera_reset_translator</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>Reset Translator</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>36</instanceCount>
+  <name>avalon_master</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
+  <displayName>Avalon Memory Mapped Master</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>3</instanceCount>
+  <name>altera_avalon_pio</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>PIO (Parallel I/O)</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>2</instanceCount>
+  <name>altera_merlin_interconnect_wrapper</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>Interconnect Wrapper</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>2</instanceCount>
+  <name>Fingerprint</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>Fingerprint</displayName>
+  <version>1.0</version>
+ </plugin>
+ <plugin>
   <instanceCount>16</instanceCount>
   <name>conduit_end</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
   <displayName>Conduit</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>39</instanceCount>
+  <name>reset</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IConnection</subtype>
+  <displayName>Reset Connection</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>18</instanceCount>
+  <name>avalon</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IConnection</subtype>
+  <displayName>Avalon Memory Mapped Connection</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>22</instanceCount>
+  <name>reset</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IConnection</subtype>
+  <displayName>Reset Connection</displayName>
   <version>13.1</version>
  </plugin>
  <plugin>
@@ -60071,6 +60063,30 @@ parameters are a RESULT of the module parameters. -->
   <version>4.2</version>
  </plugin>
  <plugin>
+  <instanceCount>3</instanceCount>
+  <name>nios_custom_instruction_master</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
+  <displayName>Custom Instruction Master</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>6</instanceCount>
+  <name>clock</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IConnection</subtype>
+  <displayName>Clock Connection</displayName>
+  <version>13.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>1</instanceCount>
+  <name>cfpu</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>CFPU</displayName>
+  <version>1.0</version>
+ </plugin>
+ <plugin>
   <instanceCount>52</instanceCount>
   <name>avalon_slave</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
@@ -60078,14 +60094,6 @@ parameters are a RESULT of the module parameters. -->
   <displayName>Avalon Memory Mapped Slave</displayName>
   <version>13.1</version>
  </plugin>
- <plugin>
-  <instanceCount>41</instanceCount>
-  <name>avalon</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IConnection</subtype>
-  <displayName>Avalon Memory Mapped Connection</displayName>
-  <version>13.1</version>
- </plugin>
  <reportVersion>13.1 162</reportVersion>
- <uniqueIdentifier>90B11C828C940000014BE752F5F7</uniqueIdentifier>
+ <uniqueIdentifier>90B11C828C940000014D723EAD4F</uniqueIdentifier>
 </EnsembleReport>

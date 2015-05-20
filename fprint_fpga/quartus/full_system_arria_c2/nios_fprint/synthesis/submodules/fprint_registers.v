@@ -35,7 +35,7 @@ module fprint_registers(
 
 reg  [(`CRC_KEY_SIZE-1):0]                  checkout_reg[1:0];
 reg  [(`CRC_KEY_SIZE-1):0]                  checkin_reg[1:0];
-reg  [(`CRC_KEY_SIZE-1):0]                  pause_reg[1:0];
+reg  [(`CRC_KEY_SIZE-1):0]                  pause_reg[1:0]; //deprecated
 //Need to do each half separately in Verilog...
 reg  [`CRC_WIDTH/2 - 1: 0] 					fprint_mem_0_0[`CRC_RAM_SIZE -1 :0];
 reg  [`CRC_WIDTH/2 - 1: 0] 					fprint_mem_0_1[`CRC_RAM_SIZE -1 :0];

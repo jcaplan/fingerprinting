@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>May 11, 2015 12:47:53 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1431362873037</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>May 20, 2015 12:59:28 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1432141168286</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>/data/jcapla9/fingerprinting/automotive_control/rtos/ucosMon_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../nios_fprint.sopcinfo</SopcDesignFile>
