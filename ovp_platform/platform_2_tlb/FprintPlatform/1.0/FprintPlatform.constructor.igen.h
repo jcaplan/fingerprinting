@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20140430.0
-//                          Wed May 20 15:51:44 2015
+//                          Fri May 22 13:49:59 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -200,9 +200,9 @@ void platformConstructor(void) {
     icmAddStringAttr(cpu0_attrList, "TEST_HALT_EXIT", "1");
     icmAddUns64Attr(cpu0_attrList, "INST_ADDR_WIDTH", 0x1c);
     icmAddUns64Attr(cpu0_attrList, "DATA_ADDR_WIDTH", 0x1c);
-    icmAddStringAttr(cpu0_attrList, "HW_MULTIPLY", "0");
-    icmAddStringAttr(cpu0_attrList, "HW_MULX", "0");
-    icmAddStringAttr(cpu0_attrList, "HW_DIVIDE", "0");
+    icmAddStringAttr(cpu0_attrList, "HW_MULTIPLY", "1");
+    icmAddStringAttr(cpu0_attrList, "HW_MULX", "1");
+    icmAddStringAttr(cpu0_attrList, "HW_DIVIDE", "1");
     icmAddUns64Attr(cpu0_attrList, "RESET_VECTOR", 0x464000);
     icmAddUns64Attr(cpu0_attrList, "EXCEPTION_VECTOR", 0x464020);
     icmAddUns64Attr(cpu0_attrList, "BREAK_VECTOR", 0x8000820);
@@ -253,9 +253,9 @@ void platformConstructor(void) {
     icmAddStringAttr(cpu1_attrList, "TEST_HALT_EXIT", "1");
     icmAddUns64Attr(cpu1_attrList, "INST_ADDR_WIDTH", 0x1c);
     icmAddUns64Attr(cpu1_attrList, "DATA_ADDR_WIDTH", 0x1c);
-    icmAddStringAttr(cpu1_attrList, "HW_MULTIPLY", "0");
-    icmAddStringAttr(cpu1_attrList, "HW_MULX", "0");
-    icmAddStringAttr(cpu1_attrList, "HW_DIVIDE", "0");
+    icmAddStringAttr(cpu1_attrList, "HW_MULTIPLY", "1");
+    icmAddStringAttr(cpu1_attrList, "HW_MULX", "1");
+    icmAddStringAttr(cpu1_attrList, "HW_DIVIDE", "1");
     icmAddUns64Attr(cpu1_attrList, "RESET_VECTOR", 0x432000);
     icmAddUns64Attr(cpu1_attrList, "EXCEPTION_VECTOR", 0x432020);
     icmAddUns64Attr(cpu1_attrList, "BREAK_VECTOR", 0x8008020);

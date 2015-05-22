@@ -1,6 +1,3 @@
-
-
-
 proc myCallback { processorName breakpointNumber } {
 
 	if { $breakpointNumber == 1 } {

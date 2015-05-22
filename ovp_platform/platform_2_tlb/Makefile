@@ -32,10 +32,7 @@ debug:
 	$(SIMULATOR) \
       --icmobject FprintPlatform/1.0/platform.$(IMPERAS_ARCH).$(IMPERAS_SHRSUF) \
       --extlib model.$(IMPERAS_SHRSUF) --idebug\
-      -o simulator.log   
-
-
-
+      -o simulator.log 
 ic-run1:
 	IMPERAS_RUNTIME=CpuManager FprintPlatform/1.0/platform.$(IMPERAS_ARCH).exe application/application.OR1K.elf 
 
