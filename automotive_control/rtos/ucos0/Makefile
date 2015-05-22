@@ -142,7 +142,7 @@ ACDS_VERSION := 13.1
 ELF := ucos0.elf
 
 # Paths to C, C++, and assembly source files.
-C_SRCS := mpu.c
+C_SRCS := ucos0.c
 CXX_SRCS :=
 ASM_SRCS :=
 
