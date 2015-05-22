@@ -49,6 +49,7 @@ module nios_fprint_processor0_0_cpu0_test_bench (
                                                    W_estatus_reg,
                                                    W_exception_reg,
                                                    W_iw,
+                                                   W_iw_custom_n,
                                                    W_iw_op,
                                                    W_iw_opx,
                                                    W_mpuacc_reg,
@@ -113,6 +114,7 @@ module nios_fprint_processor0_0_cpu0_test_bench (
   input   [ 31: 0] W_estatus_reg;
   input   [ 31: 0] W_exception_reg;
   input   [ 31: 0] W_iw;
+  input   [  7: 0] W_iw_custom_n;
   input   [  5: 0] W_iw_op;
   input   [  5: 0] W_iw_opx;
   input   [ 31: 0] W_mpuacc_reg;
@@ -120,7 +122,7 @@ module nios_fprint_processor0_0_cpu0_test_bench (
   input   [ 31: 0] W_pcb;
   input   [ 31: 0] W_status_reg;
   input            W_valid;
-  input   [ 55: 0] W_vinst;
+  input   [303: 0] W_vinst;
   input            W_wr_dst_reg;
   input            clk;
   input   [ 27: 0] d_address;
@@ -254,6 +256,8 @@ module nios_fprint_processor0_0_cpu0_test_bench (
   wire             W_op_mulxsu;
   wire             W_op_mulxuu;
   wire             W_op_nextpc;
+  wire             W_op_nios_custom_instr_floating_point_2_0;
+  wire             W_op_nios_custom_instr_floating_point_2_0_1;
   wire             W_op_nor;
   wire             W_op_opx;
   wire             W_op_or;
@@ -454,6 +458,8 @@ module nios_fprint_processor0_0_cpu0_test_bench (
   assign W_op_rsvx56 = W_op_opx & (W_iw_opx == 56);
   assign W_op_rsvx60 = W_op_opx & (W_iw_opx == 60);
   assign W_op_rsvx63 = W_op_opx & (W_iw_opx == 63);
+  assign W_op_nios_custom_instr_floating_point_2_0 = W_op_custom & ({W_iw_custom_n[7 : 4] , 4'b0} == 8'he0);
+  assign W_op_nios_custom_instr_floating_point_2_0_1 = W_op_custom & ({W_iw_custom_n[7 : 3] , 3'b0} == 8'hf8);
   assign W_op_opx = W_iw_op == 58;
   assign W_op_custom = W_iw_op == 50;
   always @(posedge clk or negedge reset_n)

@@ -77,8 +77,13 @@ PPM_NET_CB(do_store) {
 		  }
 
 		  //If they are identical then skip use the mask 0x7FFFFFFF
+		  //skip addresses with MSB high
+		  if(address & 0x80000000){
+		  	test = 1;
+		  }
 
-		  if(old_data == data && (old_address & 0x7FFFFFFF) == (address & 0x7FFFFFFF)){
+
+		  if(old_data == data && old_address == address){
 			test=1;
 		  }
 		  

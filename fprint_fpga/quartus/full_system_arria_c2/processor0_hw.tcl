@@ -54,8 +54,8 @@ proc compose { } {
     set_instance_parameter_value cpu0 {setting_HDLSimCachesCleared} {1}
     set_instance_parameter_value cpu0 {setting_HBreakTest} {0}
     set_instance_parameter_value cpu0 {setting_breakslaveoveride} {0}
-    set_instance_parameter_value cpu0 {muldiv_divider} {0}
-    set_instance_parameter_value cpu0 {mpu_useLimit} {0}
+    set_instance_parameter_value cpu0 {muldiv_divider} {1}
+    set_instance_parameter_value cpu0 {mpu_useLimit} {1}
     set_instance_parameter_value cpu0 {mpu_enabled} {1}
     set_instance_parameter_value cpu0 {mmu_enabled} {0}
     set_instance_parameter_value cpu0 {mmu_autoAssignTlbPtrSz} {1}
@@ -86,9 +86,9 @@ proc compose { } {
     set_instance_parameter_value cpu0 {setting_interruptControllerType} {Internal}
     set_instance_parameter_value cpu0 {setting_branchPredictionType} {Automatic}
     set_instance_parameter_value cpu0 {setting_bhtPtrSz} {8}
-    set_instance_parameter_value cpu0 {muldiv_multiplierType} {NoneSmall}
-    set_instance_parameter_value cpu0 {mpu_minInstRegionSize} {12}
-    set_instance_parameter_value cpu0 {mpu_minDataRegionSize} {10}
+    set_instance_parameter_value cpu0 {muldiv_multiplierType} {DSPBlock}
+    set_instance_parameter_value cpu0 {mpu_minInstRegionSize} {6}
+    set_instance_parameter_value cpu0 {mpu_minDataRegionSize} {6}
     set_instance_parameter_value cpu0 {mmu_uitlbNumEntries} {4}
     set_instance_parameter_value cpu0 {mmu_udtlbNumEntries} {6}
     set_instance_parameter_value cpu0 {mmu_tlbPtrSz} {7}
@@ -223,6 +223,8 @@ proc compose { } {
     set_instance_parameter_value utlb_0 {numentries} {4}
     set_instance_parameter_value utlb_0 {datawidth} {32}
     set_instance_parameter_value utlb_0 {byteenablewidth} {4}
+
+    add_instance nios_custom_instr_floating_point_2_0 altera_nios_custom_instr_floating_point_2 100.99.98.97
 
     # connections and connection parameters
     add_connection clk.clk cpu0.clk clock
@@ -362,6 +364,20 @@ proc compose { } {
     set_connection_parameter_value utlb_0.avalon_master/scratchpad.s1 arbitrationPriority {1}
     set_connection_parameter_value utlb_0.avalon_master/scratchpad.s1 baseAddress {0x04200000}
     set_connection_parameter_value utlb_0.avalon_master/scratchpad.s1 defaultConnection {0}
+
+    add_connection cpu0.custom_instruction_master nios_custom_instr_floating_point_2_0.s1 nios_custom_instruction
+    set_connection_parameter_value cpu0.custom_instruction_master/nios_custom_instr_floating_point_2_0.s1 CIName {nios_custom_instr_floating_point_2_0}
+    set_connection_parameter_value cpu0.custom_instruction_master/nios_custom_instr_floating_point_2_0.s1 CINameUpgrade {}
+    set_connection_parameter_value cpu0.custom_instruction_master/nios_custom_instr_floating_point_2_0.s1 arbitrationPriority {1}
+    set_connection_parameter_value cpu0.custom_instruction_master/nios_custom_instr_floating_point_2_0.s1 baseAddress {224.0}
+    set_connection_parameter_value cpu0.custom_instruction_master/nios_custom_instr_floating_point_2_0.s1 opcodeExtensionUpgrade {-1}
+
+    add_connection cpu0.custom_instruction_master nios_custom_instr_floating_point_2_0.s2 nios_custom_instruction
+    set_connection_parameter_value cpu0.custom_instruction_master/nios_custom_instr_floating_point_2_0.s2 CIName {nios_custom_instr_floating_point_2_0_1}
+    set_connection_parameter_value cpu0.custom_instruction_master/nios_custom_instr_floating_point_2_0.s2 CINameUpgrade {}
+    set_connection_parameter_value cpu0.custom_instruction_master/nios_custom_instr_floating_point_2_0.s2 arbitrationPriority {1}
+    set_connection_parameter_value cpu0.custom_instruction_master/nios_custom_instr_floating_point_2_0.s2 baseAddress {248.0}
+    set_connection_parameter_value cpu0.custom_instruction_master/nios_custom_instr_floating_point_2_0.s2 opcodeExtensionUpgrade {-1}
 
     # exported interfaces
     add_interface philosopher_clk_in clock sink

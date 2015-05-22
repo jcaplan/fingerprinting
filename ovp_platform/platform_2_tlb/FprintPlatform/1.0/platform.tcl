@@ -87,9 +87,9 @@ define CPU0_DCACHE_LINE_SIZE_LOG2 0
 define CPU0_DCACHE_SIZE 0
 define CPU0_EXCEPTION_ADDR 0x00464020
 define CPU0_FLUSHDA_SUPPORTED
-define CPU0_HARDWARE_DIVIDE_PRESENT 0
-define CPU0_HARDWARE_MULTIPLY_PRESENT 0
-define CPU0_HARDWARE_MULX_PRESENT 0
+define CPU0_HARDWARE_DIVIDE_PRESENT 1
+define CPU0_HARDWARE_MULTIPLY_PRESENT 1
+define CPU0_HARDWARE_MULX_PRESENT 1
 define CPU0_HAS_DEBUG_CORE 1
 define CPU0_HAS_DEBUG_STUB
 define CPU0_HAS_JMPI_INSTRUCTION
@@ -119,7 +119,13 @@ isetattribute -handle cpu0 -name INCLUDE_MMU                     -value 0
 isetattribute -handle cpu0 -name DATA_ADDR_WIDTH                 -value ${CPU0_DATA_ADDR_WIDTH}
 isetattribute -handle cpu0 -name INST_ADDR_WIDTH                 -value ${CPU0_INST_ADDR_WIDTH}
 isetattribute -handle cpu0 -name TEST_HALT_EXIT                  -value 1
-
+isetattribute -handle cpu0 -name INCLUDE_MPU 					 -value 1
+isetattribute -handle cpu0 -name MPU_USE_LIMIT_FOR_REGION_RANGE  -value 1
+isetattribute -handle cpu0 -name MPU_NUMBER_DATA_REGIONS         -value 16
+isetattribute -handle cpu0 -name MPU_MINIMUM_DATA_REGION_SIZE    -value 64
+isetattribute -handle cpu0 -name MPU_NUMBER_INSTRUCTION_REGIONS  -value 8
+isetattribute -handle cpu0 -name MPU_MINIMUM_INSTRUCTION_REGION_SIZE -value 64
+isetattribute -handle cpu0 -name EXCEPTION_EXTRA_INFORMATION 	 -value 1
 
 
 ihwaddbus -instancename cpu0_iobus -addresswidth 32
@@ -259,9 +265,9 @@ define CPU1_DCACHE_LINE_SIZE_LOG2 0
 define CPU1_DCACHE_SIZE 0
 define CPU1_EXCEPTION_ADDR 0x00432020
 define CPU1_FLUSHDA_SUPPORTED
-define CPU1_HARDWARE_DIVIDE_PRESENT 0
-define CPU1_HARDWARE_MULTIPLY_PRESENT 0
-define CPU1_HARDWARE_MULX_PRESENT 0
+define CPU1_HARDWARE_DIVIDE_PRESENT 1
+define CPU1_HARDWARE_MULTIPLY_PRESENT 1
+define CPU1_HARDWARE_MULX_PRESENT 1
 define CPU1_HAS_DEBUG_CORE 1
 define CPU1_HAS_DEBUG_STUB
 define CPU1_HAS_JMPI_INSTRUCTION
@@ -292,7 +298,13 @@ isetattribute -handle cpu1 -name INCLUDE_MMU                     -value 0
 isetattribute -handle cpu1 -name DATA_ADDR_WIDTH                 -value ${CPU1_DATA_ADDR_WIDTH}
 isetattribute -handle cpu1 -name INST_ADDR_WIDTH                 -value ${CPU1_INST_ADDR_WIDTH}
 isetattribute -handle cpu1 -name TEST_HALT_EXIT                  -value 1
-
+isetattribute -handle cpu1 -name INCLUDE_MPU 					 -value 1
+isetattribute -handle cpu1 -name MPU_USE_LIMIT_FOR_REGION_RANGE  -value 1
+isetattribute -handle cpu1 -name MPU_NUMBER_DATA_REGIONS         -value 16
+isetattribute -handle cpu1 -name MPU_MINIMUM_DATA_REGION_SIZE    -value 64
+isetattribute -handle cpu1 -name MPU_NUMBER_INSTRUCTION_REGIONS  -value 8
+isetattribute -handle cpu1 -name MPU_MINIMUM_INSTRUCTION_REGION_SIZE -value 64
+isetattribute -handle cpu1 -name EXCEPTION_EXTRA_INFORMATION 	 -value 1
 
 
 

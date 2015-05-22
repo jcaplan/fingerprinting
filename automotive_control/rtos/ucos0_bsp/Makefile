@@ -283,6 +283,10 @@ altera_nios2_qsys_ucosii_driver_ASM_LIB_SRCS := \
 	$(altera_nios2_qsys_ucosii_driver_SRCS_ROOT)/src/crt0.S \
 	$(altera_nios2_qsys_ucosii_driver_SRCS_ROOT)/src/os_cpu_a.S
 
+# fpoint2_driver sources root 
+fpoint2_driver_SRCS_ROOT := drivers
+
+# fpoint2_driver sources 
 # hal sources root 
 hal_SRCS_ROOT := HAL
 

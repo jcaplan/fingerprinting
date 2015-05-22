@@ -107,22 +107,26 @@ ELF_PATCH_FLAG  += --thread_model ucosii
 ALT_CPPFLAGS += -D__hal__
 BSP_TYPE := ucosii
 
+# Compile Newlib 
+# setting COMPILE_NEWLIB is 1
+COMPILE_NEWLIB = 1
+
 # CPU Name 
 # setting CPU_NAME is processor0_0_cpu0
 CPU_NAME = processor0_0_cpu0
 ELF_PATCH_FLAG  += --cpu_name $(CPU_NAME)
 
 # Hardware Divider present. 
-# setting HARDWARE_DIVIDE is false
-ALT_CFLAGS += -mno-hw-div
+# setting HARDWARE_DIVIDE is true
+ALT_CFLAGS += -mhw-div
 
 # Hardware Multiplier present. 
-# setting HARDWARE_MULTIPLY is false
-ALT_CFLAGS += -mno-hw-mul
+# setting HARDWARE_MULTIPLY is true
+ALT_CFLAGS += -mhw-mul
 
 # Hardware Mulx present. 
-# setting HARDWARE_MULX is false
-ALT_CFLAGS += -mno-hw-mulx
+# setting HARDWARE_MULX is true
+ALT_CFLAGS += -mhw-mulx
 
 # Debug Core present. 
 # setting HAS_DEBUG_CORE is true
@@ -152,9 +156,9 @@ SOPC_SYSID_FLAG += --sidp=0x1001020
 ELF_PATCH_FLAG  += --sidp 0x1001020
 
 # The SOPC Timestamp 
-# setting SOPC_TIMESTAMP is 1417446642
-SOPC_SYSID_FLAG += --timestamp=1417446642
-ELF_PATCH_FLAG  += --timestamp 1417446642
+# setting SOPC_TIMESTAMP is 1432315598
+SOPC_SYSID_FLAG += --timestamp=1432315598
+ELF_PATCH_FLAG  += --timestamp 1432315598
 
 # Enable JTAG UART driver to recover when host is inactive causing buffer to 
 # full without returning error. Printf will not fail with this recovery. none 
@@ -345,6 +349,26 @@ ALT_INCLUDE_DIRS += $(ALT_LIBRARY_ROOT_DIR)/HAL/inc
 #------------------------------------------------------------------------------
 
 ALT_CPPFLAGS += -D__ucosii__
+
+#------------------------------------------------------------------------------
+#        SOFTWARE COMPONENT & DRIVER PRODUCED ALT_CFLAGS ADDITIONS
+#------------------------------------------------------------------------------
+
+ALT_CFLAGS += -fno-math-errno
+ALT_CFLAGS += -mcustom-fabss=224
+ALT_CFLAGS += -mcustom-fadds=253
+ALT_CFLAGS += -mcustom-fcmpeqs=227
+ALT_CFLAGS += -mcustom-fcmpges=228
+ALT_CFLAGS += -mcustom-fcmpgts=229
+ALT_CFLAGS += -mcustom-fcmples=230
+ALT_CFLAGS += -mcustom-fcmplts=231
+ALT_CFLAGS += -mcustom-fcmpnes=226
+ALT_CFLAGS += -mcustom-fdivs=255
+ALT_CFLAGS += -mcustom-fixsi=249
+ALT_CFLAGS += -mcustom-floatis=250
+ALT_CFLAGS += -mcustom-fmuls=252
+ALT_CFLAGS += -mcustom-fnegs=225
+ALT_CFLAGS += -mcustom-fsubs=254
 
 #END MANAGED
 

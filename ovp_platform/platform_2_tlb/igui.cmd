@@ -1,0 +1,1 @@
+# setState MPD : Unknown -> Stopped

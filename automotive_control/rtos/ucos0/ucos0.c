@@ -12,7 +12,7 @@
 #include "context_switch.h"
 #include "tlb.h"
 #include "critical.h"
-
+#include "mpu_utils.h"
 /*****************************************************************************
  * Defines
  *****************************************************************************/
@@ -200,7 +200,7 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();
-
+		disableTlbLine(0);
 		//Restore the callee saved registers
 		context_restore(registers);
 
@@ -253,6 +253,11 @@ int main(){
 	enableTlbLine(20);
 	activateTlb();
 
+
+	//Start up the MPU
+	//----------------
+//	nios2_mpu_data_init();
+//	nios2_mpu_inst_init();
 
 	//Declare the OS tasks
 	///-------------------

@@ -1,0 +1,13 @@
+<send-MPD> 1000001-mpd-connection-info
+<send-MPD> 1000002-mpd-list-commands
+<recv-MPD> *stopped
+<recv-MPD> (mpd) 
+<send-MPD> 9000001-break-list
+<send-MPD> 9000002-mpd-context-info
+<send-MPD> 9000003-stack-info-frame
+<recv-MPD> ~"Error (MI_LIC) Failed to checkout license IMP_GUI\n"
+<recv-MPD> (mpd) 
+<recv-MPD> (mpd) 
+<recv-MPD> (mpd) 
+<recv-MPD> (mpd) 
+<recv-MPD> (mpd) 
