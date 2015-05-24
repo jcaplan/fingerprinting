@@ -440,13 +440,13 @@ int main()
 
   };
 
-  for(i = 0; i < 1000; i++){
-	  float result;
-	  int index1 = rand() % 200;
-	  int index2 = rand() % 200;
-	  result = -x[index1] * x[index2];
-	  printf("-%f * %f = %f\n",x[index1],x[index2],result);
-  }
+//  for(i = 0; i < 1000; i++){
+//	  float result;
+//	  int index1 = rand() % 200;
+//	  int index2 = rand() % 200;
+//	  result = -x[index1] * x[index2];
+//	  printf("-%f * %f = %f\n",x[index1],x[index2],result);
+//  }
 
 
   exception_struct *exc_info = &g_exc_info;

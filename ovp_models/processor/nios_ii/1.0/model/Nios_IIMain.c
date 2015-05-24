@@ -32,7 +32,7 @@
 #include "Nios_IIParameters.h"
 #include "Nios_IITLB.h"
 #include "Nios_IIMPU.h"
-
+// #include "Nios_IIMorphFP.h"
 
 static VMIRT_COMMAND_FN(dumpTLB) {
     Nios_IIP Nios_II = (Nios_IIP)processor;
@@ -131,6 +131,9 @@ VMI_CONSTRUCTOR_FN(Nios_IIConstructor) {
 
     // Call the Doc Generator
     Nios_IIDoc(processor, params);
+
+    // Nios_IIConfigureFPU(Nios_II);
+
 
     // Link the Decoder CallBack
     Nios_II->decoder = Nios_IIDecode;

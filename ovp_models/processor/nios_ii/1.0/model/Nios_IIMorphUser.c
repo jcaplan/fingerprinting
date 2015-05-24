@@ -26,6 +26,7 @@
 #include "Nios_IIMorph.h"
 #include "Nios_IITLB.h"
 #include "Nios_IIMPU.h"
+ #include <stdlib.h>
 
 //
 // Write Flag Const structures
@@ -353,6 +354,7 @@ static void niosReturnException (Nios_IIMorphStateP state, vmiReg returnStatus, 
 // Write Default Morpher stub Functions
 //
 NIOS_II_MORPH_FN(morphCUSTOM_C1) {
+  
   Uns8 A = state->info.A;
     vmiReg gpr_A = NIOS_II_GPR_RD(A);
     Uns8 B = state->info.B;
@@ -361,19 +363,24 @@ NIOS_II_MORPH_FN(morphCUSTOM_C1) {
     vmiReg gpr_C = NIOS_II_GPR_WR(C);
     Uns8 N = state->info.N;
 
-    vmiReg flag;
+
+    vmiReg* flag = calloc(1,sizeof(vmiReg));
+    
+
     switch(N){
     case 225: // fnegs
-        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FSUB, gpr_C, gpr_B, gpr_A, flag, 0);
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FSUB, gpr_C, gpr_B, gpr_A, *flag, 0);
         break;
     case 252: //fmuls
-        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FMUL, gpr_C, gpr_B, gpr_A, flag, 0);
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FMUL, gpr_C, gpr_B, gpr_A, *flag, 0);
         break;
     default: //etc
         vmiPrintf("Custom instruction error: N = %d not found",N);
         morphUnimplemented("CUSTOM_C1");
         break;
     } 
+
+    free(flag);
 }
 
 NIOS_II_MORPH_FN(morphBRET_I0) {
