@@ -11,11 +11,23 @@
     vendor="mcgill.ca"
     verbose="T"
     version="1.0">
-    <documentation name="Licensing">Open Source Apache 2.0</documentation>
-    <documentation name="Description">This platform models the Altera Cyclone III 3c120.
+    <docsection name="doc"
+        text="Licensing">
+        <doctext name="txt"
+            text="Open Source Apache 2.0"/>
+    </docsection>
+    <docsection name="doc_1"
+        text="Description">
+        <doctext name="txt"
+            text="This platform models the Altera Cyclone III 3c120.
 
-The processor is an Altera Nios_II procesor, Nios_II_F.</documentation>
-    <documentation name="Limitations">Peripherals are modeled only to the extent required to boot and run Operating Systems such as Linux.</documentation>
+The processor is an Altera Nios_II procesor, Nios_II_F."/>
+    </docsection>
+    <docsection name="doc_2"
+        text="Limitations">
+        <doctext name="txt"
+            text="Peripherals are modeled only to the extent required to boot and run Operating Systems such as Linux."/>
+    </docsection>
     <bus addresswidth="32"
         name="smbus"/>
     <memoryinstance name="shared_memory">
