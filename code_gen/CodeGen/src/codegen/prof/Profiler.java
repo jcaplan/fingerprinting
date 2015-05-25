@@ -5,7 +5,10 @@ import java.util.ArrayList;
 
 import javax.management.RuntimeErrorException;
 
+import com.sun.rmi.rmid.ExecOptionPermission;
+
 import codegen.prof.BasicBlock.bbType;
+import lpsolve.*;
 
 public class Profiler {
 
@@ -27,24 +30,18 @@ public class Profiler {
 	
 
 
-	private int getWCET(String string) {
-		// TODO Auto-generated method stub
-		// 1. Get the root block
-		// 2. Traverse the successors, calculating the WCET of each block
-		// 3. If the block is a call or jump and the callee is known
-		//    calculate and add the WCET of the callee
-		// 4. If the block is the head of a loop, then calculate the WCET of the loop
-		//    The loop may have a specified max iterations later on, for now assume a number
-		//    The loop WCET will be MAXITER*WCET. If there are multiple exit points, then the loop is
-		//    WCET*(MAXITER - 1) + maxWCET(successors)
+	private int getWCET(String funcName) {
 		
-		//Costs: Branch -> 4 (Assume mispredicted)
-		//       jmp,call,return -> 4
-		//       load,store -> 1 + memory delay
-		//       else -> 1
+		IpetAnalysis ipet = new IpetAnalysis(funcName,cfg);
+		int wcet = 0;
+		try {
+			wcet = ipet.getWCET();
+		} catch (LpSolveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		
-		return 0;
+		return wcet;
 	}
 
 	
@@ -108,16 +105,16 @@ public class Profiler {
 		
 		String filename=args[0];
 		String entryPoint = args[1];
-		System.out.println("results for " + filename + " from function " + entryPoint);
+		System.out.println("*******************************************************************");
+		System.out.println("results for " + filename + " from function " + entryPoint + "\n");
 		Profiler prof = new Profiler(filename);
 		prof.parseFile(entryPoint);
-		System.out.println("*******************************************************************");
-		System.out.println("Max stack height of " + entryPoint + ": " + prof.getMaxStackSize(entryPoint) + " bytes");
+//		System.out.println("Max stack height of " + entryPoint + ": " + prof.getMaxStackSize(entryPoint) + " bytes");
 		System.out.println("WCET of " + entryPoint + ": " + prof.getWCET(entryPoint) + " clock cycles");
-		System.out.println("Library functions are: " + prof.getLibFunctions());
-		System.out.println("Add the following lines to linker file: ");
-		System.out.println(prof.getLibs(entryPoint));
-		System.out.println("\n");
+//		System.out.println("Library functions are: " + prof.getLibFunctions());
+//		System.out.println("Add the following lines to linker file: ");
+//		System.out.println(prof.getLibs(entryPoint));
+//		System.out.println("\n");
 		
 		
 	}	
