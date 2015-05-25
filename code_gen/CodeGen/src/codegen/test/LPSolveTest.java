@@ -279,6 +279,7 @@ private void pressRet() {
 }
 
 public static void main(String[] args) {
+	System.out.println(System.getProperty("java.library.path"));
 	try {
 		new LPSolveTest().execute();
 	} 
