@@ -10,6 +10,7 @@ import lpsolve.LpSolveException;
 import codegen.prof.BasicBlock.bbType;
 
 public class IpetAnalysis {
+	private static final double defaultMaxLoop = 15;
 	Function rootFunc;
 	HashMap<Function, Integer> visitedList;
 	CFG cfg;
@@ -99,12 +100,12 @@ public class IpetAnalysis {
 					System.out.println(e);
 					constraint[e.index] = 1;
 				}
-				problem.addConstraint(constraint, LE, 10);
+				problem.addConstraint(constraint, LE, defaultMaxLoop);
 			}
 		}
 
-		// Construct objective function, assume each bb has weight 10
-		// -----------------------------------------------------------
+		// Construct objective function, Each code line is worth 1 for now
+		// ---------------------------------------------------------------
 		constraint = new double[constraintSize];
 		for (BasicBlock bb : func.bbList) {
 			for (Edge e : bb.predEdges) {
@@ -141,8 +142,8 @@ public class IpetAnalysis {
 
 			problem.addConstraint(constraint, GE, 1);
 			constraint[selfEdge.index] = 1;
-			problem.addConstraint(constraint, LE, 10); // 10 is default max
-														// iter.
+			problem.addConstraint(constraint, LE, defaultMaxLoop);
+
 			problem.solve();
 			maxBranch = (int) problem.getObjective();
 
