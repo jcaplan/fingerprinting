@@ -11,13 +11,25 @@ public class Edge {
 		startBlock = start;
 		endBlock = end;
 		index = EdgeCount++;
+		if(startBlock != null){
+			startBlock.succEdges.add(this);
+		}
+		endBlock.predEdges.add(this);
 	}
 	
+	public Edge() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public String toString(){
 		String s = "";
 		s += "Edge " + index + ": " + startBlock + " -> " + endBlock;
 		return s;
+	}
+
+	public boolean isSingleBBLoop() {
+		return startBlock != null && startBlock.equals(endBlock);
 	}
 	
 }

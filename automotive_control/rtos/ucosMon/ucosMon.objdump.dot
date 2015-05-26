@@ -448,11 +448,15 @@ node_402924 -> node_4028f0;
 subgraph cluster___unpack_d {
 	graph [label = "__unpack_d"];
 	node_402938 [peripheries=2]
+subgraph cluster_loop_402998 {
+	graph [label = "loop"];
+	node_402998 [color = green]
+	node_402998 [label = "@402998(BB)"];
+}
 	node_402938 [label = "@402938(BB)", color=blue];
 	node_402960 [label = "@402960(BB)"];
 	node_402968 [label = "@402968(BB)"];
 	node_402994 [label = "@402994(BB)"];
-	node_402998 [label = "@402998(BB)"];
 	node_4029b8 [label = "@4029b8(Return)"];
 	node_4029c8 [label = "@4029c8(BB)"];
 	node_4029d0 [label = "@4029d0(BB)"];
@@ -471,7 +475,7 @@ node_402960 -> node_402968;
 node_402968 -> node_4029f4;
 node_402968 -> node_402994;
 node_402994 -> node_402998;
-node_402998 -> node_402998;
+node_402998 -> node_402998[color=red];
 node_402998 -> node_4029b8;
 node_4029c8 -> node_402a0c;
 node_4029c8 -> node_4029d0;

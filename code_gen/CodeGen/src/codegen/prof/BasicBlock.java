@@ -10,6 +10,9 @@ public class BasicBlock {
 	
 	ArrayList<BasicBlock> predecessors = new ArrayList<>();
 	ArrayList<BasicBlock> successors = new ArrayList<>();
+	ArrayList<Edge> succEdges = new ArrayList<>();
+	ArrayList<Edge> predEdges = new ArrayList<>();
+	
 	ArrayList<Code> code = new ArrayList<>();
 	enum bbType {
 		CALL,

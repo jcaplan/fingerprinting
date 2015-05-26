@@ -1,11 +1,11 @@
 package codegen.prof;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.management.RuntimeErrorException;
 
-import com.sun.rmi.rmid.ExecOptionPermission;
 
 import codegen.prof.BasicBlock.bbType;
 import lpsolve.*;
@@ -37,6 +37,9 @@ public class Profiler {
 		try {
 			wcet = ipet.getWCET();
 		} catch (LpSolveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

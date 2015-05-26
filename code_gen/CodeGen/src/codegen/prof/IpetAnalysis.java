@@ -1,121 +1,238 @@
 package codegen.prof;
 
+import java.io.*;
 import java.util.*;
 
-import lpsolve.*;
-import codegen.prof.BasicBlock.*;
+import javax.management.RuntimeErrorException;
+
+import lpsolve.LpSolve;
+import lpsolve.LpSolveException;
+import codegen.prof.BasicBlock.bbType;
 
 public class IpetAnalysis {
 	Function rootFunc;
+	HashMap<Function, Integer> visitedList;
 	CFG cfg;
-	
-	public IpetAnalysis(String funcName, CFG cfg){
+	private final int LE = 1;
+	private final int EQ = 3;
+	private final int GE = 2;
+	ArrayList<Edge> edges;
+
+	public IpetAnalysis(String funcName, CFG cfg) {
 		rootFunc = cfg.getFunction(funcName);
 		this.cfg = cfg;
+		this.visitedList = new HashMap<>();
 	}
 
-	public int getWCET() throws LpSolveException {
-		//Get the rootFunc function
-		//---------------------
-		System.out.println(rootFunc.bbList.size() + " basic blocks");
-		
-		
-		
-		//Just for fun lets see which functions are called from the rootFunc
-		//--------------------------------------------------------------
-		ArrayList<Function> calledFunctions = new ArrayList<Function>();
-		for (BasicBlock bb : rootFunc.bbList){
-			if(bb.type == bbType.CALL){
-				
-				calledFunctions.add(bb.callee);
-			}
-		}
-		
-		for(Function f : calledFunctions){
-			System.out.println("Function " + f + "is called");
-		}
-		
-		
-		//How many edges are there? (set to 1 since there is an entry edge)
-		//-----------------------------------------------------------------
-		int numEdges = 1;
-		for (BasicBlock bb : rootFunc.bbList){
-			numEdges += bb.successors.size();
-		}
-		System.out.println("Number of edges in graph: " + numEdges);
-		
-		//Build the edges
-		ArrayList<Edge> edges = new ArrayList<Edge>();
-		//Add the zeroth edge
-		edges.add(new Edge(null,rootFunc.bbList.get(0)));
-		for(BasicBlock bb : rootFunc.bbList){
-			for(BasicBlock succ : bb.successors){
-				edges.add(new Edge(bb,succ));
-			}
-		}
-		
-		for(Edge e : edges){
-			System.out.println(e);
-		}
-		
-		//Set up ILP with one variable per edge and no constraints
-		//--------------------------------------------------------
-		
-		LpSolve problem = LpSolve.makeLp(0,numEdges);
-		for(int i = 1; i <= numEdges; i++){
-			problem.setInt(i, true);
-		}
-		
-		
+	public int getWCET() throws LpSolveException, FileNotFoundException {
+		return getWCET(rootFunc);
 
-		//Edges assigned numbers based on breadth first left-right
-		//--------------------------------------------------------
-		
-		
-		
-		//First set the entry edge to 1
-		//NumEdges egdges as well as the constraint itself
-		double[] constraint = new double[numEdges + 1];
-		constraint[0] = 1;
-		
-		problem.setObjFn(constraint);
-		
-		
-		problem.strSetObjFn("2 3 -2 3");
-		problem.strAddConstraint("0 4 3 1", LpSolve.GE, 3);
-		problem.strAddConstraint("3 2 2 1", LpSolve.LE, 4);
-		for(int i = 1; i <= 4; i++){
+	}
+
+	private int getWCET(Function func) throws LpSolveException {
+		if (visitedList.containsKey(func)) {
+			return visitedList.get(func);
+		}
+
+		System.out.println("calculating WCET for function " + func);
+		int wcet = 0;
+
+		// Build the edges
+		// ---------------
+		buildEdges(func);
+
+		// Set up ILP with one variable per edge and no constraints
+		// --------------------------------------------------------
+		LpSolve problem = LpSolve.makeLp(0, edges.size());
+		for (int i = 1; i <= edges.size(); i++) {
 			problem.setInt(i, true);
+		}
+
+		// First set the entry edge to 1
+		// NumEdges egdges as well as the constraint itself
+		// Array must be indexed from offset 1...
+		// ------------------------------------------------
+		int constraintSize = edges.size() + 1;
+		double[] constraint = new double[constraintSize];
+		constraint[1] = 1;
+		problem.addConstraint(constraint, EQ, 1);
+
+		for (BasicBlock bb : func.bbList) {
+			constraint = new double[constraintSize];
+
+			// All blocks have predecessors (root block is empty and ignored)
+			// --------------------------------------------------------------
+			for (Edge e : bb.predEdges) {
+				// Ignore loops consisting of a single BB
+				if (!e.isSingleBBLoop()) {
+					constraint[e.index] = 1;
+				}
+			}
+			// Return types don't have successors, and need a LE constraint
+			// Otherwise add successors and do sum_in - sum_out = 0
+			// ------------------------------------------------------------
+			if (bb.type == bbType.RETURN) {
+				problem.addConstraint(constraint, LE, 1);
+			} else {
+				for (Edge e : bb.succEdges) {
+					// Ignore loops consisting of a single BB
+					if (!e.isSingleBBLoop()) {
+						constraint[e.index] = -1;
+					}
+				}
+				problem.addConstraint(constraint, EQ, 0);
+			}
+
+		}
+
+		// Bound the loops at 10 as a first approximation
+		// ----------------------------------------------
+
+		ArrayList<Loop> singleBlockLoops = new ArrayList<>();
+		for (Loop l : func.loops) {
+			// Deal with single Block loops afterwards if they exist
+			if (l.head.equals(l.tail)) {
+				singleBlockLoops.add(l);
+			} else {
+				constraint = new double[constraintSize];
+				for (Edge e : l.head.predEdges) {
+					System.out.println(e);
+					constraint[e.index] = 1;
+				}
+				problem.addConstraint(constraint, LE, 10);
+			}
+		}
+
+		// Construct objective function, assume each bb has weight 10
+		// -----------------------------------------------------------
+		constraint = new double[constraintSize];
+		for (BasicBlock bb : func.bbList) {
+			for (Edge e : bb.predEdges) {
+				constraint[e.index] += bb.code.size(); // All instructions same
+														// cost = 1
+			}
 		}
 		problem.setMaxim();
-		problem.solve();
-		
-		//For each basic block there must be a constraint
-		problem.printLp();
-		problem.printObjective();
-		problem.printSolution(1);
-		
-		
-		//each basic block requires two equations (some overlap will happen)
-		
-		
-		
-		// TODO Auto-generated method stub
-		// 1. Get the rootFunc block
-		// 2. Traverse the successors, calculating the WCET of each block
-		// 3. If the block is a call or jump and the callee is known
-		//    calculate and add the WCET of the callee
-		// 4. If the block is the head of a loop, then calculate the WCET of the loop
-		//    The loop may have a specified max iterations later on, for now assume a number
-		//    The loop WCET will be MAXITER*WCET. If there are multiple exit points, then the loop is
-		//    WCET*(MAXITER - 1) + maxWCET(successors)
-		
-		//Costs: Branch -> 4 (Assume mispredicted)
-		//       jmp,call,return -> 4
-		//       load,store -> 1 + memory delay
-		//       else -> 1
-		
-		return 0;
+		problem.setObjFn(constraint);
+
+		if (!singleBlockLoops.isEmpty()) { // Single block loops were found
+			int numConstraints = problem.getNrows();
+			constraint = new double[constraintSize];
+			// If more than one self loop, throw an error for now
+			if (singleBlockLoops.size() > 1) {
+				throw new RuntimeErrorException(new Error(
+						"Multiple single block loops not supported yet"));
+			}
+
+			// For each loop, need to consider the two cases:
+			// 1. loop > 0 and other entries > 0
+			Edge selfEdge = new Edge();
+			Loop loop = singleBlockLoops.get(0);
+			for (Edge e : loop.head.predEdges) {
+				if (e.isSingleBBLoop()) {
+					selfEdge = e;
+				} else {
+					constraint[e.index] = 1;
+				}
+
+			}
+
+			int maxBranch;
+
+			problem.addConstraint(constraint, GE, 1);
+			constraint[selfEdge.index] = 1;
+			problem.addConstraint(constraint, LE, 10); // 10 is default max
+														// iter.
+			problem.solve();
+			maxBranch = (int) problem.getObjective();
+
+			problem.printObjective();
+			problem.printSolution(1);
+			// 2. all = 0
+
+			// Remove the two constraints
+			problem.delConstraint(numConstraints + 2);
+			problem.delConstraint(numConstraints + 1);
+
+			for (Edge e : loop.head.predEdges) {
+				constraint = new double[constraintSize];
+				constraint[e.index] = 1;
+				problem.addConstraint(constraint, EQ, 0);
+			}
+
+			problem.solve();
+			int otherBranch = (int) problem.getObjective();
+			if (otherBranch > maxBranch) {
+				maxBranch = otherBranch;
+			}
+
+			problem.printObjective();
+			problem.printSolution(1);
+
+			wcet = maxBranch;
+
+		} else { // There were no single block loops
+			problem.printLp();
+			problem.solve();
+
+			problem.printObjective();
+			problem.printSolution(1);
+
+			// The value of the objective function is the WCET
+			// -----------------------------------------------
+			wcet = (int) problem.getObjective();
+		}
+
+		// Now for each function call, the WCET of that function
+		// must be added to the overall WCET. This must be applied
+		// recursively. Recursive function calls cannot be handled.
+		// --------------------------------------------------------
+
+		// 1. which functions are called?
+		// 2. How many times are they called?
+
+		HashMap<Function, Integer> calledFunctions = new HashMap<>();
+		for (BasicBlock bb : func.bbList) {
+			if (bb.type == bbType.CALL) {
+				if (calledFunctions.containsKey(bb.callee)) {
+					int oldValue = calledFunctions.get(bb.callee);
+					calledFunctions.put(bb.callee, oldValue + 1);
+				} else {
+					calledFunctions.put(bb.callee, 1);
+				}
+			}
+		}
+
+		for (Function f : calledFunctions.keySet()) {
+			System.out.println("Function " + f + " is called "
+					+ calledFunctions.get(f) + " times");
+		}
+
+		// For each function repeat analysis, keep track of which functions have
+		// already been called. Do not repeat functions
+		// ----------------------------------------------------------------------
+		visitedList.put(func, wcet);
+		for (Function f : calledFunctions.keySet()) {
+			wcet += getWCET(f) * calledFunctions.get(f);
+		}
+
+		// Costs: Branch -> 4 (Assume mispredicted)
+		// jmp,call,return -> 4
+		// load,store -> 1 + memory delay
+		// else -> 1
+		System.out.println("WCET for func " + func + " = " + wcet);
+		return wcet;
 	}
-	
+
+	private void buildEdges(Function func) {
+		Edge.EdgeCount = 1;
+		edges = new ArrayList<Edge>();
+		// Add the first edge
+		edges.add(new Edge(null, func.bbList.get(0)));
+		for (BasicBlock bb : func.bbList) {
+			for (BasicBlock succ : bb.successors) {
+				edges.add(new Edge(bb, succ));
+			}
+		}
+	}
 }
