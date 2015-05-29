@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20150205.0
-//                          Sat May 16 13:15:06 2015
+//                          Fri May 29 12:05:57 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -207,13 +207,20 @@ void platformConstructor(void) {
     icmAddUns64Attr(cpu0_attrList, "BREAK_VECTOR", 0x08000820LL);
     icmAddUns64Attr(cpu0_attrList, "EXCEPTION_VECTOR", 0x00464020LL);
     icmAddUns64Attr(cpu0_attrList, "RESET_VECTOR", 0x00464000LL);
-    icmAddUns64Attr(cpu0_attrList, "HW_DIVIDE", 0LL);
-    icmAddUns64Attr(cpu0_attrList, "HW_MULTIPLY", 0LL);
-    icmAddUns64Attr(cpu0_attrList, "HW_MULX", 0LL);
+    icmAddUns64Attr(cpu0_attrList, "HW_DIVIDE", 1LL);
+    icmAddUns64Attr(cpu0_attrList, "HW_MULTIPLY", 1LL);
+    icmAddUns64Attr(cpu0_attrList, "HW_MULX", 1LL);
     icmAddUns64Attr(cpu0_attrList, "INCLUDE_MMU", 0LL);
     icmAddUns64Attr(cpu0_attrList, "DATA_ADDR_WIDTH", 0x1cLL);
     icmAddUns64Attr(cpu0_attrList, "INST_ADDR_WIDTH", 0x1cLL);
     icmAddUns64Attr(cpu0_attrList, "TEST_HALT_EXIT", 1LL);
+    icmAddUns64Attr(cpu0_attrList, "INCLUDE_MPU", 1LL);
+    icmAddUns64Attr(cpu0_attrList, "MPU_USE_LIMIT_FOR_REGION_RANGE", 1LL);
+    icmAddUns64Attr(cpu0_attrList, "MPU_NUMBER_DATA_REGIONS", 16LL);
+    icmAddUns64Attr(cpu0_attrList, "MPU_MINIMUM_DATA_REGION_SIZE", 64LL);
+    icmAddUns64Attr(cpu0_attrList, "MPU_NUMBER_INSTRUCTION_REGIONS", 8LL);
+    icmAddUns64Attr(cpu0_attrList, "MPU_MINIMUM_INSTRUCTION_REGION_SIZE", 64LL);
+    icmAddUns64Attr(cpu0_attrList, "EXCEPTION_EXTRA_INFORMATION", 1LL);
     icmAddDoubleAttr(cpu0_attrList, "mips", 125.000000);
     icmAddStringAttr(cpu0_attrList, "endian", "little");
     icmNewProcAttrs cpu0_attrs = ICM_ATTR_SIMEX;
@@ -253,13 +260,20 @@ void platformConstructor(void) {
     icmAddUns64Attr(cpu1_attrList, "BREAK_VECTOR", 0x08008020LL);
     icmAddUns64Attr(cpu1_attrList, "EXCEPTION_VECTOR", 0x00432020LL);
     icmAddUns64Attr(cpu1_attrList, "RESET_VECTOR", 0x00432000LL);
-    icmAddUns64Attr(cpu1_attrList, "HW_DIVIDE", 0LL);
-    icmAddUns64Attr(cpu1_attrList, "HW_MULTIPLY", 0LL);
-    icmAddUns64Attr(cpu1_attrList, "HW_MULX", 0LL);
+    icmAddUns64Attr(cpu1_attrList, "HW_DIVIDE", 1LL);
+    icmAddUns64Attr(cpu1_attrList, "HW_MULTIPLY", 1LL);
+    icmAddUns64Attr(cpu1_attrList, "HW_MULX", 1LL);
     icmAddUns64Attr(cpu1_attrList, "INCLUDE_MMU", 0LL);
     icmAddUns64Attr(cpu1_attrList, "DATA_ADDR_WIDTH", 0x1cLL);
     icmAddUns64Attr(cpu1_attrList, "INST_ADDR_WIDTH", 0x1cLL);
     icmAddUns64Attr(cpu1_attrList, "TEST_HALT_EXIT", 1LL);
+    icmAddUns64Attr(cpu1_attrList, "INCLUDE_MPU", 1LL);
+    icmAddUns64Attr(cpu1_attrList, "MPU_USE_LIMIT_FOR_REGION_RANGE", 1LL);
+    icmAddUns64Attr(cpu1_attrList, "MPU_NUMBER_DATA_REGIONS", 16LL);
+    icmAddUns64Attr(cpu1_attrList, "MPU_MINIMUM_DATA_REGION_SIZE", 64LL);
+    icmAddUns64Attr(cpu1_attrList, "MPU_NUMBER_INSTRUCTION_REGIONS", 8LL);
+    icmAddUns64Attr(cpu1_attrList, "MPU_MINIMUM_INSTRUCTION_REGION_SIZE", 64LL);
+    icmAddUns64Attr(cpu1_attrList, "EXCEPTION_EXTRA_INFORMATION", 1LL);
     icmAddDoubleAttr(cpu1_attrList, "mips", 125.000000);
     icmAddStringAttr(cpu1_attrList, "endian", "little");
     icmNewProcAttrs cpu1_attrs = ICM_ATTR_SIMEX;

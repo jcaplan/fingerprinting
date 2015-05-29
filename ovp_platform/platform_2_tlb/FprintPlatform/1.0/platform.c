@@ -29,7 +29,7 @@ static Bool postCmdParser(void) {
 static Bool postPlatformConstruct(void) {
    
     icmSimulationStarting ();
-
+    icmAdvanceTime(0);
     icmLoadProcessorMemory(handles.cpu0_c, "../../automotive_control/rtos/ucos0/ucos0.elf", 0, 0, 1);
  //   icmLoadProcessorMemory(handles.cpu0_c, "elf/a_ucos0.elf", 0, 0, 1);
     icmLoadProcessorMemory(handles.cpu1_c, "../../automotive_control/rtos/ucos1/ucos1.elf", 0, 0, 1);

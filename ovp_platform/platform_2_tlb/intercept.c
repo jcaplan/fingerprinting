@@ -43,7 +43,7 @@ int count = 0;
 int oldAddress = 0;
 unsigned *old_value = 0;
 static VMI_MEM_WATCH_FN(writeCB) {
-
+    
     // we are interested only in writes made by processors (not artifacts of
     // simulation or memory accesses by other plugins, for example) so take
     // action only if processor is non null

@@ -173,7 +173,7 @@ public class Function {
 			return false;
 		}
 		Function f = (Function) o;
-		return (f.label == this.label);
+		return (f.label.equals(this.label));
 	}
 
 	@Override
