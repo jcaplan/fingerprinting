@@ -9,9 +9,9 @@ for file in *.dot; do
 done
 
 
-pdflatex codegen.tex 
-bibtex codegen.aux
-pdflatex codegen.tex 
+# pdflatex codegen.tex 
+# bibtex codegen.aux
+# pdflatex codegen.tex 
 
 
 

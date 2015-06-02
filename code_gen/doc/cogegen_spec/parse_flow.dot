@@ -1,0 +1,11 @@
+digraph d {
+	size="8,5"
+	f [label="Identify functions"]
+	bb1 [label="Identify basic blocks \n Stage 1"]
+	p [label="Prune function list"]
+	bb2 [label="Identify basic blocks \n Stage 2"]
+	l [label="Identify loops"]
+	dot [label="Output dot file"]
+	f -> bb1 -> p -> bb2 -> l -> dot
+
+}
