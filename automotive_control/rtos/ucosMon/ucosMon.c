@@ -195,7 +195,7 @@ void CruiseControlSystem_TASK(void* pdata) {
 		INT8U perr = 0;
 		OSFlagPost(TransferResult_FLAG0, TransferResult_FLAG0_SENDER1_BITMASK,
 				OS_FLAG_SET, &perr);
-		OSTimeDlyHMSM(0, 0, 0, 10);
+		OSTimeDlyHMSM(0, 0, 0, 100);
 	}
 }
 

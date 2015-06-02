@@ -86,11 +86,40 @@ public class IpetAnalysis {
 
 		}
 
-		// Bound the loops at 10 as a first approximation
-		// ----------------------------------------------
+		// Determine the number of times loop executes
+		// For now, either hard-set measured number for library functions
+		// or else default guess
+		// --------------------------------------------------------------
 
 		ArrayList<Loop> singleBlockLoops = new ArrayList<>();
-		for (Loop l : func.loops) {
+
+		// Certain library functions have limits on their loops known in
+		// advance for double precision floating poitnt
+		// -------------------------------------------------------------
+		double loopBound = 0;
+		switch (func.label) {
+		case "__muldf3":
+			loopBound = 4;
+			break;
+		case "__mulsi3":
+			loopBound = 32;
+			break;
+		case "__unpack_d":
+			loopBound = 1;
+			break;
+		case "_fpadd_parts":
+			loopBound = 1;
+			break;
+		case "__divdf3":
+			loopBound = 61;
+			break;
+		default:
+			loopBound = defaultMaxLoop;
+			break;
+		}
+
+		for (int i = 0; i < func.loops.size(); i++) {
+			Loop l = func.loops.get(i);
 			// Deal with single Block loops afterwards if they exist
 			if (l.head.equals(l.tail)) {
 				singleBlockLoops.add(l);
@@ -100,7 +129,7 @@ public class IpetAnalysis {
 					System.out.println(e);
 					constraint[e.index] = 1;
 				}
-				problem.addConstraint(constraint, LE, defaultMaxLoop);
+				problem.addConstraint(constraint, LE, loopBound);
 			}
 		}
 
@@ -142,7 +171,7 @@ public class IpetAnalysis {
 
 			problem.addConstraint(constraint, GE, 1);
 			constraint[selfEdge.index] = 1;
-			problem.addConstraint(constraint, LE, defaultMaxLoop);
+			problem.addConstraint(constraint, LE, loopBound);
 
 			problem.solve();
 			maxBranch = (int) problem.getObjective();

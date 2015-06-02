@@ -3,16 +3,18 @@ tcl source scripts/muldf3callback.tcl
 proc cpu0
 
 #breakpoint 1
-b __muldf3 		
+b AirbagModel_step
 
 #start of the loop:
-b *0x4652dc	
+b *0x4003c4
 
 #end of the function
-b *0x465180 	
+b *0x464368
 
 tclcallback 1 funcStart
 tclcallback 2 loopEntry
 tclcallback 3 funcEnd
+
+
 
 continue

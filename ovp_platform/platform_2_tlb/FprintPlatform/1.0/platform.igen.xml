@@ -11,11 +11,23 @@
     vendor="mcgill.ca"
     verbose="T"
     version="1.0">
-    <documentation name="Licensing">Open Source Apache 2.0</documentation>
-    <documentation name="Description">This platform models the Altera Cyclone III 3c120.
+    <docsection name="doc"
+        text="Licensing">
+        <doctext name="txt"
+            text="Open Source Apache 2.0"/>
+    </docsection>
+    <docsection name="doc_1"
+        text="Description">
+        <doctext name="txt"
+            text="This platform models the Altera Cyclone III 3c120.
 
-The processor is an Altera Nios_II procesor, Nios_II_F.</documentation>
-    <documentation name="Limitations">Peripherals are modeled only to the extent required to boot and run Operating Systems such as Linux.</documentation>
+The processor is an Altera Nios_II procesor, Nios_II_F."/>
+    </docsection>
+    <docsection name="doc_2"
+        text="Limitations">
+        <doctext name="txt"
+            text="Peripherals are modeled only to the extent required to boot and run Operating Systems such as Linux."/>
+    </docsection>
     <bus addresswidth="32"
         name="smbus"/>
     <memoryinstance name="shared_memory">
@@ -87,11 +99,11 @@ The processor is an Altera Nios_II procesor, Nios_II_F.</documentation>
             name="EXCEPTION_VECTOR"/>
         <attribute content="0x00464000"
             name="RESET_VECTOR"/>
-        <attribute content="0"
+        <attribute content="1"
             name="HW_DIVIDE"/>
-        <attribute content="0"
+        <attribute content="1"
             name="HW_MULTIPLY"/>
-        <attribute content="0"
+        <attribute content="1"
             name="HW_MULX"/>
         <attribute content="0"
             name="INCLUDE_MMU"/>
@@ -101,6 +113,20 @@ The processor is an Altera Nios_II procesor, Nios_II_F.</documentation>
             name="INST_ADDR_WIDTH"/>
         <attribute content="1"
             name="TEST_HALT_EXIT"/>
+        <attribute content="1"
+            name="INCLUDE_MPU"/>
+        <attribute content="1"
+            name="MPU_USE_LIMIT_FOR_REGION_RANGE"/>
+        <attribute content="16"
+            name="MPU_NUMBER_DATA_REGIONS"/>
+        <attribute content="64"
+            name="MPU_MINIMUM_DATA_REGION_SIZE"/>
+        <attribute content="8"
+            name="MPU_NUMBER_INSTRUCTION_REGIONS"/>
+        <attribute content="64"
+            name="MPU_MINIMUM_INSTRUCTION_REGION_SIZE"/>
+        <attribute content="1"
+            name="EXCEPTION_EXTRA_INFORMATION"/>
         <busmasterportconnection connection="cpu0_ibus"
             hiaddress="0xfffffff"
             loaddress="0x0"
@@ -341,11 +367,11 @@ The processor is an Altera Nios_II procesor, Nios_II_F.</documentation>
             name="EXCEPTION_VECTOR"/>
         <attribute content="0x00432000"
             name="RESET_VECTOR"/>
-        <attribute content="0"
+        <attribute content="1"
             name="HW_DIVIDE"/>
-        <attribute content="0"
+        <attribute content="1"
             name="HW_MULTIPLY"/>
-        <attribute content="0"
+        <attribute content="1"
             name="HW_MULX"/>
         <attribute content="0"
             name="INCLUDE_MMU"/>
@@ -355,6 +381,20 @@ The processor is an Altera Nios_II procesor, Nios_II_F.</documentation>
             name="INST_ADDR_WIDTH"/>
         <attribute content="1"
             name="TEST_HALT_EXIT"/>
+        <attribute content="1"
+            name="INCLUDE_MPU"/>
+        <attribute content="1"
+            name="MPU_USE_LIMIT_FOR_REGION_RANGE"/>
+        <attribute content="16"
+            name="MPU_NUMBER_DATA_REGIONS"/>
+        <attribute content="64"
+            name="MPU_MINIMUM_DATA_REGION_SIZE"/>
+        <attribute content="8"
+            name="MPU_NUMBER_INSTRUCTION_REGIONS"/>
+        <attribute content="64"
+            name="MPU_MINIMUM_INSTRUCTION_REGION_SIZE"/>
+        <attribute content="1"
+            name="EXCEPTION_EXTRA_INFORMATION"/>
         <busmasterportconnection connection="cpu1_ibus"
             hiaddress="0xfffffff"
             loaddress="0x0"

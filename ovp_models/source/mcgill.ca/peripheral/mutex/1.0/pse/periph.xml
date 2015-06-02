@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <peripheral constructor="constructor"
+    destructor="destructor"
+    imagefile="pse.pse"
+    library="peripheral"
+    name="mutex"
+    vendor="mcgill.ca"
+    version="1.0">
+    <documentation name="Description">Mutex peripheral model</documentation>
+    <busslaveport addresswidth="32"
+        mustbeconnected="T"
+        name="MUTEX_SLAVE"
+        size="0x8">
+        <documentation name="Description">Mutex control register slave port</documentation>
+        <addressblock name="ab32"
+            size="0x8"
+            width="32">
+            <memorymappedregister access="rw"
+                isvolatile="T"
+                name="mutex"
+                readfunction="regRd32"
+                width="32"
+                writefunction="regWr32">
+                <field bitoffset="16"
+                    name="OWNER"
+                    width="16"/>
+                <field name="VALUE"
+                    width="16"/>
+            </memorymappedregister>
+            <memorymappedregister access="rw"
+                isvolatile="T"
+                name="reset"
+                offset="0x4"
+                readfunction="regRd32"
+                width="32"
+                writefunction="regWr32">
+                <field name="RESET"
+                    width="1"/>
+                <field bitoffset="1"
+                    name="RESERVED"
+                    width="31"/>
+            </memorymappedregister>
+        </addressblock>
+    </busslaveport>
+    <formalattribute name="InitialValue"
+        type="uns32"/>
+    <formalattribute name="InitialOwner"
+        type="uns32"/>
+    <fileversion major="1"
+        minor="0"
+        name="_version_0"/>
+ </peripheral>
