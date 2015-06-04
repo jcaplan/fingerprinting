@@ -31,7 +31,7 @@ void critical_task(int priority) {
 		basicmath_small();
 	//	bitcnts();
 	//	qsort_small();
-		write_led(0xF);
+//		write_led(0xF);
 
 		disable_fprint_task(priority);
 
@@ -40,6 +40,7 @@ void critical_task(int priority) {
 void preempt_task(void* args){
 	int priority = *(int*)args;
 	enable_fprint_task(priority);
+
 	basicmath_small();
 	disable_fprint_task(priority);
 

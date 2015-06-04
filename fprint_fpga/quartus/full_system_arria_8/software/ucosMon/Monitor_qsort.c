@@ -122,7 +122,7 @@ void schedule_task(void* pdata){
 
 			}
 			altera_avalon_mutex_unlock(mutex);
-//			OSTimeDlyHMSM(0, 0, 0, 300);
+			OSTimeDlyHMSM(0, 0, 0, 300);
 
 			altera_avalon_mutex_lock(mutex, 1);
 				cp->critical = critical_task;
@@ -145,7 +145,7 @@ void schedule_task(void* pdata){
 
 			}
 			altera_avalon_mutex_unlock(mutex);
-//			OSTimeDlyHMSM(0, 0, 0, 300);
+			OSTimeDlyHMSM(0, 0, 0, 300);
 
 			altera_avalon_mutex_lock(mutex, 1);
 				cp->critical = critical_task;
@@ -197,6 +197,13 @@ void print_execution_times(void* pdata){
 	while(1){
 		OSTimeDlyHMSM(0,0,1,0);
 		printf("at time %d task 2 finished %d successful and %d failed executions\n",(int)clock(),count[0][0],count[0][1]);
+		printf("at time %d task 3 finished %d successful and %d failed executions\n",(int)clock(),count[1][0],count[1][1]);
+		printf("at time %d task 4 finished %d successful and %d failed executions\n",(int)clock(),count[2][0],count[2][1]);
+		printf("at time %d task 5 finished %d successful and %d failed executions\n",(int)clock(),count[3][0],count[3][1]);
+
+
+
+
 		count[0][0] = 0;
 		count[0][1] = 0;
 		count[1][0] = 0;
@@ -385,7 +392,7 @@ int main(void) {
 	altera_avalon_mutex_lock(mutex, 1);
 		{
 			cp->critical = critical_task;
-			cp->preempt = qsort_test;
+			cp->preempt = preempt_task;
 			cp->init_complete = 1;
 		}
 	altera_avalon_mutex_unlock(mutex);
@@ -413,23 +420,23 @@ int main(void) {
 		d.core_id = i;
 		d.key = 2;
 		d.start_ptr = 0;
-		d.end_ptr = 127;
+		d.end_ptr = 5;
 		set_task_directory(&d);
 
 
 			d.key = 3;
-			d.start_ptr = 128;
-			d.end_ptr = 255;
+			d.start_ptr = 50;
+			d.end_ptr = 55;
 			set_task_directory(&d);
 
 			d.key = 4;
-			d.start_ptr = 256;
-			d.end_ptr = 383;
+			d.start_ptr = 80;
+			d.end_ptr = 85;
 			set_task_directory(&d);
 
 			d.key = 5;
-			d.start_ptr = 384;
-			d.end_ptr = 511;
+			d.start_ptr = 111;
+			d.end_ptr = 116;
 			set_task_directory(&d);
 
 

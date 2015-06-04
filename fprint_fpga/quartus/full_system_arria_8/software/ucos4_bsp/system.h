@@ -4,7 +4,7 @@
  * Machine generated for CPU 'processor4_0_cpu4' in SOPC Builder design 'nios_fprint'
  * SOPC Builder design path: ../../nios_fprint.sopcinfo
  *
- * Generated: Fri Oct 31 17:32:06 EDT 2014
+ * Generated: Fri May 29 15:33:02 EDT 2015
  */
 
 /*

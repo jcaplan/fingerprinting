@@ -37,8 +37,8 @@ void basicmath_small() {
 
 
 	//
-	  for (i = 0; i < 1001; ++i)
-		//for (i = 0; i < 100001; ++i)
+//	  for (i = 0; i < 1001; ++i)
+		for (i = 0; i < 300001; ++i)
 		{
 		  usqrt(i, &q);
 		}
