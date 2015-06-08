@@ -3,8 +3,8 @@
 //
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
-//                             Version 20140430.0
-//                          Mon Sep 22 11:24:39 2014
+//                             Version 20150205.0
+//                          Mon Jun  8 13:57:07 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -21,7 +21,17 @@
 
 //////////////////////////////////// Externs ///////////////////////////////////
 
-    extern Uns32 diagnosticLevel;
+extern Uns32 diagnosticLevel;
+
+
+/////////////////////////// Dynamic Diagnostic Macros //////////////////////////
+
+// Bottom two bits of word used for PSE diagnostics
+#define PSE_DIAG_LOW      (BHM_DIAG_MASK_LOW(diagnosticLevel))
+#define PSE_DIAG_MEDIUM   (BHM_DIAG_MASK_MEDIUM(diagnosticLevel))
+#define PSE_DIAG_HIGH     (BHM_DIAG_MASK_HIGH(diagnosticLevel))
+// Next two bits of word used for PSE semihost/intercept library diagnostics
+#define PSE_DIAG_SEMIHOST (BHM_DIAG_MASK_SEMIHOST(diagnosticLevel))
 
 /////////////////////////// Register data declaration //////////////////////////
 

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "critical.h"
-float test_data[400] = {
+double test_data[400] = {
 		0.709266658575,
 		-0.0100222940533,
 		3202.78439206,
@@ -406,7 +406,18 @@ float test_data[400] = {
 };
 
 int main(){
+	printf("hihi!");
+	OSTimeDlyHMSM(0,0,4,0);
 	int i;
+	OS_CPU_SR  cpu_sr = 0;
+	OS_ENTER_CRITICAL();
+	for(i = 0; i < 10000; i++){
+		double x = test_data[rand()%400];
+		double y = test_data[rand()%400];
+
+		double z = x * y;
+	}
+	OS_EXIT_CRITICAL();
 
 	AirbagModelStruct airbagModelStruct_0;
 

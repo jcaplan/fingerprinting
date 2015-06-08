@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "AirbagModel.h"
 
-double test_data[400] = {
+float test_data[400] = {
 		0.709266658575,
 		-0.0100222940533,
 		3202.78439206,
@@ -408,13 +408,16 @@ double test_data[400] = {
 
 int main(){
 	int i;
-	for(i = 0; i < 1000; i++){
-		double x = test_data[rand()%400];
-		double y = test_data[rand()%400];
+	OS_CPU_SR  cpu_sr = 0;
+	OS_ENTER_CRITICAL();
+	for(i = 0; i < 10000; i++){
+		float x = test_data[rand()%400];
+		float y = test_data[rand()%400];
 
-		double z = x * y;
+		float z = x / y;
+
 	}
-
+	OS_EXIT_CRITICAL();
 
 	return 0;
 }

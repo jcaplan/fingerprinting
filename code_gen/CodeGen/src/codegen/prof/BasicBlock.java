@@ -174,7 +174,7 @@ public class BasicBlock {
 	public String getDotNodeString() {
 		String s = "";
 		s += "\tnode_" + getStartAddressHex();
-		s += " [label = \"@" + getStartAddressHex();
+		s += " [label = \"@0x" + getStartAddressHex();
 		switch(type){
 		case BRANCH:
 			s += "(BB)";

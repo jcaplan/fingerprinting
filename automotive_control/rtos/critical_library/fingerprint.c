@@ -14,7 +14,7 @@
 //Control register addresses
 //*********************************
 
-#define COMPARATOR_BASE_ADDRESS CFPU_0_CSR_BASE
+#define COMPARATOR_BASE_ADDRESS 0x2400000
 #define FPRINT_BASE_ADDRESS		0x8100000
 
 void set_task_directory(Directory_Init_Struct* d){

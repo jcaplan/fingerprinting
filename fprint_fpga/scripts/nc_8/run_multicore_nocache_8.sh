@@ -1,12 +1,13 @@
 #!/bin/bash
-fprint_root=/data/jcapla9/fprint_ptype_1_2
+fprint_root=../..
 fprint_dir=${fprint_root}/quartus/full_system_arria_8
 
 programming_dir=${fprint_dir}/output_files
 sw_dir=${fprint_dir}/software
 
-cd $programming_dir
-#nios2-configure-sof  fprint_1_1.sof
+pushd $programming_dir
+nios2-configure-sof  fprint_1_1.sof
+popd
 
 nios2-download -g --cable=1 --instance=2 ${sw_dir}/ucosMon/ucosMon.elf
 sleep 1

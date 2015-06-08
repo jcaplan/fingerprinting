@@ -1,6 +1,6 @@
 #!/bin/bash
 
-fprint_root=/data/jcapla9/fprint_ptype_1_2
+fprint_root=../..
 fprint_dir=${fprint_root}/quartus/full_system_arria_8
 
 

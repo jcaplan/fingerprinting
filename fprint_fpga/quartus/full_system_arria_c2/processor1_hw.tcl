@@ -226,6 +226,8 @@ proc compose { } {
 
     add_instance nios_custom_instr_floating_point_2_0 altera_nios_custom_instr_floating_point_2 100.99.98.97
 
+    add_instance sw_reset_0 sw_reset 1.0
+
     # connections and connection parameters
     add_connection clk.clk cpu1.clk clock
 
@@ -379,6 +381,12 @@ proc compose { } {
     set_connection_parameter_value cpu1.custom_instruction_master/nios_custom_instr_floating_point_2_0.s2 baseAddress {248.0}
     set_connection_parameter_value cpu1.custom_instruction_master/nios_custom_instr_floating_point_2_0.s2 opcodeExtensionUpgrade {-1}
 
+    add_connection clk.clk sw_reset_0.clock clock
+
+    add_connection clk.clk_reset sw_reset_0.reset reset
+
+    add_connection sw_reset_0.reset_source cpu1.reset_n reset
+
     # exported interfaces
     add_interface philosopher_clk_in clock sink
     set_interface_property philosopher_clk_in EXPORT_OF clk.clk_in
@@ -398,4 +406,6 @@ proc compose { } {
     set_interface_property fingerprint_0_avalon_master EXPORT_OF Fingerprint_0.avalon_master
     add_interface dma_0_control_port_slave avalon slave
     set_interface_property dma_0_control_port_slave EXPORT_OF dma_0.control_port_slave
+    add_interface sw_reset_0_s0 avalon slave
+    set_interface_property sw_reset_0_s0 EXPORT_OF sw_reset_0.s0
 }
