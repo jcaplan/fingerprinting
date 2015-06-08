@@ -3,8 +3,8 @@
 //
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
-//                             Version 20140430.0
-//                          Mon Sep 22 11:24:39 2014
+//                             Version 20150205.0
+//                          Mon Jun  8 13:57:07 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -32,7 +32,7 @@ static ppmBusPort busPorts[] = {
 
 static PPM_BUS_PORT_FN(nextBusPort) {
     if(!busPort) {
-        return busPorts;
+        busPort = busPorts;
     } else {
         busPort++;
     }
@@ -63,7 +63,7 @@ static ppmNetPort netPorts[] = {
 
 static PPM_NET_PORT_FN(nextNetPort) {
     if(!netPort) {
-        return netPorts;
+         netPort = netPorts;
     } else {
         netPort++;
     }
@@ -74,6 +74,7 @@ static ppmEnumParameter timeoutConfigValues[] = {
     { .name = "Simple", .value = 0},
     { .name = "Full", .value = 1},
     { .name = "Watchdog", .value = 2},
+    { 0 }
 };
 
 static ppmParameter parameters[] = {
@@ -128,7 +129,7 @@ static ppmParameter parameters[] = {
 
 static PPM_PARAMETER_FN(nextParameter) {
     if(!parameter) {
-        return parameters;
+        parameter = parameters;
     } else {
         parameter++;
     }

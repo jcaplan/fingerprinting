@@ -108,7 +108,7 @@ public class IpetAnalysis {
 			loopBound = 1;
 			break;
 		case "_fpadd_parts":
-			loopBound = 1;
+			loopBound = 14;
 			break;
 		case "__divdf3":
 			loopBound = 61;

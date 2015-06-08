@@ -1,317 +1,189 @@
 digraph d {
 size="8.5,7";
 
-subgraph cluster___muldf3 {
-	graph [label = "__muldf3"];
-	node_4002c4 [peripheries=2]
-subgraph cluster_loop_4004bc {
+subgraph cluster___divsf3 {
+	graph [label = "__divsf3"];
+	node_40030c [peripheries=2]
+subgraph cluster_loop_4003dc {
 	graph [label = "loop"];
-	node_4004bc [color = green]
-	node_4004bc [label = "@4004bc(BB)"];
-	node_4004e8 [label = "@4004e8(BB)"];
-	node_4004e0 [label = "@4004e0(BB)"];
+	node_4003dc [color = green]
+	node_4003dc [label = "@4003dc(BB)"];
+	node_4003ec [label = "@4003ec(BB)"];
+	node_4003e4 [label = "@4003e4(BB)"];
 }
-subgraph cluster_loop_40050c {
-	graph [label = "loop"];
-	node_40050c [color = green]
-	node_40050c [label = "@40050c(BB)"];
-	node_40053c [label = "@40053c(BB)"];
-	node_400538 [label = "@400538(BB)"];
-}
-	node_4002c4 [label = "@4002c4(Call __unpack_d)", color=blue];
-	node_400308 [label = "@400308(Call __unpack_d)"];
-	node_400314 [label = "@400314(BB)"];
-	node_400320 [label = "@400320(BB)"];
-	node_400334 [label = "@400334(Call __pack_d)"];
-	node_400338 [label = "@400338(Return)"];
-	node_400364 [label = "@400364(BB)"];
-	node_40036c [label = "@40036c(BB)"];
-	node_400384 [label = "@400384(BB)"];
-	node_40038c [label = "@40038c(BB)"];
+	node_40030c [label = "@40030c(Call __unpack_f)", color=blue];
+	node_400328 [label = "@400328(Call __unpack_f)"];
+	node_400334 [label = "@400334(BB)"];
+	node_400340 [label = "@400340(BB)"];
+	node_400344 [label = "@400344(Call __pack_f)"];
+	node_400348 [label = "@400348(Return)"];
+	node_400354 [label = "@400354(BB)"];
+	node_40035c [label = "@40035c(Call __pack_f)"];
+	node_400364 [label = "@400364(Return)"];
+	node_400370 [label = "@400370(BB)"];
+	node_400388 [label = "@400388(BB)"];
+	node_400390 [label = "@400390(BB)"];
 	node_400394 [label = "@400394(BB)"];
 	node_4003a0 [label = "@4003a0(BB)"];
 	node_4003a4 [label = "@4003a4(BB)"];
-	node_4003ac [label = "@4003ac(BB)"];
-	node_4003b0 [label = "@4003b0(BB)"];
-	node_4003b8 [label = "@4003b8(BB)"];
-	node_4003bc [label = "@4003bc(Call __muldi3)"];
-	node_4003dc [label = "@4003dc(Call __muldi3)"];
-	node_4003fc [label = "@4003fc(Call __muldi3)"];
-	node_400418 [label = "@400418(Call __muldi3)"];
-	node_400434 [label = "@400434(BB)"];
-	node_400448 [label = "@400448(BB)"];
-	node_40044c [label = "@40044c(BB)"];
-	node_400450 [label = "@400450(BB)"];
-	node_400458 [label = "@400458(BB)"];
-	node_400464 [label = "@400464(BB)"];
-	node_400468 [label = "@400468(BB)"];
-	node_4004b8 [label = "@4004b8(BB)"];
-	node_4004f4 [label = "@4004f4(BB)"];
-	node_4004f8 [label = "@4004f8(BB)"];
-	node_400504 [label = "@400504(BB)"];
-	node_40054c [label = "@40054c(BB)"];
-	node_400550 [label = "@400550(BB)"];
-	node_40055c [label = "@40055c(BB)"];
-	node_400574 [label = "@400574(BB)"];
-	node_400580 [label = "@400580(BB)"];
-	node_400588 [label = "@400588(BB)"];
-	node_400590 [label = "@400590(BB)"];
+	node_4003a8 [label = "@4003a8(BB)"];
+	node_4003c4 [label = "@4003c4(BB)"];
+	node_4003d0 [label = "@4003d0(BB)"];
+	node_4003f8 [label = "@4003f8(BB)"];
+	node_400404 [label = "@400404(BB)"];
+	node_40040c [label = "@40040c(BB)"];
+	node_400414 [label = "@400414(BB)"];
+	node_400418 [label = "@400418(BB)"];
+	node_40042c [label = "@40042c(BB)"];
+	node_40043c [label = "@40043c(BB)"];
 }
-node_4002c4 -> node_400308;
-node_400308 -> node_400314;
-node_400314 -> node_400364;
-node_400314 -> node_400320;
-node_400320 -> node_400334;
-node_400334 -> node_400338;
-node_400364 -> node_400384;
-node_400364 -> node_40036c;
-node_40036c -> node_400334;
-node_400384 -> node_4003a0;
-node_400384 -> node_40038c;
-node_40038c -> node_400320;
-node_40038c -> node_400394;
-node_400394 -> node_400334;
-node_4003a0 -> node_4003b0;
+node_40030c -> node_400328;
+node_400328 -> node_400334;
+node_400334 -> node_400354;
+node_400334 -> node_400340;
+node_400340 -> node_400344;
+node_400344 -> node_400348;
+node_400354 -> node_400370;
+node_400354 -> node_40035c;
+node_40035c -> node_400364;
+node_400370 -> node_400390;
+node_400370 -> node_400388;
+node_400388 -> node_4003a0;
+node_400388 -> node_400390;
+node_400390 -> node_400340;
+node_400390 -> node_400394;
+node_400394 -> node_400344;
+node_4003a0 -> node_40042c;
 node_4003a0 -> node_4003a4;
-node_4003a4 -> node_400394;
-node_4003a4 -> node_4003ac;
-node_4003ac -> node_40036c;
-node_4003b0 -> node_400320;
-node_4003b0 -> node_4003b8;
-node_4003b8 -> node_40036c;
-node_4003b8 -> node_4003bc;
-node_4003bc -> node_4003dc;
-node_4003dc -> node_4003fc;
-node_4003fc -> node_400418;
-node_400418 -> node_400434;
-node_400434 -> node_400574;
-node_400434 -> node_400448;
-node_400448 -> node_400450;
-node_400448 -> node_40044c;
-node_40044c -> node_400574;
-node_40044c -> node_400450;
-node_400450 -> node_400458;
-node_400458 -> node_400468;
-node_400458 -> node_400464;
-node_400464 -> node_400468;
-node_400468 -> node_4004f8;
-node_400468 -> node_4004b8;
-node_4004b8 -> node_4004bc;
-node_4004bc -> node_4004e8;
-node_4004bc -> node_4004e0;
-node_4004e0 -> node_4004e8;
-node_4004e8 -> node_4004bc[color=red];
-node_4004e8 -> node_4004f4;
-node_4004f4 -> node_4004f8;
-node_4004f8 -> node_400550;
-node_4004f8 -> node_400504;
-node_400504 -> node_40050c;
-node_40050c -> node_40053c;
-node_40050c -> node_400538;
-node_400538 -> node_40053c;
-node_40053c -> node_40050c[color=red];
-node_40053c -> node_40054c;
-node_40054c -> node_400550;
-node_400550 -> node_400580;
-node_400550 -> node_40055c;
-node_40055c -> node_400334;
-node_400574 -> node_400458;
-node_400580 -> node_40055c;
-node_400580 -> node_400588;
-node_400588 -> node_40055c;
-node_400588 -> node_400590;
-node_400590 -> node_40055c;
+node_4003a4 -> node_40043c;
+node_4003a4 -> node_4003a8;
+node_4003a8 -> node_4003d0;
+node_4003a8 -> node_4003c4;
+node_4003c4 -> node_4003d0;
+node_4003d0 -> node_4003dc;
+node_4003dc -> node_4003ec;
+node_4003dc -> node_4003e4;
+node_4003e4 -> node_4003ec;
+node_4003ec -> node_4003dc[color=red];
+node_4003ec -> node_4003f8;
+node_4003f8 -> node_40040c;
+node_4003f8 -> node_400404;
+node_400404 -> node_400340;
+node_40040c -> node_400404;
+node_40040c -> node_400414;
+node_400414 -> node_400404;
+node_400414 -> node_400418;
+node_400418 -> node_400340;
+node_40042c -> node_400344;
+node_40043c -> node_400344;
 
-subgraph cluster___muldi3 {
-	graph [label = "__muldi3"];
-	node_4006d8 [peripheries=2]
-	node_4006d8 [label = "@4006d8(Call __mulsi3)", color=blue];
-	node_400730 [label = "@400730(Call __mulsi3)"];
-	node_400740 [label = "@400740(Call __mulsi3)"];
-	node_400750 [label = "@400750(Call __mulsi3)"];
-	node_400760 [label = "@400760(BB)"];
-	node_400774 [label = "@400774(BB)"];
-	node_40077c [label = "@40077c(Call __mulsi3)"];
-	node_40079c [label = "@40079c(Call __mulsi3)"];
-	node_4007ac [label = "@4007ac(Return)"];
+subgraph cluster___pack_f {
+	graph [label = "__pack_f"];
+	node_400578 [peripheries=2]
+	node_400578 [label = "@400578(BB)", color=blue];
+	node_40058c [label = "@40058c(BB)"];
+	node_400594 [label = "@400594(BB)"];
+	node_40059c [label = "@40059c(BB)"];
+	node_4005a0 [label = "@4005a0(BB)"];
+	node_4005ac [label = "@4005ac(BB)"];
+	node_4005b4 [label = "@4005b4(BB)"];
+	node_4005c0 [label = "@4005c0(BB)"];
+	node_4005c4 [label = "@4005c4(BB)"];
+	node_4005c8 [label = "@4005c8(BB)"];
+	node_4005cc [label = "@4005cc(BB)"];
+	node_4005d8 [label = "@4005d8(BB)"];
+	node_4005e0 [label = "@4005e0(Return)"];
+	node_400604 [label = "@400604(BB)"];
+	node_40060c [label = "@40060c(BB)"];
+	node_400614 [label = "@400614(BB)"];
+	node_400620 [label = "@400620(BB)"];
+	node_40062c [label = "@40062c(BB)"];
+	node_400644 [label = "@400644(BB)"];
+	node_400650 [label = "@400650(BB)"];
+	node_400674 [label = "@400674(BB)"];
+	node_40067c [label = "@40067c(BB)"];
+	node_400680 [label = "@400680(BB)"];
+	node_400698 [label = "@400698(BB)"];
+	node_40069c [label = "@40069c(BB)"];
 }
-node_4006d8 -> node_400730;
-node_400730 -> node_400740;
-node_400740 -> node_400750;
-node_400750 -> node_400760;
-node_400760 -> node_40077c;
-node_400760 -> node_400774;
-node_400774 -> node_40077c;
-node_40077c -> node_40079c;
-node_40079c -> node_4007ac;
+node_400578 -> node_40062c;
+node_400578 -> node_40058c;
+node_40058c -> node_400620;
+node_40058c -> node_400594;
+node_400594 -> node_4005d8;
+node_400594 -> node_40059c;
+node_40059c -> node_4005d8;
+node_40059c -> node_4005a0;
+node_4005a0 -> node_400644;
+node_4005a0 -> node_4005ac;
+node_4005ac -> node_400620;
+node_4005ac -> node_4005b4;
+node_4005b4 -> node_400604;
+node_4005b4 -> node_4005c0;
+node_4005c0 -> node_4005c4;
+node_4005c4 -> node_400614;
+node_4005c4 -> node_4005c8;
+node_4005c8 -> node_4005cc;
+node_4005cc -> node_4005e0;
+node_4005d8 -> node_4005e0;
+node_400604 -> node_4005c4;
+node_400604 -> node_40060c;
+node_40060c -> node_4005c8;
+node_40060c -> node_400614;
+node_400614 -> node_4005cc;
+node_400620 -> node_4005e0;
+node_40062c -> node_4005e0;
+node_400644 -> node_400698;
+node_400644 -> node_400650;
+node_400650 -> node_40069c;
+node_400650 -> node_400674;
+node_400674 -> node_400680;
+node_400674 -> node_40067c;
+node_40067c -> node_400680;
+node_400680 -> node_4005e0;
+node_400698 -> node_40069c;
+node_40069c -> node_400680;
 
-subgraph cluster___pack_d {
-	graph [label = "__pack_d"];
-	node_4007e8 [peripheries=2]
-	node_4007e8 [label = "@4007e8(BB)", color=blue];
-	node_400824 [label = "@400824(BB)"];
-	node_40082c [label = "@40082c(BB)"];
-	node_400834 [label = "@400834(BB)"];
-	node_40083c [label = "@40083c(BB)"];
-	node_400848 [label = "@400848(BB)"];
-	node_400850 [label = "@400850(BB)"];
-	node_40085c [label = "@40085c(BB)"];
-	node_40086c [label = "@40086c(BB)"];
-	node_400878 [label = "@400878(BB)"];
-	node_40087c [label = "@40087c(BB)"];
-	node_400898 [label = "@400898(BB)"];
-	node_4008a4 [label = "@4008a4(Return)"];
-	node_4008e8 [label = "@4008e8(BB)"];
-	node_400900 [label = "@400900(BB)"];
-	node_400908 [label = "@400908(BB)"];
-	node_40091c [label = "@40091c(BB)"];
-	node_40092c [label = "@40092c(BB)"];
-	node_400948 [label = "@400948(BB)"];
-	node_400954 [label = "@400954(Call __lshrdi3)"];
-	node_400964 [label = "@400964(Call __ashldi3)"];
-	node_40097c [label = "@40097c(BB)"];
-	node_4009ac [label = "@4009ac(BB)"];
-	node_4009b4 [label = "@4009b4(BB)"];
-	node_4009c4 [label = "@4009c4(BB)"];
-	node_4009e8 [label = "@4009e8(BB)"];
-	node_4009f0 [label = "@4009f0(BB)"];
-	node_4009f8 [label = "@4009f8(BB)"];
-}
-node_4007e8 -> node_40092c;
-node_4007e8 -> node_400824;
-node_400824 -> node_40091c;
-node_400824 -> node_40082c;
-node_40082c -> node_400898;
-node_40082c -> node_400834;
-node_400834 -> node_400898;
-node_400834 -> node_40083c;
-node_40083c -> node_400948;
-node_40083c -> node_400848;
-node_400848 -> node_40091c;
-node_400848 -> node_400850;
-node_400850 -> node_400900;
-node_400850 -> node_40085c;
-node_40085c -> node_40086c;
-node_40086c -> node_4008e8;
-node_40086c -> node_400878;
-node_400878 -> node_40087c;
-node_40087c -> node_4008a4;
-node_400898 -> node_4008a4;
-node_4008e8 -> node_40087c;
-node_400900 -> node_40086c;
-node_400900 -> node_400908;
-node_400908 -> node_40086c;
-node_40091c -> node_4008a4;
-node_40092c -> node_4008a4;
-node_400948 -> node_4009f0;
-node_400948 -> node_400954;
-node_400954 -> node_400964;
-node_400964 -> node_40097c;
-node_40097c -> node_4009f8;
-node_40097c -> node_4009ac;
-node_4009ac -> node_4009c4;
-node_4009ac -> node_4009b4;
-node_4009b4 -> node_4009c4;
-node_4009c4 -> node_4008a4;
-node_4009c4 -> node_4009e8;
-node_4009e8 -> node_4008a4;
-node_4009f0 -> node_4009f8;
-node_4009f8 -> node_4009c4;
-
-subgraph cluster___unpack_d {
-	graph [label = "__unpack_d"];
-	node_400a0c [peripheries=2]
-subgraph cluster_loop_400a6c {
+subgraph cluster___unpack_f {
+	graph [label = "__unpack_f"];
+	node_4006a4 [peripheries=2]
+subgraph cluster_loop_4006f0 {
 	graph [label = "loop"];
-	node_400a6c [color = green]
-	node_400a6c [label = "@400a6c(BB)"];
+	node_4006f0 [color = green]
+	node_4006f0 [label = "@4006f0(BB)"];
 }
-	node_400a0c [label = "@400a0c(BB)", color=blue];
-	node_400a34 [label = "@400a34(BB)"];
-	node_400a3c [label = "@400a3c(BB)"];
-	node_400a68 [label = "@400a68(BB)"];
-	node_400a8c [label = "@400a8c(Return)"];
-	node_400a9c [label = "@400a9c(BB)"];
-	node_400aa4 [label = "@400aa4(BB)"];
-	node_400ac8 [label = "@400ac8(Return)"];
-	node_400ad4 [label = "@400ad4(Return)"];
-	node_400ae0 [label = "@400ae0(BB)"];
-	node_400ae8 [label = "@400ae8(BB)"];
-	node_400af0 [label = "@400af0(BB)"];
-	node_400afc [label = "@400afc(Return)"];
-	node_400b08 [label = "@400b08(BB)"];
+	node_4006a4 [label = "@4006a4(BB)", color=blue];
+	node_4006c8 [label = "@4006c8(BB)"];
+	node_4006cc [label = "@4006cc(BB)"];
+	node_4006ec [label = "@4006ec(BB)"];
+	node_400700 [label = "@400700(Return)"];
+	node_40070c [label = "@40070c(BB)"];
+	node_400714 [label = "@400714(BB)"];
+	node_40072c [label = "@40072c(Return)"];
+	node_400734 [label = "@400734(Return)"];
+	node_400740 [label = "@400740(BB)"];
+	node_400744 [label = "@400744(BB)"];
+	node_40074c [label = "@40074c(BB)"];
+	node_400758 [label = "@400758(Return)"];
+	node_400764 [label = "@400764(BB)"];
 }
-node_400a0c -> node_400a9c;
-node_400a0c -> node_400a34;
-node_400a34 -> node_400ad4;
-node_400a34 -> node_400a3c;
-node_400a3c -> node_400ac8;
-node_400a3c -> node_400a68;
-node_400a68 -> node_400a6c;
-node_400a6c -> node_400a6c[color=red];
-node_400a6c -> node_400a8c;
-node_400a9c -> node_400ae0;
-node_400a9c -> node_400aa4;
-node_400aa4 -> node_400ac8;
-node_400ae0 -> node_400afc;
-node_400ae0 -> node_400ae8;
-node_400ae8 -> node_400b08;
-node_400ae8 -> node_400af0;
-node_400af0 -> node_400ac8;
-node_400b08 -> node_400ac8;
-
-subgraph cluster___mulsi3 {
-	graph [label = "__mulsi3"];
-	node_400b10 [peripheries=2]
-subgraph cluster_loop_400b18 {
-	graph [label = "loop"];
-	node_400b18 [color = green]
-	node_400b18 [label = "@400b18(BB)"];
-	node_400b28 [label = "@400b28(BB)"];
-	node_400b24 [label = "@400b24(BB)"];
-}
-	node_400b10 [label = "@400b10(BB)", color=blue];
-	node_400b30 [label = "@400b30(Return)"];
-	node_400b34 [label = "@400b34(Return)"];
-}
-node_400b10 -> node_400b34;
-node_400b10 -> node_400b18;
-node_400b18 -> node_400b28;
-node_400b18 -> node_400b24;
-node_400b24 -> node_400b28;
-node_400b28 -> node_400b18[color=red];
-node_400b28 -> node_400b30;
-
-subgraph cluster___lshrdi3 {
-	graph [label = "__lshrdi3"];
-	node_400b38 [peripheries=2]
-	node_400b38 [label = "@400b38(BB)", color=blue];
-	node_400b44 [label = "@400b44(BB)"];
-	node_400b50 [label = "@400b50(BB)"];
-	node_400b64 [label = "@400b64(Return)"];
-	node_400b68 [label = "@400b68(BB)"];
-}
-node_400b38 -> node_400b64;
-node_400b38 -> node_400b44;
-node_400b44 -> node_400b68;
-node_400b44 -> node_400b50;
-node_400b50 -> node_400b64;
-node_400b68 -> node_400b64;
-
-subgraph cluster___ashldi3 {
-	graph [label = "__ashldi3"];
-	node_400b7c [peripheries=2]
-	node_400b7c [label = "@400b7c(BB)", color=blue];
-	node_400b88 [label = "@400b88(BB)"];
-	node_400b94 [label = "@400b94(BB)"];
-	node_400ba8 [label = "@400ba8(Return)"];
-	node_400bac [label = "@400bac(BB)"];
-}
-node_400b7c -> node_400ba8;
-node_400b7c -> node_400b88;
-node_400b88 -> node_400bac;
-node_400b88 -> node_400b94;
-node_400b94 -> node_400ba8;
-node_400bac -> node_400ba8;
+node_4006a4 -> node_40070c;
+node_4006a4 -> node_4006c8;
+node_4006c8 -> node_400734;
+node_4006c8 -> node_4006cc;
+node_4006cc -> node_40072c;
+node_4006cc -> node_4006ec;
+node_4006ec -> node_4006f0;
+node_4006f0 -> node_4006f0[color=red];
+node_4006f0 -> node_400700;
+node_40070c -> node_400740;
+node_40070c -> node_400714;
+node_400714 -> node_40072c;
+node_400740 -> node_400758;
+node_400740 -> node_400744;
+node_400744 -> node_400764;
+node_400744 -> node_40074c;
+node_40074c -> node_40072c;
+node_400764 -> node_40072c;
 
 }

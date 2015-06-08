@@ -381,6 +381,9 @@ NIOS_II_MORPH_FN(morphCUSTOM_C1) {
     case 254: // fsubs
         vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FSUB, gpr_C, gpr_B, gpr_A, *flag, 0);
         break;
+    case 255: // fdvis
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FDIV, gpr_C, gpr_B, gpr_A, *flag, 0);
+        break;
     default: //etc
         vmiPrintf("Custom instruction error: N = %d not found",N);
         morphUnimplemented("CUSTOM_C1");

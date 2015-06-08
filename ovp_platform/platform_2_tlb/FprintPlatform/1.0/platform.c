@@ -17,9 +17,9 @@
 // Be careful to avoid overwriting any edits if igen is run a second time.
 // Only use -overwrite if you wish to overwrite this file.
 
-#include "FprintPlatform.options.igen.h"
-#include "FprintPlatform.handles.igen.h"
-#include "FprintPlatform.constructor.igen.h"
+#include "platform.options.igen.h"
+#include "platform.handles.igen.h"
+#include "platform.constructor.igen.h"
 
 static Bool postCmdParser(void) {
     // postCmdParser code goes here
@@ -28,15 +28,15 @@ static Bool postCmdParser(void) {
 
 static Bool postPlatformConstruct(void) {
    
-    icmSimulationStarting ();
+     icmSimulationStarting ();
     icmAdvanceTime(0);
-    icmLoadProcessorMemory(handles.cpu0_c, "../../automotive_control/rtos/ucos0/ucos0.elf", 0, 0, 1);
- //   icmLoadProcessorMemory(handles.cpu0_c, "elf/a_ucos0.elf", 0, 0, 1);
-    icmLoadProcessorMemory(handles.cpu1_c, "../../automotive_control/rtos/ucos1/ucos1.elf", 0, 0, 1);
- //   icmLoadProcessorMemory(handles.cpu1_c, "elf/a_ucos1.elf", 0, 0, 1);
-    icmLoadProcessorMemory(handles.cpum_c, "../../automotive_control/rtos/ucosMon/ucosMon.elf", 0, 0, 1);
- //   icmLoadProcessorMemory(handles.cpum_c, "elf/a_ucosMon.elf", 0, 0, 1);
 
+    icmLoadProcessorMemory(handles.cpu0_c, 
+        "/data/jcapla9/fingerprinting/automotive_control/rtos/ucos0/ucos0.elf", 0, 0, 1);
+    icmLoadProcessorMemory(handles.cpu1_c, 
+        "/data/jcapla9/fingerprinting/automotive_control/rtos/ucos1/ucos1.elf", 0, 0, 1);
+    icmLoadProcessorMemory(handles.cpum_c, 
+        "/data/jcapla9/fingerprinting/automotive_control/rtos/ucosMon/ucosMon.elf", 0, 0, 1);
     return True;
 }
 
@@ -46,7 +46,7 @@ static Bool postSimulate(void) {
 }
 
 
-#include "FprintPlatform.clp.igen.h"
+#include "platform.clp.igen.h"
 ////////////////////////////////////////////////////////////////////////////////
 //                                   M A I N
 ////////////////////////////////////////////////////////////////////////////////
