@@ -44,11 +44,11 @@
          type = "String";
       }
    }
-   element processor4_0.cpu_irq_0_s0
+   element processor3_0.cpu_irq_0_s0
    {
       datum baseAddress
       {
-         value = "67113984";
+         value = "67112960";
          type = "String";
       }
    }
@@ -60,11 +60,19 @@
          type = "String";
       }
    }
-   element processor3_0.cpu_irq_0_s0
+   element processor2_0.cpu_irq_0_s0
    {
       datum baseAddress
       {
-         value = "67112960";
+         value = "67111936";
+         type = "String";
+      }
+   }
+   element processor5_0.cpu_irq_0_s0
+   {
+      datum baseAddress
+      {
+         value = "67115008";
          type = "String";
       }
    }
@@ -76,11 +84,11 @@
          type = "String";
       }
    }
-   element processor2_0.cpu_irq_0_s0
+   element processor7_0.cpu_irq_0_s0
    {
       datum baseAddress
       {
-         value = "67111936";
+         value = "67117056";
          type = "String";
       }
    }
@@ -92,19 +100,11 @@
          type = "String";
       }
    }
-   element processor7_0.cpu_irq_0_s0
+   element processor4_0.cpu_irq_0_s0
    {
       datum baseAddress
       {
-         value = "67117056";
-         type = "String";
-      }
-   }
-   element processor5_0.cpu_irq_0_s0
-   {
-      datum baseAddress
-      {
-         value = "67115008";
+         value = "67113984";
          type = "String";
       }
    }
@@ -124,11 +124,11 @@
          type = "String";
       }
    }
-   element processor0_0.dma_0_control_port_slave
+   element processor4_0.dma_0_control_port_slave
    {
       datum baseAddress
       {
-         value = "84934656";
+         value = "85196800";
          type = "String";
       }
    }
@@ -140,14 +140,6 @@
          type = "String";
       }
    }
-   element processor6_0.dma_0_control_port_slave
-   {
-      datum baseAddress
-      {
-         value = "85327872";
-         type = "String";
-      }
-   }
    element processor2_0.dma_0_control_port_slave
    {
       datum baseAddress
@@ -156,19 +148,11 @@
          type = "String";
       }
    }
-   element processor5_0.dma_0_control_port_slave
+   element processor0_0.dma_0_control_port_slave
    {
       datum baseAddress
       {
-         value = "85262336";
-         type = "String";
-      }
-   }
-   element processor4_0.dma_0_control_port_slave
-   {
-      datum baseAddress
-      {
-         value = "85196800";
+         value = "84934656";
          type = "String";
       }
    }
@@ -180,12 +164,36 @@
          type = "String";
       }
    }
+   element processor6_0.dma_0_control_port_slave
+   {
+      datum baseAddress
+      {
+         value = "85327872";
+         type = "String";
+      }
+   }
+   element processor5_0.dma_0_control_port_slave
+   {
+      datum baseAddress
+      {
+         value = "85262336";
+         type = "String";
+      }
+   }
    element memory_0
    {
       datum _sortIndex
       {
          value = "12";
          type = "int";
+      }
+   }
+   element memory_0.memory_delay_0_csr
+   {
+      datum baseAddress
+      {
+         value = "85983232";
+         type = "String";
       }
    }
    element mm_bridge_0
@@ -1393,6 +1401,15 @@
    start="processorM_0.dma_0_irq_receiver_irq"
    end="processor7_0.dma_0_irq">
   <parameter name="irqNumber" value="7" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="13.1"
+   start="processorM_0.outgoing_master"
+   end="memory_0.memory_delay_0_csr">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x05200000" />
+  <parameter name="defaultConnection" value="false" />
  </connection>
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
