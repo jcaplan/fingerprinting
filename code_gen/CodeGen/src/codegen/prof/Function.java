@@ -186,7 +186,9 @@ public class Function {
 		fList.add(this);
 		for (BasicBlock bb : bbList) {
 			if (bb.type == bbType.CALL && bb.callee != this) {
-				fList.add(bb.callee);
+				if(!fList.contains(bb.callee)){
+					fList.add(bb.callee);
+				}
 				for (Function f : bb.callee.getAllCalledFunctions()) {
 					if (!fList.contains(f)) {
 						fList.add(f);
@@ -314,6 +316,10 @@ public class Function {
 			System.out.println("function " + this + ";");
 			System.out.println(l);
 		}
+	}
+
+	public Edge getEntryEdge() {
+		return bbList.get(0).predEdges.get(0);
 	}
 
 }

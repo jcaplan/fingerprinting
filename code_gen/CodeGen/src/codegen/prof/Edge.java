@@ -14,7 +14,9 @@ public class Edge {
 		if(startBlock != null){
 			startBlock.succEdges.add(this);
 		}
-		endBlock.predEdges.add(this);
+		if(endBlock != null){
+			endBlock.predEdges.add(this);
+		}
 	}
 	
 	public Edge() {
