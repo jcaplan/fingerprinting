@@ -72,6 +72,8 @@
 
 
 #define AirbagModel_COMPSTATUS_MASK 					0x2
+#define Derivative_COMPSTATUS_MASK 						0x1
+
 
 #define dmaReady_FLAG0_INITCOND 				0
 #define dmaReady_FLAG0_CORE0_M0_BITMASK 		0x1
@@ -270,8 +272,6 @@ void dma_TASK(void* pdata) {
 		printf("dma task\n");
 		OS_FLAGS sender = OSFlagPend(dmaReady_FLAG0, dmaReadyFlag,
 				dmaReady_FLAG0_WAITTYPE, dmaReady_FLAG0_TIMEOUT, &perr);
-
-		printf("dma task sender = %x\n", sender);
 		HandleDMAStruct *message = NULL;
 
 		//Two cores handled separately
@@ -379,10 +379,6 @@ void handleDMA(void* handle, void* data) {
 				critFuncData[i].tlbStackAddressVirt = (void *) (0x463000);
 			}
 
-			printf("TLB data address... virt: %x, phys: %x\n",CORE0_SCRATCHPAD_GLOBAL_ADDRESS,GLOBAL_DATA_REGION_BASE);
-			printf("TLB stack address... virt: %x, phys: %x\n",CORE0_SCRATCHPAD_GLOBAL_ADDRESS + 4096,0x463000);
-
-
 			critFuncData[0].partnerCore = 1;
 			critFuncData[1].partnerCore = 0;
 			//Notify both cores
@@ -442,7 +438,6 @@ void TransferResult_TASK(void* pdata) {
 		OS_FLAGS sender = OSFlagPend(TransferResult_FLAG0,
 				TransferResult_FLAG0_CONDITION, TransferResult_FLAG0_WAITTYPE,
 				TransferResult_FLAG0_TIMEOUT, &perr);
-		printf("bye\n");
 		switch (sender) {
 		case TransferResult_FLAG0_SENDER1_BITMASK:
 
@@ -507,11 +502,12 @@ static void handleCompISR(void* context) {
 		OSFlagPost(TransferResult_FLAG0, TransferResult_FLAG0_SENDER3_BITMASK,
 				OS_FLAG_SET, &perr);
 		result = status.successful_reg;
-	} else if (status.failed_reg & AirbagModel_COMPSTATUS_MASK) {
-		//take failed action
-		printf("failed\n");
-	} else {
-		//wtf
+	}
+	if (status.failed_reg) {
+		int* cpu0_reset = (int*)PROCESSOR0_0_SW_RESET_0_BASE;
+		int* cpu1_reset = (int*)PROCESSOR1_0_SW_RESET_0_BASE;
+		*cpu0_reset = 1;
+		*cpu1_reset = 1;
 	}
 
 	fprint_reset_irq();

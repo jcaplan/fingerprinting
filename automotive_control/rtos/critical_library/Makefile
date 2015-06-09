@@ -163,7 +163,7 @@ BUILD_PRE_PROCESS :=
 BUILD_POST_PROCESS :=
 
 # Define path to the root of the BSP.
-BSP_ROOT_DIR := ../ucos0_bsp
+BSP_ROOT_DIR := ../ucosMon_bsp
 
 # List of public include directories for -I compiler option (-I added when used).
 

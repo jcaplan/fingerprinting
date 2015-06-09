@@ -142,7 +142,7 @@ ACDS_VERSION := 13.1
 ELF := ucosMon.elf
 
 # Paths to C, C++, and assembly source files.
-C_SRCS := reset_test.c
+C_SRCS := ucosMon.c
 CXX_SRCS :=
 ASM_SRCS :=
 

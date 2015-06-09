@@ -1,0 +1,5 @@
+proc cpu0
+b *0x401268
+continue
+set extreg R5 0x33983
+continue

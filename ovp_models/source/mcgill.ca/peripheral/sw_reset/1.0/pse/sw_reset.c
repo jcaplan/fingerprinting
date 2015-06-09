@@ -70,7 +70,7 @@ PPM_REG_WRITE_CB(regWr32) {
     }
 
 
-    bhmPrintf("Reset core %c",core);
+    bhmPrintf("Reset core %c\n",core);
 }
 
 PPM_CONSTRUCTOR_CB(constructor) {
