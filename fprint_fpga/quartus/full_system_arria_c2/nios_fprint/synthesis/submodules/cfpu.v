@@ -4,79 +4,65 @@ module cfpu(
 	input															clk,
 	input															reset,
 
-	input 		[(`COMPARATOR_ADDRESS_WIDTH-1):0]					fprint_address,
+	input 		[(`COMPARATOR_ADDRESS_WIDTH-1):0]	fprint_address,
 	input															fprint_write,
-	input 		[(`NIOS_DATA_WIDTH-1):0]							fprint_writedata,
-	output															fprint_waitrequest,
+	input 		[(`NIOS_DATA_WIDTH-1):0]				fprint_writedata,
+	output														fprint_waitrequest,
 
-	input 		[(`COMP_CSR_WIDTH-1):0]								csr_address,
+	input 		[(`COMP_CSR_WIDTH-1):0]					csr_address,
 	input															csr_read,
-	output wire [(`NIOS_DATA_WIDTH-1):0]							csr_readdata,
+	output wire [(`NIOS_DATA_WIDTH-1):0]				csr_readdata,
 	input															csr_write,
-	input 		[(`NIOS_DATA_WIDTH-1):0]							csr_writedata,
-	output wire														csr_waitrequest,
+	input 		[(`NIOS_DATA_WIDTH-1):0]				csr_writedata,
+	output wire													csr_waitrequest,
 	
-	output wire														irq,
-	output wire														io_release
+	output														oflow_write,
+	output [`NIOS_DATA_WIDTH-1 : 0]							oflow_writedata,
+	output [`NIOS_ADDRESS_WIDTH-1 : 0]							oflow_address,
+	input															oflow_waitrequest,
+	
+	output wire													irq
+	//output wire														io_release
 );
 
+wire											comp_status_ack;
+wire [`CRC_KEY_WIDTH-1:0]				comp_task;
+wire [3:0]									csr_physical_core_id;
+wire [3:0]									csr_fprint_task_id;
+wire											csr_logical_core_id;
+wire [3:0]									comp_fprint_task_id;
+wire											comp_logical_core_id;
+wire [`CRC_RAM_ADDRESS_WIDTH-1:0]	head_tail_data;
+wire [`CRC_KEY_WIDTH-1:0]				head_tail_offset;
+wire											set_head_tail;
+wire											head_tail_ack;
+wire [`CRC_RAM_ADDRESS_WIDTH-1:0]	fprint_head_pointer;
+wire											increment_head_pointer;
+wire											increment_hp_ack;
+wire [`CRC_RAM_ADDRESS_WIDTH-1:0]	start_pointer_ex;
+wire [`CRC_RAM_ADDRESS_WIDTH-1:0]	end_pointer_ex;
+wire [`CRC_RAM_ADDRESS_WIDTH-1:0]	start_pointer_comp;
+wire [`CRC_RAM_ADDRESS_WIDTH-1:0]	end_pointer_comp;
+wire											head0_matches_head1;
+wire											tail0_matches_head0;
+wire											tail1_matches_head1;
+wire [`CRC_RAM_ADDRESS_WIDTH-1:0]	comp_tail_pointer0;
+wire [`CRC_RAM_ADDRESS_WIDTH-1:0]	comp_tail_pointer1;
+wire [`CRC_WIDTH - 1: 0]				fprint0;
+wire [`CRC_WIDTH - 1: 0]				fprint1;
+wire [`CRC_KEY_SIZE-1:0]				fprints_ready;
+wire [`CRC_KEY_SIZE-1:0]				checkin;
+wire											comp_increment_tail_pointer;
+wire											comp_reset_fprint_ready;
+wire											reset_fprint_ack;
+wire											comp_task_verified;
+wire											fprint_reg_ack;
+wire											comp_mismatch_detected;
+wire											comp_status_write;
+wire											csr_maxcount_write;
+wire [(`NIOS_DATA_WIDTH-1):0]			csr_maxcount_writedata;
+wire [`CRC_KEY_WIDTH-1:0]				count_inc_physical_core_id;
 
-wire	exception_reg_sel;
-wire	success_reg_sel;
-wire	fail_reg_sel;
-wire	start_p_sel;
-wire	end_p_sel;
-wire	core_assignment_sel;
-wire	[(`CRC_KEY_WIDTH-1):0] dir_pointer_offset;
-wire	[3:0] core_id;
-wire	[3:0] core_assignment_offset;
-wire    [3:0] core_assignment_data;
-wire 	core_a_ack;
-
-
-wire  									comp_status_ack;
-wire [(`CRC_KEY_WIDTH-1):0]			    comp_task;
-
-
-
-wire[3:0] 									physical_core_id;
-wire[3:0]									fprint_task_id;
-wire 		 								logical_core_id;
-
-wire [`CRC_RAM_ADDRESS_WIDTH-1:0]     		head_tail_data;
-wire [(`CRC_KEY_WIDTH-1):0]           		head_tail_offset;
-wire 										set_head_tail;
-wire 										head_tail_ack;
-wire [`CRC_RAM_ADDRESS_WIDTH-1:0]     		fprint_head_pointer;
-
-
-wire 										increment_head_pointer;
-wire 										increment_hp_ack;
-
-
-wire [`CRC_RAM_ADDRESS_WIDTH-1:0]			start_pointer_ex;
-wire [`CRC_RAM_ADDRESS_WIDTH-1:0]  			end_pointer_ex;
-wire [`CRC_RAM_ADDRESS_WIDTH-1:0]			start_pointer_comp;
-wire [`CRC_RAM_ADDRESS_WIDTH-1:0]       	end_pointer_comp;
-
-
-
-wire  									head0_matches_head1;
-wire 									tail0_matches_head0;
-wire 									tail1_matches_head1;
-wire  [`CRC_RAM_ADDRESS_WIDTH-1:0]		comp_tail_pointer0;
-wire  [`CRC_RAM_ADDRESS_WIDTH-1:0] 		comp_tail_pointer1;
-wire  [`CRC_WIDTH - 1: 0] 				fprint0;
-wire  [`CRC_WIDTH - 1: 0]              	fprint1;
-wire  [(`CRC_KEY_SIZE-1):0]				fprints_ready;
-wire  [(`CRC_KEY_SIZE-1):0] 			checkin;
-wire 									comp_increment_tail_pointer;
-wire 									comp_reset_fprint_ready;
-wire 									reset_fprint_ack;
-wire 									comp_task_verified;
-wire 									fprint_reg_ack;
-wire 									comp_mismatch_detected;
-wire 									comp_status_write;
 csr_registers csr_register_block(
 	
 	//From processor
@@ -95,17 +81,18 @@ csr_registers csr_register_block(
 	comp_task,
 	comp_mismatch_detected,
 
-
-
-	physical_core_id,
-	fprint_task_id,
-	logical_core_id,
-
+	csr_physical_core_id,
+	csr_fprint_task_id,
+	csr_logical_core_id,
+	
+	csr_maxcount_write,
+	csr_maxcount_writedata,
 
 	head_tail_data,
 	head_tail_offset,
 	set_head_tail,
 	head_tail_ack,
+	comp_fprint_task_id,
 	start_pointer_ex,
 	end_pointer_ex,
 	start_pointer_comp,
@@ -122,16 +109,21 @@ fprint_registers fprint_reg(
 	fprint_write,
 	fprint_writedata,
 	fprint_waitrequest,
-
-
+	
 	//CORE ASSIGNMENT REGISTER USED HERE, STORED HERE
-	physical_core_id,
-	fprint_task_id,
-	logical_core_id,
+	csr_physical_core_id,
+	csr_fprint_task_id,
+	csr_logical_core_id,
+	
+	comp_fprint_task_id,
+	comp_logical_core_id,
 
 	fprint_head_pointer,
 	increment_head_pointer,
 	increment_hp_ack,
+	
+	count_inc_physical_core_id,
+	
 	checkin,
 
 	comp_tail_pointer0,
@@ -141,8 +133,31 @@ fprint_registers fprint_reg(
 	comp_task_verified,
 	fprint_reg_ack,
 	comp_task
+);
+
+oflow_registers oflow_reg(
+
+clk,
+reset,
+
+oflow_write,
+oflow_writedata,
+oflow_address,
+oflow_waitrequest,
 
 
+csr_maxcount_write,
+csr_maxcount_writedata,
+
+increment_hp_ack,
+comp_increment_tail_pointer,
+
+count_inc_physical_core_id,
+
+comp_fprint_task_id,
+comp_task,
+
+comp_logical_core_id
 );
 
 comp_registers comp_reg(
@@ -157,8 +172,8 @@ comp_registers comp_reg(
 	set_head_tail,
 	head_tail_ack,
 
-	logical_core_id,
-	fprint_task_id,
+	comp_logical_core_id,
+	comp_fprint_task_id,
 	fprint_head_pointer,
 	increment_head_pointer,
 	increment_hp_ack,
@@ -213,4 +228,4 @@ comparator comparator(
 
 );
 
-	endmodule
+endmodule

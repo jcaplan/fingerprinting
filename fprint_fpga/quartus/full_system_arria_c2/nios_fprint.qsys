@@ -60,19 +60,19 @@
          type = "String";
       }
    }
-   element processor0_0.cpu_irq_0_s0
-   {
-      datum baseAddress
-      {
-         value = "35651584";
-         type = "String";
-      }
-   }
    element processorM_0.cpu_irq_0_s0
    {
       datum baseAddress
       {
          value = "35653632";
+         type = "String";
+      }
+   }
+   element processor0_0.cpu_irq_0_s0
+   {
+      datum baseAddress
+      {
+         value = "35651584";
          type = "String";
       }
    }
@@ -84,19 +84,19 @@
          type = "String";
       }
    }
-   element processor0_0.dma_0_control_port_slave
-   {
-      datum baseAddress
-      {
-         value = "34603008";
-         type = "String";
-      }
-   }
    element processor1_0.dma_0_control_port_slave
    {
       datum baseAddress
       {
          value = "34668544";
+         type = "String";
+      }
+   }
+   element processor0_0.dma_0_control_port_slave
+   {
+      datum baseAddress
+      {
+         value = "34603008";
          type = "String";
       }
    }
@@ -184,7 +184,7 @@
    {
       datum baseAddress
       {
-         value = "51380224";
+         value = "50332672";
          type = "String";
       }
    }
@@ -662,7 +662,7 @@
    start="processorM_0.outgoing_master"
    end="processor1_0.sw_reset_0_s0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x03100000" />
+  <parameter name="baseAddress" value="0x03000400" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
