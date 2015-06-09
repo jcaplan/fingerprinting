@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Jun 9, 2015 11:44:04 AM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1433864644252</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>9-Jun-2015 11:54:41 AM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1433865281925</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>./</BspGeneratedLocation>
         <BspSettingsFile>ucos1_bsp/settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../nios_fprint.sopcinfo</SopcDesignFile>

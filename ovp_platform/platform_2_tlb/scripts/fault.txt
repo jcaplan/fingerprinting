@@ -1,5 +1,5 @@
 proc cpu0
-b *0x401268
+b *0x40125c
 continue
 set extreg R5 0x33983
 continue

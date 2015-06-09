@@ -506,7 +506,7 @@ static void handleCompISR(void* context) {
 	if (status.failed_reg) {
 		int* cpu0_reset = (int*)PROCESSOR0_0_SW_RESET_0_BASE;
 		int* cpu1_reset = (int*)PROCESSOR1_0_SW_RESET_0_BASE;
-		*cpu0_reset = 1;
+//		*cpu0_reset = 1;
 		*cpu1_reset = 1;
 	}
 
