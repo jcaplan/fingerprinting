@@ -84,19 +84,19 @@
          type = "String";
       }
    }
-   element processor1_0.dma_0_control_port_slave
-   {
-      datum baseAddress
-      {
-         value = "34668544";
-         type = "String";
-      }
-   }
    element processor0_0.dma_0_control_port_slave
    {
       datum baseAddress
       {
          value = "34603008";
+         type = "String";
+      }
+   }
+   element processor1_0.dma_0_control_port_slave
+   {
+      datum baseAddress
+      {
+         value = "34668544";
          type = "String";
       }
    }
@@ -674,6 +674,16 @@
   <parameter name="baseAddress" value="0x03000000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
+ <connection
+   kind="reset"
+   version="13.1"
+   start="processor0_0.sw_reset_0_reset_source"
+   end="processor0_0.reset" />
+ <connection
+   kind="reset"
+   version="13.1"
+   start="processor1_0.sw_reset_0_reset_source"
+   end="processor1_0.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
 </system>

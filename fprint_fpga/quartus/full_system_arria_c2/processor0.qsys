@@ -124,11 +124,11 @@
          type = "String";
       }
    }
-   element button_pio.s1
+   element scratchpad.s1
    {
       datum baseAddress
       {
-         value = "134225920";
+         value = "69206016";
          type = "String";
       }
    }
@@ -140,19 +140,19 @@
          type = "String";
       }
    }
-   element scratchpad.s1
-   {
-      datum baseAddress
-      {
-         value = "69206016";
-         type = "String";
-      }
-   }
    element timer.s1
    {
       datum baseAddress
       {
          value = "134221856";
+         type = "String";
+      }
+   }
+   element button_pio.s1
+   {
+      datum baseAddress
+      {
+         value = "134225920";
          type = "String";
       }
    }
@@ -252,6 +252,11 @@
    internal="sw_reset_0.s0"
    type="avalon"
    dir="end" />
+ <interface
+   name="sw_reset_0_reset_source"
+   internal="sw_reset_0.reset_source"
+   type="reset"
+   dir="start" />
  <module kind="clock_source" version="13.1" enabled="1" name="clk">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -776,11 +781,6 @@
    version="13.1"
    start="clk.clk_reset"
    end="sw_reset_0.reset" />
- <connection
-   kind="reset"
-   version="13.1"
-   start="sw_reset_0.reset_source"
-   end="cpu0.reset_n" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
 </system>
