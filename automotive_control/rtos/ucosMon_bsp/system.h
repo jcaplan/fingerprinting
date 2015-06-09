@@ -5,7 +5,6 @@
  * SOPC Builder design path: ../../nios_fprint.sopcinfo
  *
  * Generated: Tue Jun 09 11:37:47 EDT 2015
- */
 
 /*
  * DO NOT MODIFY THIS FILE

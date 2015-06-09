@@ -8,7 +8,7 @@
 % Original author:
 % Ted Pavlic (http://www.tedpavlic.com)
 %
-% Note:
+% Note: 
 % The \lipsum[#] commands throughout this template generate dummy text
 % to fill the template out. These commands should all be removed when 
 % writing assignment content.
@@ -46,6 +46,9 @@
    colorlinks,linkcolor={blue},citecolor={blue},urlcolor={red},
    pdfstartview={FitV},unicode,breaklinks=true]{hyperref}
     
+    
+\usepackage{todonotes}
+\newcommand{\todojc}[1]{\todo[inline]{JC: #1}}
    
 % Margins
 \topmargin=-0.45in
@@ -654,9 +657,11 @@ The CFG is transformed into a set of linear constraints by noting that the numbe
 \end{figure}
 
 
-Loops require an additional constraint on the maximum number of times the loop can can run. Therefore for each loop $\sum e_{in} \leq m$ where $m$ is the maximum number of iterations. In Figure~\ref{f:loopedges}, taking $m=10$ gives: $e_0 + e_1 + e_2 + e_4 \leq 10$. Functions calls are not explicitly represented in the constraint system. Each function is analyzed independently and then the final execution time of a basic block $i$ that calls function $f$ is defined as: 
-  $(c_i+WCET(f))x_i$. Recursive function calls are not supported but are also generally not used in real-time systems.
+% Loops require an additional constraint on the maximum number of times the loop can can run. Therefore for each loop $\sum e_{in} \leq m$ where $m$ is the maximum number of iterations. In Figure~\ref{f:loopedges}, taking $m=10$ gives: $e_0 + e_1 + e_2 + e_4 \leq 10$. Functions calls are not explicitly represented in the constraint system. Each function is analyzed independently and then the final execution time of a basic block $i$ that calls function $f$ is defined as: 
+%   $(c_i+WCET(f))x_i$. Recursive function calls are not supported but are also generally not used in real-time systems.
 
+
+Loops require an additional constraint on the maximum number of iterations. Therefore for each loop $\sum e_{in} - \sum \mathrm{maxIter}*e_{fl} \le 0$, where $\mathrm{maxIter}$ is the maximum number of iterations for the loop and $e_{fl}$ are the non-backwards edges into the loop (i.e. those that can only execute once per single round of loop iterations).
 
 
 \begin{figure}[h]
@@ -665,6 +670,17 @@ Loops require an additional constraint on the maximum number of times the loop c
 \caption{An additional constraint is required for loops: $\sum e_{in} \leq m$.} 
 \label{f:loopedges}
 \end{figure}
+
+
+Function calls are handled quite simply. The entry-point to the top-level function simply equals 1. For all other functions, the entry-point equals the sum of all the edges leaving basic blocks that call that function. In Figure~\ref{f:function-ipet}, the result is: $e_2+e_3-e_4 = 0$.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1]{figures/function-ipet.pdf}
+\caption{The sum edges leaving function call blocks is equal to the edge entering that function's root block.} 
+\label{f:function-ipet}
+\end{figure}
+ 
 
 
 Library functions are difficult to analyze. Loops can be identified but their bounds cannot be easily determined analytically without detailed dataflow analysis beyond the current scope of the tool. An attempt was made to analyze the WCET of floating point operations by observing the number of times a loop executed in an OVP simulation environment. This information is then be used with associated microarchitectural modelling to come up with a cycle accurate estimation. There is no way to prove that the maximum observed loop iterations (over thousands of randomized trials) is in fact an upper boundary. Furthermore, it is a known problem that IPET yields pessimistic results if some paths through the control flow are impossible (but this is difficult to detect without detailed dataflow analysis). 
@@ -683,8 +699,8 @@ For regular control flow, IPET will only be as effective as the hints provided b
 
 This result has motivated the inclusion of FPUs in the processing cores. The FPU provided by Altera executes single precision operations using the custom instruction interface to the Nios II. Each instruction has a known execution time in clock cycles which eliminates the pessimism in calculating floating point operations. It is possible to force Simulink to generate code using only single precision variables and operations. As a result, there is a tradeoff between the accuracy of the WCET estimation, the size of the core (inclusion of an FPU), and limiting calculations to single-precision. The FPU will also remove thousands of instructions from the critical function and reduce the interference due to instruction loads from main memory as well as lower execution time considerably.
 
+\subsection{Microarchitectural modelling}
 
-   
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Application Mapping}
@@ -743,8 +759,110 @@ Why? Application where delivering the wrong answer can be catastrophic but dropp
 
 \subsection{Code templates}
 
-Code generation will be decomposed into several phases.
+This tool is designed to convert code generated by Matlab into a working and estimate safe properties for a mutlicore Nios system. The baseline architecture is depicted in Figure~\ref{f:nios-arch}. 
 
+\begin{figure}[h]
+\centering
+\includegraphics{figures/architecture.pdf}
+\caption{The baseline architecture for the generation tool}
+\label{f:nios-arch}
+\end{figure}
+
+A fault-tolerant core (FTC) (assumed to have internal detection and/or correction mechanisms to manage soft errors) monitors execution on less reliable cores. Code must be generated for message passing, thread migration, bus management, memory management, runtime monitoring and reliability management. A breakdown of the generation templates will follow using the example Simulink generated control system, prepared as part of an undergraduate design project, in Figure~\ref{f:simulink}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.32]{figures/matlab-ctrl.jpg}
+\caption{Example control system from Simulink}
+\label{f:simulink}
+\end{figure}
+
+The control sytem is broken up into seven tasks:
+
+\begin{itemize}
+  \item Cruise control and adder
+  \item Traction control
+  \item Derivative
+  \item Gain, airbag control and compare
+  \item Collision avoidance display
+  \item Transmission fluid level display
+  \item Fuel level display
+\end{itemize}
+
+The three display related functions are considered non-critical. The other functions are critical as they relate to airbag activation. For this example all critical tasks must execute every 20ms, while non-critical tasks execute every 100ms.
+
+\subsubsection{Monitor tasks}
+The monitor tasks must run on the FTC. They consist of:
+\begin{itemize}
+  \item setting up task parameters and initializing all critical task models
+  \item managing dataflow between tasks 
+  \item intercore task communication 
+  \item retrieving valid data when critical tasks execute correctly on other resources 
+  \item restarting cores in the case of a transient fault
+  \item managing the global data space
+  \item organizing coordinated virtual memory management and memory protection between cores to achieve correct fingerprinting
+\end{itemize} 
+
+The code generated from the Simulink model will dictate how to structure the communication between tasks. Functions must be generated using the reusable code option and using the input and output structures option. Discrete models must be used for Nios compatibility.
+
+\todojc{show simulink options menu figure here}
+
+There are three functions generated for each group of blocks: an initalization, a termination, and a step function. Example function declarations are shown in Listing~\ref{l:airbag-proto} along with the struct definitions for the input parameters. There are three different parameters for all the function: 
+\texttt{RT\_MODEL\_AirbagModel\_T} stores the state that is needed between time steps, \texttt{ExtU\_AirbagModel\_T} stores the external input parameters, and \texttt{ExtY\_AirbagModel\_T} stores the external outputs. The members of each input and output struct must either connect to inputs and outputs of other functions or communicate somehow with on-chip peripherals or through IO. The connection to IO is not currently implemented.
+
+\begin{lstlisting}[caption={Airbag model function declarations},label=l:airbag-proto,language=C]
+/* Model entry point functions */
+extern void AirbagModel_initialize(RT_MODEL_AirbagModel_T *const AirbagModel_M,
+  ExtU_AirbagModel_T *AirbagModel_U, ExtY_AirbagModel_T *AirbagModel_Y);
+extern void AirbagModel_step(RT_MODEL_AirbagModel_T *const AirbagModel_M,
+  ExtU_AirbagModel_T *AirbagModel_U, ExtY_AirbagModel_T *AirbagModel_Y);
+extern void AirbagModel_terminate(RT_MODEL_AirbagModel_T *const AirbagModel_M);
+\end{lstlisting}
+
+In Figure~\ref{f:simulink} the cruise control outputs a single \texttt{real\_T} value (Listing~\ref{l:cc-output}) and the derivative function has an identical input (Listing~\ref{l:der-input}). The monitor will need to pass the signals between the data structures.
+\begin{lstlisting}[caption={Cruise control output struct definition},label=l:cc-output,language=C]
+/* External outputs (root outports fed by signals with auto storage) */
+typedef struct {
+  real_T Out1;                         /* '<Root>/Out1' */
+} ExtY_CruiseControlSystem_T;
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Derivative input struct definition},label=l:der-input,language=C]
+/* External inputs (root inport signals with auto storage) */
+typedef struct {
+  real_T In1;                          /* '<Root>/In1' */
+} ExtU_Derivative_T;
+\end{lstlisting}
+
+There will be two more levels of packaging for the monitor that will be used later on for convenient DMA transfers. First, all three structs will be packaged in a single container. Then, for all critical tasks that will require DMA transfer and that have precedence relations between them (i.e. the completion of one triggers the beginning of the next), they will be placed in a single struct so that the DMA can transfer data with a single command. The structs, presented in Listing~\ref{l:dma-struct}, are not all located in the same file.
+
+\begin{lstlisting}[caption={Structures of structures to facilitate DMA transfer.},label=l:dma-struct,language=C]
+/* LOCATED IN critical.h */
+typedef struct {
+	RT_MODEL_Derivative_T Derivative_M;
+	ExtU_Derivative_T Derivative_U;
+	ExtY_Derivative_T Derivative_Y;
+} DerivativeStruct;
+
+typedef struct {
+	RT_MODEL_AirbagModel_T AirbagModel_M;
+	ExtU_AirbagModel_T AirbagModel_U;
+	ExtY_AirbagModel_T AirbagModel_Y;
+} AirbagModelStruct;
+
+/* LOCATED in monitor main.c */
+typedef struct {
+	AirbagModelStruct airbagModelStruct_0;
+	DerivativeStruct derivativeStruct_0;
+} DMAPackageStruct;
+\end{lstlisting}
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{References}
 

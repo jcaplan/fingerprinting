@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cp -f /data/jcapla9/fingerprinting/fprint_fpga/quartus/full_system_arria_c2/nios_fprint.sopcinfo ..
+cp -f $FPRINT_HOME/fprint_fpga/quartus/full_system_arria_c2/nios_fprint.sopcinfo ..
 
 
 for i in {0..1} Mon
@@ -10,4 +10,4 @@ do
 
 done
 
-sh update_bsps_nc.sh
+# sh update_bsps_nc.sh
