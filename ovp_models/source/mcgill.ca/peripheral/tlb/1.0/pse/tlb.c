@@ -13,6 +13,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define PAGESIZE 0x1000
+
+void update_mapping(void);
 //////////////////////////////// Callback stubs ////////////////////////////////
 Uns32 virtual_address[32];
 Uns32 physical_address[32];
@@ -26,6 +28,29 @@ typedef union CSR_SLAVE_address {
             unsigned message_type : 2;
         } bits;
 } CSR_SLAVE_address;
+
+
+
+PPM_NET_CB(do_reset){
+
+    if(value == 0){
+        bhmPrintf("Resetting TLB!\n");
+        TLB_CSR_ab32_data.tlbActivateReg.value = 0;
+        TLB_CSR_ab32_data.lineValidReg.value = 0;
+        TLB_CSR_ab32_data.lineEnableReg.value = 0;
+
+        int i;
+        for(i = 0; i < 32; i++){
+            virtual_address[i] = 0;
+            physical_address[i] = 0;
+            fprint_table[i] = 0;
+        }
+        fprint_table[33] = 0;
+        diagnosticLevel = 3;
+        ppmCreateDynamicBridge("TLB_SLAVE", 0x0, 0xffffffff, "TLB_MASTER", 0x0);
+    }
+}
+
 
 int cmpfunc (const void * a, const void * b)
 {

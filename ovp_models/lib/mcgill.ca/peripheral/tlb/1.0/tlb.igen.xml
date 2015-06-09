@@ -24,7 +24,6 @@ The output bus width is hard coded to be 32 bits."/>
     </docsection>
     <netport name="TLB_RESET"
         type="input"
-        updatefunction="do_reset"
         updatefunctionargument="0">
         <docsection name="doc"
             text="Description">

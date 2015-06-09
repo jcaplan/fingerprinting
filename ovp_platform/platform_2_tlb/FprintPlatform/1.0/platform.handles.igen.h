@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20150205.0
-//                          Mon Jun  8 18:20:25 2015
+//                          Tue Jun  9 13:03:43 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -71,17 +71,17 @@ struct handlesS {
     icmNetP              cpu0_irq4_n;
     icmNetP              cpu0_irq0_n;
     icmNetP              cpu0_irq1_n;
-    icmNetP              cpu0_reset1_n;
     icmNetP              fprint_write_0_n;
     icmNetP              fprint_write_address_0_n;
     icmNetP              fprint_write_data_0_n;
+    icmNetP              cpu0_reset1_n;
     icmNetP              cpu1_irq3_n;
     icmNetP              cpu1_irq0_n;
     icmNetP              cpu1_irq1_n;
-    icmNetP              cpu1_reset1_n;
     icmNetP              fprint_write_1_n;
     icmNetP              fprint_write_address_1_n;
     icmNetP              fprint_write_data_1_n;
+    icmNetP              cpu1_reset1_n;
     icmNetP              cpum_irq4_n;
     icmNetP              cpum_irq0_n;
     icmNetP              cpum_irq5_n;

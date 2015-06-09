@@ -3,18 +3,13 @@
 //
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
-//                             Version 20140430.0
-//                          Fri Sep 12 11:57:48 2014
+//                             Version 20150205.0
+//                          Tue Jun  9 12:39:03 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "tlb.igen.h"
 //////////////////////////////// Callback stubs ////////////////////////////////
-
-PPM_REG_READ_CB(pause) {
-    // YOUR CODE HERE (pause)
-    return *(Uns32*)user;
-}
 
 PPM_REG_READ_CB(regRd32) {
     // YOUR CODE HERE (regRd32)

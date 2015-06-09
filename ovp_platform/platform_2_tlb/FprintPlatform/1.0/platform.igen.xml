@@ -156,14 +156,14 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             name="d_irq0"/>
         <netportconnection connection="cpu0_irq1"
             name="d_irq1"/>
-        <netportconnection connection="cpu0_reset1"
-            name="reset_n"/>
         <netportconnection connection="fprint_write_0"
             name="fprint_write_out"/>
         <netportconnection connection="fprint_write_address_0"
             name="fprint_write_out_address"/>
         <netportconnection connection="fprint_write_data_0"
             name="fprint_write_out_data"/>
+        <netportconnection connection="cpu0_reset1"
+            name="reset_n"/>
     </processorinstance>
     <bus addresswidth="32"
         name="cpu0_iobus"/>
@@ -194,6 +194,8 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             hiaddress="0x7ffffff"
             loaddress="0x0"
             name="TLB_FPRINT_MASTER"/>
+        <netportconnection connection="cpu0_reset1"
+            name="TLB_RESET"/>
     </peripheralinstance>
     <bridge name="cpu0_d_bridge">
         <busslaveportconnection connection="cpu0_dbus"
@@ -361,6 +363,8 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             hiaddress="0x3ff"
             loaddress="0x0"
             name="FPRINT_TLB_SLAVE"/>
+        <netportconnection connection="cpu0_reset1"
+            name="FPRINT_RESET"/>
         <busmasterportconnection connection="compbus"
             hiaddress="0xfffffff"
             loaddress="0x0"
@@ -426,14 +430,14 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             name="d_irq0"/>
         <netportconnection connection="cpu1_irq1"
             name="d_irq1"/>
-        <netportconnection connection="cpu1_reset1"
-            name="reset_n"/>
         <netportconnection connection="fprint_write_1"
             name="fprint_write_out"/>
         <netportconnection connection="fprint_write_address_1"
             name="fprint_write_out_address"/>
         <netportconnection connection="fprint_write_data_1"
             name="fprint_write_out_data"/>
+        <netportconnection connection="cpu1_reset1"
+            name="reset_n"/>
     </processorinstance>
     <bus addresswidth="32"
         name="cpu1_iobus"/>
@@ -464,6 +468,8 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             hiaddress="0x7ffffff"
             loaddress="0x0"
             name="TLB_FPRINT_MASTER"/>
+        <netportconnection connection="cpu1_reset1"
+            name="TLB_RESET"/>
     </peripheralinstance>
     <bridge name="cpu1_d_bridge">
         <busslaveportconnection connection="cpu1_dbus"
@@ -631,6 +637,8 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             hiaddress="0x3ff"
             loaddress="0x0"
             name="FPRINT_TLB_SLAVE"/>
+        <netportconnection connection="cpu1_reset1"
+            name="FPRINT_RESET"/>
         <busmasterportconnection connection="compbus"
             hiaddress="0xfffffff"
             loaddress="0x0"
@@ -943,17 +951,17 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
         <net name="cpu0_irq4"/>
         <net name="cpu0_irq0"/>
         <net name="cpu0_irq1"/>
-        <net name="cpu0_reset1"/>
         <net name="fprint_write_0"/>
         <net name="fprint_write_address_0"/>
         <net name="fprint_write_data_0"/>
+        <net name="cpu0_reset1"/>
         <net name="cpu1_irq3"/>
         <net name="cpu1_irq0"/>
         <net name="cpu1_irq1"/>
-        <net name="cpu1_reset1"/>
         <net name="fprint_write_1"/>
         <net name="fprint_write_address_1"/>
         <net name="fprint_write_data_1"/>
+        <net name="cpu1_reset1"/>
         <net name="cpum_irq4"/>
         <net name="cpum_irq0"/>
         <net name="cpum_irq5"/>

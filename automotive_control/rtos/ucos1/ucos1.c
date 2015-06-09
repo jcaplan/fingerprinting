@@ -35,7 +35,7 @@ int *core1_IRQ = (int *) PROCESSOR1_0_CPU_IRQ_0_BASE;
  * Note that OS_STK allocates 32 bit words so these numbers represent words
  *****************************************************************************/
 #define STACKSIZE_MINOFFSET   				314
-#define STACKSIZE_MARGINERROR 				15
+#define STACKSIZE_MARGINERROR 				50
 #define FuelSensor_STACKSIZE 				(156 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
 #define Derivative_AirbagModel_STACKSIZE	(156 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
 
@@ -95,12 +95,12 @@ static void handleCPU(void* context) {
 	if (critFuncData[1].tableIndex == DERIVATIVE_FUNC_TABLE_INDEX){
 		//The monitor will provide a translation mapping for the stack
 		//and for the global data... two translations received in data structure
-		set_cputable_entry(0, critFuncData[0].tlbDataAddressVirt);
-		set_spmtable_entry(0, critFuncData[0].tlbDataAddressPhys);
+		set_cputable_entry(0, critFuncData[1].tlbDataAddressVirt);
+		set_spmtable_entry(0, critFuncData[1].tlbDataAddressPhys);
 		enableTlbLine(0);
 
-		set_cputable_entry(1, critFuncData[0].tlbStackAddressVirt);
-		set_spmtable_entry(1, critFuncData[0].tlbStackAddressPhys);
+		set_cputable_entry(1, critFuncData[1].tlbStackAddressVirt);
+		set_spmtable_entry(1, critFuncData[1].tlbStackAddressPhys);
 		enableTlbLine(1);
 
 		*core1_IRQ = 0;
@@ -146,21 +146,30 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		long registers[8];
 		context_switch(registers);
 
+
 		//Do the derivative part
 		// Set default block size for fingerprinting
 		fprint_set_block_size(derivative_blocksize);
 		//TODO The TLB must be appropriately configured
 
 
+		activateTlb();
+		//Set the global pointer in case of compilation issues related
+		//to global variables
+		int priority = critFuncData->priority;
+
+
+		//Retrieve the arguments before changing the GP
+
+		void *args = functionTable[DERIVATIVE_FUNC_TABLE_INDEX].args;
 		//Set the global pointer in case of compilation issues related
 		//to global variables
 		set_gp(gp);
-		int priority = critFuncData->priority;
-		derivativeFunc(priority,functionTable[DERIVATIVE_FUNC_TABLE_INDEX].args);
+
+		derivativeFunc(priority,args);
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();
-
 
 
 
@@ -170,12 +179,13 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		//TODO The TLB must be appropriately configured
 		//Set the global pointer in case of compilation issues related
 		//to global variables
+		args = functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].args;
 		set_gp(gp);
 
-		airbagModelFunc(priority+1,functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].args);
-		//call the critical task
-		//restore the original global pointer
+		airbagModelFunc(priority+1,args);
 		restore_gp();
+
+		disableTlbLine(0);
 
 		//Restore the callee saved registers
 		context_restore(registers);
@@ -234,6 +244,7 @@ int main(){
 	//-------------------------------------------
 	derivative_AirbagModel_SEM0 = OSSemCreate(derivative_AirbagModel_SEM0_INITCOND);
 
+	activateTlb();
 
 	//Declare the OS tasks
 	///-------------------

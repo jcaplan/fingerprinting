@@ -3,8 +3,8 @@
 //
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
-//                             Version 20140430.0
-//                          Tue May 12 14:24:08 2015
+//                             Version 20150205.0
+//                          Tue Jun  9 12:42:55 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -21,7 +21,17 @@
 
 //////////////////////////////////// Externs ///////////////////////////////////
 
-    extern Uns32 diagnosticLevel;
+extern Uns32 diagnosticLevel;
+
+
+/////////////////////////// Dynamic Diagnostic Macros //////////////////////////
+
+// Bottom two bits of word used for PSE diagnostics
+#define PSE_DIAG_LOW      (BHM_DIAG_MASK_LOW(diagnosticLevel))
+#define PSE_DIAG_MEDIUM   (BHM_DIAG_MASK_MEDIUM(diagnosticLevel))
+#define PSE_DIAG_HIGH     (BHM_DIAG_MASK_HIGH(diagnosticLevel))
+// Next two bits of word used for PSE semihost/intercept library diagnostics
+#define PSE_DIAG_SEMIHOST (BHM_DIAG_MASK_SEMIHOST(diagnosticLevel))
 
 /////////////////////////// Register data declaration //////////////////////////
 
@@ -66,12 +76,14 @@ typedef struct handlesS {
     ppmNetHandle          FPRINT_WRITE;
     ppmNetHandle          FPRINT_WRITE_ADDRESS;
     ppmNetHandle          FPRINT_WRITE_DATA;
+    ppmNetHandle          FPRINT_RESET;
 } handlesT, *handlesTP;
 
 extern handlesT handles;
 
 ////////////////////////////// Callback prototypes /////////////////////////////
 
+PPM_NET_CB(do_reset);
 PPM_NET_CB(do_store);
 PPM_REG_READ_CB(pause);
 PPM_REG_READ_CB(regRd32);

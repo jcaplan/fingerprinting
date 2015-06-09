@@ -32,7 +32,7 @@ int *core0_IRQ = (int *) PROCESSOR0_0_CPU_IRQ_0_BASE;
  * Note that OS_STK allocates 32 bit words so these numbers represent words
  *****************************************************************************/
 #define STACKSIZE_MINOFFSET   				314
-#define STACKSIZE_MARGINERROR 				15
+#define STACKSIZE_MARGINERROR 				50
 #define CollisionAvoidance_STACKSIZE 		(156 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
 #define TransmissionControl_STACKSIZE 		(156 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
 #define Derivative_AirbagModel_STACKSIZE	(156 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
@@ -176,12 +176,16 @@ void Derivative_AirbagModel_TASK(void* pdata){
 
 		activateTlb();
 
+		int priority = critFuncData->priority;
+
+		//Retrieve the arguments before changing the GP
+
+		void *args = functionTable[DERIVATIVE_FUNC_TABLE_INDEX].args;
 		//Set the global pointer in case of compilation issues related
 		//to global variables
 		set_gp(gp);
 
-		int priority = critFuncData->priority;
-		derivativeFunc(priority,functionTable[DERIVATIVE_FUNC_TABLE_INDEX].args);
+		derivativeFunc(priority,args);
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();
@@ -194,9 +198,10 @@ void Derivative_AirbagModel_TASK(void* pdata){
 
 		//Set the global pointer in case of compilation issues related
 		//to global variables
+		args = functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].args;
 		set_gp(gp);
 
-		airbagModelFunc(priority+1,functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].args);
+		airbagModelFunc(priority+1,args);
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();

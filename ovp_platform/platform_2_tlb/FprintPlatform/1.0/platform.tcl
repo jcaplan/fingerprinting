@@ -237,9 +237,7 @@ isetattribute    -handle       cpu0_timestamp -name timeoutPeriod   -value 50000
 ihwconnect       -instancename cpu_irq         -netport cpu0_irq     -net cpu0_irq1
 ihwconnect       -instancename cpu0            -netport d_irq1       -net cpu0_irq1
 
-#SW_RESET
-ihwconnect       -instancename sw_reset        -netport cpu0_reset   -net cpu0_reset1
-ihwconnect       -instancename cpu0            -netport reset_n      -net cpu0_reset1
+
 
 #
 # FPRINT
@@ -261,6 +259,15 @@ ihwconnect       -instancename cpu0           -netport fprint_write_out_data    
 ihwaddbus 		 -instancename cpu0_tlb_fprint_bus   -addresswidth 32
 ihwconnect       -instancename cpu0_tlb    -bus cpu0_tlb_fprint_bus    -busmasterport TLB_FPRINT_MASTER -loaddress 0x0000000 -hiaddress 0x07FFFFFF
 ihwconnect       -instancename cpu0_fprint -bus cpu0_tlb_fprint_bus    -busslaveport  FPRINT_TLB_SLAVE  -loaddress 0x000000  -hiaddress 0x000003FF
+
+
+#SW_RESET
+ihwconnect       -instancename sw_reset        -netport cpu0_reset   -net cpu0_reset1
+ihwconnect       -instancename cpu0            -netport reset_n      -net cpu0_reset1
+ihwconnect 		 -instancename cpu0_fprint 	   -netport FPRINT_RESET -net cpu0_reset1;
+ihwconnect 		 -instancename cpu0_tlb 	   -netport TLB_RESET    -net cpu0_reset1;
+
+
 
 ###############################################################################
 # Processor 1
@@ -424,10 +431,6 @@ ihwconnect       -instancename cpu_irq         -netport cpu1_irq     -net cpu1_i
 ihwconnect       -instancename cpu1            -netport d_irq1       -net cpu1_irq1
 
 
-#SW_RESET
-ihwconnect       -instancename sw_reset        -netport cpu1_reset   -net cpu1_reset1
-ihwconnect       -instancename cpu1            -netport reset_n      -net cpu1_reset1
-
 #
 # FPRINT
 #
@@ -448,6 +451,12 @@ ihwaddbus -instancename cpu1_tlb_fprint_bus   -addresswidth 32
 ihwconnect       -instancename cpu1_tlb    -bus cpu1_tlb_fprint_bus    -busmasterport TLB_FPRINT_MASTER -loaddress 0x0000000 -hiaddress 0x07FFFFFF
 ihwconnect       -instancename cpu1_fprint -bus cpu1_tlb_fprint_bus    -busslaveport  FPRINT_TLB_SLAVE  -loaddress 0x000000  -hiaddress 0x000003FF
 
+
+#SW_RESET
+ihwconnect       -instancename sw_reset        -netport cpu1_reset   -net cpu1_reset1
+ihwconnect       -instancename cpu1            -netport reset_n      -net cpu1_reset1
+ihwconnect 		 -instancename cpu1_fprint 	   -netport FPRINT_RESET -net cpu1_reset1;
+ihwconnect 		 -instancename cpu1_tlb 	   -netport TLB_RESET    -net cpu1_reset1;
 
 
 ###############################################################################

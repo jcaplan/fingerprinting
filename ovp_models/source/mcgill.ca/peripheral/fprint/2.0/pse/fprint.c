@@ -41,6 +41,43 @@ Uns32 translation_table[33];
 
 
 Uns32 fprint_pause_hold[2] = {FPRINT_EMPTY, 0};
+
+
+
+
+PPM_NET_CB(do_reset){
+
+	if(value == 0){
+		bhmPrintf("Resetting Fprint!\n");
+		int i;
+		for(i = 0; i < 8; i++){
+			fprint[i] = 0;
+			count[i] = 0;
+			currentState[i] = 0;
+		}
+		fprint_old = 0;
+		count_old = 0;
+		pauseReg = 0;
+		pause_index = 0;
+		mode = 0;
+
+		old_address = 0xcafebabe;
+		old_data    = 0xcafebabe;
+
+		for(i = 0; i< 33; i++){
+			translation_table[i] = 0;
+		}
+
+		FPRINT_CSR_SLAVE_ab32_data.currentState.value = 0;
+		FPRINT_CSR_SLAVE_ab32_data.pauseReg.value = 0;
+		FPRINT_CSR_SLAVE_ab32_data.counterMax.value = 0;
+		fprint_pause_hold[0] = FPRINT_EMPTY;
+		fprint_pause_hold[1] = 1;
+		
+		diagnosticLevel = 1;
+	}
+}
+
 PPM_NET_CB(do_store) {
 
 	
