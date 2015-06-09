@@ -16,7 +16,7 @@ module comp_registers(
 	output [`CRC_RAM_ADDRESS_WIDTH-1:0]     fprint_head_pointer,
 
 	input 									increment_head_pointer,
-	output 									increment_hp_ack,
+	output wire 									increment_hp_ack,
 	input [`CRC_RAM_ADDRESS_WIDTH-1:0]		start_pointer_ex,
 	input [`CRC_RAM_ADDRESS_WIDTH-1:0]      end_pointer_ex,
 	input [`CRC_RAM_ADDRESS_WIDTH-1:0]		start_pointer_comp,
@@ -106,7 +106,7 @@ always @ (posedge clk)
 begin
 	if(set_pointers)begin
 		head_pointer_mem_0[head_tail_offset] = head_tail_data;
-	end else if(state == st_increment_hp_ack)begin
+	end else if(increment_hp_ack)begin
 		if(~logical_core_id)
 			head_pointer_mem_0[fprint_task_id] = (fprint_head_pointer0 == end_pointer_ex) ? 
 				start_pointer_ex : fprint_head_pointer0 + 1;
@@ -121,7 +121,7 @@ always @ (posedge clk)
 begin
 	if(set_pointers)begin
 		head_pointer_mem_1[head_tail_offset] = head_tail_data;
-	end else if(state == st_increment_hp_ack)begin
+	end else if(increment_hp_ack)begin
 		if(logical_core_id)
 			head_pointer_mem_1[fprint_task_id] = 
 			(fprint_head_pointer1 == end_pointer_ex) ? 
@@ -176,9 +176,14 @@ begin
 	end else begin
 		if(state == st_increment_hp_ack)
 			fprints_ready[logical_core_id][fprint_task_id] = 1'b1;
-		else if(state == st_reset_fprint_ready | reset_task)begin
-			fprints_ready[0][comp_task] = 1'b0;	
-			fprints_ready[1][comp_task] = 1'b0;
+		else if(state == st_reset_fprint_ready)begin
+			if(tail0_matches_head0)
+				fprints_ready[0][comp_task] = 1'b0;    
+			if(tail1_matches_head1)            
+				fprints_ready[1][comp_task] = 1'b0;
+		end else if (reset_task) begin
+			fprints_ready[0][comp_task] = 1'b0;    
+			fprints_ready[1][comp_task] = 1'b0;        
 		end
 	end
 end			
