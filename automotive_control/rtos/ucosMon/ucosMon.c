@@ -91,6 +91,8 @@
 #define dmaReady_FLAG0_CORE0_CONDITION 				0x0f
 #define dmaReady_FLAG0_CORE1_CONDITION 				0xf0
 
+
+#define NUM_CRITICAL_TASKS 						2
 /*****************************************************************************
  * The global variable declarations for each critical task
  *****************************************************************************/
@@ -108,7 +110,8 @@
 RT_MODEL_CruiseControlSystem_T CruiseControlSystem_M;
 ExtU_CruiseControlSystem_T CruiseControlSystem_U;
 ExtY_CruiseControlSystem_T CruiseControlSystem_Y;
-
+P_CruiseControlSystem_T cruiseControlSystem_defaultParam;
+DW_CruiseControlSystem_T cruiseControlSystem_dwork;
 /*****************************************************************************
  * Derivative
  *****************************************************************************/
@@ -120,6 +123,7 @@ ExtY_CruiseControlSystem_T CruiseControlSystem_Y;
 RT_MODEL_TractionControl_T TractionControl_M;
 ExtU_TractionControl_T TractionControl_U;
 ExtY_TractionControl_T TractionControl_Y;
+P_TractionControl_T tractionControl_defaultParam;
 
 /*****************************************************************************
  * Stack Declarations
@@ -147,8 +151,8 @@ int *core1_IRQ = (int *) PROCESSOR1_0_CPU_IRQ_0_BASE;
 /*****************************************************************************
  * DMA channels for each core
  *****************************************************************************/
-alt_dma_txchan txchan[2];
-alt_dma_rxchan rxchan[2];
+alt_dma_txchan txchan[NUMCORES];
+alt_dma_rxchan rxchan[NUMCORES];
 
 typedef struct {
 	int core;
@@ -171,9 +175,6 @@ typedef struct {
 	AirbagModelStruct airbagModelStruct_0;
 	DerivativeStruct derivativeStruct_0;
 } DMAPackageStruct;
-
-
-
 P_Derivative_T derivative_defaultParam;
 DW_Derivative_T derivative_dwork;
 P_AirbagModel_T airbagModel_defaultParam;
@@ -190,7 +191,7 @@ alt_mutex_dev* mutex;
  * Function table for critical tasks
  *****************************************************************************/
 SharedMemorySymbolTable shared_stab __attribute__ ((section (".shared")));
-FunctionTable functionTable[2] __attribute__ ((section (".shared")));
+FunctionTable functionTable[NUM_CRITICAL_TASKS] __attribute__ ((section (".shared")));
 CriticalFunctionData critFuncData[NUMCORES] __attribute__ ((section (".shared")));
 
 void sendDMA(void* sourceAddress, void* destAddress, int size, void *handle);
@@ -646,11 +647,15 @@ int main(void) {
 
 	//Initialize the Matlab tasks
 	//---------------------------
+	CruiseControlSystem_M.ModelData.defaultParam = &cruiseControlSystem_defaultParam;
+	CruiseControlSystem_M.ModelData.dwork = &cruiseControlSystem_dwork;
 	CruiseControlSystem_initialize(&CruiseControlSystem_M,
 			&CruiseControlSystem_U, &CruiseControlSystem_Y);
+
+
+	TractionControl_M.ModelData.defaultParam = &tractionControl_defaultParam;
 	TractionControl_initialize(&TractionControl_M, &TractionControl_U,
 			&TractionControl_Y);
-
 
 
 	AirbagModelStruct *airbagModelStruct_0 =

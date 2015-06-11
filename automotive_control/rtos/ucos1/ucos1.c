@@ -71,6 +71,8 @@ SharedMemorySymbolTable *stab;
 RT_MODEL_FuelSensor_T FuelSensor_M;
 ExtU_FuelSensor_T FuelSensor_U;
 ExtY_FuelSensor_T FuelSensor_Y;
+P_FuelSensor_T fuelSensor_defaultParam;
+DW_FuelSensor_T fuelSensor_dwork;
 
 /*****************************************************************************
  * Stack Declarations
@@ -103,6 +105,7 @@ static void handleCPU(void* context) {
 		set_spmtable_entry(1, critFuncData[1].tlbStackAddressPhys);
 		enableTlbLine(1);
 
+		activateTlb();
 		*core1_IRQ = 0;
 		OSSemPost(derivative_AirbagModel_SEM0);
 	}
@@ -153,7 +156,6 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		//TODO The TLB must be appropriately configured
 
 
-		activateTlb();
 		//Set the global pointer in case of compilation issues related
 		//to global variables
 		int priority = critFuncData->priority;
@@ -238,13 +240,13 @@ int main(){
 	//Initialize the Matlab tasks
 	//---------------------------
 	FuelSensor_initialize(&FuelSensor_M,&FuelSensor_U,&FuelSensor_Y);
-
+	FuelSensor_M.ModelData.defaultParam = &fuelSensor_defaultParam;
+	FuelSensor_M.ModelData.dwork = &fuelSensor_dwork;
 
 	//Initialize the control flow data structures
 	//-------------------------------------------
 	derivative_AirbagModel_SEM0 = OSSemCreate(derivative_AirbagModel_SEM0_INITCOND);
 
-	activateTlb();
 
 	//Declare the OS tasks
 	///-------------------

@@ -13,46 +13,8 @@
 #include "tlb.h"
 #include "critical.h"
 #include "mpu_utils.h"
-/*****************************************************************************
- * Defines
- *****************************************************************************/
-#define CORE_ID 							0
-int *core0_IRQ = (int *) PROCESSOR0_0_CPU_IRQ_0_BASE;
-/*****************************************************************************
- * Stack sizes
- *
- * The stack size is composed of three elements A + B + C:
- * A: Amount of room that function code requires to execute on stack
- *
- * B: empirically determined value for amount of stack used with function
- * body consisting of empty while loop
- *
- * C: Safety margin
- *
- * Note that OS_STK allocates 32 bit words so these numbers represent words
- *****************************************************************************/
-#define STACKSIZE_MINOFFSET   				314
-#define STACKSIZE_MARGINERROR 				50
-#define CollisionAvoidance_STACKSIZE 		(156 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-#define TransmissionControl_STACKSIZE 		(156 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-#define Derivative_AirbagModel_STACKSIZE	(156 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-
-/*****************************************************************************
- * The global variable declarations for each critical task
- *****************************************************************************/
-/*****************************************************************************
- * Task Priorities
- *****************************************************************************/
-#define CollisionAvoidance_PRIORITY 		13
-#define TransmissionControl_PRIORITY 		14
-#define Derivative_AirbagModel_PRIORITY     12
-
-
-/*****************************************************************************
- * Task control flow conditions
- *****************************************************************************/
-
-#define derivative_AirbagModel_SEM0_INITCOND 			0
+#include "mem_manager.h"
+#include "ucos0.h"
 
 /*****************************************************************************
  * TransmissionControl
@@ -60,6 +22,7 @@ int *core0_IRQ = (int *) PROCESSOR0_0_CPU_IRQ_0_BASE;
 RT_MODEL_TransmissionControl_T TransmissionControl_M;
 ExtU_TransmissionControl_T TransmissionControl_U;
 ExtY_TransmissionControl_T TransmissionControl_Y;
+P_TransmissionControl_T transmissionControl_dfaultParam;
 
 /*****************************************************************************
  * CollisionAvoidance
@@ -67,6 +30,8 @@ ExtY_TransmissionControl_T TransmissionControl_Y;
 RT_MODEL_CollisionAvoidance_T CollisionAvoidance_M;
 ExtU_CollisionAvoidance_T CollisionAvoidance_U;
 ExtY_CollisionAvoidance_T CollisionAvoidance_Y;
+P_CollisionAvoidance_T collisionAvoidance_defaultParam;
+DW_CollisionAvoidance_T collisionAvoidance_dwork;
 
 /*****************************************************************************
  * Stack Declarations
@@ -75,6 +40,14 @@ ExtY_CollisionAvoidance_T CollisionAvoidance_Y;
 OS_STK CollisionAvoidance_STACK[CollisionAvoidance_STACKSIZE];
 OS_STK TransmissionControl_STACK[TransmissionControl_STACKSIZE];
 OS_STK Derivative_AirbagModel_STACK[Derivative_AirbagModel_STACKSIZE] __attribute__ ((section (".stack_bin")));
+
+
+/*****************************************************************************
+ * Task control flow conditions
+ *****************************************************************************/
+
+#define derivative_AirbagModel_SEM0_INITCOND 			0
+
 
 /*****************************************************************************
  * Shared memory interface with monitor
@@ -89,23 +62,22 @@ SharedMemorySymbolTable *stab;
 OS_EVENT *derivative_AirbagModel_SEM0;
 
 
+int *core0_IRQ = (int *) PROCESSOR0_0_CPU_IRQ_0_BASE;
+
 /*****************************************************************************
  * Interrupt from other cores
  *****************************************************************************/
 static void handleCPU(void* context) {
-	if (critFuncData[0].tableIndex == DERIVATIVE_FUNC_TABLE_INDEX){
+	if (critFuncData[CORE_ID].tableIndex == DERIVATIVE_FUNC_TABLE_INDEX){
 		//The monitor will provide a translation mapping for the stack
 		//and for the global data... two translations received in data structure
 
-		disableTlbLine(20);
 
-		set_cputable_entry(0, critFuncData[0].tlbDataAddressVirt);
-		set_spmtable_entry(0, critFuncData[0].tlbDataAddressPhys);
-		enableTlbLine(0);
+		//Dont set anything here explicitly
+		//Set the entries in the memory manager
 
-		set_cputable_entry(1, critFuncData[0].tlbStackAddressVirt);
-		set_spmtable_entry(1, critFuncData[0].tlbStackAddressPhys);
-		enableTlbLine(1);
+		updateMemoryManagerTable(derivate_airbagModel_memoryTableIndex, &critFuncData[CORE_ID]);
+
 
 		*core0_IRQ = 0;
 		OSSemPost(derivative_AirbagModel_SEM0);
@@ -174,7 +146,6 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		// Set default block size for fingerprinting
 		fprint_set_block_size(derivative_blocksize);
 
-		activateTlb();
 
 		int priority = critFuncData->priority;
 
@@ -244,7 +215,12 @@ int main(){
 
 	//Initialize the Matlab tasks
 	//---------------------------
+
+	CollisionAvoidance_M.ModelData.defaultParam = &collisionAvoidance_defaultParam;
+	CollisionAvoidance_M.ModelData.dwork = &collisionAvoidance_dwork;
 	CollisionAvoidance_initialize(&CollisionAvoidance_M, &CollisionAvoidance_U, &CollisionAvoidance_Y);
+
+	TransmissionControl_M.ModelData.defaultParam = &transmissionControl_dfaultParam;
 	TransmissionControl_initialize(&TransmissionControl_M,&TransmissionControl_U,&TransmissionControl_Y);
 
 	//Initialize the control flow data structures
@@ -252,17 +228,18 @@ int main(){
 	derivative_AirbagModel_SEM0 = OSSemCreate(derivative_AirbagModel_SEM0_INITCOND);
 
 
-	//The core 0 critical task stack must appear to be at the same address as for core 1
-	set_cputable_entry(20, 0x00463000);
-	set_spmtable_entry(20, 0x00495000);
-	enableTlbLine(20);
-	activateTlb();
+
 
 
 	//Start up the MPU
 	//----------------
+	mem_manager_init();
+
 //	nios2_mpu_data_init();
 //	nios2_mpu_inst_init();
+
+
+
 
 	//Declare the OS tasks
 	///-------------------

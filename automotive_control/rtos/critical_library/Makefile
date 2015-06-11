@@ -132,7 +132,6 @@ C_SRCS += Derivative.c
 C_SRCS += FuelSensor.c
 C_SRCS += TractionControl.c
 C_SRCS += TransmissionControl.c
-C_SRCS += tlb.c
 C_SRCS += mpu_utils.c
 CXX_SRCS :=
 ASM_SRCS += context_switch.S

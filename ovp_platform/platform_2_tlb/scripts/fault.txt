@@ -1,5 +1,5 @@
 proc cpu1
-b *0x4012e0
+b *0x4012dc
 continue
 proc cpu1
 disable 1

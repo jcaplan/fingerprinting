@@ -37,11 +37,11 @@ void reset_valid();
 unsigned int get_valid();
 
 //CPU table functions
-void set_cputable_entry(int index, unsigned int address);
+void set_cputable_entry(int index, void *address);
 unsigned int get_cputable_entry(int index);
 
 //SPM table functions
-void set_spmtable_entry(int index, unsigned int address);
+void set_spmtable_entry(int index, void *address);
 unsigned int get_spmtable_entry(int index);
 
 #endif /* DRIVER_H_ */

@@ -92,8 +92,8 @@ unsigned int get_valid() {
  *'index' is the position that will be written to, relative to the address pointed
  * to by the CTRL_2 pointer (i.e. index 0 of the CPU table).
  */
-void set_cputable_entry(int index, unsigned int address) {
-	*(VIRT_ADDR_TABLE + index) = (address  >> PAGE_SIZE);
+void set_cputable_entry(int index, void* address) {
+	*(VIRT_ADDR_TABLE + index) = ((unsigned int)address  >> PAGE_SIZE);
 
 }
 
@@ -110,8 +110,8 @@ unsigned int get_cputable_entry(int index) {
  * where 'index' is the position that will be written to, relative to the address
  * pointed to by the CTRL_3 pointer (i.e. index 0 of the SPM table).
  */
-void set_spmtable_entry(int index, unsigned int address) {
-	*(PHYS_ADDR_TABLE + index) = (address  >> PAGE_SIZE);
+void set_spmtable_entry(int index, void *address) {
+	*(PHYS_ADDR_TABLE + index) = ((unsigned int)address  >> PAGE_SIZE);
 }
 
 /*
