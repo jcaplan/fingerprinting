@@ -698,7 +698,7 @@ void  OSIntExit (void)
                     OSCtxSwCtr++;                          /* Keep track of the number of ctx switches */
                     OSIntCtxSw();                          /* Perform interrupt level ctx switch       */
 
-                    managerCheckPendingDisabled();
+                    managerCheckPendingDisabled(OSPrioCur);
 
                     /* MEMORY MANAGEMENT
                      * Check if any lines need to be disabled
@@ -1666,12 +1666,20 @@ void  OS_Sched (void)
             OS_SchedNew();
             if (OSPrioHighRdy != OSPrioCur) {          /* No Ctx Sw if current task is highest rdy     */
                 OSTCBHighRdy = OSTCBPrioTbl[OSPrioHighRdy];
+
+
+            	managerDisableCurrentTask(OSPrioCur);
+            	managerEnableNextTask(OSPrioHighRdy);
+
 #if OS_TASK_PROFILE_EN > 0
                 OSTCBHighRdy->OSTCBCtxSwCtr++;         /* Inc. # of context switches to this task      */
 #endif
 
                 OSCtxSwCtr++;                          /* Increment context switch counter             */
                 OS_TASK_SW();                          /* Perform a context switch                     */
+
+                managerCheckPendingDisabled(OSPrioCur);
+
             }
         }
     }

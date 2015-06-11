@@ -16,6 +16,7 @@ typedef struct MemoryManagerStruct MemoryManagerStruct;
 
 struct MemoryManagerStruct{
 	bool disablePending;
+	int disablePendSource;
 	int tlbDataLine;
 	int tlbStackLine;
 	int taskPriority;
@@ -36,7 +37,7 @@ void updateMemoryManagerTable(int taskPriority,CriticalFunctionData *data);
 
 void managerDisableCurrentTask(INT8U OSPrioCur);
 void managerEnableNextTask(INT8U OSPrioHighRdy);
-void  managerCheckPendingDisabled(void);
+void  managerCheckPendingDisabled(int OSPrioCur);
 
 #endif
 

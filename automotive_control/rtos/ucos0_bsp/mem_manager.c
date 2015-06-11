@@ -44,6 +44,7 @@ void mem_manager_init(void){
 	//AirbagModel + Derivative
 	MemoryManagerStruct *entry = &memoryManagerTable[derivate_airbagModel_memoryTableIndex];
 	entry->disablePending = false;
+	entry->disablePendSource = 0;
 	entry->taskPriority = Derivative_AirbagModel_PRIORITY;
 	entry->tlbDataLine = 0;
 	entry->tlbStackLine = 1;
@@ -98,11 +99,11 @@ void managerEnableNextTask(INT8U OSPrioHighRdy){
 }
 
 
-void  managerCheckPendingDisabled(void){
+void  managerCheckPendingDisabled(int OSPrioCur){
 	int i;
 	for(i = 0; i < OS_MAX_TASKS; i++){
 		MemoryManagerStruct *entry = &memoryManagerTable[i];
-		if(entry->disablePending){
+		if(entry->disablePending && entry->taskPriority != OSPrioCur){
 			disableTlbLine(entry->tlbDataLine);
 			disableTlbLine(entry->tlbStackLine);
 			entry->disablePending = false;
