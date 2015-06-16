@@ -3,22 +3,10 @@
 //
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
-//                             Version 20140430.0
-//                          Mon Sep 22 11:24:39 2014
+//                             Version 20150205.0
+//                          Tue Jun  9 12:38:57 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
-
-/////////////////////////////////// Licensing //////////////////////////////////
-
-// Open Source Apache 2.0
-
-////////////////////////////////// Description /////////////////////////////////
-
-// Altera Avalon Interval Timer32 Core
-
-////////////////////////////////// Limitations /////////////////////////////////
-
-// No Support for pin level transitions
 
 
 #include "pse.igen.h"
@@ -31,8 +19,8 @@ handlesT handles;
 /////////////////////////////// Diagnostic level ///////////////////////////////
 
 // Test this variable to determine what diagnostics to output.
-// eg. if (diagnosticLevel > 0) bhmMessage("I", "IntervalTimer32Core", "Example");
-
+// eg. if (diagnosticLevel >= 1) bhmMessage("I", "IntervalTimer32Core", "Example");
+//     Predefined macros PSE_DIAG_LOW, PSE_DIAG_MEDIUM and PSE_DIAG_HIGH may be used
 Uns32 diagnosticLevel;
 
 /////////////////////////// Diagnostic level callback //////////////////////////
@@ -182,6 +170,14 @@ PPM_CONSTRUCTOR_CB(periphConstructor) {
 ///////////////////////////////////// Main /////////////////////////////////////
 
 int main(int argc, char *argv[]) {
+
+    ppmDocNodeP doc1_node = ppmDocAddSection(0, "Licensing");
+    ppmDocAddText(doc1_node, "Open Source Apache 2.0");
+    ppmDocNodeP doc_11_node = ppmDocAddSection(0, "Description");
+    ppmDocAddText(doc_11_node, "Altera Avalon Interval Timer32 Core");
+    ppmDocNodeP doc_21_node = ppmDocAddSection(0, "Limitations");
+    ppmDocAddText(doc_21_node, "No Support for pin level transitions");
+
     diagnosticLevel = 0;
     bhmInstallDiagCB(setDiagLevel);
     constructor();

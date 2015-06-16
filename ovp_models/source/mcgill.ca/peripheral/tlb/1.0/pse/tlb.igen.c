@@ -3,24 +3,10 @@
 //
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
-//                             Version 20140430.0
-//                          Tue Oct  7 11:16:09 2014
+//                             Version 20150205.0
+//                          Tue Jun  9 12:42:44 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////// Description /////////////////////////////////
-
-// TLB.
-
-/////////////////////////////////// Licensing //////////////////////////////////
-
-// Open Source Apache 2.0
-
-////////////////////////////////// Limitations /////////////////////////////////
-
-// The range of the input slave port must not conflict with any exiting port conn
-// ected to the bus.
-// The output bus width is hard coded to be 32 bits.
 
 
 #include "tlb.igen.h"
@@ -33,8 +19,8 @@ handlesT handles;
 /////////////////////////////// Diagnostic level ///////////////////////////////
 
 // Test this variable to determine what diagnostics to output.
-// eg. if (diagnosticLevel > 0) bhmMessage("I", "tlb", "Example");
-
+// eg. if (diagnosticLevel >= 1) bhmMessage("I", "tlb", "Example");
+//     Predefined macros PSE_DIAG_LOW, PSE_DIAG_MEDIUM and PSE_DIAG_HIGH may be used
 Uns32 diagnosticLevel;
 
 /////////////////////////// Diagnostic level callback //////////////////////////
@@ -107,17 +93,36 @@ static void installMasterPorts(void) {
     handles.TLB_FPRINT_MASTER = ppmOpenAddressSpace("TLB_FPRINT_MASTER");
 }
 
+/////////////////////////////////// Net Ports //////////////////////////////////
+
+static void installNetPorts(void) {
+    handles.TLB_RESET = ppmOpenNetPort("TLB_RESET");
+    if (handles.TLB_RESET) {
+        ppmInstallNetCallback(handles.TLB_RESET, do_reset, (void*)0);
+    }
+
+}
+
 ////////////////////////////////// Constructor /////////////////////////////////
 
 PPM_CONSTRUCTOR_CB(periphConstructor) {
     installSlavePorts();
     installRegisters();
     installMasterPorts();
+    installNetPorts();
 }
 
 ///////////////////////////////////// Main /////////////////////////////////////
 
 int main(int argc, char *argv[]) {
+
+    ppmDocNodeP doc1_node = ppmDocAddSection(0, "Description");
+    ppmDocAddText(doc1_node, "TLB.");
+    ppmDocNodeP doc_11_node = ppmDocAddSection(0, "Licensing");
+    ppmDocAddText(doc_11_node, "Open Source Apache 2.0");
+    ppmDocNodeP doc_21_node = ppmDocAddSection(0, "Limitations");
+    ppmDocAddText(doc_21_node, "The range of the input slave port must not conflict with any exiting port connected to the bus.\nThe output bus width is hard coded to be 32 bits.");
+
     diagnosticLevel = 0;
     bhmInstallDiagCB(setDiagLevel);
     constructor();

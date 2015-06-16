@@ -25,7 +25,6 @@
 #define  OS_GLOBALS
 #include <ucos_ii.h>
 #endif
-
 /*
 *********************************************************************************************************
 *                                       PRIORITY RESOLUTION TABLE
@@ -669,6 +668,7 @@ void  OSIntExit (void)
 #if OS_TASK_PROFILE_EN > 0
                     OSTCBHighRdy->OSTCBCtxSwCtr++;         /* Inc. # of context switches to this task  */
 #endif
+
                     OSCtxSwCtr++;                          /* Keep track of the number of ctx switches */
                     OSIntCtxSw();                          /* Perform interrupt level ctx switch       */
                 }

@@ -43,6 +43,7 @@
 #define TransferResult_STACKSIZE 			(220 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
 #define TractionControl_STACKSIZE 			(200 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
 #define DMA_STACKSIZE 						(200 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
+#define Failed_STACKSIZE 					(200 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
 
 /*****************************************************************************
  * Task Priorities
@@ -51,6 +52,7 @@
 #define TransferResult_PRIORITY 			14
 #define TractionControl_PRIORITY 			17
 #define DMA_PRIORITY 						15
+#define Failed_PRIORITY						18
 
 /*****************************************************************************
  * Task control flow conditions
@@ -70,8 +72,8 @@
 #define CORE0_SCRATCHPAD_START_ADDRESS 			((void*)0x4200000)
 #define CORE1_SCRATCHPAD_START_ADDRESS 			((void*)0x4200000)
 
-
 #define AirbagModel_COMPSTATUS_MASK 					0x2
+#define Derivative_COMPSTATUS_MASK 						0x1
 
 #define dmaReady_FLAG0_INITCOND 				0
 #define dmaReady_FLAG0_CORE0_M0_BITMASK 		0x1
@@ -89,6 +91,8 @@
 #define dmaReady_FLAG0_CORE0_CONDITION 				0x0f
 #define dmaReady_FLAG0_CORE1_CONDITION 				0xf0
 
+
+#define NUM_CRITICAL_TASKS 						2
 /*****************************************************************************
  * The global variable declarations for each critical task
  *****************************************************************************/
@@ -106,7 +110,8 @@
 RT_MODEL_CruiseControlSystem_T CruiseControlSystem_M;
 ExtU_CruiseControlSystem_T CruiseControlSystem_U;
 ExtY_CruiseControlSystem_T CruiseControlSystem_Y;
-
+P_CruiseControlSystem_T cruiseControlSystem_defaultParam;
+DW_CruiseControlSystem_T cruiseControlSystem_dwork;
 /*****************************************************************************
  * Derivative
  *****************************************************************************/
@@ -118,6 +123,7 @@ ExtY_CruiseControlSystem_T CruiseControlSystem_Y;
 RT_MODEL_TractionControl_T TractionControl_M;
 ExtU_TractionControl_T TractionControl_U;
 ExtY_TractionControl_T TractionControl_Y;
+P_TractionControl_T tractionControl_defaultParam;
 
 /*****************************************************************************
  * Stack Declarations
@@ -127,6 +133,7 @@ OS_STK CruiseControlSystem_STACK[CruiseControlSystem_STACKSIZE] __attribute__ ((
 OS_STK TractionControl_STACK[TractionControl_STACKSIZE] __attribute__ ((section (".critical")));
 OS_STK TransferResult_STACK[TransferResult_STACKSIZE] __attribute__ ((section (".critical")));
 OS_STK DMA_STACK[DMA_STACKSIZE] __attribute__ ((section (".critical")));
+OS_STK Failed_STACK[Failed_STACKSIZE] __attribute__ ((section (".critical")));
 
 /*****************************************************************************
  * Control Flow declarations
@@ -144,8 +151,8 @@ int *core1_IRQ = (int *) PROCESSOR1_0_CPU_IRQ_0_BASE;
 /*****************************************************************************
  * DMA channels for each core
  *****************************************************************************/
-alt_dma_txchan txchan[2];
-alt_dma_rxchan rxchan[2];
+alt_dma_txchan txchan[NUMCORES];
+alt_dma_rxchan rxchan[NUMCORES];
 
 typedef struct {
 	int core;
@@ -168,6 +175,10 @@ typedef struct {
 	AirbagModelStruct airbagModelStruct_0;
 	DerivativeStruct derivativeStruct_0;
 } DMAPackageStruct;
+P_Derivative_T derivative_defaultParam;
+DW_Derivative_T derivative_dwork;
+P_AirbagModel_T airbagModel_defaultParam;
+DW_AirbagModel_T airbagModel_dwork;
 
 DMAPackageStruct dmaPackageStruct_0 __attribute__ ((section (".global_data")));
 
@@ -180,7 +191,7 @@ alt_mutex_dev* mutex;
  * Function table for critical tasks
  *****************************************************************************/
 SharedMemorySymbolTable shared_stab __attribute__ ((section (".shared")));
-FunctionTable functionTable[2] __attribute__ ((section (".shared")));
+FunctionTable functionTable[NUM_CRITICAL_TASKS] __attribute__ ((section (".shared")));
 CriticalFunctionData critFuncData[NUMCORES] __attribute__ ((section (".shared")));
 
 void sendDMA(void* sourceAddress, void* destAddress, int size, void *handle);
@@ -195,7 +206,7 @@ void CruiseControlSystem_TASK(void* pdata) {
 		INT8U perr = 0;
 		OSFlagPost(TransferResult_FLAG0, TransferResult_FLAG0_SENDER1_BITMASK,
 				OS_FLAG_SET, &perr);
-		OSTimeDlyHMSM(0, 0, 0, 100);
+		OSTimeDlyHMSM(0, 0, 0, 20);
 	}
 }
 
@@ -210,7 +221,7 @@ void TractionControl_TASK(void* pdata) {
 				&TractionControl_Y);
 		OSFlagPost(TransferResult_FLAG0, TransferResult_FLAG0_SENDER2_BITMASK,
 				OS_FLAG_SET, &perr);
-		printf("did traction control %d\n",perr);
+		printf("did traction control %d\n", perr);
 	}
 }
 
@@ -270,8 +281,6 @@ void dma_TASK(void* pdata) {
 		printf("dma task\n");
 		OS_FLAGS sender = OSFlagPend(dmaReady_FLAG0, dmaReadyFlag,
 				dmaReady_FLAG0_WAITTYPE, dmaReady_FLAG0_TIMEOUT, &perr);
-
-		printf("dma task sender = %x\n", sender);
 		HandleDMAStruct *message = NULL;
 
 		//Two cores handled separately
@@ -375,13 +384,10 @@ void handleDMA(void* handle, void* data) {
 						CORE0_SCRATCHPAD_GLOBAL_ADDRESS;
 				critFuncData[i].tlbDataAddressVirt =
 						(void *) GLOBAL_DATA_REGION_BASE;
-				critFuncData[i].tlbStackAddressPhys = CORE0_SCRATCHPAD_START_ADDRESS;
+				critFuncData[i].tlbStackAddressPhys =
+						CORE0_SCRATCHPAD_START_ADDRESS;
 				critFuncData[i].tlbStackAddressVirt = (void *) (0x463000);
 			}
-
-			printf("TLB data address... virt: %x, phys: %x\n",CORE0_SCRATCHPAD_GLOBAL_ADDRESS,GLOBAL_DATA_REGION_BASE);
-			printf("TLB stack address... virt: %x, phys: %x\n",CORE0_SCRATCHPAD_GLOBAL_ADDRESS + 4096,0x463000);
-
 
 			critFuncData[0].partnerCore = 1;
 			critFuncData[1].partnerCore = 0;
@@ -442,7 +448,6 @@ void TransferResult_TASK(void* pdata) {
 		OS_FLAGS sender = OSFlagPend(TransferResult_FLAG0,
 				TransferResult_FLAG0_CONDITION, TransferResult_FLAG0_WAITTYPE,
 				TransferResult_FLAG0_TIMEOUT, &perr);
-		printf("bye\n");
 		switch (sender) {
 		case TransferResult_FLAG0_SENDER1_BITMASK:
 
@@ -484,16 +489,34 @@ void TransferResult_TASK(void* pdata) {
 		case TransferResult_FLAG0_SENDER3_BITMASK:
 			//Core 0 -> AirbagModel_Y.output
 			//------------------------------
-			OSFlagPost(dmaReady_FLAG0, dmaReady_FLAG0_CORE0_M2_BITMASK, OS_FLAG_SET, &perr);
+			OSFlagPost(dmaReady_FLAG0, dmaReady_FLAG0_CORE0_M2_BITMASK,
+					OS_FLAG_SET, &perr);
 			printf("sender 3\n");
 			break;
 		}
 	}
 }
 
+void waitForCores(void) {
+	int p0 = 0, p1 = 0;
+	while ((p0 != 1) || (p1 != 1)) {
+		altera_avalon_mutex_lock(mutex, 1);
+		{
+			p0 = shared_stab.core_ready[0];
+			p1 = shared_stab.core_ready[1];
+		}
+		altera_avalon_mutex_unlock(mutex);
+	}
+	shared_stab.core_ready[0] = 0;
+	shared_stab.core_ready[1] = 0;
+}
+
 /*****************************************************************************
  * Comparator ISR
  *****************************************************************************/
+
+#define failed_SEM0_INITCOND 0
+OS_EVENT *failed_SEM0;
 
 static void handleCompISR(void* context) {
 	Fprint_Status status;
@@ -507,11 +530,15 @@ static void handleCompISR(void* context) {
 		OSFlagPost(TransferResult_FLAG0, TransferResult_FLAG0_SENDER3_BITMASK,
 				OS_FLAG_SET, &perr);
 		result = status.successful_reg;
-	} else if (status.failed_reg & AirbagModel_COMPSTATUS_MASK) {
-		//take failed action
-		printf("failed\n");
-	} else {
-		//wtf
+	}
+	if (status.failed_reg) {
+
+		int* cpu0_reset = (int*) PROCESSOR0_0_SW_RESET_0_BASE;
+		int* cpu1_reset = (int*) PROCESSOR1_0_SW_RESET_0_BASE;
+		*cpu0_reset = 1;
+		*cpu1_reset = 1;
+		OSSemPost(failed_SEM0);
+
 	}
 
 	fprint_reset_irq();
@@ -521,6 +548,26 @@ static void initCompIsr(void) {
 	alt_ic_isr_register(CFPU_0_CSR_IRQ_INTERRUPT_CONTROLLER_ID, CFPU_0_CSR_IRQ,
 			handleCompISR, (void*) NULL, (void*) NULL);
 }
+
+static void failed_TASK(void* pdata) {
+	while (1) {
+		INT8U perr;
+		OSSemPend(failed_SEM0, 0, &perr);
+		waitForCores();
+		printf("cores restarted\n");
+		OSFlagPost(dmaReady_FLAG0,
+				dmaReady_FLAG0_CORE0_M0_BITMASK
+						| dmaReady_FLAG0_CORE0_M1_BITMASK, OS_FLAG_SET, &perr);
+		//Derivative -> Core 1
+		//--------------------
+		OSFlagPost(dmaReady_FLAG0,
+				dmaReady_FLAG0_CORE1_M0_BITMASK
+						| dmaReady_FLAG0_CORE1_M1_BITMASK, OS_FLAG_SET, &perr);
+
+	}
+}
+
+
 
 /*****************************************************************************
  * Main entry point
@@ -600,24 +647,38 @@ int main(void) {
 
 	//Initialize the Matlab tasks
 	//---------------------------
+	CruiseControlSystem_M.ModelData.defaultParam = &cruiseControlSystem_defaultParam;
+	CruiseControlSystem_M.ModelData.dwork = &cruiseControlSystem_dwork;
 	CruiseControlSystem_initialize(&CruiseControlSystem_M,
 			&CruiseControlSystem_U, &CruiseControlSystem_Y);
+
+
+	TractionControl_M.ModelData.defaultParam = &tractionControl_defaultParam;
 	TractionControl_initialize(&TractionControl_M, &TractionControl_U,
 			&TractionControl_Y);
-	AirbagModelStruct airbagModelStruct_0 =
-			dmaPackageStruct_0.airbagModelStruct_0;
-	AirbagModel_initialize(&airbagModelStruct_0.AirbagModel_M,
-			&airbagModelStruct_0.AirbagModel_U,
-			&airbagModelStruct_0.AirbagModel_Y);
-	DerivativeStruct derivativeStruct_0 = dmaPackageStruct_0.derivativeStruct_0;
-	Derivative_initialize(&derivativeStruct_0.Derivative_M,
-			&derivativeStruct_0.Derivative_U, &derivativeStruct_0.Derivative_Y);
+
+
+	AirbagModelStruct *airbagModelStruct_0 =
+			&dmaPackageStruct_0.airbagModelStruct_0;
+	airbagModelStruct_0->AirbagModel_M.ModelData.defaultParam = &airbagModel_defaultParam;
+	airbagModelStruct_0->AirbagModel_M.ModelData.dwork = &airbagModel_dwork;
+	AirbagModel_initialize(&airbagModelStruct_0->AirbagModel_M,
+			&airbagModelStruct_0->AirbagModel_U,
+			&airbagModelStruct_0->AirbagModel_Y);
+
+
+	DerivativeStruct *derivativeStruct_0 = &dmaPackageStruct_0.derivativeStruct_0;
+	derivativeStruct_0->Derivative_M.ModelData.defaultParam = &derivative_defaultParam;
+	derivativeStruct_0->Derivative_M.ModelData.dwork = &derivative_dwork;
+	Derivative_initialize(&derivativeStruct_0->Derivative_M,
+			&derivativeStruct_0->Derivative_U, &derivativeStruct_0->Derivative_Y);
 
 	//Initialize the control flow data structures
 	//-------------------------------------------
 	INT8U perr;
 	TransferResult_FLAG0 = OSFlagCreate(TransferResult_FLAG0_INITCOND, &perr);
 	TractionControl_SEM0 = OSSemCreate(TractionControl_SEM0_INITCOND);
+	failed_SEM0 = OSSemCreate(failed_SEM0_INITCOND);
 	dmaReady_FLAG0 = OSFlagCreate(dmaReady_FLAG0_INITCOND, &perr);
 
 	//Declare the OS tasks
@@ -642,17 +703,13 @@ int main(void) {
 
 	OSTaskCreateExt(dma_TASK, NULL, &DMA_STACK[DMA_STACKSIZE - 1], DMA_PRIORITY,
 			DMA_PRIORITY, DMA_STACK, DMA_STACKSIZE, NULL, OS_TASK_OPT_STK_CLR);
+
+	OSTaskCreateExt(failed_TASK, NULL, &Failed_STACK[Failed_STACKSIZE - 1],
+			Failed_PRIORITY, Failed_PRIORITY, Failed_STACK, Failed_STACKSIZE,
+			NULL, OS_TASK_OPT_STK_CLR);
 	//Wait for confirmation that other cores have completed their startup routines
 	//----------------------------------------------------------------------------
-	int p0 = 0, p1 = 0;
-	while ((p0 != 1) || (p1 != 1)) {
-		altera_avalon_mutex_lock(mutex, 1);
-		{
-			p0 = shared_stab.core_ready[0];
-			p1 = shared_stab.core_ready[1];
-		}
-		altera_avalon_mutex_unlock(mutex);
-	}
+	waitForCores();
 
 	//Start the OS
 	//------------

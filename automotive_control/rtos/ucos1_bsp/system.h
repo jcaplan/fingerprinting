@@ -4,7 +4,7 @@
  * Machine generated for CPU 'processor1_0_cpu1' in SOPC Builder design 'nios_fprint'
  * SOPC Builder design path: ../../nios_fprint.sopcinfo
  *
- * Generated: Fri May 22 13:28:59 EDT 2015
+ * Generated: Tue Jun 09 12:20:20 EDT 2015
  */
 
 /*
@@ -490,7 +490,7 @@
 #define SYS_ID_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define SYS_ID_NAME "/dev/sys_id"
 #define SYS_ID_SPAN 8
-#define SYS_ID_TIMESTAMP 1432315598
+#define SYS_ID_TIMESTAMP 1433866675
 #define SYS_ID_TYPE "altera_avalon_sysid_qsys"
 
 

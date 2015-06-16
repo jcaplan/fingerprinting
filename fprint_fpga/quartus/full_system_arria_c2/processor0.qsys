@@ -132,11 +132,11 @@
          type = "String";
       }
    }
-   element button_pio.s1
+   element timestamp.s1
    {
       datum baseAddress
       {
-         value = "134225920";
+         value = "134217728";
          type = "String";
       }
    }
@@ -148,11 +148,11 @@
          type = "String";
       }
    }
-   element timestamp.s1
+   element button_pio.s1
    {
       datum baseAddress
       {
-         value = "134217728";
+         value = "134225920";
          type = "String";
       }
    }
@@ -161,6 +161,14 @@
       datum _sortIndex
       {
          value = "8";
+         type = "int";
+      }
+   }
+   element sw_reset_0
+   {
+      datum _sortIndex
+      {
+         value = "13";
          type = "int";
       }
    }
@@ -239,6 +247,16 @@
    internal="dma_0.control_port_slave"
    type="avalon"
    dir="end" />
+ <interface
+   name="sw_reset_0_s0_1"
+   internal="sw_reset_0.s0"
+   type="avalon"
+   dir="end" />
+ <interface
+   name="sw_reset_0_reset_source"
+   internal="sw_reset_0.reset_source"
+   type="reset"
+   dir="start" />
  <module kind="clock_source" version="13.1" enabled="1" name="clk">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -516,6 +534,9 @@
   <parameter name="AUTO_DEVICE_FAMILY" value="Arria V" />
   <parameter name="AUTO_DEVICE" value="5AGXFB3H4F35C5" />
  </module>
+ <module kind="sw_reset" version="1.0" enabled="1" name="sw_reset_0">
+  <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
+ </module>
  <connection kind="clock" version="13.1" start="clk.clk" end="cpu0.clk" />
  <connection kind="reset" version="13.1" start="clk.clk_reset" end="cpu0.reset_n" />
  <connection kind="reset" version="13.1" start="clk.clk_reset" end="timer.reset" />
@@ -754,6 +775,12 @@
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="248" />
  </connection>
+ <connection kind="clock" version="13.1" start="clk.clk" end="sw_reset_0.clock" />
+ <connection
+   kind="reset"
+   version="13.1"
+   start="clk.clk_reset"
+   end="sw_reset_0.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
 </system>

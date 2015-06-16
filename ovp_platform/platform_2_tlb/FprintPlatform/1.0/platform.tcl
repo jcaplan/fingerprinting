@@ -65,8 +65,20 @@ ihwaddbus -instancename cpuirqbus -addresswidth 32
 ihwaddperipheral -instancename mutex -vendor mcgill.ca -type mutex -diagnosticlevel 0
 ihwconnect       -instancename mutex  -bus mutexbus -busslaveport MUTEX_SLAVE -loaddress 0x0000000 -hiaddress 0x7
 
+#
+# CPU_IRQ
+# 
 ihwaddperipheral -instancename cpu_irq -vendor mcgill.ca -type cpu_irq -diagnosticlevel 0
 ihwconnect       -instancename cpu_irq  -bus cpuirqbus -busslaveport CPU_IRQ_SLAVE -loaddress 0x0000000 -hiaddress 0x23FF
+
+#
+# SW_RESET
+#
+
+ihwaddbus -instancename swresetbus -addresswidth 32
+ihwaddperipheral -instancename sw_reset -vendor mcgill.ca -type sw_reset -diagnosticlevel 0
+ihwconnect       -instancename sw_reset  -bus swresetbus -busslaveport SW_RESET_SLAVE -loaddress 0x0000000 -hiaddress 0x23FF
+
 
 ###############################################################################
 # Processor 0
@@ -226,6 +238,7 @@ ihwconnect       -instancename cpu_irq         -netport cpu0_irq     -net cpu0_i
 ihwconnect       -instancename cpu0            -netport d_irq1       -net cpu0_irq1
 
 
+
 #
 # FPRINT
 #
@@ -246,6 +259,15 @@ ihwconnect       -instancename cpu0           -netport fprint_write_out_data    
 ihwaddbus 		 -instancename cpu0_tlb_fprint_bus   -addresswidth 32
 ihwconnect       -instancename cpu0_tlb    -bus cpu0_tlb_fprint_bus    -busmasterport TLB_FPRINT_MASTER -loaddress 0x0000000 -hiaddress 0x07FFFFFF
 ihwconnect       -instancename cpu0_fprint -bus cpu0_tlb_fprint_bus    -busslaveport  FPRINT_TLB_SLAVE  -loaddress 0x000000  -hiaddress 0x000003FF
+
+
+#SW_RESET
+ihwconnect       -instancename sw_reset        -netport cpu0_reset   -net cpu0_reset1
+ihwconnect       -instancename cpu0            -netport reset_n      -net cpu0_reset1
+ihwconnect 		 -instancename cpu0_fprint 	   -netport FPRINT_RESET -net cpu0_reset1;
+ihwconnect 		 -instancename cpu0_tlb 	   -netport TLB_RESET    -net cpu0_reset1;
+
+
 
 ###############################################################################
 # Processor 1
@@ -430,6 +452,12 @@ ihwconnect       -instancename cpu1_tlb    -bus cpu1_tlb_fprint_bus    -busmaste
 ihwconnect       -instancename cpu1_fprint -bus cpu1_tlb_fprint_bus    -busslaveport  FPRINT_TLB_SLAVE  -loaddress 0x000000  -hiaddress 0x000003FF
 
 
+#SW_RESET
+ihwconnect       -instancename sw_reset        -netport cpu1_reset   -net cpu1_reset1
+ihwconnect       -instancename cpu1            -netport reset_n      -net cpu1_reset1
+ihwconnect 		 -instancename cpu1_fprint 	   -netport FPRINT_RESET -net cpu1_reset1;
+ihwconnect 		 -instancename cpu1_tlb 	   -netport TLB_RESET    -net cpu1_reset1;
+
 
 ###############################################################################
 # Processor Monitor
@@ -525,6 +553,11 @@ ihwconnect   -instancename cpum_mutex -busmasterport mp1 -bus mutexbus   -loaddr
 ihwaddbridge -instancename cpum_irq_bridge
 ihwconnect 	 -instancename cpum_irq_bridge -busslaveport  sp1 -bus cpum_dbus  -loaddress 0x02200000 -hiaddress 0x022023FF
 ihwconnect   -instancename cpum_irq_bridge -busmasterport mp1 -bus cpuirqbus   -loaddress 0x00000000 -hiaddress 0x000023FF
+
+ihwaddbridge -instancename cpum_reset_bridge
+ihwconnect 	 -instancename cpum_reset_bridge -busslaveport  sp1 -bus cpum_dbus  -loaddress 0x03000000 -hiaddress 0x030023FF
+ihwconnect   -instancename cpum_reset_bridge -busmasterport mp1 -bus swresetbus   -loaddress 0x00000000 -hiaddress 0x000023FF
+
 
 ihwaddbridge -instancename cpum_flash_bridge
 ihwconnect 	 -instancename cpum_flash_bridge -busslaveport  sp1 -bus cpum_dbus   -loaddress 0x00000000 -hiaddress 0x003FFFFF

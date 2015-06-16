@@ -28,6 +28,11 @@ iadddocumentation -name Description -text $desc
 iadddocumentation -name Licensing   -text "Open Source Apache 2.0"
 iadddocumentation -name Limitations -text $limitations
 
+
+imodeladdnetport -name "TLB_RESET" -type input -updatefunction do_reset
+iadddocumentation     -name Description -text "reset signal"
+
+
 # Define bus slave input port
 imodeladdbusslaveport  -name TLB_SLAVE -remappable -mustbeconnected
 imodeladdbusslaveport  -name TLB_CSR -size 0x400   

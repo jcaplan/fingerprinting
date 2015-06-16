@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20150205.0
-//                          Fri May 29 12:05:57 2015
+//                          Tue Jun  9 13:03:43 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -61,6 +61,13 @@ void platformConstructor(void) {
 
 
     handles.cpuirqbus_b = icmNewBus( "cpuirqbus", 32);
+
+////////////////////////////////////////////////////////////////////////////////
+//                               Bus swresetbus
+////////////////////////////////////////////////////////////////////////////////
+
+
+    handles.swresetbus_b = icmNewBus( "swresetbus", 32);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                               Bus cpu0_iobus
@@ -391,6 +398,32 @@ void platformConstructor(void) {
     );
 
     icmConnectPSEBus( handles.cpu_irq_p, handles.cpuirqbus_b, "CPU_IRQ_SLAVE", 0, 0x0, 0x23ff);
+
+////////////////////////////////////////////////////////////////////////////////
+//                                PSE sw_reset
+////////////////////////////////////////////////////////////////////////////////
+
+
+    const char *sw_reset_path = icmGetVlnvString(
+        0                   ,    // path (0 if from the product directory)
+        "mcgill.ca"         ,    // vendor
+        0                   ,    // library
+        "sw_reset"          ,    // name
+        0                   ,    // version
+        "pse"                    // model
+    );
+
+    icmAttrListP sw_reset_attrList = icmNewAttrList();
+
+    handles.sw_reset_p = icmNewPSE(
+        "sw_reset"          ,   // name
+        sw_reset_path       ,   // model
+        sw_reset_attrList   ,   // attrlist
+        0,       // unused
+        0        // unused
+    );
+
+    icmConnectPSEBus( handles.sw_reset_p, handles.swresetbus_b, "SW_RESET_SLAVE", 0, 0x0, 0x23ff);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                PSE cpu0_tlb
@@ -1119,6 +1152,13 @@ void platformConstructor(void) {
     icmNewBusBridge(handles.cpum_dbus_b, handles.cpuirqbus_b, "cpum_irq_bridge", "sp1", "mp1", 0x0, 0x23ff, 0x2200000);
 
 ////////////////////////////////////////////////////////////////////////////////
+//                          Bridge cpum_reset_bridge
+////////////////////////////////////////////////////////////////////////////////
+
+
+    icmNewBusBridge(handles.cpum_dbus_b, handles.swresetbus_b, "cpum_reset_bridge", "sp1", "mp1", 0x0, 0x23ff, 0x3000000);
+
+////////////////////////////////////////////////////////////////////////////////
 //                          Bridge cpum_flash_bridge
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1207,6 +1247,17 @@ void platformConstructor(void) {
     icmConnectPSENet( handles.cpu0_fprint_p, handles.fprint_write_data_0_n, "FPRINT_WRITE_DATA", 0);
 
 ////////////////////////////////////////////////////////////////////////////////
+    handles.cpu0_reset1_n = icmNewNet("handles.cpu0_reset1_n" );
+
+    icmConnectProcessorNet( handles.cpu0_c, handles.cpu0_reset1_n, "reset_n", 0);
+
+    icmConnectPSENet( handles.sw_reset_p, handles.cpu0_reset1_n, "cpu0_reset", 0);
+
+    icmConnectPSENet( handles.cpu0_tlb_p, handles.cpu0_reset1_n, "TLB_RESET", 0);
+
+    icmConnectPSENet( handles.cpu0_fprint_p, handles.cpu0_reset1_n, "FPRINT_RESET", 0);
+
+////////////////////////////////////////////////////////////////////////////////
     handles.cpu1_irq3_n = icmNewNet("handles.cpu1_irq3_n" );
 
     icmConnectProcessorNet( handles.cpu1_c, handles.cpu1_irq3_n, "d_irq3", 0);
@@ -1247,6 +1298,17 @@ void platformConstructor(void) {
     icmConnectProcessorNet( handles.cpu1_c, handles.fprint_write_data_1_n, "fprint_write_out_data", 0);
 
     icmConnectPSENet( handles.cpu1_fprint_p, handles.fprint_write_data_1_n, "FPRINT_WRITE_DATA", 0);
+
+////////////////////////////////////////////////////////////////////////////////
+    handles.cpu1_reset1_n = icmNewNet("handles.cpu1_reset1_n" );
+
+    icmConnectProcessorNet( handles.cpu1_c, handles.cpu1_reset1_n, "reset_n", 0);
+
+    icmConnectPSENet( handles.sw_reset_p, handles.cpu1_reset1_n, "cpu1_reset", 0);
+
+    icmConnectPSENet( handles.cpu1_tlb_p, handles.cpu1_reset1_n, "TLB_RESET", 0);
+
+    icmConnectPSENet( handles.cpu1_fprint_p, handles.cpu1_reset1_n, "FPRINT_RESET", 0);
 
 ////////////////////////////////////////////////////////////////////////////////
     handles.cpum_irq4_n = icmNewNet("handles.cpum_irq4_n" );

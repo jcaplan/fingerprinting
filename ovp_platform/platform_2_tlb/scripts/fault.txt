@@ -1,0 +1,9 @@
+proc cpu1
+b *0x4012dc
+continue
+proc cpu1
+disable 1
+set extreg R5 0x33983
+continue
+
+

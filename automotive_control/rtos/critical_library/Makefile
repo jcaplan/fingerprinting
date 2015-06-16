@@ -132,7 +132,6 @@ C_SRCS += Derivative.c
 C_SRCS += FuelSensor.c
 C_SRCS += TractionControl.c
 C_SRCS += TransmissionControl.c
-C_SRCS += tlb.c
 C_SRCS += mpu_utils.c
 CXX_SRCS :=
 ASM_SRCS += context_switch.S
@@ -163,7 +162,7 @@ BUILD_PRE_PROCESS :=
 BUILD_POST_PROCESS :=
 
 # Define path to the root of the BSP.
-BSP_ROOT_DIR := ../ucos0_bsp
+BSP_ROOT_DIR := ../ucosMon_bsp
 
 # List of public include directories for -I compiler option (-I added when used).
 

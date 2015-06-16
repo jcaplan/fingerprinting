@@ -6,13 +6,29 @@
     library="peripheral"
     name="fprint"
     vendor="mcgill.ca"
-    version="1.0">
-    <documentation name="Description">Fingerprint peripheral model</documentation>
+    version="2.0">
+    <docsection name="doc"
+        text="Description">
+        <doctext name="txt"
+            text="Fingerprint peripheral model"/>
+    </docsection>
+    <busmasterport addresswidth="32"
+        name="FPRINT_MASTER">
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="Fingerprint master port"/>
+        </docsection>
+    </busmasterport>
     <busslaveport addresswidth="32"
         mustbeconnected="T"
         name="FPRINT_CSR_SLAVE"
         size="0x140">
-        <documentation name="Description">Fingerprint control register slave port</documentation>
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="Fingerprint control register slave port"/>
+        </docsection>
         <addressblock name="ab32"
             size="0x20"
             width="32">
@@ -27,7 +43,11 @@
                 <field bitoffset="4"
                     name="enable"
                     width="1"/>
-                <documentation name="Description">current state register</documentation>
+                <docsection name="doc"
+                    text="Description">
+                    <doctext name="txt"
+                        text="current state register"/>
+                </docsection>
             </memorymappedregister>
             <memorymappedregister access="rw"
                 isvolatile="T"
@@ -42,7 +62,11 @@
                 offset="0x8"
                 readfunction="pause"
                 width="32">
-                <documentation name="Description">pause strobe</documentation>
+                <docsection name="doc"
+                    text="Description">
+                    <doctext name="txt"
+                        text="pause strobe"/>
+                </docsection>
             </memorymappedregister>
             <memorymappedregister access="r"
                 isvolatile="T"
@@ -50,7 +74,11 @@
                 offset="0xc"
                 readfunction="unpause"
                 width="32">
-                <documentation name="Description">unpause strobe</documentation>
+                <docsection name="doc"
+                    text="Description">
+                    <doctext name="txt"
+                        text="unpause strobe"/>
+                </docsection>
             </memorymappedregister>
             <memorymappedregister access="rw"
                 isvolatile="T"
@@ -59,7 +87,11 @@
                 readfunction="regRd32"
                 width="32"
                 writefunction="regWr32">
-                <documentation name="Description">counter max</documentation>
+                <docsection name="doc"
+                    text="Description">
+                    <doctext name="txt"
+                        text="counter max"/>
+                </docsection>
             </memorymappedregister>
         </addressblock>
     </busslaveport>
@@ -67,36 +99,58 @@
         type="input"
         updatefunction="do_store"
         updatefunctionargument="0">
-        <documentation name="Description">bus write signal</documentation>
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="bus write signal"/>
+        </docsection>
     </netport>
     <netport name="FPRINT_WRITE_ADDRESS"
         type="input"
         updatefunctionargument="0">
-        <documentation name="Description">bus address signal</documentation>
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="bus address signal"/>
+        </docsection>
     </netport>
     <netport name="FPRINT_WRITE_DATA"
         type="input"
         updatefunctionargument="0">
-        <documentation name="Description">bus address signal</documentation>
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="bus address signal"/>
+        </docsection>
     </netport>
-    <netport name="FPRINT_WRITE_OUT"
-        type="output"
+    <netport name="FPRINT_RESET"
+        type="input"
         updatefunctionargument="0">
-        <documentation name="Description">bus write signal</documentation>
-    </netport>
-    <netport name="FPRINT_WRITE_ADDRESS_OUT"
-        type="output"
-        updatefunctionargument="0">
-        <documentation name="Description">bus address signal</documentation>
-    </netport>
-    <netport name="FPRINT_WRITE_DATA_OUT"
-        type="output"
-        updatefunctionargument="0">
-        <documentation name="Description">bus address signal</documentation>
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="reset signal"/>
+        </docsection>
     </netport>
     <formalattribute max="15"
         name="coreID"
         type="uns32"/>
+    <busslaveport addresswidth="32"
+        name="FPRINT_TLB_SLAVE"
+        size="0x400">
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="Get translations from TLB"/>
+        </docsection>
+        <addressblock name="ab32"
+            size="0x400"
+            width="32">
+            <localmemory name="fprint_table"
+                size="0x84"
+                writefunction="memregWr"/>
+        </addressblock>
+    </busslaveport>
     <fileversion major="1"
         minor="0"
         name="_version_0"/>

@@ -1,9 +1,12 @@
 package codegen.prof;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.management.RuntimeErrorException;
+
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 import lpsolve.LpSolve;
 import lpsolve.LpSolveException;
@@ -12,7 +15,9 @@ import codegen.prof.BasicBlock.bbType;
 public class IpetAnalysis {
 	private static final double defaultMaxLoop = 15;
 	Function rootFunc;
-	HashMap<Function, Integer> visitedList;
+	HashMap<Function, Integer> calledFunctions;
+	
+	
 	CFG cfg;
 	private final int LE = 1;
 	private final int EQ = 3;
@@ -22,18 +27,14 @@ public class IpetAnalysis {
 	public IpetAnalysis(String funcName, CFG cfg) {
 		rootFunc = cfg.getFunction(funcName);
 		this.cfg = cfg;
-		this.visitedList = new HashMap<>();
 	}
 
-	public int getWCET() throws LpSolveException, FileNotFoundException {
-		return getWCET(rootFunc);
+	public int getWCET(boolean clockCycles) throws LpSolveException, FileNotFoundException {
+		return getWCET(rootFunc, clockCycles);
 
 	}
 
-	private int getWCET(Function func) throws LpSolveException {
-		if (visitedList.containsKey(func)) {
-			return visitedList.get(func);
-		}
+	private int getWCET(Function func, boolean clockCycles) throws LpSolveException {
 
 		System.out.println("calculating WCET for function " + func);
 		int wcet = 0;
@@ -55,93 +56,136 @@ public class IpetAnalysis {
 		// ------------------------------------------------
 		int constraintSize = edges.size() + 1;
 		double[] constraint = new double[constraintSize];
-		constraint[1] = 1;
+		constraint[func.getEntryEdge().index] = 1;
 		problem.addConstraint(constraint, EQ, 1);
 
-		for (BasicBlock bb : func.bbList) {
-			constraint = new double[constraintSize];
+		ArrayList<Loop> singleBlockLoops = new ArrayList<>();
+		double singleBlockLoopBound = 0;
 
-			// All blocks have predecessors (root block is empty and ignored)
-			// --------------------------------------------------------------
-			for (Edge e : bb.predEdges) {
-				// Ignore loops consisting of a single BB
-				if (!e.isSingleBBLoop()) {
-					constraint[e.index] = 1;
+		// ////////////////////////////////////////////////////////////////////////////////////////////////////
+		for (Function f : calledFunctions.keySet()) {
+			for (BasicBlock bb : f.bbList) {
+				constraint = new double[constraintSize];
+				if(bb.type != BasicBlock.bbType.RETURN){
+					// All blocks have predecessors (root block is empty and
+					// ignored)
+					// --------------------------------------------------------------
+					for (Edge e : bb.predEdges) {
+						// Ignore loops consisting of a single BB
+						if (!e.isSingleBBLoop()) {
+							constraint[e.index] = 1;
+						}
+					}
+
+					for (Edge e : bb.succEdges) {
+						// Ignore loops consisting of a single BB
+						
+						if (!e.isSingleBBLoop()) {
+							constraint[e.index] = -1;
+						}
+					}
+					problem.addConstraint(constraint, EQ, 0);
+	
 				}
 			}
-			// Return types don't have successors, and need a LE constraint
-			// Otherwise add successors and do sum_in - sum_out = 0
-			// ------------------------------------------------------------
-			if (bb.type == bbType.RETURN) {
-				problem.addConstraint(constraint, LE, 1);
-			} else {
-				for (Edge e : bb.succEdges) {
-					// Ignore loops consisting of a single BB
-					if (!e.isSingleBBLoop()) {
-						constraint[e.index] = -1;
+
+			// Determine the number of times loop executes
+			// For now, either hard-set measured number for library functions
+			// or else default guess
+			// --------------------------------------------------------------
+
+			// Certain library functions have limits on their loops known in
+			// advance for double precision floating poitnt
+			// -------------------------------------------------------------
+			double loopBound = 0;
+			switch (f.label) {
+			case "__muldf3":
+				loopBound = 4;
+				break;
+			case "__mulsi3":
+				loopBound = 32;
+				break;
+			case "__unpack_d":
+				loopBound = 1;
+				break;
+			case "_fpadd_parts":
+				loopBound = 1;
+				break;
+			case "__divdf3":
+				loopBound = 61;
+				break;
+			default:
+				loopBound = defaultMaxLoop;
+				break;
+			}
+
+			for (int i = 0; i < f.loops.size(); i++) {
+				Loop l = f.loops.get(i);
+				// Deal with single Block loops afterwards if they exist
+				if (l.head.equals(l.tail)) {
+					singleBlockLoops.add(l);
+					singleBlockLoopBound = loopBound;
+				} else {
+					
+					// sum(all edges in) - sum(loopbound* nonbackwardeges) <= 0
+					
+					constraint = new double[constraintSize];
+					for (Edge e : l.head.predEdges) {
+						System.out.println(e);
+						constraint[e.index] = 1;
+						
+						if(!l.body.contains(e.startBlock)){ // then it is a backwards edge
+							constraint[e.index] -= loopBound;
+						}
+					}
+					problem.addConstraint(constraint, LE, 0);
+				}
+			}
+
+
+		}
+		// ///////////////////////////////////////////////////////////////////////////////////
+
+		// For each function, get all edges from blocks that call that function
+		// and add a constraint to the entry edge for that function
+		// --------------------------------------------------------------------
+		
+		for(Function f : calledFunctions.keySet()){
+			boolean called = false;
+			constraint = new double[constraintSize];
+			for(Function caller : calledFunctions.keySet()){
+				for(BasicBlock bb : caller.bbList){
+					if(bb.type == bbType.CALL && bb.callee.equals(f)){
+						called = true;
+						constraint[bb.succEdges.get(0).index] = 1;
 					}
 				}
+			}
+			if(called){
+				constraint[f.getEntryEdge().index] = -1;
 				problem.addConstraint(constraint, EQ, 0);
 			}
-
+			
 		}
-
-		// Determine the number of times loop executes
-		// For now, either hard-set measured number for library functions
-		// or else default guess
-		// --------------------------------------------------------------
-
-		ArrayList<Loop> singleBlockLoops = new ArrayList<>();
-
-		// Certain library functions have limits on their loops known in
-		// advance for double precision floating poitnt
-		// -------------------------------------------------------------
-		double loopBound = 0;
-		switch (func.label) {
-		case "__muldf3":
-			loopBound = 4;
-			break;
-		case "__mulsi3":
-			loopBound = 32;
-			break;
-		case "__unpack_d":
-			loopBound = 1;
-			break;
-		case "_fpadd_parts":
-			loopBound = 1;
-			break;
-		case "__divdf3":
-			loopBound = 61;
-			break;
-		default:
-			loopBound = defaultMaxLoop;
-			break;
-		}
-
-		for (int i = 0; i < func.loops.size(); i++) {
-			Loop l = func.loops.get(i);
-			// Deal with single Block loops afterwards if they exist
-			if (l.head.equals(l.tail)) {
-				singleBlockLoops.add(l);
-			} else {
-				constraint = new double[constraintSize];
-				for (Edge e : l.head.predEdges) {
-					System.out.println(e);
-					constraint[e.index] = 1;
-				}
-				problem.addConstraint(constraint, LE, loopBound);
-			}
-		}
+		
+		
 
 		// Construct objective function, Each code line is worth 1 for now
 		// ---------------------------------------------------------------
 		constraint = new double[constraintSize];
-		for (BasicBlock bb : func.bbList) {
-			for (Edge e : bb.predEdges) {
-				constraint[e.index] += bb.code.size(); // All instructions same
-														// cost = 1
-			}
+		for(Function f : calledFunctions.keySet()){
+			for (BasicBlock bb : f.bbList) {
+				for (Edge e : bb.predEdges) {
+					if(clockCycles){
+						constraint[e.index] += bb.getCost(10);
+					} else {
+						constraint[e.index] += bb.getNumInstructions();
+					}
+						
+				}
+			}	
 		}
+		
 		problem.setMaxim();
 		problem.setObjFn(constraint);
 
@@ -156,6 +200,9 @@ public class IpetAnalysis {
 
 			// For each loop, need to consider the two cases:
 			// 1. loop > 0 and other entries > 0
+			
+			
+			
 			Edge selfEdge = new Edge();
 			Loop loop = singleBlockLoops.get(0);
 			for (Edge e : loop.head.predEdges) {
@@ -169,9 +216,19 @@ public class IpetAnalysis {
 
 			int maxBranch;
 
+			// All non loop entries together must be greater than 1
+			// ----------------------------------------------------
 			problem.addConstraint(constraint, GE, 1);
+			
+			// The loop must be <= LoopBound *(all the other entry points)
+			// -----------------------------------------------------------
+			for(int i = 0; i < constraint.length; i++){
+				if(constraint[i] > 0){
+					constraint[i] -= singleBlockLoopBound;
+				}
+			}
 			constraint[selfEdge.index] = 1;
-			problem.addConstraint(constraint, LE, loopBound);
+			problem.addConstraint(constraint, LE, 0);
 
 			problem.solve();
 			maxBranch = (int) problem.getObjective();
@@ -213,38 +270,6 @@ public class IpetAnalysis {
 			wcet = (int) problem.getObjective();
 		}
 
-		// Now for each function call, the WCET of that function
-		// must be added to the overall WCET. This must be applied
-		// recursively. Recursive function calls cannot be handled.
-		// --------------------------------------------------------
-
-		// 1. which functions are called?
-		// 2. How many times are they called?
-
-		HashMap<Function, Integer> calledFunctions = new HashMap<>();
-		for (BasicBlock bb : func.bbList) {
-			if (bb.type == bbType.CALL) {
-				if (calledFunctions.containsKey(bb.callee)) {
-					int oldValue = calledFunctions.get(bb.callee);
-					calledFunctions.put(bb.callee, oldValue + 1);
-				} else {
-					calledFunctions.put(bb.callee, 1);
-				}
-			}
-		}
-
-		for (Function f : calledFunctions.keySet()) {
-			System.out.println("Function " + f + " is called "
-					+ calledFunctions.get(f) + " times");
-		}
-
-		// For each function repeat analysis, keep track of which functions have
-		// already been called. Do not repeat functions
-		// ----------------------------------------------------------------------
-		visitedList.put(func, wcet);
-		for (Function f : calledFunctions.keySet()) {
-			wcet += getWCET(f) * calledFunctions.get(f);
-		}
 
 		// Costs: Branch -> 4 (Assume mispredicted)
 		// jmp,call,return -> 4
@@ -255,14 +280,38 @@ public class IpetAnalysis {
 	}
 
 	private void buildEdges(Function func) {
-		Edge.EdgeCount = 1;
+		calledFunctions = new HashMap<>();
+		for(Function f : func.getAllCalledFunctions()){
+			calledFunctions.put(f, 0);
+		}
 		edges = new ArrayList<Edge>();
-		// Add the first edge
-		edges.add(new Edge(null, func.bbList.get(0)));
-		for (BasicBlock bb : func.bbList) {
-			for (BasicBlock succ : bb.successors) {
-				edges.add(new Edge(bb, succ));
+		calledFunctions.put(func, 1);
+		
+		//Doesn't take into account loops!!
+		//TODO
+		for (Function f : calledFunctions.keySet()) {
+			for (BasicBlock bb : f.bbList) {
+				if (bb.type == bbType.CALL) {
+					if (calledFunctions.containsKey(bb.callee)) {
+						int oldValue = calledFunctions.get(bb.callee);
+						calledFunctions.put(bb.callee, oldValue + 1);
+					} else {
+						calledFunctions.put(bb.callee, 1);
+					}
+				}
 			}
+			
+			// Add the first edge
+			edges.add(new Edge(null, f.bbList.get(0)));
+			for (BasicBlock bb : f.bbList) {
+				for (BasicBlock succ : bb.successors) {
+					edges.add(new Edge(bb, succ));
+				}	
+			}
+		}
+		
+		for(Edge e : edges){
+			System.out.println(e);
 		}
 	}
 }

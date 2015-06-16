@@ -30,12 +30,12 @@ public class Profiler {
 	
 
 
-	private int getWCET(String funcName) {
+	private int getWCET(String funcName, boolean cycleAccurate) {
 		
 		IpetAnalysis ipet = new IpetAnalysis(funcName,cfg);
 		int wcet = 0;
 		try {
-			wcet = ipet.getWCET();
+			wcet = ipet.getWCET(cycleAccurate);
 		} catch (LpSolveException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -113,7 +113,7 @@ public class Profiler {
 		Profiler prof = new Profiler(filename);
 		prof.parseFile(entryPoint);
 //		System.out.println("Max stack height of " + entryPoint + ": " + prof.getMaxStackSize(entryPoint) + " bytes");
-		System.out.println("WCET of " + entryPoint + ": " + prof.getWCET(entryPoint) + " clock cycles");
+		System.out.println("WCET of " + entryPoint + ": " + prof.getWCET(entryPoint,true) + " clock cycles");
 //		System.out.println("Library functions are: " + prof.getLibFunctions());
 //		System.out.println("Add the following lines to linker file: ");
 //		System.out.println(prof.getLibs(entryPoint));

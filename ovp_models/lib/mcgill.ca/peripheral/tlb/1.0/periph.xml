@@ -6,10 +6,32 @@
     name="tlb"
     vendor="mcgill.ca"
     version="1.0">
-    <documentation name="Description">TLB.</documentation>
-    <documentation name="Licensing">Open Source Apache 2.0</documentation>
-    <documentation name="Limitations">The range of the input slave port must not conflict with any exiting port connected to the bus.
-The output bus width is hard coded to be 32 bits.</documentation>
+    <docsection name="doc"
+        text="Description">
+        <doctext name="txt"
+            text="TLB."/>
+    </docsection>
+    <docsection name="doc_1"
+        text="Licensing">
+        <doctext name="txt"
+            text="Open Source Apache 2.0"/>
+    </docsection>
+    <docsection name="doc_2"
+        text="Limitations">
+        <doctext name="txt"
+            text="The range of the input slave port must not conflict with any exiting port connected to the bus.
+The output bus width is hard coded to be 32 bits."/>
+    </docsection>
+    <netport name="TLB_RESET"
+        type="input"
+        updatefunction="do_reset"
+        updatefunctionargument="0">
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="reset signal"/>
+        </docsection>
+    </netport>
     <busslaveport addresswidth="32"
         mustbeconnected="T"
         name="TLB_SLAVE"

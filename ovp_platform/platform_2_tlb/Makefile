@@ -9,7 +9,7 @@ SIMULATOR?=imperas.exe
 all: platform intercept 
 
 platform::
-	$(MAKE) -C $@ NOVLNV=1
+	$(MAKE) -C FprintPlatform/1.0/ NOVLNV=1
 
 intercept::
 	$(MAKE) -f Makefile.intercept NOVLNV=1
@@ -32,7 +32,10 @@ debug:
 	$(SIMULATOR) \
       --icmobject FprintPlatform/1.0/platform.$(IMPERAS_ARCH).$(IMPERAS_SHRSUF) \
       --extlib model.$(IMPERAS_SHRSUF) --idebug\
-      -o simulator.log 
+      -o simulator.log   
+
+
+
 ic-run1:
 	IMPERAS_RUNTIME=CpuManager FprintPlatform/1.0/platform.$(IMPERAS_ARCH).exe application/application.OR1K.elf 
 
@@ -43,7 +46,7 @@ loadExtLib.ic:
 	$(V) echo "--extlib CPU1=modelAttrs@model.$(IMPERAS_SHRSUF)" > loadExtLib.ic
 
 clean:
-	$(MAKE) -C platform NOVLNV=1 clean
+	$(MAKE) -C FprintPlatform/1.0/ NOVLNV=1 clean
 	$(MAKE) -f Makefile.intercept NOVLNV=1 clean
 	@rm -rf obj/
 

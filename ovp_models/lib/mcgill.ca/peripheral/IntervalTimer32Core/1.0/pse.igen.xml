@@ -6,9 +6,21 @@
     name="IntervalTimer32Core"
     vendor="mcgill.ca"
     version="1.0">
-    <documentation name="Licensing">Open Source Apache 2.0</documentation>
-    <documentation name="Description">Altera Avalon Interval Timer32 Core</documentation>
-    <documentation name="Limitations">No Support for pin level transitions</documentation>
+    <docsection name="doc"
+        text="Licensing">
+        <doctext name="txt"
+            text="Open Source Apache 2.0"/>
+    </docsection>
+    <docsection name="doc_1"
+        text="Description">
+        <doctext name="txt"
+            text="Altera Avalon Interval Timer32 Core"/>
+    </docsection>
+    <docsection name="doc_2"
+        text="Limitations">
+        <doctext name="txt"
+            text="No Support for pin level transitions"/>
+    </docsection>
     <formalattribute name="timeoutPeriod"
         type="integer"/>
     <formalattribute name="timerFrequency"

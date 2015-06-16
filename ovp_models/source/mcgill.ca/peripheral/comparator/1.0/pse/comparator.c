@@ -266,10 +266,14 @@ PPM_WRITE_CB(fprintWr) {
  	 			case CH_IN:
  	 				//Check the core ID against the assignment table
  	 				//then check in/out the task for the matching core
- 	 				if(a.bits.core_id == assignment[0][d.state.task_id])
- 	 					checkin[0][d.state.task_id] = 1;
- 	 				else
- 	 					checkin[1][d.state.task_id] = 1;
+ 	 				if(a.bits.core_id == assignment[0][d.state.task_id]){
+ 	 					if(checkout[0][d.state.task_id])
+ 	 						checkin[0][d.state.task_id] = 1;
+ 	 				}
+ 	 				else{
+ 	 					if(checkout[1][d.state.task_id])
+ 	 						checkin[1][d.state.task_id] = 1;
+ 	 				}
  	 				do_comparison();
  	 				break;
  	 			case CH_OUT:

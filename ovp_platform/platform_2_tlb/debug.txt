@@ -1,7 +1,0 @@
-diagnostics cpu1_fprint 3
-proc cpu1
-b ucos1.c:163
-continue
-set itrace change
-b ucos1.c:166
-continue

@@ -3,8 +3,8 @@
 //
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
-//                             Version 20140430.0
-//                          Sun Aug 31 17:10:09 2014
+//                             Version 20150205.0
+//                          Tue Jun  9 12:39:01 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -33,6 +33,10 @@ PPM_REG_WRITE_CB(regWr32) {
 PPM_REG_READ_CB(unpause) {
     // YOUR CODE HERE (unpause)
     return *(Uns32*)user;
+}
+
+PPM_WRITE_CB(memregWr) {
+    // YOUR CODE HERE (memregWr)
 }
 
 PPM_CONSTRUCTOR_CB(constructor) {

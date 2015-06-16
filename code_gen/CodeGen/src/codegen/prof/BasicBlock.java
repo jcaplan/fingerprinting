@@ -174,7 +174,7 @@ public class BasicBlock {
 	public String getDotNodeString() {
 		String s = "";
 		s += "\tnode_" + getStartAddressHex();
-		s += " [label = \"@" + getStartAddressHex();
+		s += " [label = \"@0x" + getStartAddressHex();
 		switch(type){
 		case BRANCH:
 			s += "(BB)";
@@ -218,5 +218,69 @@ public class BasicBlock {
 			size = -Integer.parseInt(c.operands[2]);
 		}
 		return size;
+	}
+
+	public int getNumInstructions(){
+		return code.size();
+	}
+	
+	public int getCost(int memoryDelay) {
+		
+		int cost = 0;
+		for(Code c : code){
+			
+			switch(c.type){
+			case COND_BRANCH:
+			case UNCOND_BRANCH:
+			case CALL:
+			case RETURN:
+			case JUMP:
+				cost += 4;
+				break;
+			case STORE:
+				cost += memoryDelay;
+				break;
+			case LOAD:
+				cost += memoryDelay;
+				break;
+			case CUSTOM:
+				switch(c.customInstructionID){
+				case 255:
+					cost += 16;
+					break;
+				case 254:
+				case 253:
+					cost += 5;
+					break;
+				case 252:
+				case 250:
+					cost += 4;
+					break;
+				case 251:
+					cost += 8;
+					break;
+				case 249:
+				case 248:
+					cost += 2;
+				default:
+					cost += 1;
+				}
+				
+				break;
+			default:
+				cost += 1;
+				break;
+				
+			}
+			
+			
+		}
+		return cost;
+		//The cost of instructions
+		
+		// Costs: Branch -> 4 (Assume mispredicted)
+		// jmp,call,return -> 4
+		// load,store -> 1 + memory delay
+		// else -> 1
 	}
 }

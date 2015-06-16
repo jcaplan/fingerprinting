@@ -360,8 +360,9 @@ ucosii_C_LIB_SRCS := \
 	$(ucosii_SRCS_ROOT)/src/os_sem.c \
 	$(ucosii_SRCS_ROOT)/src/os_task.c \
 	$(ucosii_SRCS_ROOT)/src/os_time.c \
-	$(ucosii_SRCS_ROOT)/src/os_tmr.c
-
+	$(ucosii_SRCS_ROOT)/src/os_tmr.c \
+	mem_manager.c \
+	tlb.c 
 
 # Assemble all component C source files 
 COMPONENT_C_LIB_SRCS += \

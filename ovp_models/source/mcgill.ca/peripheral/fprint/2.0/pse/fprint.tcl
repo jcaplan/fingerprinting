@@ -36,6 +36,8 @@ iadddocumentation     -name Description -text "bus address signal"
 imodeladdnetport -name "FPRINT_WRITE_DATA" -type input
 iadddocumentation     -name Description -text "bus address signal"
 
+imodeladdnetport -name "FPRINT_RESET" -type input -updatefunction do_reset
+iadddocumentation     -name Description -text "reset signal"
 
 # 32 bit registers
 imodeladdmmregister -name currentState  -offset 0x0 -access rw -readfunction regRd32 -writefunction regWr32
