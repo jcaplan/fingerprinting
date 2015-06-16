@@ -53,5 +53,27 @@ void qsort_test(void* args){
 
 }
 
+void testing_task(void* args) {
+
+	int* a = (int*)args;
+
+	int id = a[0];
+	args++;
+	int length = a[1];
+	args++;
+	int enable = a[2];
+	int i;
+
+	if(enable)
+		enable_fprint_task(id);
+
+	for(i=0 ; i<length ; i++)
+		basicmath_small();
+
+	if(enable)
+		disable_fprint_task(id);
+
+}
+
 
 

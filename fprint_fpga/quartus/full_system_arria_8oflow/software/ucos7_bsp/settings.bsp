@@ -2,11 +2,11 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>4-Jun-2015 4:23:35 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1433449415858</BspGeneratedUnixTimeStamp>
-        <BspGeneratedLocation>D:\SURE\fingerprinting\fprint_fpga\quartus\full_system_arria_8oflow\software\ucos7_bsp</BspGeneratedLocation>
+        <BspGeneratedTimeStamp>Jun 11, 2015 12:31:53 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1434040313032</BspGeneratedUnixTimeStamp>
+        <BspGeneratedLocation>/home/hauror/Documents/fingerprinting/fprint_fpga/quartus/full_system_arria_8oflow/software/ucos7_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
-        <SopcDesignFile>..\..\nios_fprint.sopcinfo</SopcDesignFile>
+        <SopcDesignFile>../../nios_fprint.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
         <Cpu>processor7_0_cpu7</Cpu>
         <SchemaVersion>1.9</SchemaVersion>

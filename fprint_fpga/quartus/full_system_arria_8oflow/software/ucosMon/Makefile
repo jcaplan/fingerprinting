@@ -143,7 +143,7 @@ ELF := ucosMon.elf
 
 # Paths to C, C++, and assembly source files.
 C_SRCS += input_large.c
-C_SRCS += Monitor_qsort.c
+C_SRCS += Monitor_testing.c
 CXX_SRCS :=
 ASM_SRCS :=
 

@@ -142,7 +142,7 @@ ACDS_VERSION := 13.1
 ELF := ucos2.elf
 
 # Paths to C, C++, and assembly source files.
-C_SRCS := hello_ucosii_2.c
+C_SRCS := c2_testing.c
 CXX_SRCS :=
 ASM_SRCS :=
 
@@ -180,7 +180,7 @@ SYS_LIB :=
 BSP_ROOT_DIR := ../ucos2_bsp/
 
 # List of application specific include directories, library directories and library names
-APP_INCLUDE_DIRS :=
+APP_INCLUDE_DIRS := ../critical_library
 APP_LIBRARY_DIRS :=
 APP_LIBRARY_NAMES :=
 

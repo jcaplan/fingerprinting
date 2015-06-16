@@ -92,7 +92,7 @@ alt_dma_rxchan rxchan[8];
 
 
 void schedule_task(void* pdata){
-	int i = 0;
+	int num_runs = 0;
 
 	printf("Monitor!\n");
 	CriticalFunctionPointers* cp =
@@ -100,71 +100,60 @@ void schedule_task(void* pdata){
 
 	while(1){
 		OSFlagPend(schedule_fgrp, 0b111100, OS_FLAG_WAIT_SET_ALL + OS_FLAG_CONSUME, 0, &err);
-		printf("Scheduling %d!\n", i++);
-		printf("at time %d task 2 finished %d successful and %d failed executions\n",(int)clock(),count[0][0],count[0][1]);
-		printf("at time %d task 3 finished %d successful and %d failed executions\n",(int)clock(),count[1][0],count[1][1]);
-		printf("at time %d task 4 finished %d successful and %d failed executions\n",(int)clock(),count[2][0],count[2][1]);
-		printf("at time %d task 5 finished %d successful and %d failed executions\n",(int)clock(),count[3][0],count[3][1]);
+		printf("Scheduling %d!\n", num_runs++);
+		OSTimeDlyHMSM(0, 0, 0, 300);
 
-		int size = 1024;
-
-		void* tx_data = (void*) vectors; /* pointer to data to send */
-		void* rx_buffer = (void*) 0x8203000; /* pointer to rx buffer */
-
-		dma(tx_data,rx_buffer,size);
-		OSFlagPend(dma_fgrp, 0xff, OS_FLAG_WAIT_SET_ALL + OS_FLAG_CONSUME, 0, &err);
-		printf("done dma\n");
-		int i;
-		for(i = 0; i < 1; i ++){
-			altera_avalon_mutex_lock(mutex, 1);
-			{
-				cp->critical = critical_task;
-				cp->preempt = preempt_task;
-				cp->task_id0 = (2);
-				cp->task_id1 = (2);
-				*isr_1_ptr = 1;
-				*isr_0_ptr = 1;
-				altera_avalon_mutex_unlock(mutex);
-
-			}
-			altera_avalon_mutex_unlock(mutex);
-			OSTimeDlyHMSM(0, 0, 0, 300);
-
-			altera_avalon_mutex_lock(mutex, 1);
-				cp->critical = critical_task;
-				cp->preempt = preempt_task;
-				cp->task_id2 = (3);
-				cp->task_id3 = (3);
-				*isr_2_ptr = 1;
-				*isr_3_ptr = 1;
-			altera_avalon_mutex_unlock(mutex);
-
-			altera_avalon_mutex_lock(mutex, 1);
-			{
-				cp->critical = critical_task;
-				cp->preempt = preempt_task;
-				cp->task_id4 = (4);
-				cp->task_id5 = (4);
-				*isr_4_ptr = 1;
-				*isr_5_ptr = 1;
-				altera_avalon_mutex_unlock(mutex);
-
-			}
-			altera_avalon_mutex_unlock(mutex);
-			OSTimeDlyHMSM(0, 0, 0, 300);
-
-			altera_avalon_mutex_lock(mutex, 1);
-				cp->critical = critical_task;
-				cp->preempt = preempt_task;
-				cp->task_id6 = (5);
-				cp->task_id7 = (5);
-				*isr_6_ptr = 1;
-				*isr_7_ptr = 1;
-			altera_avalon_mutex_unlock(mutex);
-//			OSTimeDlyHMSM(0, 1, 0, 0);
+		if(num_runs%10 == 0) {
+			printf("at time %d task 2 finished %d successful and %d failed executions\n",(int)clock(),count[0][0],count[0][1]);
+			printf("at time %d task 3 finished %d successful and %d failed executions\n",(int)clock(),count[1][0],count[1][1]);
+			printf("at time %d task 4 finished %d successful and %d failed executions\n",(int)clock(),count[2][0],count[2][1]);
+			printf("at time %d task 5 finished %d successful and %d failed executions\n",(int)clock(),count[3][0],count[3][1]);
+			OSTimeDlyHMSM(0, 0, 1, 0);
 		}
 
+		//int size = 1024;
 
+		//void* tx_data = (void*) vectors; /* pointer to data to send */
+		//void* rx_buffer = (void*) 0x8203000; /* pointer to rx buffer */
+
+		//dma(tx_data,rx_buffer,size);
+		//OSFlagPend(dma_fgrp, 0xff, OS_FLAG_WAIT_SET_ALL + OS_FLAG_CONSUME, 0, &err);
+		//printf("done dma\n");
+		altera_avalon_mutex_lock(mutex, 1);
+			cp->critical = critical_task;
+			cp->preempt = preempt_task;
+			cp->task_id0 = (2);
+			cp->task_id1 = (2);
+			*isr_1_ptr = 1;
+			*isr_0_ptr = 1;
+		altera_avalon_mutex_unlock(mutex);
+
+		altera_avalon_mutex_lock(mutex, 1);
+			cp->critical = critical_task;
+			cp->preempt = preempt_task;
+			cp->task_id2 = (3);
+			cp->task_id3 = (3);
+			*isr_2_ptr = 1;
+			*isr_3_ptr = 1;
+		altera_avalon_mutex_unlock(mutex);
+
+		altera_avalon_mutex_lock(mutex, 1);
+			cp->critical = critical_task;
+			cp->preempt = preempt_task;
+			cp->task_id4 = (4);
+			cp->task_id5 = (4);
+			*isr_4_ptr = 1;
+			*isr_5_ptr = 1;
+		altera_avalon_mutex_unlock(mutex);
+
+		altera_avalon_mutex_lock(mutex, 1);
+			cp->critical = critical_task;
+			cp->preempt = preempt_task;
+			cp->task_id6 = (5);
+			cp->task_id7 = (5);
+			*isr_6_ptr = 1;
+			*isr_7_ptr = 1;
+		altera_avalon_mutex_unlock(mutex);
 	}
 }
 int endstate[10];
@@ -513,18 +502,20 @@ int main(void) {
 //	while (fscanf(fp, "%s", str)!=EOF)
 //	        printf("%s\n",str);
 
-	uint32_t* memory_delay_reg = (uint32_t*)(MEMORY_0_MEMORY_DELAY_0_BASE);
+	//uint32_t* memory_delay_reg = (uint32_t*)(MEMORY_0_MEMORY_DELAY_0_BASE);
 
-	*memory_delay_reg = 1;
+	//*memory_delay_reg = 1;
 
 	int arg_5 = CRITICAL_TASK_PRIORITY;
 	OSTaskCreateExt(schedule_task, &arg_5, &schedule_task_stk[TASK_STACKSIZE - 1],
 			SCHEDULE_TASK_PRIORITY, SCHEDULE_TASK_PRIORITY,
 			schedule_task_stk, TASK_STACKSIZE, NULL,OS_TASK_OPT_STK_CHK + OS_TASK_OPT_STK_CLR);
+
+	/*
 	OSTaskCreateExt(print_status_task, &arg_5, &print_status_stk[TASK_STACKSIZE - 1],
 				PRINT_STATUS_PRIORITY, PRINT_STATUS_PRIORITY,
 				print_status_stk, TASK_STACKSIZE, NULL,OS_TASK_OPT_STK_CHK + OS_TASK_OPT_STK_CLR);
-	/*
+
 	OSTaskCreateExt(print_execution_times, &arg_5, &print_execution_times_stk[TASK_STACKSIZE - 1],
 				PRINT_EXECUTION_TIMES_PRIORITY, PRINT_EXECUTION_TIMES_PRIORITY,
 				print_execution_times_stk, TASK_STACKSIZE, NULL,OS_TASK_OPT_STK_CHK + OS_TASK_OPT_STK_CLR);
