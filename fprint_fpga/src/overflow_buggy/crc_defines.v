@@ -8,7 +8,7 @@
 `define CRC_WIDTH								32									//Polynomial width
 `define CRC_DATA_WIDTH							(`NIOS_ADDRESS_WIDTH + `CRC_WIDTH)  //Write address and write data
 
-`define CRC_RAM_ADDRESS_WIDTH					14									//Width of CRC buffer in comparator
+`define CRC_RAM_ADDRESS_WIDTH					10									//Width of CRC buffer in comparator
 `define CRC_RAM_SIZE							(1 << (`CRC_RAM_ADDRESS_WIDTH-1))	//Size of CRC buffer in comparator (= 2^CRC_RAM_ADDRESS_WIDTH)
 
 
@@ -54,8 +54,8 @@
 `define COMPARATOR_SUCCESS_REG_OFFSET           'h31
 `define COMPARATOR_FAIL_REG_OFFSET              'h32
 `define COMPARATOR_MAXCOUNT_REG_OFFSET			'h33
-`define COMPARATOR_OFLOW_REG_OFFSET      	 	'h35
-`define COMPARATOR_CORE_ASSIGNMENT_OFFSET       'h36
+`define COMPARATOR_OFLOW_REG_OFFSET      	 	6'h35
+`define COMPARATOR_CORE_ASSIGNMENT_OFFSET       6'h36
 
 `define EXCEPTION_OVERFLOW_BIT					4
 `define EXCEPTION_REG_EX_BIT					5

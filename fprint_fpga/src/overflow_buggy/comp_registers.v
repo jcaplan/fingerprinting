@@ -16,7 +16,7 @@ module comp_registers(
 	output [`CRC_RAM_ADDRESS_WIDTH-1:0]     fprint_head_pointer,
 
 	input 									increment_head_pointer,
-	output wire 						    increment_hp_ack,
+	output wire 									increment_hp_ack,
 	input [`CRC_RAM_ADDRESS_WIDTH-1:0]		start_pointer_ex,
 	input [`CRC_RAM_ADDRESS_WIDTH-1:0]      end_pointer_ex,
 	input [`CRC_RAM_ADDRESS_WIDTH-1:0]		start_pointer_comp,
