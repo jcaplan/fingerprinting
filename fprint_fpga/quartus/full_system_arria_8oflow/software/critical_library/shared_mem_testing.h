@@ -1,7 +1,6 @@
 #ifndef SHARED_MEM_TESTING_H_
 #define SHARED_MEM_TESTING_H_
 
-#include "alt_types.h"
 #define NUM_CORES 8
 
 typedef struct CriticalFunctionPointers{

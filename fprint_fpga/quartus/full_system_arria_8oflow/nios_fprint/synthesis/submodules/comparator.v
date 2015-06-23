@@ -63,7 +63,7 @@ parameter compare_fprints  			= 6;
 parameter mismatch_detected 		= 7;
 parameter task_verified   			= 8;
 parameter increment_tail_pointer 	= 9;
-parameter check_if_done 			= 10;
+parameter check_if_done				= 10;
 parameter reset_fprint_ready 		= 11;
 parameter write_status_reg 			= 12;
 
@@ -84,20 +84,17 @@ begin
 				state = check_task_status;
 			check_task_status:
 				//If the task has completed
-				if(checkin[comp_task])
-					state = task_complete;
-				else 
-					state = compare_fprints;	
+				if(fprints_ready[comp_task])
+					state = compare_fprints;
+				else if(checkin[comp_task])
+					state = task_complete;	
 			task_complete:
 				//If the number of fingerprints doesn't match
 				if(~head0_matches_head1)
 					state = mismatch_detected;
-				//If there are no fingerprints left to compare
-				else if(tail0_matches_head0)
-					state = task_verified;
 				//Otherwise there's still work to do
 				else 
-					state = compare_fprints;
+					state = reset_fprint_ready;
 			compare_fprints:
 				if(fprints_match)
 					state = increment_tail_pointer;

@@ -194,31 +194,31 @@ module nios_fprint_mm_interconnect_1_id_router_003
             src_channel = 30'b00000000000000010;
         end
 
-        if (destid == 5 ) begin
+        if (destid == 9 ) begin
             src_channel = 30'b00000010000000000;
         end
 
-        if (destid == 9 ) begin
+        if (destid == 11 ) begin
             src_channel = 30'b00000100000000000;
         end
 
-        if (destid == 11 ) begin
+        if (destid == 13 ) begin
             src_channel = 30'b00001000000000000;
         end
 
-        if (destid == 13 ) begin
+        if (destid == 15 ) begin
             src_channel = 30'b00010000000000000;
         end
 
-        if (destid == 15 ) begin
+        if (destid == 10 ) begin
             src_channel = 30'b00100000000000000;
         end
 
-        if (destid == 12 ) begin
+        if (destid == 14 ) begin
             src_channel = 30'b01000000000000000;
         end
 
-        if (destid == 14 ) begin
+        if (destid == 12 ) begin
             src_channel = 30'b10000000000000000;
         end
 
@@ -234,23 +234,23 @@ module nios_fprint_mm_interconnect_1_id_router_003
             src_channel = 30'b00000000000010000;
         end
 
-        if (destid == 3 ) begin
+        if (destid == 8 ) begin
             src_channel = 30'b00000000000100000;
         end
 
-        if (destid == 1 ) begin
+        if (destid == 3 ) begin
             src_channel = 30'b00000000001000000;
         end
 
-        if (destid == 8 ) begin
+        if (destid == 1 ) begin
             src_channel = 30'b00000000010000000;
         end
 
-        if (destid == 10 ) begin
+        if (destid == 7 ) begin
             src_channel = 30'b00000000100000000;
         end
 
-        if (destid == 7 ) begin
+        if (destid == 5 ) begin
             src_channel = 30'b00000001000000000;
         end
 

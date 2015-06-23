@@ -4,7 +4,7 @@
  * Machine generated for CPU 'processor4_0_cpu4' in SOPC Builder design 'nios_fprint'
  * SOPC Builder design path: ../../nios_fprint.sopcinfo
  *
- * Generated: Mon Jun 01 17:58:36 EDT 2015
+ * Generated: Tue Jun 16 16:54:11 EDT 2015
  */
 
 /*
@@ -434,6 +434,20 @@
 
 
 /*
+ * processorM_0_cpu_irq_0 configuration
+ *
+ */
+
+#define ALT_MODULE_CLASS_processorM_0_cpu_irq_0 cpu_irq
+#define PROCESSORM_0_CPU_IRQ_0_BASE 0x4000800
+#define PROCESSORM_0_CPU_IRQ_0_IRQ -1
+#define PROCESSORM_0_CPU_IRQ_0_IRQ_INTERRUPT_CONTROLLER_ID -1
+#define PROCESSORM_0_CPU_IRQ_0_NAME "/dev/processorM_0_cpu_irq_0"
+#define PROCESSORM_0_CPU_IRQ_0_SPAN 1024
+#define PROCESSORM_0_CPU_IRQ_0_TYPE "cpu_irq"
+
+
+/*
  * shared_memory configuration
  *
  */
@@ -474,7 +488,7 @@
 #define SYS_ID_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define SYS_ID_NAME "/dev/sys_id"
 #define SYS_ID_SPAN 8
-#define SYS_ID_TIMESTAMP 1433191049
+#define SYS_ID_TIMESTAMP 1434486224
 #define SYS_ID_TYPE "altera_avalon_sysid_qsys"
 
 
