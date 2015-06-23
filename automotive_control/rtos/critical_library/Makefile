@@ -133,6 +133,7 @@ C_SRCS += FuelSensor.c
 C_SRCS += TractionControl.c
 C_SRCS += TransmissionControl.c
 C_SRCS += mpu_utils.c
+C_SRCS += reset_monitor.c
 CXX_SRCS :=
 ASM_SRCS += context_switch.S
 ASM_SRCS += gp.S

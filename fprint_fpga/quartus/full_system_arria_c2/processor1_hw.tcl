@@ -184,25 +184,25 @@ proc compose { } {
     add_instance Fingerprint_0 Fingerprint 1.0
     set_instance_parameter_value Fingerprint_0 {CORE_ID} {1}
 
-    add_instance scratchpad altera_avalon_onchip_memory2 13.1
-    set_instance_parameter_value scratchpad {allowInSystemMemoryContentEditor} {0}
-    set_instance_parameter_value scratchpad {blockType} {AUTO}
-    set_instance_parameter_value scratchpad {dataWidth} {32}
-    set_instance_parameter_value scratchpad {dualPort} {0}
-    set_instance_parameter_value scratchpad {initMemContent} {1}
-    set_instance_parameter_value scratchpad {initializationFileName} {onchip_mem.hex}
-    set_instance_parameter_value scratchpad {instanceID} {NONE}
-    set_instance_parameter_value scratchpad {memorySize} {16384.0}
-    set_instance_parameter_value scratchpad {readDuringWriteMode} {DONT_CARE}
-    set_instance_parameter_value scratchpad {simAllowMRAMContentsFile} {0}
-    set_instance_parameter_value scratchpad {simMemInitOnlyFilename} {0}
-    set_instance_parameter_value scratchpad {singleClockOperation} {0}
-    set_instance_parameter_value scratchpad {slave1Latency} {1}
-    set_instance_parameter_value scratchpad {slave2Latency} {1}
-    set_instance_parameter_value scratchpad {useNonDefaultInitFile} {0}
-    set_instance_parameter_value scratchpad {useShallowMemBlocks} {0}
-    set_instance_parameter_value scratchpad {writable} {1}
-    set_instance_parameter_value scratchpad {ecc_enabled} {0}
+    add_instance scratchpad_0 altera_avalon_onchip_memory2 13.1
+    set_instance_parameter_value scratchpad_0 {allowInSystemMemoryContentEditor} {0}
+    set_instance_parameter_value scratchpad_0 {blockType} {AUTO}
+    set_instance_parameter_value scratchpad_0 {dataWidth} {32}
+    set_instance_parameter_value scratchpad_0 {dualPort} {0}
+    set_instance_parameter_value scratchpad_0 {initMemContent} {1}
+    set_instance_parameter_value scratchpad_0 {initializationFileName} {onchip_mem.hex}
+    set_instance_parameter_value scratchpad_0 {instanceID} {NONE}
+    set_instance_parameter_value scratchpad_0 {memorySize} {16384.0}
+    set_instance_parameter_value scratchpad_0 {readDuringWriteMode} {DONT_CARE}
+    set_instance_parameter_value scratchpad_0 {simAllowMRAMContentsFile} {0}
+    set_instance_parameter_value scratchpad_0 {simMemInitOnlyFilename} {0}
+    set_instance_parameter_value scratchpad_0 {singleClockOperation} {0}
+    set_instance_parameter_value scratchpad_0 {slave1Latency} {1}
+    set_instance_parameter_value scratchpad_0 {slave2Latency} {1}
+    set_instance_parameter_value scratchpad_0 {useNonDefaultInitFile} {0}
+    set_instance_parameter_value scratchpad_0 {useShallowMemBlocks} {0}
+    set_instance_parameter_value scratchpad_0 {writable} {1}
+    set_instance_parameter_value scratchpad_0 {ecc_enabled} {0}
 
     add_instance dma_0 altera_avalon_dma 13.1
     set_instance_parameter_value dma_0 {allowByteTransactions} {1}
@@ -227,6 +227,26 @@ proc compose { } {
     add_instance nios_custom_instr_floating_point_2_0 altera_nios_custom_instr_floating_point_2 100.99.98.97
 
     add_instance sw_reset_0 sw_reset 1.0
+
+    add_instance scratchpad_1 altera_avalon_onchip_memory2 13.1
+    set_instance_parameter_value scratchpad_1 {allowInSystemMemoryContentEditor} {0}
+    set_instance_parameter_value scratchpad_1 {blockType} {AUTO}
+    set_instance_parameter_value scratchpad_1 {dataWidth} {32}
+    set_instance_parameter_value scratchpad_1 {dualPort} {0}
+    set_instance_parameter_value scratchpad_1 {initMemContent} {1}
+    set_instance_parameter_value scratchpad_1 {initializationFileName} {onchip_mem.hex}
+    set_instance_parameter_value scratchpad_1 {instanceID} {NONE}
+    set_instance_parameter_value scratchpad_1 {memorySize} {16384.0}
+    set_instance_parameter_value scratchpad_1 {readDuringWriteMode} {DONT_CARE}
+    set_instance_parameter_value scratchpad_1 {simAllowMRAMContentsFile} {0}
+    set_instance_parameter_value scratchpad_1 {simMemInitOnlyFilename} {0}
+    set_instance_parameter_value scratchpad_1 {singleClockOperation} {0}
+    set_instance_parameter_value scratchpad_1 {slave1Latency} {1}
+    set_instance_parameter_value scratchpad_1 {slave2Latency} {1}
+    set_instance_parameter_value scratchpad_1 {useNonDefaultInitFile} {0}
+    set_instance_parameter_value scratchpad_1 {useShallowMemBlocks} {0}
+    set_instance_parameter_value scratchpad_1 {writable} {1}
+    set_instance_parameter_value scratchpad_1 {ecc_enabled} {0}
 
     # connections and connection parameters
     add_connection clk.clk cpu1.clk clock
@@ -271,25 +291,25 @@ proc compose { } {
 
     add_connection clk.clk Fingerprint_0.clock clock
 
-    add_connection clk.clk scratchpad.clk1 clock
+    add_connection clk.clk scratchpad_0.clk1 clock
 
     add_connection clk.clk dma_0.clk clock
 
     add_connection clk.clk_reset Fingerprint_0.reset_sink reset
 
-    add_connection clk.clk_reset scratchpad.reset1 reset
+    add_connection clk.clk_reset scratchpad_0.reset1 reset
 
     add_connection clk.clk_reset dma_0.reset reset
 
-    add_connection dma_0.read_master scratchpad.s1 avalon
-    set_connection_parameter_value dma_0.read_master/scratchpad.s1 arbitrationPriority {1}
-    set_connection_parameter_value dma_0.read_master/scratchpad.s1 baseAddress {0x04200000}
-    set_connection_parameter_value dma_0.read_master/scratchpad.s1 defaultConnection {0}
+    add_connection dma_0.read_master scratchpad_0.s1 avalon
+    set_connection_parameter_value dma_0.read_master/scratchpad_0.s1 arbitrationPriority {1}
+    set_connection_parameter_value dma_0.read_master/scratchpad_0.s1 baseAddress {0x04200000}
+    set_connection_parameter_value dma_0.read_master/scratchpad_0.s1 defaultConnection {0}
 
-    add_connection dma_0.write_master scratchpad.s1 avalon
-    set_connection_parameter_value dma_0.write_master/scratchpad.s1 arbitrationPriority {1}
-    set_connection_parameter_value dma_0.write_master/scratchpad.s1 baseAddress {0x04200000}
-    set_connection_parameter_value dma_0.write_master/scratchpad.s1 defaultConnection {0}
+    add_connection dma_0.write_master scratchpad_0.s1 avalon
+    set_connection_parameter_value dma_0.write_master/scratchpad_0.s1 arbitrationPriority {1}
+    set_connection_parameter_value dma_0.write_master/scratchpad_0.s1 baseAddress {0x04200000}
+    set_connection_parameter_value dma_0.write_master/scratchpad_0.s1 defaultConnection {0}
 
     add_connection dma_0.read_master out_system_bridge.s0 avalon
     set_connection_parameter_value dma_0.read_master/out_system_bridge.s0 arbitrationPriority {1}
@@ -327,10 +347,10 @@ proc compose { } {
     set_connection_parameter_value utlb_0.avalon_master/out_system_bridge.s0 baseAddress {0x0000}
     set_connection_parameter_value utlb_0.avalon_master/out_system_bridge.s0 defaultConnection {0}
 
-    add_connection utlb_0.avalon_master scratchpad.s1 avalon
-    set_connection_parameter_value utlb_0.avalon_master/scratchpad.s1 arbitrationPriority {1}
-    set_connection_parameter_value utlb_0.avalon_master/scratchpad.s1 baseAddress {0x04200000}
-    set_connection_parameter_value utlb_0.avalon_master/scratchpad.s1 defaultConnection {0}
+    add_connection utlb_0.avalon_master scratchpad_0.s1 avalon
+    set_connection_parameter_value utlb_0.avalon_master/scratchpad_0.s1 arbitrationPriority {1}
+    set_connection_parameter_value utlb_0.avalon_master/scratchpad_0.s1 baseAddress {0x04200000}
+    set_connection_parameter_value utlb_0.avalon_master/scratchpad_0.s1 defaultConnection {0}
 
     add_connection cpu1.data_master timer.s1 avalon
     set_connection_parameter_value cpu1.data_master/timer.s1 arbitrationPriority {1}
@@ -384,6 +404,25 @@ proc compose { } {
     add_connection clk.clk sw_reset_0.clock clock
 
     add_connection clk.clk_reset sw_reset_0.reset reset
+
+    add_connection clk.clk scratchpad_1.clk1 clock
+
+    add_connection clk.clk_reset scratchpad_1.reset1 reset
+
+    add_connection dma_0.read_master scratchpad_1.s1 avalon
+    set_connection_parameter_value dma_0.read_master/scratchpad_1.s1 arbitrationPriority {1}
+    set_connection_parameter_value dma_0.read_master/scratchpad_1.s1 baseAddress {0x04204000}
+    set_connection_parameter_value dma_0.read_master/scratchpad_1.s1 defaultConnection {0}
+
+    add_connection dma_0.write_master scratchpad_1.s1 avalon
+    set_connection_parameter_value dma_0.write_master/scratchpad_1.s1 arbitrationPriority {1}
+    set_connection_parameter_value dma_0.write_master/scratchpad_1.s1 baseAddress {0x04204000}
+    set_connection_parameter_value dma_0.write_master/scratchpad_1.s1 defaultConnection {0}
+
+    add_connection utlb_0.avalon_master scratchpad_1.s1 avalon
+    set_connection_parameter_value utlb_0.avalon_master/scratchpad_1.s1 arbitrationPriority {1}
+    set_connection_parameter_value utlb_0.avalon_master/scratchpad_1.s1 baseAddress {0x04204000}
+    set_connection_parameter_value utlb_0.avalon_master/scratchpad_1.s1 defaultConnection {0}
 
     # exported interfaces
     add_interface philosopher_clk_in clock sink

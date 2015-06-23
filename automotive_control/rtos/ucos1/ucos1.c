@@ -11,6 +11,9 @@
 #include "tlb.h"
 #include "context_switch.h"
 #include "critical.h"
+#include "ucos1.h"
+#include "reset_monitor.h"
+#include "mem_manager.h"
 
 
 /*****************************************************************************
@@ -20,32 +23,6 @@
 #define NULL ((void *)0)
 int *core1_IRQ = (int *) PROCESSOR1_0_CPU_IRQ_0_BASE;
 
-
-/*****************************************************************************
- * Stack sizes
- *
- * The stack size is composed of three elements A + B + C:
- * A: Amount of room that function code requires to execute on stack
- *
- * B: empirically determined value for amount of stack used with function
- * body consisting of empty while loop
- *
- * C: Safety margin
- *
- * Note that OS_STK allocates 32 bit words so these numbers represent words
- *****************************************************************************/
-#define STACKSIZE_MINOFFSET   				314
-#define STACKSIZE_MARGINERROR 				50
-#define FuelSensor_STACKSIZE 				(156 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-#define Derivative_AirbagModel_STACKSIZE	(156 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-
-
-
-/*****************************************************************************
- * Task Priorities
- *****************************************************************************/
-#define FuelSensor_PRIORITY 				13
-#define Derivative_AirbagModel_PRIORITY     12
 
 /*****************************************************************************
  * Task control flow conditions
@@ -104,13 +81,8 @@ static void handleCPU(void* context) {
 	if (critFuncData[1].tableIndex == DERIVATIVE_FUNC_TABLE_INDEX){
 		//The monitor will provide a translation mapping for the stack
 		//and for the global data... two translations received in data structure
-		set_cputable_entry(0, critFuncData[1].tlbDataAddressVirt);
-		set_spmtable_entry(0, critFuncData[1].tlbDataAddressPhys);
-		enableTlbLine(0);
 
-		set_cputable_entry(1, critFuncData[1].tlbStackAddressVirt);
-		set_spmtable_entry(1, critFuncData[1].tlbStackAddressPhys);
-		enableTlbLine(1);
+		updateMemoryManagerTable(derivate_airbagModel_memoryTableIndex, &critFuncData[CORE_ID]);
 
 		activateTlb();
 		*core1_IRQ = 0;
@@ -255,6 +227,10 @@ int main(){
 	derivative_AirbagModel_SEM0 = OSSemCreate(derivative_AirbagModel_SEM0_INITCOND);
 
 
+	mem_manager_init();
+
+
+
 	//Declare the OS tasks
 	///-------------------
 
@@ -268,7 +244,7 @@ int main(){
 
 	//Notify the monitor that startup is completed
 	//--------------------------------------------
-	stab->core_ready[CORE_ID] = 1;
+	resetMonitorCoreReg(1);
 
 	OSStart();
 	return 0;

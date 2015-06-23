@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>9-Jun-2015 12:20:19 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1433866819837</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Jun 23, 2015 4:26:28 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1435091188296</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>./</BspGeneratedLocation>
         <BspSettingsFile>ucos1_bsp/settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../nios_fprint.sopcinfo</SopcDesignFile>
@@ -1743,20 +1743,20 @@
                 <addressRange>0x02500000 - 0x025003FF</addressRange>
         </LinkerRegion>
         <LinkerRegion>
-                <regionName>processor1_0_scratchpad</regionName>
-                <memoryName>processor1_0_scratchpad</memoryName>
+                <regionName>processor1_0_scratchpad_0</regionName>
+                <memoryName>processor1_0_scratchpad_0</memoryName>
                 <offset>0</offset>
-                <size>12288</size>
+                <size>16384</size>
                 <baseAddress>0x4200000</baseAddress>
-                <addressRange>0x04200000 - 0x04202FFF</addressRange>
+                <addressRange>0x04200000 - 0x04203FFF</addressRange>
         </LinkerRegion>
         <LinkerRegion>
-                <regionName>global</regionName>
-                <memoryName>processor1_0_scratchpad</memoryName>
-                <offset>12288</offset>
-                <size>4096</size>
-                <baseAddress>0x4203000</baseAddress>
-                <addressRange>0x04203000 - 0x04203FFF</addressRange>
+                <regionName>processor1_0_scratchpad_1</regionName>
+                <memoryName>processor1_0_scratchpad_1</memoryName>
+                <offset>0</offset>
+                <size>16384</size>
+                <baseAddress>0x4204000</baseAddress>
+                <addressRange>0x04204000 - 0x04207FFF</addressRange>
         </LinkerRegion>
         <MemoryMap>
                 <slaveDescriptor>memory_0_onchip_memoryMain</slaveDescriptor>
@@ -1807,8 +1807,20 @@
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>processor1_0_scratchpad</slaveDescriptor>
+                <slaveDescriptor>processorM_0_reset_monitor_0</slaveDescriptor>
+                <addressRange>0x02800000 - 0x028003FF</addressRange>
+                <addressSpan>1024</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>processor1_0_scratchpad_0</slaveDescriptor>
                 <addressRange>0x04200000 - 0x04203FFF</addressRange>
+                <addressSpan>16384</addressSpan>
+                <attributes>memory</attributes>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>processor1_0_scratchpad_1</slaveDescriptor>
+                <addressRange>0x04204000 - 0x04207FFF</addressRange>
                 <addressSpan>16384</addressSpan>
                 <attributes>memory</attributes>
         </MemoryMap>
@@ -1865,10 +1877,6 @@
         <LinkerSection>
                 <sectionName>.stack</sectionName>
                 <regionName>memory_0_onchip_memoryMain</regionName>
-        </LinkerSection>
-        <LinkerSection>
-                <sectionName>.critical</sectionName>
-                <regionName>processor1_0_scratchpad</regionName>
         </LinkerSection>
         <LinkerSection>
                 <sectionName>.stack_bin</sectionName>

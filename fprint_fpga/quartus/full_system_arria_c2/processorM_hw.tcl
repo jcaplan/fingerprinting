@@ -184,12 +184,8 @@ proc compose { } {
     add_instance fprint_irq_0 fprint_irq 1.0
 
     add_instance dma_0_irq altera_irq_bridge 13.1
-    set_instance_parameter_value dma_0_irq {IRQ_WIDTH} {1}
+    set_instance_parameter_value dma_0_irq {IRQ_WIDTH} {2}
     set_instance_parameter_value dma_0_irq {IRQ_N} {0}
-
-    add_instance dma_1_irq altera_irq_bridge 13.1
-    set_instance_parameter_value dma_1_irq {IRQ_WIDTH} {1}
-    set_instance_parameter_value dma_1_irq {IRQ_N} {0}
 
     add_instance scratchpad altera_avalon_onchip_memory2 13.1
     set_instance_parameter_value scratchpad {allowInSystemMemoryContentEditor} {0}
@@ -210,6 +206,8 @@ proc compose { } {
     set_instance_parameter_value scratchpad {useShallowMemBlocks} {0}
     set_instance_parameter_value scratchpad {writable} {1}
     set_instance_parameter_value scratchpad {ecc_enabled} {0}
+
+    add_instance reset_monitor_0 reset_monitor 1.0
 
     # connections and connection parameters
     add_connection clk.clk cpuM.clk clock
@@ -304,19 +302,7 @@ proc compose { } {
 
     add_connection clk.clk fprint_irq_0.clock clock
 
-    add_connection cpuM.d_irq dma_0_irq.sender0_irq interrupt
-    set_connection_parameter_value cpuM.d_irq/dma_0_irq.sender0_irq irqNumber {5}
-
-    add_connection cpuM.d_irq dma_1_irq.sender0_irq interrupt
-    set_connection_parameter_value cpuM.d_irq/dma_1_irq.sender0_irq irqNumber {6}
-
-    add_connection clk.clk dma_0_irq.clk clock
-
-    add_connection clk.clk dma_1_irq.clk clock
-
     add_connection clk.clk_reset dma_0_irq.clk_reset reset
-
-    add_connection clk.clk_reset dma_1_irq.clk_reset reset
 
     add_connection clk.clk scratchpad.clk1 clock
 
@@ -326,6 +312,21 @@ proc compose { } {
     set_connection_parameter_value cpuM.data_master/scratchpad.s1 arbitrationPriority {1}
     set_connection_parameter_value cpuM.data_master/scratchpad.s1 baseAddress {0x08200000}
     set_connection_parameter_value cpuM.data_master/scratchpad.s1 defaultConnection {0}
+
+    add_connection clk.clk reset_monitor_0.clock clock
+
+    add_connection clk.clk_reset reset_monitor_0.reset reset
+
+    add_connection clk.clk dma_0_irq.clk clock
+
+    add_connection cpuM.d_irq dma_0_irq.sender0_irq interrupt
+    set_connection_parameter_value cpuM.d_irq/dma_0_irq.sender0_irq irqNumber {5}
+
+    add_connection cpuM.d_irq dma_0_irq.sender1_irq interrupt
+    set_connection_parameter_value cpuM.d_irq/dma_0_irq.sender1_irq irqNumber {6}
+
+    add_connection cpuM.d_irq reset_monitor_0.irq0 interrupt
+    set_connection_parameter_value cpuM.d_irq/reset_monitor_0.irq0 irqNumber {13}
 
     # exported interfaces
     add_interface philosopher_clk_in clock sink
@@ -342,8 +343,8 @@ proc compose { } {
     set_interface_property fprint_irq_0_irq EXPORT_OF fprint_irq_0.irq
     add_interface cpu_irq_0_s0 avalon slave
     set_interface_property cpu_irq_0_s0 EXPORT_OF cpu_irq_0.s0
+    add_interface reset_monitor_0_s0 avalon slave
+    set_interface_property reset_monitor_0_s0 EXPORT_OF reset_monitor_0.s0
     add_interface dma_0_irq_receiver_irq interrupt receiver
     set_interface_property dma_0_irq_receiver_irq EXPORT_OF dma_0_irq.receiver_irq
-    add_interface dma_1_irq_receiver_irq interrupt receiver
-    set_interface_property dma_1_irq_receiver_irq EXPORT_OF dma_1_irq.receiver_irq
 }

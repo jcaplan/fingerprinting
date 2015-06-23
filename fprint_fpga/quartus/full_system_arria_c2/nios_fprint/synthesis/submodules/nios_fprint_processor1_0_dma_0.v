@@ -541,9 +541,9 @@ endmodule
 
 //DMA peripheral nios_fprint_processor1_0_dma_0
 //Read slaves:
-//scratchpad.s1; 
+//scratchpad_0.s1,scratchpad_1.s1; 
 //Write slaves:
-//scratchpad.s1; 
+//scratchpad_0.s1,scratchpad_1.s1; 
 
 
 module nios_fprint_processor1_0_dma_0 (

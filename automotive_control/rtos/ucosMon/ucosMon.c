@@ -15,6 +15,7 @@
 #include "TractionControl.h"
 #include "shared_mem.h"
 #include "gp.h"
+#include "reset_monitor.h"
 
 /*****************************************************************************
  * Defines
@@ -39,9 +40,9 @@
 
 #define STACKSIZE_MINOFFSET   				314
 #define STACKSIZE_MARGINERROR 				15
-#define CruiseControlSystem_STACKSIZE 		(1500 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-#define DMA_STACKSIZE 						(200 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-#define Failed_STACKSIZE 					(200 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
+#define CruiseControlSystem_STACKSIZE 		(1000 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
+#define DMA_STACKSIZE 						(1000 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
+#define Failed_STACKSIZE 					(1000 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
 
 /*****************************************************************************
  * Task Priorities
@@ -79,6 +80,9 @@
 #define dmaReady_FLAG0_CORE1_CONDITION 				0xf0
 
 #define NUM_CRITICAL_TASKS 						2
+
+bool coresReady = false;
+
 /*****************************************************************************
  * The global variable declarations for each critical task
  *****************************************************************************/
@@ -276,6 +280,7 @@ void dma_TASK(void* pdata) {
 	}
 	while (1) {
 		printf("dma task\n");
+
 		OS_FLAGS sender = OSFlagPend(dmaReady_FLAG0, dmaReadyFlag,
 				dmaReady_FLAG0_WAITTYPE, dmaReady_FLAG0_TIMEOUT, &perr);
 		HandleDMAStruct *message = NULL;
@@ -305,6 +310,7 @@ void dma_TASK(void* pdata) {
 		}
 
 		//send message
+		//TODO update the virtual address based on what's happening in the processing cores
 		if (message != NULL) {
 			if (dmaReady[0]) {
 				dmaReady[0] = false;
@@ -348,6 +354,7 @@ void dma_TASK(void* pdata) {
 				dmaReadyFlag &= 0x0F | dmaReady_FLAG0_CORE1_DMAREADY;
 				messagePending[1] = message;
 			}
+
 		}
 	}
 }
@@ -423,20 +430,6 @@ void sendDMA(void* sourceAddress, void* destAddress, int size, void *handle) {
 }
 int result = 0;
 
-void waitForCores(void) {
-	int p0 = 0, p1 = 0;
-	while ((p0 != 1) || (p1 != 1)) {
-		altera_avalon_mutex_lock(mutex, 1);
-		{
-			p0 = shared_stab.core_ready[0];
-			p1 = shared_stab.core_ready[1];
-		}
-		altera_avalon_mutex_unlock(mutex);
-	}
-	shared_stab.core_ready[0] = 0;
-	shared_stab.core_ready[1] = 0;
-}
-
 /*****************************************************************************
  * Comparator ISR
  *****************************************************************************/
@@ -467,6 +460,8 @@ static void handleCompISR(void* context) {
 		int* cpu1_reset = (int*) PROCESSOR1_0_SW_RESET_0_BASE;
 		*cpu0_reset = 1;
 		*cpu1_reset = 1;
+		coresReady = false;
+		OSTaskSuspend(DMA_PRIORITY);
 		OSSemPost(failed_SEM0);
 
 	}
@@ -483,15 +478,37 @@ static void failed_TASK(void* pdata) {
 	while (1) {
 		INT8U perr;
 		OSSemPend(failed_SEM0, 0, &perr);
-		waitForCores();
-		printf("cores restarted\n");
+		resetMonitorEnable();
+		OSSemPend(failed_SEM0, 0, &perr);
+		coresReady = true;
+		OSFlagPost(dmaReady_FLAG0, 0xFFFFu, OS_FLAG_CLR, &perr);
 		OSFlagPost(dmaReady_FLAG0,
 				dmaReady_FLAG0_CORE0_M0_BITMASK
 						| dmaReady_FLAG0_CORE0_M1_BITMASK
 						| dmaReady_FLAG0_CORE1_M0_BITMASK
 						| dmaReady_FLAG0_CORE1_M1_BITMASK, OS_FLAG_SET, &perr);
 
+		OSTaskResume(DMA_PRIORITY);
+
 	}
+}
+
+/*****************************************************************************
+ * Reset monitor interface
+ *****************************************************************************/
+
+static void handleResetMonitor(void* context) {
+	resetMonitorDisable();
+	coresReady = true;
+	OSSemPost(failed_SEM0);
+
+}
+
+static void initResetMonitorIsr(void) {
+	alt_ic_isr_register(
+			PROCESSORM_0_RESET_MONITOR_0_IRQ_INTERRUPT_CONTROLLER_ID,
+			PROCESSORM_0_RESET_MONITOR_0_IRQ, handleResetMonitor, (void*) NULL,
+			(void*) NULL);
 }
 
 /*****************************************************************************
@@ -519,6 +536,11 @@ int main(void) {
 	functionTable[1].blocksize = 0xfff;
 
 	//Initialize the runtime interface
+
+	// Initialize the reset monitor
+	resetMonitorMonReg(3);
+	resetMonitorEnable();
+	initResetMonitorIsr();
 
 	//Pass information to processing cores and notify them to begin their startup
 	//---------------------------------------------------------------------------
@@ -620,9 +642,11 @@ int main(void) {
 	OSTaskCreateExt(failed_TASK, NULL, &Failed_STACK[Failed_STACKSIZE - 1],
 			Failed_PRIORITY, Failed_PRIORITY, Failed_STACK, Failed_STACKSIZE,
 			NULL, OS_TASK_OPT_STK_CLR);
+
 	//Wait for confirmation that other cores have completed their startup routines
 	//----------------------------------------------------------------------------
-	waitForCores();
+	while (!coresReady)
+		;
 
 	//Start the OS
 	//------------

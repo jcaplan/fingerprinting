@@ -676,6 +676,32 @@ ihwconnect       -instancename cpu_irq         -netport cpum_irq     -net cpum_i
 ihwconnect       -instancename cpum            -netport d_irq1       -net cpum_irq1
 
 
+###############################################################################
+# Reset monitor
+###############################################################################
+
+ihwaddbus -instancename resetmonbus            -addresswidth 32
+
+ihwaddperipheral -instancename reset_monitor  -vendor mcgill.ca -type reset_monitor -diagnosticlevel 3
+ihwconnect       -instancename reset_monitor  -bus resetmonbus   -busslaveport RESET_MONITOR_SLAVE -loaddress 0x00000000 -hiaddress 0x000003FF
+
+
+ihwaddbridge -instancename cpum_reset_mon_bridge
+ihwconnect 	 -instancename cpum_reset_mon_bridge -busslaveport  sp1 -bus cpum_dbus    -loaddress 0x02800000 -hiaddress 0x028003FF
+ihwconnect   -instancename cpum_reset_mon_bridge -busmasterport mp1 -bus resetmonbus  -loaddress 0x00000000 -hiaddress 0x000003FF
+
+ihwaddbridge -instancename cpu0_reset_mon_bridge
+ihwconnect 	 -instancename cpu0_reset_mon_bridge -busslaveport  sp1 -bus cpu0_tlbbus    -loaddress 0x02800000 -hiaddress 0x028003FF
+ihwconnect   -instancename cpu0_reset_mon_bridge -busmasterport mp1 -bus resetmonbus  -loaddress 0x00000000 -hiaddress 0x000003FF
+
+ihwaddbridge -instancename cpu1_reset_mon_bridge
+ihwconnect 	 -instancename cpu1_reset_mon_bridge -busslaveport  sp1 -bus cpu1_tlbbus    -loaddress 0x02800000 -hiaddress 0x028003FF
+ihwconnect   -instancename cpu1_reset_mon_bridge -busmasterport mp1 -bus resetmonbus  -loaddress 0x00000000 -hiaddress 0x000003FF
+
+
+#INTER CPU irq
+ihwconnect       -instancename reset_monitor   -netport cpum_notify     -net cpum_notify1
+ihwconnect       -instancename cpum            -netport d_irq13         -net cpum_notify1
 
 
 #define elf0 /data/jcapla9/fprint_ptype_1_2/quartus/full_system_arria_cache2/software/a_ucos0/a_ucos0.elf

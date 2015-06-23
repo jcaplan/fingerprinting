@@ -487,7 +487,7 @@ INT16U  OSEventPendMulti (OS_EVENT **pevents_pend, OS_EVENT **pevents_rdy, void 
                  OSTCBCur->OSTCBStatPend = OS_STAT_PEND_TO;
                  OS_EventTaskRemoveMulti(OSTCBCur, pevents_pend);
              }
-			 break;
+             break;
 
         case OS_STAT_PEND_TO:
         default:                                        /* ... remove task from events' wait lists     */
@@ -675,29 +675,29 @@ void  OSIntExit (void)
                 OS_SchedNew();
                 if (OSPrioHighRdy != OSPrioCur) {          /* No Ctx Sw if current task is highest rdy */
 
-                	//preemption is occuring.
-                	//pause the task in the fingerprint unit
+                    //preemption is occuring.
+                    //pause the task in the fingerprint unit
 #if IS_MONITOR == 0
-                	//Is this a critical task?
-                	//Here we pause the task
-                	if(OSPrioCur < 16){
-                		INT32U* fprint_pause_reg = (INT32U*)(0x8100000 + 4);
-                		INT32U x = *fprint_pause_reg;
-                		*fprint_pause_reg = x | (1 << OSPrioCur);
-                	}
+                    //Is this a critical task?
+                    //Here we pause the task
+                    if(OSPrioCur < 16){
+                        INT32U* fprint_pause_reg = (INT32U*)(0x8100000 + 4);
+                        INT32U x = *fprint_pause_reg;
+                        *fprint_pause_reg = x | (1 << OSPrioCur);
+                    }
 
-                	/*
-                	 * MEMORY MANAGEMENT
-                	 */
+                    /*
+                     * MEMORY MANAGEMENT
+                     */
 
-                	// Check if the current task must be deactivated
+                    // Check if the current task must be deactivated
 
-                	managerDisableCurrentTask(OSPrioCur);
-                	managerEnableNextTask(OSPrioHighRdy);
+                    managerDisableCurrentTask(OSPrioCur);
+                    managerEnableNextTask(OSPrioHighRdy);
 
 #endif
 
-                	OSTCBHighRdy  = OSTCBPrioTbl[OSPrioHighRdy];
+                    OSTCBHighRdy  = OSTCBPrioTbl[OSPrioHighRdy];
 #if OS_TASK_PROFILE_EN > 0
                     OSTCBHighRdy->OSTCBCtxSwCtr++;         /* Inc. # of context switches to this task  */
 #endif
@@ -710,10 +710,10 @@ void  OSIntExit (void)
                      */
                     //Here is where we resume the task
                     if(OSPrioCur < 16){
-                    	INT32U* fprint_pause_reg = (INT32U*)(0x8100000 \
-                                    							+ 4);
-                    	INT32U x = *fprint_pause_reg;
-                    	*fprint_pause_reg = x & ~(1 << OSPrioCur);
+                        INT32U* fprint_pause_reg = (INT32U*)(0x8100000 \
+                                                                + 4);
+                        INT32U x = *fprint_pause_reg;
+                        *fprint_pause_reg = x & ~(1 << OSPrioCur);
                     }
 #endif
 
@@ -1670,8 +1670,8 @@ void  OS_Sched (void)
                 OSTCBHighRdy = OSTCBPrioTbl[OSPrioHighRdy];
 
 #if IS_MONITOR == 0
-            	managerDisableCurrentTask(OSPrioCur);
-            	managerEnableNextTask(OSPrioHighRdy);
+                managerDisableCurrentTask(OSPrioCur);
+                managerEnableNextTask(OSPrioHighRdy);
 #endif
 #if OS_TASK_PROFILE_EN > 0
                 OSTCBHighRdy->OSTCBCtxSwCtr++;         /* Inc. # of context switches to this task      */

@@ -50,9 +50,9 @@ module nios_fprint_mm_interconnect_1_id_router_003_default_decode
                DEFAULT_DESTID = 3 
    )
   (output [89 - 86 : 0] default_destination_id,
-   output [11-1 : 0] default_wr_channel,
-   output [11-1 : 0] default_rd_channel,
-   output [11-1 : 0] default_src_channel
+   output [12-1 : 0] default_wr_channel,
+   output [12-1 : 0] default_rd_channel,
+   output [12-1 : 0] default_src_channel
   );
 
   assign default_destination_id = 
@@ -63,7 +63,7 @@ module nios_fprint_mm_interconnect_1_id_router_003_default_decode
       assign default_src_channel = '0;
     end
     else begin
-      assign default_src_channel = 11'b1 << DEFAULT_CHANNEL;
+      assign default_src_channel = 12'b1 << DEFAULT_CHANNEL;
     end
   end
   endgenerate
@@ -74,8 +74,8 @@ module nios_fprint_mm_interconnect_1_id_router_003_default_decode
       assign default_rd_channel = '0;
     end
     else begin
-      assign default_wr_channel = 11'b1 << DEFAULT_WR_CHANNEL;
-      assign default_rd_channel = 11'b1 << DEFAULT_RD_CHANNEL;
+      assign default_wr_channel = 12'b1 << DEFAULT_WR_CHANNEL;
+      assign default_rd_channel = 12'b1 << DEFAULT_RD_CHANNEL;
     end
   end
   endgenerate
@@ -105,7 +105,7 @@ module nios_fprint_mm_interconnect_1_id_router_003
     // -------------------
     output                          src_valid,
     output reg [103-1    : 0] src_data,
-    output reg [11-1 : 0] src_channel,
+    output reg [12-1 : 0] src_channel,
     output                          src_startofpacket,
     output                          src_endofpacket,
     input                           src_ready
@@ -121,7 +121,7 @@ module nios_fprint_mm_interconnect_1_id_router_003
     localparam PKT_PROTECTION_H = 93;
     localparam PKT_PROTECTION_L = 91;
     localparam ST_DATA_W = 103;
-    localparam ST_CHANNEL_W = 11;
+    localparam ST_CHANNEL_W = 12;
     localparam DECODER_TYPE = 1;
 
     localparam PKT_TRANS_WRITE = 65;
@@ -160,7 +160,7 @@ module nios_fprint_mm_interconnect_1_id_router_003
     assign src_valid         = sink_valid;
     assign src_startofpacket = sink_startofpacket;
     assign src_endofpacket   = sink_endofpacket;
-    wire [11-1 : 0] default_src_channel;
+    wire [12-1 : 0] default_src_channel;
 
 
 
@@ -187,23 +187,23 @@ module nios_fprint_mm_interconnect_1_id_router_003
 
 
         if (destid == 3 ) begin
-            src_channel = 11'b00001;
+            src_channel = 12'b00001;
         end
 
         if (destid == 1 ) begin
-            src_channel = 11'b00010;
+            src_channel = 12'b00010;
         end
 
         if (destid == 4 ) begin
-            src_channel = 11'b00100;
+            src_channel = 12'b00100;
         end
 
         if (destid == 2 ) begin
-            src_channel = 11'b01000;
+            src_channel = 12'b01000;
         end
 
         if (destid == 0 ) begin
-            src_channel = 11'b10000;
+            src_channel = 12'b10000;
         end
 
 

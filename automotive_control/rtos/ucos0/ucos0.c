@@ -15,6 +15,7 @@
 #include "mpu_utils.h"
 #include "mem_manager.h"
 #include "ucos0.h"
+#include "reset_monitor.h"
 
 /*****************************************************************************
  * TransmissionControl
@@ -186,7 +187,6 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		//Do the airbag part
 		// Set default block size for fingerprinting
 		fprint_set_block_size(airbagModel_blocksize);
-		//TODO The TLB must be appropriately configured
 
 		//Set the global pointer in case of compilation issues related
 		//to global variables
@@ -282,7 +282,7 @@ int main(){
 
 	//Notify the monitor that startup is completed
 	//--------------------------------------------
-	stab->core_ready[CORE_ID] = 1;
+	resetMonitorCoreReg(0);
 
 	OSStart();
 	return 0;
