@@ -71,7 +71,14 @@ SharedMemorySymbolTable *stab;
 RT_MODEL_FuelSensor_T FuelSensor_M;
 ExtU_FuelSensor_T FuelSensor_U;
 ExtY_FuelSensor_T FuelSensor_Y;
-P_FuelSensor_T fuelSensor_defaultParam;
+P_FuelSensor_T fuelSensor_defaultParam = {
+  3.0F,                                /* Mask Parameter: LowFuelSensor_const
+										* Referenced by: '<S1>/Constant'
+										*/
+  0                                    /* Computed Parameter: Lighton_InitialCondition
+										* Referenced by: '<Root>/Light on  '
+										*/
+};                                     /* Modifiable parameters */
 DW_FuelSensor_T fuelSensor_dwork;
 
 /*****************************************************************************

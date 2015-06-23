@@ -22,7 +22,12 @@
 RT_MODEL_TransmissionControl_T TransmissionControl_M;
 ExtU_TransmissionControl_T TransmissionControl_U;
 ExtY_TransmissionControl_T TransmissionControl_Y;
-P_TransmissionControl_T transmissionControl_dfaultParam;
+P_TransmissionControl_T transmissionControl_dfaultParam = {
+  3.0F                                 /* Mask Parameter: LowFuelSensor_const
+										* Referenced by: '<S1>/Constant'
+										*/
+};                                     /* Modifiable parameters */
+
 
 /*****************************************************************************
  * CollisionAvoidance
@@ -30,7 +35,23 @@ P_TransmissionControl_T transmissionControl_dfaultParam;
 RT_MODEL_CollisionAvoidance_T CollisionAvoidance_M;
 ExtU_CollisionAvoidance_T CollisionAvoidance_U;
 ExtY_CollisionAvoidance_T CollisionAvoidance_Y;
-P_CollisionAvoidance_T collisionAvoidance_defaultParam;
+P_CollisionAvoidance_T collisionAvoidance_defaultParam = {
+  0.0,                                 /* Mask Parameter: DiscreteDerivative_ICPrevScaled
+										* Referenced by: '<S3>/UD'
+										*/
+  0.0,                                 /* Mask Parameter: DiscreteDerivative1_ICPrevScale
+										* Referenced by: '<S4>/UD'
+										*/
+  5.0,                                 /* Computed Parameter: TSamp_WtEt
+										* Referenced by: '<S3>/TSamp'
+										*/
+  5.0,                                 /* Computed Parameter: TSamp_WtEt_m
+										* Referenced by: '<S4>/TSamp'
+										*/
+  0.0                                  /* Expression: 0
+										* Referenced by: '<S2>/Constant'
+										*/
+};                                     /* Modifiable parameters */
 DW_CollisionAvoidance_T collisionAvoidance_dwork;
 
 /*****************************************************************************
