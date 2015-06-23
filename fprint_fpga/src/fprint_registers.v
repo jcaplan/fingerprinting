@@ -121,7 +121,7 @@ assign fprint_waitrequest   = ~(FIFO_state == st_waitrequest);
 /*************************************************************
 * FIFO
 **************************************************************/
-fifo #(`COMPARATOR_ADDRESS_WIDTH + `NIOS_DATA_WIDTH, 4) // 18 => 1b,1b,16b (block,log_core,fprint)
+fifo #(`COMPARATOR_ADDRESS_WIDTH + `NIOS_DATA_WIDTH, 4) 
 fifo_block (
 clk,
 reset,

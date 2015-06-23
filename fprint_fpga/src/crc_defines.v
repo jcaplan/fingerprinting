@@ -8,7 +8,7 @@
 `define CRC_WIDTH								32									//Polynomial width
 `define CRC_DATA_WIDTH							(`NIOS_ADDRESS_WIDTH + `CRC_WIDTH)  //Write address and write data
 
-`define CRC_RAM_ADDRESS_WIDTH					14									//Width of CRC buffer in comparator
+`define CRC_RAM_ADDRESS_WIDTH					10									//Width of CRC buffer in comparator
 `define CRC_RAM_SIZE							(1 << (`CRC_RAM_ADDRESS_WIDTH-1))	//Size of CRC buffer in comparator (= 2^CRC_RAM_ADDRESS_WIDTH)
 
 

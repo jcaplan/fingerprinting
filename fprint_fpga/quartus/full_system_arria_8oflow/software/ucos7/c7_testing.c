@@ -111,6 +111,8 @@ void execution_task(void* pdata){
 			context_restore(registers);
 		alt_u64 t = alt_timestamp();
 
+		//printf("Core %d executing task %d\n", PHYSICAL_CORE_ID,task_id);
+
 		altera_avalon_mutex_lock(mutex, 1);
 			cp->core_total_time[PHYSICAL_CORE_ID] = t;
 		altera_avalon_mutex_unlock(mutex);

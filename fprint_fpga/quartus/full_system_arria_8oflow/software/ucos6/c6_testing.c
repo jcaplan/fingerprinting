@@ -104,6 +104,8 @@ void execution_task(void* pdata){
 		//int args = task_id;
 		//int args = 5;
 
+		//printf("Core %d executing task %d\n", PHYSICAL_CORE_ID,task_id);
+
 		alt_timestamp_start();
 			long registers[8];
 			context_switch(registers);

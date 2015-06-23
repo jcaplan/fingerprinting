@@ -64,13 +64,14 @@ void testing_task(void* args) {
 	int enable = a[2];
 	int i;
 
-	if(enable)
+	//printf("Setup: id = %d, len = %d, fp_en = %d\n", id, length, enable);
+	//if(enable)
 		enable_fprint_task(id);
 
 	for(i=0 ; i<length ; i++)
 		basicmath_small();
 
-	if(enable)
+	//if(enable)
 		disable_fprint_task(id);
 
 }

@@ -214,11 +214,11 @@ module nios_fprint_mm_interconnect_1_id_router
             src_channel = 30'b001000000;
         end
 
-        if (destid == 12 ) begin
+        if (destid == 14 ) begin
             src_channel = 30'b010000000;
         end
 
-        if (destid == 14 ) begin
+        if (destid == 12 ) begin
             src_channel = 30'b100000000;
         end
 

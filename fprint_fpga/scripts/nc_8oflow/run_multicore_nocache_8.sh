@@ -6,7 +6,7 @@ programming_dir=${fprint_dir}/output_files
 sw_dir=${fprint_dir}/software
 
 pushd $programming_dir
-nios2-configure-sof  fprint_1_1.sof
+nios2-configure-sof  fprint_1_1_ecl.sof
 popd
 
 nios2-download -g --cable=1 --instance=2 ${sw_dir}/ucosMon/ucosMon.elf

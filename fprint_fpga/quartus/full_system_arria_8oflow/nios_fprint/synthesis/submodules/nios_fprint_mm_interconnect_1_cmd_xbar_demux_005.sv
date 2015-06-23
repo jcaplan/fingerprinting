@@ -30,7 +30,7 @@
 //   output_name:         nios_fprint_mm_interconnect_1_cmd_xbar_demux_005
 //   ST_DATA_W:           105
 //   ST_CHANNEL_W:        30
-//   NUM_OUTPUTS:         5
+//   NUM_OUTPUTS:         6
 //   VALID_WIDTH:         30
 // ------------------------------------------
 
@@ -90,6 +90,13 @@ module nios_fprint_mm_interconnect_1_cmd_xbar_demux_005
     output reg                      src4_endofpacket,
     input                           src4_ready,
 
+    output reg                      src5_valid,
+    output reg [105-1    : 0] src5_data, // ST_DATA_W=105
+    output reg [30-1 : 0] src5_channel, // ST_CHANNEL_W=30
+    output reg                      src5_startofpacket,
+    output reg                      src5_endofpacket,
+    input                           src5_ready,
+
 
     // -------------------
     // Clock & Reset
@@ -101,7 +108,7 @@ module nios_fprint_mm_interconnect_1_cmd_xbar_demux_005
 
 );
 
-    localparam NUM_OUTPUTS = 5;
+    localparam NUM_OUTPUTS = 6;
     wire [NUM_OUTPUTS - 1 : 0] ready_vector;
 
     // -------------------
@@ -143,6 +150,13 @@ module nios_fprint_mm_interconnect_1_cmd_xbar_demux_005
 
         src4_valid         = sink_channel[4] && sink_valid[4];
 
+        src5_data          = sink_data;
+        src5_startofpacket = sink_startofpacket;
+        src5_endofpacket   = sink_endofpacket;
+        src5_channel       = sink_channel >> NUM_OUTPUTS;
+
+        src5_valid         = sink_channel[5] && sink_valid[5];
+
     end
 
     // -------------------
@@ -153,8 +167,9 @@ module nios_fprint_mm_interconnect_1_cmd_xbar_demux_005
     assign ready_vector[2] = src2_ready;
     assign ready_vector[3] = src3_ready;
     assign ready_vector[4] = src4_ready;
+    assign ready_vector[5] = src5_ready;
 
-    assign sink_ready = |(sink_channel & {{25{1'b0}},{ready_vector[NUM_OUTPUTS - 1 : 0]}});
+    assign sink_ready = |(sink_channel & {{24{1'b0}},{ready_vector[NUM_OUTPUTS - 1 : 0]}});
 
 endmodule
 

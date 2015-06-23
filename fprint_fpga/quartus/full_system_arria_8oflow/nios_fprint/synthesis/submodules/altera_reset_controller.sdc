@@ -16,7 +16,6 @@
 # +---------------------------------------------------
 set aclr_counter 0
 set clrn_counter 0
-derive_clocks -period 20 
 set aclr_collection [get_pins -compatibility_mode -nocase -nowarn *|alt_rst_sync_uq1|altera_reset_synchronizer_int_chain*|aclr]
 set clrn_collection [get_pins -compatibility_mode -nocase -nowarn *|alt_rst_sync_uq1|altera_reset_synchronizer_int_chain*|clrn]
 foreach_in_collection aclr_pin $aclr_collection {

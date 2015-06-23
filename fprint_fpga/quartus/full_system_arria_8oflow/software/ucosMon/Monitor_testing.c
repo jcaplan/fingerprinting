@@ -31,8 +31,13 @@
 #define CLKS_PER_SEC	50000000
 #define FPRINT_ISR_EN	1
 #define TASK_NAME		testing_task
-#define length 1
+#define length			20
+#define blk_sz			0xfff
+#define pren			1
+#define NUM_RUNS		10
+#define D				printf("\nD: %d\n", dbg++);
 
+int dbg = 0;
 
 /*
  * Definition of Task Priorities
@@ -71,7 +76,6 @@ int *isr_4_ptr = (int *) PROCESSOR4_0_CPU_IRQ_0_BASE;
 int *isr_5_ptr = (int *) PROCESSOR5_0_CPU_IRQ_0_BASE;
 int *isr_6_ptr = (int *) PROCESSOR6_0_CPU_IRQ_0_BASE;
 int *isr_7_ptr = (int *) PROCESSOR7_0_CPU_IRQ_0_BASE;
-int x[] = {0,1,2,3,4,5,6,7};
 
 
 int status;
@@ -95,19 +99,34 @@ void schedule_task(void* pdata){
 
 	printf("Monitor!\n");
 
+	alt_u64 core_total_time[NUM_CORES];
+	alt_u64 core_oflow_time[NUM_CORES];
 
-	while(1){
-		OSFlagPend(schedule_fgrp, 0b111100, OS_FLAG_WAIT_SET_ALL + OS_FLAG_CONSUME, 0, &err);
+	for (i = 0; i < NUM_CORES; i++) {
+		core_total_time[i] = 0;
+		core_oflow_time[i] = 0;
+	}
 
-		if(num_runs > 0) {
-			for (i = 0; i < NUM_CORES; i++) {
-				printf("core %d took %llu total, %llu oflow\n", i, cp->core_total_time[i], cp->core_oflow_time[i]);
-			}
-			OSTimeDlyHMSM(0, 0, 1, 0);
-		}
+	OSFlagPend(schedule_fgrp, 0b111100, OS_FLAG_WAIT_SET_ALL + OS_FLAG_CONSUME, 0, &err);
 
-		printf("Scheduling %d!\n", num_runs++);
+	while(num_runs <= NUM_RUNS){
 
+		while(getchar() != 'c');
+		printf("Scheduling %d!\n", num_runs);
+
+		altera_avalon_mutex_lock(mutex, 1);
+			//cp->task_pt = testing_task;
+			cp->task_id[0] = 2;
+			cp->task_id[1] = 2;
+			cp->task_length[0] = length;
+			cp->task_length[1] = length;
+			cp->fprint_enable[0] = 1;
+			cp->fprint_enable[1] = 1;
+			//*isr_1_ptr = 1;
+			//*isr_0_ptr = 1;
+		altera_avalon_mutex_unlock(mutex);
+
+		//OSTimeDlyHMSM(0, 0, 0, 10);
 
 		altera_avalon_mutex_lock(mutex, 1);
 			//cp->task_pt = testing_task;
@@ -117,9 +136,11 @@ void schedule_task(void* pdata){
 			cp->task_length[3] = length;
 			cp->fprint_enable[2] = 1;
 			cp->fprint_enable[3] = 1;
-			*isr_2_ptr = 1;
-			*isr_3_ptr = 1;
+			//*isr_2_ptr = 1;
+			//*isr_3_ptr = 1;
 		altera_avalon_mutex_unlock(mutex);
+
+		//OSTimeDlyHMSM(0, 0, 0, 10);
 
 
 		altera_avalon_mutex_lock(mutex, 1);
@@ -134,11 +155,12 @@ void schedule_task(void* pdata){
 			*isr_5_ptr = 1;
 		altera_avalon_mutex_unlock(mutex);
 
+		//OSTimeDlyHMSM(0, 0, 0, 10);
 
 		altera_avalon_mutex_lock(mutex, 1);
 			//cp->task_pt = testing_task;
-			cp->task_id[6] = (5);
-			cp->task_id[7] = (5);
+			cp->task_id[6] = 5;
+			cp->task_id[7] = 5;
 			cp->task_length[6] = length;
 			cp->task_length[7] = length;
 			cp->fprint_enable[6] = 1;
@@ -147,26 +169,30 @@ void schedule_task(void* pdata){
 			*isr_7_ptr = 1;
 		altera_avalon_mutex_unlock(mutex);
 
-
-		altera_avalon_mutex_lock(mutex, 1);
-			//cp->task_pt = testing_task;
-			cp->task_id[0] = 2;
-			cp->task_id[1] = 2;
-			cp->task_length[0] = length;
-			cp->task_length[1] = length;
-			cp->fprint_enable[0] = 1;
-			cp->fprint_enable[1] = 1;
-			*isr_1_ptr = 1;
-			*isr_0_ptr = 1;
-		altera_avalon_mutex_unlock(mutex);
-
-		//if(num_runs == 50){
-			//printf("Stopping\n");
-			//break;
-		//}
-
 		printf("sch done\n");
 
+		OSFlagPend(schedule_fgrp, 0b110000, OS_FLAG_WAIT_SET_ALL + OS_FLAG_CONSUME, 0, &err);
+
+		for (i = 0; i < NUM_CORES; i++) {
+			core_total_time[i] += cp->core_total_time[i];
+			core_oflow_time[i] += cp->core_oflow_time[i];
+			if(pren)
+				printf("core %d took %llu total, %llu oflow\n", i, cp->core_total_time[i], cp->core_oflow_time[i]);
+		}
+
+		num_runs++;
+
+	}
+
+	printf("Stopping\n\n\n");
+	//OSTimeDlyHMSM(0, 0, 5, 0);
+	printf("Avg times\n\n");
+	for (i = 0; i < NUM_CORES; i++) {
+		printf("%llu\n%llu\n", core_total_time[i]/NUM_RUNS, core_oflow_time[i]/NUM_RUNS);
+	}
+
+	while(1){
+		OSTimeDlyHMSM(0, 0, 5, 0);
 	}
 }
 
@@ -175,7 +201,7 @@ static void handle_collision_interrupt(void* context) {
 	Fprint_Status status;
 	fprint_status(&status);
 	int i;
-	//printf("Interrupt\t");
+	//printf("Interrupt\n");
 	for(i = 0; i < 16; i++) {
 		if((status.successful_reg & (1 << i)) == (1 << i)) {
 			OSFlagPost (schedule_fgrp, 1 << i , OS_FLAG_SET, &err);
@@ -226,16 +252,19 @@ int main(void) {
 		init_collision_isr();
 	}
 
+
+
 	mutex = altera_avalon_mutex_open(MUTEX_0_NAME);	//Initialize the hardware mutex
 	altera_avalon_mutex_lock(mutex, 1);
 		{
 			cp->task_pt = TASK_NAME;
 			for(i=0;i<8;i++) {
-				cp->fprint_blocksize[i] = 0x8ff;
+				cp->fprint_blocksize[i] = blk_sz;
 			}
 			cp->init_complete = 1;
 		}
 	altera_avalon_mutex_unlock(mutex);
+
 
 
 	OS_FLAGS f = 0b111100;
@@ -248,7 +277,7 @@ int main(void) {
 	//Initialize the directory for the fingerprinting unit:
 	Directory_Init_Struct d;
 
-	int dir_size = 30;
+	int dir_size = 40;
 	for(i = 0; i < 2; i++){
 		d.core_id = i;
 		d.key = 2;
@@ -272,6 +301,8 @@ int main(void) {
 		set_task_directory(&d);
 	}
 
+
+
 	Core_Assignment_Table ca;
 
 	//Default table
@@ -280,6 +311,8 @@ int main(void) {
 			ca.table[i][j] = i;
 		}
 	}
+
+
 
 	//correct table
 	ca.table[0][2] = 0;
@@ -291,15 +324,19 @@ int main(void) {
 	ca.table[0][5] = 6;
 	ca.table[1][5] = 7;
 
+
+
 	set_core_assignment_table(&ca);
 
 
-	//set maxcount values for tasks
-	set_maxcount_value(2,20);
-	set_maxcount_value(3,20);
-	set_maxcount_value(4,20);
-	set_maxcount_value(5,20);
 
+	//set maxcount values for tasks
+	set_maxcount_value(2,10);
+	set_maxcount_value(3,10);
+	set_maxcount_value(4,10);
+	set_maxcount_value(5,10);
+
+	D
 
 	//Wait for both cores to be ready
 	int p0 = 0, p1 = 0, p2 = 0, p3 = 0, p4 = 0, p5 = 0, p6 = 0, p7 = 0;
@@ -321,10 +358,12 @@ int main(void) {
 
 	}
 
+	D
+
+
 	//set memory delay
 	//enable_memory_delay();
-	//set_memory_factor(4);
-
+	//set_memory_factor(8);
 
 	//create the tasks
 	int arg_5 = CRITICAL_TASK_PRIORITY;

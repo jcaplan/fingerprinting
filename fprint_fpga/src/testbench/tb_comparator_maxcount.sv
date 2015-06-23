@@ -1,5 +1,11 @@
 `include "crc_defines.v"
-`define DIR_SIZE 512
+`define MAX_DIR_SIZE	`CRC_RAM_SIZE/16
+`define DIR_SIZE	40
+`define MAXCOUNT	10
+`define FPRINT_SPEED	50
+`define FPRINT_NUM	1000000000
+`define NUM_RUNS	10 
+
 module tb_comparator_maxcount();
 
 reg 									clk;
@@ -253,25 +259,30 @@ assign irq_csr_waitrequest = state_csr == st_isr ? csr_waitrequest : 1;
 /***********************************************=***
 task and core control signals (for 16 each)
 ***************************************************/
-reg										core_start [`CRC_KEY_SIZE-1 : 0];
-reg										core_done [`CRC_KEY_SIZE-1 : 0];
-reg										core_enable_fprints [`CRC_KEY_SIZE-1 : 0];
-reg										core_logical_id [`CRC_KEY_SIZE-1 : 0];
+reg [`CRC_KEY_SIZE-1 : 0]				core_start;
+reg [`CRC_KEY_SIZE-1 : 0]				core_done;
+reg [`CRC_KEY_SIZE-1 : 0]				core_enable_fprints;
+reg [`CRC_KEY_SIZE-1 : 0]				core_logical_id;
 reg [`CRC_KEY_WIDTH-1 : 0]				core_task_id [`CRC_KEY_SIZE-1 : 0];
-reg [`CRC_RAM_ADDRESS_WIDTH-1 : 0]		core_fprint_count [`CRC_KEY_SIZE-1 : 0];
-reg [`CRC_RAM_ADDRESS_WIDTH-1 : 0]		core_fprint_total_count [`CRC_KEY_SIZE-1 : 0];
-time									core_fprint_spd [`CRC_KEY_SIZE-1 : 0];
+reg [31:0]						core_fprint_count [`CRC_KEY_SIZE-1 : 0];
+reg [31:0]						core_fprint_total_count [`CRC_KEY_SIZE-1 : 0];
+time [`CRC_KEY_SIZE-1 : 0]				core_fprint_spd;
 
-reg										task_start [`CRC_KEY_SIZE-1 : 0];
-reg										task_done [`CRC_KEY_SIZE-1 : 0];
-reg [`CRC_RAM_ADDRESS_WIDTH-1 : 0]		task_total_fprints [`CRC_KEY_SIZE-1 : 0];
-reg [`CRC_RAM_ADDRESS_WIDTH-1 : 0]		task_fprint_mem_maxcount [`CRC_KEY_SIZE-1 : 0];
+reg [`CRC_KEY_SIZE-1 : 0]				task_start;
+reg [`CRC_KEY_SIZE-1 : 0]				task_done;
+reg [31:0]						task_total_fprints [`CRC_KEY_SIZE-1 : 0];
+reg [31:0]						task_fprint_mem_maxcount [`CRC_KEY_SIZE-1 : 0];
 reg [`CRC_KEY_WIDTH-1 : 0]				task_physical_core_id_0 [`CRC_KEY_SIZE-1 : 0];
 reg [`CRC_KEY_WIDTH-1 : 0]				task_physical_core_id_1 [`CRC_KEY_SIZE-1 : 0];
 reg [31:0]								task_success_count [`CRC_KEY_SIZE-1 : 0];
 reg	[31:0]								task_fail_count [`CRC_KEY_SIZE-1 : 0];
-time									task_core0_fprint_spd [`CRC_KEY_SIZE-1 : 0];
-time									task_core1_fprint_spd [`CRC_KEY_SIZE-1 : 0];
+time [`CRC_KEY_SIZE-1 : 0]				task_core0_fprint_spd;
+time [`CRC_KEY_SIZE-1 : 0]				task_core1_fprint_spd;
+
+reg										testing;
+reg										run;
+reg [31:0]								num_run;
+reg [31:0]								irq_count;
 
 /******************************
 Set directory start pointer
@@ -392,7 +403,7 @@ end
 endtask
 
 /******************************
-Enable a task
+Disable a task
 *******************************/
 task automatic disable_task;
 input integer core_id;
@@ -480,6 +491,29 @@ initial begin
 	
 	#5 reset = 0;
 	
+	/********************************************************************
+	* DIRECTORY INFO													
+	* write start and end pointer for all 16 tasks for both logical		
+	* cores. each task has directory address space of 10.				
+	* note: code ignores logical id. no bug, just why.					
+	********************************************************************/
+	if(`DIR_SIZE > `MAX_DIR_SIZE) begin
+		for(i = 0; i < 16; i = i + 1)begin
+			set_directory_start(0,i,i*`MAX_DIR_SIZE);
+			set_directory_end(0,i,(i+1)*`MAX_DIR_SIZE-1);
+		end
+	end else begin
+		for(i = 0; i < 16; i = i + 1)begin
+			set_directory_start(0,i,i*`DIR_SIZE);
+			set_directory_end(0,i,(i+1)*`DIR_SIZE-1);
+		end
+	end
+
+	irq_count = 0;
+	num_run = 0;
+	run = 0;
+	testing = 1;
+
 	init_complete = 1;
 end
 
@@ -608,6 +642,8 @@ begin
 	irq_csr_write = 0;
 	irq_csr_writedata = 0;
 	irq_csr_address = 0;
+
+	irq_count = irq_count+1;
 end
 
 
@@ -615,18 +651,9 @@ end
 main testing
 *******************************/
 
-always @(posedge init_complete)begin : test1
-
-	/********************************************************************
-	* DIRECTORY INFO													
-	* write start and end pointer for all 16 tasks for both logical		
-	* cores. each task has directory address space of 10.				
-	* note: code ignores logical id. no bug, just why.					
-	********************************************************************/
-	for(i = 0; i < 16; i = i + 1)begin
-		set_directory_start(0,i,i*`DIR_SIZE);
-		set_directory_end(0,i,(i+1)*`DIR_SIZE-1);
-	end
+always @(posedge run)begin : test1
+	
+	run = 0;
 	
 	/*****************************************************************
 	* perform_task() parameters:
@@ -639,62 +666,39 @@ always @(posedge init_complete)begin : test1
 	* core 0 fprint speed : multiple of 10
 	* core 1 fprint speed : multiple of 10
 	******************************************************************/
-/*
-	perform_task(0 , 99 , 8 , 0  , 1  , 50   , 500 );
-	perform_task(1 , 13 , 3 , 2  , 3  , 600  , 40  );
-	perform_task(2 , 56 , 5 , 4  , 5  , 20   , 150 );
-    perform_task(3 , 20 , 4 , 6  , 7  , 60   , 700 );
-	perform_task(4 , 44 , 7 , 8  , 9  , 300  , 30  );
-	perform_task(5 , 21 , 3 , 10 , 11 , 40   , 400 );
-	perform_task(6 , 03 , 1 , 12 , 13 , 1000 , 50  );
-	perform_task(7 , 91 , 7 , 14 , 15 , 20   , 250 );
+	/*
+	perform_task( 0 , FPRINT_NUM , MAXCOUNT , 0  , 1  , FPRINT_SPEED , FPRINT_SPEED );
+	perform_task( 1 , FPRINT_NUM , MAXCOUNT , 2  , 3  , FPRINT_SPEED , FPRINT_SPEED );
+	perform_task( 2 , FPRINT_NUM , MAXCOUNT , 4  , 5  , FPRINT_SPEED , FPRINT_SPEED );
+	perform_task( 3 , FPRINT_NUM , MAXCOUNT , 6  , 7  , FPRINT_SPEED , FPRINT_SPEED );
+	perform_task( 4 , FPRINT_NUM , MAXCOUNT , 8  , 9  , FPRINT_SPEED , FPRINT_SPEED );
+	perform_task( 5 , FPRINT_NUM , MAXCOUNT , 10 , 11 , FPRINT_SPEED , FPRINT_SPEED );
+	perform_task( 6 , FPRINT_NUM , MAXCOUNT , 12 , 13 , FPRINT_SPEED , FPRINT_SPEED );
+	perform_task( 7 , FPRINT_NUM , MAXCOUNT , 14 , 15 , FPRINT_SPEED , FPRINT_SPEED );
+	*/
 	
-	perform_task(0 , 99 , 8 , 0  , 1  , 50   , 500 );
-	perform_task(1 , 13 , 3 , 2  , 3  , 600  , 40  );
-	perform_task(2 , 56 , 5 , 4  , 5  , 20   , 150 );
-    perform_task(3 , 20 , 4 , 6  , 7  , 60   , 700 );
-	perform_task(4 , 44 , 7 , 8  , 9  , 300  , 30  );
-	perform_task(5 , 21 , 3 , 10 , 11 , 40   , 400 );
-	perform_task(6 , 03 , 1 , 12 , 13 , 1000 , 50  );
-	perform_task(7 , 91 , 7 , 14 , 15 , 20   , 250 );
-	
-	perform_task(0 , 99 , 8 , 0  , 1  , 50   , 500 );
-	perform_task(1 , 13 , 3 , 2  , 3  , 600  , 40  );
-	perform_task(2 , 56 , 5 , 4  , 5  , 20   , 150 );
-    perform_task(3 , 20 , 4 , 6  , 7  , 60   , 700 );
-	perform_task(4 , 44 , 7 , 8  , 9  , 300  , 30  );
-	perform_task(5 , 21 , 3 , 10 , 11 , 40   , 400 );
-	perform_task(6 , 03 , 1 , 12 , 13 , 1000 , 50  );
-	perform_task(7 , 91 , 7 , 14 , 15 , 20   , 250 );
-	
-	perform_task(0 , 99 , 8 , 0  , 1  , 50   , 500 );
-	perform_task(1 , 13 , 3 , 2  , 3  , 600  , 40  );
-	perform_task(2 , 56 , 5 , 4  , 5  , 20   , 150 );
-    perform_task(3 , 20 , 4 , 6  , 7  , 60   , 700 );
-	perform_task(4 , 44 , 7 , 8  , 9  , 300  , 30  );
-	perform_task(5 , 21 , 3 , 10 , 11 , 40   , 400 );
-	perform_task(6 , 03 , 1 , 12 , 13 , 1000 , 50  );
-	perform_task(7 , 91 , 7 , 14 , 15 , 20   , 250 );
+	perform_task( 2 , `FPRINT_NUM , `MAXCOUNT , 0 , 1 , `FPRINT_SPEED , `FPRINT_SPEED );
+	perform_task( 3 , `FPRINT_NUM , `MAXCOUNT , 2 , 3 , `FPRINT_SPEED , `FPRINT_SPEED );
+	perform_task( 4 , `FPRINT_NUM , `MAXCOUNT , 4 , 5 , `FPRINT_SPEED , `FPRINT_SPEED );
+	perform_task( 5 , `FPRINT_NUM , `MAXCOUNT , 6 , 7 , `FPRINT_SPEED , `FPRINT_SPEED );
 
+end
+
+
+always@(posedge clk) begin 
 	
-	perform_task(0 , 99 , 8 , 0  , 1  , 10 , 10 );
-	perform_task(1 , 13 , 3 , 2  , 3  , 10 , 10 );
-	perform_task(2 , 56 , 5 , 4  , 5  , 10 , 10 );
-    perform_task(3 , 20 , 4 , 6  , 7  , 10 , 10 );
-	perform_task(4 , 44 , 7 , 8  , 9  , 10 , 10 );
-	perform_task(5 , 21 , 3 , 10 , 11 , 10 , 10 );
-	perform_task(6 , 03 , 1 , 12 , 13 , 10 , 10 );
-	perform_task(7 , 91 , 7 , 14 , 15 , 10 , 10 );
-*/	
-	perform_task(0 , 99 , 8 , 0  , 1  , 0 , 0 );
-	perform_task(1 , 13 , 3 , 2  , 3  , 0 , 0 );
-	perform_task(2 , 56 , 5 , 4  , 5  , 0 , 0 );
-    perform_task(3 , 20 , 4 , 6  , 7  , 0 , 0 );
-	perform_task(4 , 44 , 7 , 8  , 9  , 0 , 0 );
-	perform_task(5 , 21 , 3 , 10 , 11 , 0 , 0 );
-	perform_task(6 , 03 , 1 , 12 , 13 , 0 , 0 );
-	perform_task(7 , 91 , 7 , 14 , 15 , 0 , 0 );
+	wait(init_complete == 1);
+
+	run = 1;
+	wait(irq_count == 4);
+
+	irq_count = 0;
+	num_run = num_run + 1;
 	
+	if(num_run == `NUM_RUNS) begin
+		$display("Finishing");
+		$stop;
+	end
 end
 
 endmodule
