@@ -4,7 +4,7 @@
  * Machine generated for CPU 'processor0_0_cpu0' in SOPC Builder design 'nios_fprint'
  * SOPC Builder design path: ../../nios_fprint.sopcinfo
  *
- * Generated: Tue May 19 18:03:20 EDT 2015
+ * Generated: Tue Jun 23 16:13:44 EDT 2015
  */
 
 /*
@@ -55,14 +55,15 @@ MEMORY
     memory_0_onchip_memoryMain : ORIGIN = 0x464020, LENGTH = 200672
     stack_bin : ORIGIN = 0x495000, LENGTH = 4096
     shared_memory : ORIGIN = 0x2500000, LENGTH = 1024
-    processor0_0_scratchpad : ORIGIN = 0x4200000, LENGTH = 12288
-    global : ORIGIN = 0x4203000, LENGTH = 4096
+    processor0_0_scratchpad_0 : ORIGIN = 0x4200000, LENGTH = 16384
+    processor0_0_scratchpad_1 : ORIGIN = 0x4204000, LENGTH = 16384
 }
 
 /* Define symbols for each memory base-address */
 __alt_mem_memory_0_onchip_memoryMain = 0x400000;
 __alt_mem_shared_memory = 0x2500000;
-__alt_mem_processor0_0_scratchpad = 0x4200000;
+__alt_mem_processor0_0_scratchpad_0 = 0x4200000;
+__alt_mem_processor0_0_scratchpad_1 = 0x4204000;
 
 OUTPUT_FORMAT( "elf32-littlenios2",
                "elf32-littlenios2",
@@ -121,22 +122,6 @@ SECTIONS
     } > memory_0_onchip_memoryMain
 
     PROVIDE (__flash_exceptions_start = LOADADDR(.exceptions));
-
-    .critical :
-    {
-        PROVIDE (_alt_partition_critical_start = ABSOLUTE(.));
-        *(.critical .critical.*)
-        . = ALIGN(4);
-        PROVIDE (_alt_partition_critical_end = ABSOLUTE(.));
-    } > processor0_0_scratchpad
-
-    .global :
-    {
-        PROVIDE (_alt_partition_global_start = ABSOLUTE(.));
-        *(.global .global.*)
-        . = ALIGN(4);
-        PROVIDE (_alt_partition_global_end = ABSOLUTE(.));
-    } > global
 
     .stack_bin :
     {
@@ -375,15 +360,32 @@ SECTIONS
      *
      */
 
-    .processor0_0_scratchpad : AT ( LOADADDR (.shared_memory) + SIZEOF (.shared_memory) )
+    .processor0_0_scratchpad_0 : AT ( LOADADDR (.shared_memory) + SIZEOF (.shared_memory) )
     {
-        PROVIDE (_alt_partition_processor0_0_scratchpad_start = ABSOLUTE(.));
-        *(.processor0_0_scratchpad .processor0_0_scratchpad. processor0_0_scratchpad.*)
+        PROVIDE (_alt_partition_processor0_0_scratchpad_0_start = ABSOLUTE(.));
+        *(.processor0_0_scratchpad_0 .processor0_0_scratchpad_0. processor0_0_scratchpad_0.*)
         . = ALIGN(4);
-        PROVIDE (_alt_partition_processor0_0_scratchpad_end = ABSOLUTE(.));
-    } > processor0_0_scratchpad
+        PROVIDE (_alt_partition_processor0_0_scratchpad_0_end = ABSOLUTE(.));
+    } > processor0_0_scratchpad_0
 
-    PROVIDE (_alt_partition_processor0_0_scratchpad_load_addr = LOADADDR(.processor0_0_scratchpad));
+    PROVIDE (_alt_partition_processor0_0_scratchpad_0_load_addr = LOADADDR(.processor0_0_scratchpad_0));
+
+    /*
+     *
+     * This section's LMA is set to the .text region.
+     * crt0 will copy to this section's specified mapped region virtual memory address (VMA)
+     *
+     */
+
+    .processor0_0_scratchpad_1 : AT ( LOADADDR (.processor0_0_scratchpad_0) + SIZEOF (.processor0_0_scratchpad_0) )
+    {
+        PROVIDE (_alt_partition_processor0_0_scratchpad_1_start = ABSOLUTE(.));
+        *(.processor0_0_scratchpad_1 .processor0_0_scratchpad_1. processor0_0_scratchpad_1.*)
+        . = ALIGN(4);
+        PROVIDE (_alt_partition_processor0_0_scratchpad_1_end = ABSOLUTE(.));
+    } > processor0_0_scratchpad_1
+
+    PROVIDE (_alt_partition_processor0_0_scratchpad_1_load_addr = LOADADDR(.processor0_0_scratchpad_1));
 
     /*
      * Stabs debugging sections.

@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20150205.0
-//                          Tue Jun  9 13:03:43 2015
+//                          Tue Jun 23 15:17:11 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -194,6 +194,13 @@ void platformConstructor(void) {
 
 
     handles.compbus_b = icmNewBus( "compbus", 32);
+
+////////////////////////////////////////////////////////////////////////////////
+//                               Bus resetmonbus
+////////////////////////////////////////////////////////////////////////////////
+
+
+    handles.resetmonbus_b = icmNewBus( "resetmonbus", 32);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                               Processor cpu0
@@ -911,6 +918,34 @@ void platformConstructor(void) {
     icmSetPSEdiagnosticLevel(handles.comparator_p, 3);
 
 
+////////////////////////////////////////////////////////////////////////////////
+//                              PSE reset_monitor
+////////////////////////////////////////////////////////////////////////////////
+
+
+    const char *reset_monitor_path = icmGetVlnvString(
+        0                   ,    // path (0 if from the product directory)
+        "mcgill.ca"         ,    // vendor
+        0                   ,    // library
+        "reset_monitor"     ,    // name
+        0                   ,    // version
+        "pse"                    // model
+    );
+
+    icmAttrListP reset_monitor_attrList = icmNewAttrList();
+
+    handles.reset_monitor_p = icmNewPSE(
+        "reset_monitor"     ,   // name
+        reset_monitor_path  ,   // model
+        reset_monitor_attrList,   // attrlist
+        0,       // unused
+        0        // unused
+    );
+
+    icmConnectPSEBus( handles.reset_monitor_p, handles.resetmonbus_b, "RESET_MONITOR_SLAVE", 0, 0x0, 0x3ff);
+    icmSetPSEdiagnosticLevel(handles.reset_monitor_p, 3);
+
+
     icmConnectProcessorBusByName( handles.cpu0_c, "INSTRUCTION", handles.cpu0_ibus_b );
 
     icmConnectProcessorBusByName( handles.cpu0_c, "DATA", handles.cpu0_dbus_b );
@@ -1200,6 +1235,27 @@ void platformConstructor(void) {
 
     icmNewBusBridge(handles.cpu1_dmabus_b, handles.mmbus_b, "cpu1_dmamm_bridge", "sp1", "mp1", 0x0, 0xf9fff, 0x400000);
 
+////////////////////////////////////////////////////////////////////////////////
+//                        Bridge cpum_reset_mon_bridge
+////////////////////////////////////////////////////////////////////////////////
+
+
+    icmNewBusBridge(handles.cpum_dbus_b, handles.resetmonbus_b, "cpum_reset_mon_bridge", "sp1", "mp1", 0x0, 0x3ff, 0x2800000);
+
+////////////////////////////////////////////////////////////////////////////////
+//                        Bridge cpu0_reset_mon_bridge
+////////////////////////////////////////////////////////////////////////////////
+
+
+    icmNewBusBridge(handles.cpu0_tlbbus_b, handles.resetmonbus_b, "cpu0_reset_mon_bridge", "sp1", "mp1", 0x0, 0x3ff, 0x2800000);
+
+////////////////////////////////////////////////////////////////////////////////
+//                        Bridge cpu1_reset_mon_bridge
+////////////////////////////////////////////////////////////////////////////////
+
+
+    icmNewBusBridge(handles.cpu1_tlbbus_b, handles.resetmonbus_b, "cpu1_reset_mon_bridge", "sp1", "mp1", 0x0, 0x3ff, 0x2800000);
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                 CONNECTIONS
@@ -1351,4 +1407,11 @@ void platformConstructor(void) {
     icmConnectProcessorNet( handles.cpum_c, handles.cpum_irq1_n, "d_irq1", 0);
 
     icmConnectPSENet( handles.cpu_irq_p, handles.cpum_irq1_n, "cpum_irq", 0);
+
+////////////////////////////////////////////////////////////////////////////////
+    handles.cpum_notify1_n = icmNewNet("handles.cpum_notify1_n" );
+
+    icmConnectProcessorNet( handles.cpum_c, handles.cpum_notify1_n, "d_irq13", 0);
+
+    icmConnectPSENet( handles.reset_monitor_p, handles.cpum_notify1_n, "cpum_notify", 0);
 }

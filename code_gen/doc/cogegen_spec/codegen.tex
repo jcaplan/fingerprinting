@@ -803,10 +803,24 @@ The monitor tasks must run on the FTC. They consist of:
   \item organizing coordinated virtual memory management and memory protection between cores to achieve correct fingerprinting
 \end{itemize} 
 
+Figure~\ref{f:monitor-send} shows a high-level view of how the interaction between monitor tasks in order to send a message.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.7]{figures/monitor-send.pdf}
+\caption{The interaction between monitor tasks when setting up a critical task to run on another core}
+\label{f:monitor-send}
+\end{figure}
+
+\textbf{MODULARITY VS. CONTEXT SWITCH OVERHEAD $\rightarrow$ FUNCTIONAL VS. TASK-BASED DIVISION OF LABOUR???}
+
+The monitor is responsible for ensuring that 
+
+\subsubsection{Integration of Simulink generated code}
+
 The code generated from the Simulink model will dictate how to structure the communication between tasks. Functions must be generated using the reusable code option and using the input and output structures option. Discrete models must be used for Nios compatibility.
 
 \todojc{show simulink options menu figure here}
-
 There are three functions generated for each group of blocks: an initalization, a termination, and a step function. Example function declarations are shown in Listing~\ref{l:airbag-proto} along with the struct definitions for the input parameters. There are three different parameters for all the function: 
 \texttt{RT\_MODEL\_AirbagModel\_T} stores the state that is needed between time steps, \texttt{ExtU\_AirbagModel\_T} stores the external input parameters, and \texttt{ExtY\_AirbagModel\_T} stores the external outputs. The members of each input and output struct must either connect to inputs and outputs of other functions or communicate somehow with on-chip peripherals or through IO. The connection to IO is not currently implemented.
 
@@ -834,7 +848,7 @@ typedef struct {
 } ExtU_Derivative_T;
 \end{lstlisting}
 
-There will be two more levels of packaging for the monitor that will be used later on for convenient DMA transfers. First, all three structs will be packaged in a single container. Then, for all critical tasks that will require DMA transfer and that have precedence relations between them (i.e. the completion of one triggers the beginning of the next), they will be placed in a single struct so that the DMA can transfer data with a single command. The structs, presented in Listing~\ref{l:dma-struct}, are not all located in the same file.
+There will be two more levels of packaging for the monitor that will be used later on for convenient DMA transfers. First, all three structs will be packaged in a single container. Then, for all critical tasks that will require DMA transfer and that have precedence relations between them (i.e. the completion of one triggers the beginning of the next), they will be placed in a single struct so that the DMA can transfer data with a single command. The structs, presented in Listing~\ref{l:dma-struct}, are not all located in the same file. The model contains pointers that must be assigned to static variables manually. Examples are located in the \texttt{ert\_main.c} file accompanying each generated project.
 
 \begin{lstlisting}[caption={Structures of structures to facilitate DMA transfer.},label=l:dma-struct,language=C]
 /* LOCATED IN critical.h */

@@ -60,19 +60,19 @@
          type = "String";
       }
    }
-   element processorM_0.cpu_irq_0_s0
-   {
-      datum baseAddress
-      {
-         value = "35653632";
-         type = "String";
-      }
-   }
    element processor0_0.cpu_irq_0_s0
    {
       datum baseAddress
       {
          value = "35651584";
+         type = "String";
+      }
+   }
+   element processorM_0.cpu_irq_0_s0
+   {
+      datum baseAddress
+      {
+         value = "35653632";
          type = "String";
       }
    }
@@ -148,6 +148,14 @@
          type = "int";
       }
    }
+   element processorM_0.reset_monitor_0_s0
+   {
+      datum baseAddress
+      {
+         value = "41943040";
+         type = "String";
+      }
+   }
    element mm_bridge_0.s0
    {
       datum baseAddress
@@ -156,19 +164,19 @@
          type = "String";
       }
    }
-   element shared_memory.s1
-   {
-      datum baseAddress
-      {
-         value = "38797312";
-         type = "String";
-      }
-   }
    element mutex_0.s1
    {
       datum baseAddress
       {
          value = "36700160";
+         type = "String";
+      }
+   }
+   element shared_memory.s1
+   {
+      datum baseAddress
+      {
+         value = "38797312";
          type = "String";
       }
    }
@@ -523,11 +531,6 @@
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
-   kind="clock"
-   version="13.1"
-   start="clk_0.clk"
-   end="processorM_0.philosopher_clk_in" />
- <connection
    kind="reset"
    version="13.1"
    start="clk_0.clk_reset"
@@ -582,13 +585,6 @@
    version="13.1"
    start="processorM_0.dma_0_irq_receiver_irq"
    end="processor0_0.dma_0_irq">
-  <parameter name="irqNumber" value="0" />
- </connection>
- <connection
-   kind="interrupt"
-   version="13.1"
-   start="processorM_0.dma_1_irq_receiver_irq"
-   end="processor1_0.dma_0_irq">
   <parameter name="irqNumber" value="0" />
  </connection>
  <connection
@@ -684,6 +680,45 @@
    version="13.1"
    start="processor1_0.sw_reset_0_reset_source"
    end="processor1_0.reset" />
+ <connection
+   kind="avalon"
+   version="13.1"
+   start="processor0_0.out_system_bridge_m0"
+   end="processorM_0.reset_monitor_0_s0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x02800000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="13.1"
+   start="processor1_0.outgoing_master"
+   end="processorM_0.reset_monitor_0_s0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x02800000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="13.1"
+   start="processorM_0.outgoing_master"
+   end="processorM_0.reset_monitor_0_s0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x02800000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="clock"
+   version="13.1"
+   start="clk_0.clk"
+   end="processorM_0.philosopher_clk_in" />
+ <connection
+   kind="interrupt"
+   version="13.1"
+   start="processorM_0.dma_0_irq_receiver_irq"
+   end="processor1_0.dma_0_irq">
+  <parameter name="irqNumber" value="1" />
+ </connection>
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
 </system>

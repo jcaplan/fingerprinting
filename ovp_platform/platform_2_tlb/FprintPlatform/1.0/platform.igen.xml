@@ -696,6 +696,8 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             name="d_irq3"/>
         <netportconnection connection="cpum_irq1"
             name="d_irq1"/>
+        <netportconnection connection="cpum_notify1"
+            name="d_irq13"/>
     </processorinstance>
     <bus addresswidth="32"
         name="cpum_iobus"/>
@@ -947,6 +949,49 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
         <netportconnection connection="cpum_irq3"
             name="COMP_IRQ"/>
     </peripheralinstance>
+    <bus addresswidth="32"
+        name="resetmonbus"/>
+    <peripheralinstance diagnosticlevel="3"
+        name="reset_monitor">
+        <vlnvreference name="reset_monitor"
+            vendor="mcgill.ca"/>
+        <busslaveportconnection connection="resetmonbus"
+            hiaddress="0x3ff"
+            loaddress="0x0"
+            name="RESET_MONITOR_SLAVE"/>
+        <netportconnection connection="cpum_notify1"
+            name="cpum_notify"/>
+    </peripheralinstance>
+    <bridge name="cpum_reset_mon_bridge">
+        <busslaveportconnection connection="cpum_dbus"
+            hiaddress="0x28003ff"
+            loaddress="0x2800000"
+            name="sp1"/>
+        <busmasterportconnection connection="resetmonbus"
+            hiaddress="0x3ff"
+            loaddress="0x0"
+            name="mp1"/>
+    </bridge>
+    <bridge name="cpu0_reset_mon_bridge">
+        <busslaveportconnection connection="cpu0_tlbbus"
+            hiaddress="0x28003ff"
+            loaddress="0x2800000"
+            name="sp1"/>
+        <busmasterportconnection connection="resetmonbus"
+            hiaddress="0x3ff"
+            loaddress="0x0"
+            name="mp1"/>
+    </bridge>
+    <bridge name="cpu1_reset_mon_bridge">
+        <busslaveportconnection connection="cpu1_tlbbus"
+            hiaddress="0x28003ff"
+            loaddress="0x2800000"
+            name="sp1"/>
+        <busmasterportconnection connection="resetmonbus"
+            hiaddress="0x3ff"
+            loaddress="0x0"
+            name="mp1"/>
+    </bridge>
     <nets name="nets">
         <net name="cpu0_irq4"/>
         <net name="cpu0_irq0"/>
@@ -968,6 +1013,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
         <net name="cpum_irq6"/>
         <net name="cpum_irq3"/>
         <net name="cpum_irq1"/>
+        <net name="cpum_notify1"/>
     </nets>
     <fileversion major="1"
         minor="0"

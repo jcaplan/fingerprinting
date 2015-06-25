@@ -20,9 +20,9 @@
 // Altera IRQ Mapper
 //
 // Parameters
-//   NUM_RCVRS        : 7
+//   NUM_RCVRS        : 8
 //   SENDER_IRW_WIDTH : 32
-//   IRQ_MAP          : 0:0,1:4,2:2,3:1,4:3,5:5,6:6
+//   IRQ_MAP          : 0:0,1:4,2:2,3:1,4:3,5:5,6:6,7:13
 //
 // -------------------------------------------------------
 
@@ -46,6 +46,7 @@ module nios_fprint_processorM_0_irq_mapper
     input                receiver4_irq,
     input                receiver5_irq,
     input                receiver6_irq,
+    input                receiver7_irq,
 
     // -------------------
     // Command Source (Output)
@@ -64,6 +65,7 @@ module nios_fprint_processorM_0_irq_mapper
         sender_irq[3] = receiver4_irq;
         sender_irq[5] = receiver5_irq;
         sender_irq[6] = receiver6_irq;
+        sender_irq[13] = receiver7_irq;
     end
 
 endmodule

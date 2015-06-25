@@ -15,6 +15,7 @@
 #include "TractionControl.h"
 #include "shared_mem.h"
 #include "gp.h"
+#include "reset_monitor.h"
 
 /*****************************************************************************
  * Defines
@@ -39,33 +40,20 @@
 
 #define STACKSIZE_MINOFFSET   				314
 #define STACKSIZE_MARGINERROR 				15
-#define CruiseControlSystem_STACKSIZE 		(200 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-#define TransferResult_STACKSIZE 			(220 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-#define TractionControl_STACKSIZE 			(200 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-#define DMA_STACKSIZE 						(200 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-#define Failed_STACKSIZE 					(200 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
+#define CruiseControlSystem_STACKSIZE 		(1000 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
+#define DMA_STACKSIZE 						(1000 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
+#define Failed_STACKSIZE 					(1000 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
 
 /*****************************************************************************
  * Task Priorities
  *****************************************************************************/
 #define CruiseControlSystem_PRIORITY 		13
-#define TransferResult_PRIORITY 			14
-#define TractionControl_PRIORITY 			17
-#define DMA_PRIORITY 						15
-#define Failed_PRIORITY						18
+#define DMA_PRIORITY 						12
+#define Failed_PRIORITY						11
 
 /*****************************************************************************
  * Task control flow conditions
  *****************************************************************************/
-#define TransferResult_FLAG0_CONDITION 			0xf
-#define TransferResult_FLAG0_WAITTYPE 			(OS_FLAG_WAIT_SET_ANY | OS_FLAG_CONSUME)
-#define TransferResult_FLAG0_TIMEOUT 			0
-#define TransferResult_FLAG0_SENDER1_BITMASK	((OS_FLAGS)0x1)
-#define TransferResult_FLAG0_SENDER2_BITMASK	((OS_FLAGS)0x2)
-#define TransferResult_FLAG0_SENDER3_BITMASK	((OS_FLAGS)0x4)
-#define TransferResult_FLAG0_INITCOND			0
-
-#define TractionControl_SEM0_INITCOND 			0
 
 #define CORE0_SCRATCHPAD_GLOBAL_ADDRESS 			((void*)0x4203000)
 #define CORE1_SCRATCHPAD_GLOBAL_ADDRESS 			((void*)0x4203000)
@@ -76,7 +64,7 @@
 #define Derivative_COMPSTATUS_MASK 						0x1
 
 #define dmaReady_FLAG0_INITCOND 				0
-#define dmaReady_FLAG0_CORE0_M0_BITMASK 		0x1
+#define dmaReady_FLAG0_CORE0_M0_BITMASK 		0x1 /* comment should go here explaining each message */
 #define dmaReady_FLAG0_CORE0_M1_BITMASK 		0x2
 #define dmaReady_FLAG0_CORE0_M2_BITMASK 		0x4
 #define dmaReady_FLAG0_CORE0_DMAREADY 			0x8
@@ -91,8 +79,10 @@
 #define dmaReady_FLAG0_CORE0_CONDITION 				0x0f
 #define dmaReady_FLAG0_CORE1_CONDITION 				0xf0
 
-
 #define NUM_CRITICAL_TASKS 						2
+
+bool coresReady = false;
+
 /*****************************************************************************
  * The global variable declarations for each critical task
  *****************************************************************************/
@@ -130,8 +120,6 @@ P_TractionControl_T tractionControl_defaultParam;
  * Only tasks executing on this core require stacks
  *****************************************************************************/
 OS_STK CruiseControlSystem_STACK[CruiseControlSystem_STACKSIZE] __attribute__ ((section (".critical")));
-OS_STK TractionControl_STACK[TractionControl_STACKSIZE] __attribute__ ((section (".critical")));
-OS_STK TransferResult_STACK[TransferResult_STACKSIZE] __attribute__ ((section (".critical")));
 OS_STK DMA_STACK[DMA_STACKSIZE] __attribute__ ((section (".critical")));
 OS_STK Failed_STACK[Failed_STACKSIZE] __attribute__ ((section (".critical")));
 
@@ -204,24 +192,37 @@ void CruiseControlSystem_TASK(void* pdata) {
 		CruiseControlSystem_step(&CruiseControlSystem_M, &CruiseControlSystem_U,
 				&CruiseControlSystem_Y);
 		INT8U perr = 0;
-		OSFlagPost(TransferResult_FLAG0, TransferResult_FLAG0_SENDER1_BITMASK,
-				OS_FLAG_SET, &perr);
-		OSTimeDlyHMSM(0, 0, 0, 20);
-	}
-}
 
-/*****************************************************************************
- * TractionControl Task wrapper
- *****************************************************************************/
-void TractionControl_TASK(void* pdata) {
-	while (1) {
-		INT8U perr;
-		OSSemPend(TractionControl_SEM0, 0, &perr);
+		//---------------------------------
+		dmaPackageStruct_0.derivativeStruct_0.Derivative_U.In1 =
+				CruiseControlSystem_Y.Out1;
+
+		//CruiseControlSystem -> TractionControl
+		//--------------------------------------
+		TractionControl_U.CurrentSpeedPoweredAxle = CruiseControlSystem_Y.Out1;
+
+		//Derivative,Airbag -> Core 0
+		//Starting assumption: no instruction scratchpad
+		//Move only the data
+		//Only one critical task in scratchpad at a time
+		//--------------------
+
+		//Derivative -> Core 1
+		//--------------------
+		OSFlagPost(dmaReady_FLAG0,
+				dmaReady_FLAG0_CORE0_M0_BITMASK
+						| dmaReady_FLAG0_CORE0_M1_BITMASK
+						| dmaReady_FLAG0_CORE1_M0_BITMASK
+						| dmaReady_FLAG0_CORE1_M1_BITMASK, OS_FLAG_SET, &perr);
+
 		TractionControl_step(&TractionControl_M, &TractionControl_U,
 				&TractionControl_Y);
-		OSFlagPost(TransferResult_FLAG0, TransferResult_FLAG0_SENDER2_BITMASK,
-				OS_FLAG_SET, &perr);
+
+		CruiseControlSystem_U.In2 = TractionControl_Y.ControlFeedback;
+
 		printf("did traction control %d\n", perr);
+
+		OSTimeDlyHMSM(0, 0, 0, 20);
 	}
 }
 
@@ -279,15 +280,13 @@ void dma_TASK(void* pdata) {
 	}
 	while (1) {
 		printf("dma task\n");
+
 		OS_FLAGS sender = OSFlagPend(dmaReady_FLAG0, dmaReadyFlag,
 				dmaReady_FLAG0_WAITTYPE, dmaReady_FLAG0_TIMEOUT, &perr);
 		HandleDMAStruct *message = NULL;
 
 		//Two cores handled separately
 		//----------------------------
-
-		//Core 0
-		//------
 		if (sender & dmaReady_FLAG0_CORE0_M0_BITMASK) {
 			message = &handleDMAStruct_0[0];
 			OSFlagPost(dmaReady_FLAG0, dmaReady_FLAG0_CORE0_M0_BITMASK,
@@ -305,17 +304,16 @@ void dma_TASK(void* pdata) {
 					OS_FLAG_CLR, &perr);
 			if (messagePending[0] != NULL) {
 				message = messagePending[0];
-				sendDMA(message->sourceAddress, message->destAddress,
-						message->size, message);
 				messagePending[0] = NULL;
-				message = NULL;
 				dmaReadyFlag |= dmaReady_FLAG0_CORE0_CONDITION;
 			}
 		}
 
 		//send message
+		//TODO update the virtual address based on what's happening in the processing cores
 		if (message != NULL) {
 			if (dmaReady[0]) {
+				dmaReady[0] = false;
 				sendDMA(message->sourceAddress, message->destAddress,
 						message->size, message);
 			} else {
@@ -341,28 +339,23 @@ void dma_TASK(void* pdata) {
 					OS_FLAG_CLR, &perr);
 			if (messagePending[1] != NULL) {
 				message = messagePending[1];
-				sendDMA(message->sourceAddress, message->destAddress,
-						message->size, message);
 				messagePending[1] = NULL;
-				message = NULL;
 				dmaReadyFlag |= dmaReady_FLAG0_CORE1_CONDITION;
 			}
 		}
 
 		//send message
 		if (message != NULL) {
-			if (dmaReady[0]) {
+			if (dmaReady[1]) {
+				dmaReady[1] = false;
 				sendDMA(message->sourceAddress, message->destAddress,
 						message->size, message);
 			} else {
-				dmaReadyFlag &= 0xF0 | dmaReady_FLAG0_CORE0_DMAREADY;
-				messagePending[0] = message;
+				dmaReadyFlag &= 0x0F | dmaReady_FLAG0_CORE1_DMAREADY;
+				messagePending[1] = message;
 			}
+
 		}
-
-		printf("after clearing flags = %x\n",
-				OSFlagQuery(dmaReady_FLAG0, &perr));
-
 	}
 }
 
@@ -436,80 +429,6 @@ void sendDMA(void* sourceAddress, void* destAddress, int size, void *handle) {
 	}
 }
 int result = 0;
-/*****************************************************************************
- * TransferResult Task wrapper
- *
- * This task handles all critical task dataflow.
- *****************************************************************************/
-void TransferResult_TASK(void* pdata) {
-
-	while (1) {
-		INT8U perr;
-		OS_FLAGS sender = OSFlagPend(TransferResult_FLAG0,
-				TransferResult_FLAG0_CONDITION, TransferResult_FLAG0_WAITTYPE,
-				TransferResult_FLAG0_TIMEOUT, &perr);
-		switch (sender) {
-		case TransferResult_FLAG0_SENDER1_BITMASK:
-
-			//CruiseControlSystem -> Derivative
-			//---------------------------------
-			dmaPackageStruct_0.derivativeStruct_0.Derivative_U.In1 =
-					CruiseControlSystem_Y.Out1;
-
-			//CruiseControlSystem -> TractionControl
-			//--------------------------------------
-			TractionControl_U.CurrentSpeedPoweredAxle =
-					CruiseControlSystem_Y.Out1;
-
-			//Derivative,Airbag -> Core 0
-			//Starting assumption: no instruction scratchpad
-			//Move only the data
-			//Only one critical task in scratchpad at a time
-			//--------------------
-			OSFlagPost(dmaReady_FLAG0,
-					dmaReady_FLAG0_CORE0_M0_BITMASK
-							| dmaReady_FLAG0_CORE0_M1_BITMASK, OS_FLAG_SET,
-					&perr);
-			//Derivative -> Core 1
-			//--------------------
-			OSFlagPost(dmaReady_FLAG0,
-					dmaReady_FLAG0_CORE1_M0_BITMASK
-							| dmaReady_FLAG0_CORE1_M1_BITMASK, OS_FLAG_SET,
-					&perr);
-
-			printf("sender 1\n");
-			OSSemPost(TractionControl_SEM0);
-			break;
-		case TransferResult_FLAG0_SENDER2_BITMASK:
-			//TractionControl -> CruiseControl
-			//--------------------------------
-			CruiseControlSystem_U.In2 = TractionControl_Y.ControlFeedback;
-			printf("sender 2\n");
-			break;
-		case TransferResult_FLAG0_SENDER3_BITMASK:
-			//Core 0 -> AirbagModel_Y.output
-			//------------------------------
-			OSFlagPost(dmaReady_FLAG0, dmaReady_FLAG0_CORE0_M2_BITMASK,
-					OS_FLAG_SET, &perr);
-			printf("sender 3\n");
-			break;
-		}
-	}
-}
-
-void waitForCores(void) {
-	int p0 = 0, p1 = 0;
-	while ((p0 != 1) || (p1 != 1)) {
-		altera_avalon_mutex_lock(mutex, 1);
-		{
-			p0 = shared_stab.core_ready[0];
-			p1 = shared_stab.core_ready[1];
-		}
-		altera_avalon_mutex_unlock(mutex);
-	}
-	shared_stab.core_ready[0] = 0;
-	shared_stab.core_ready[1] = 0;
-}
 
 /*****************************************************************************
  * Comparator ISR
@@ -527,8 +446,12 @@ static void handleCompISR(void* context) {
 	//---------------------------------------------------------------------
 	INT8U perr;
 	if (status.successful_reg & AirbagModel_COMPSTATUS_MASK) {
-		OSFlagPost(TransferResult_FLAG0, TransferResult_FLAG0_SENDER3_BITMASK,
-				OS_FLAG_SET, &perr);
+
+		//Core 0 -> AirbagModel_Y.output
+		//------------------------------
+		OSFlagPost(dmaReady_FLAG0, dmaReady_FLAG0_CORE0_M2_BITMASK, OS_FLAG_SET,
+				&perr);
+
 		result = status.successful_reg;
 	}
 	if (status.failed_reg) {
@@ -537,6 +460,8 @@ static void handleCompISR(void* context) {
 		int* cpu1_reset = (int*) PROCESSOR1_0_SW_RESET_0_BASE;
 		*cpu0_reset = 1;
 		*cpu1_reset = 1;
+		coresReady = false;
+		OSTaskSuspend(DMA_PRIORITY);
 		OSSemPost(failed_SEM0);
 
 	}
@@ -553,21 +478,38 @@ static void failed_TASK(void* pdata) {
 	while (1) {
 		INT8U perr;
 		OSSemPend(failed_SEM0, 0, &perr);
-		waitForCores();
-		printf("cores restarted\n");
+		resetMonitorEnable();
+		OSSemPend(failed_SEM0, 0, &perr);
+		coresReady = true;
+		OSFlagPost(dmaReady_FLAG0, 0xFFFFu, OS_FLAG_CLR, &perr);
 		OSFlagPost(dmaReady_FLAG0,
 				dmaReady_FLAG0_CORE0_M0_BITMASK
-						| dmaReady_FLAG0_CORE0_M1_BITMASK, OS_FLAG_SET, &perr);
-		//Derivative -> Core 1
-		//--------------------
-		OSFlagPost(dmaReady_FLAG0,
-				dmaReady_FLAG0_CORE1_M0_BITMASK
+						| dmaReady_FLAG0_CORE0_M1_BITMASK
+						| dmaReady_FLAG0_CORE1_M0_BITMASK
 						| dmaReady_FLAG0_CORE1_M1_BITMASK, OS_FLAG_SET, &perr);
+
+		OSTaskResume(DMA_PRIORITY);
 
 	}
 }
 
+/*****************************************************************************
+ * Reset monitor interface
+ *****************************************************************************/
 
+static void handleResetMonitor(void* context) {
+	resetMonitorDisable();
+	coresReady = true;
+	OSSemPost(failed_SEM0);
+
+}
+
+static void initResetMonitorIsr(void) {
+	alt_ic_isr_register(
+			PROCESSORM_0_RESET_MONITOR_0_IRQ_INTERRUPT_CONTROLLER_ID,
+			PROCESSORM_0_RESET_MONITOR_0_IRQ, handleResetMonitor, (void*) NULL,
+			(void*) NULL);
+}
 
 /*****************************************************************************
  * Main entry point
@@ -594,6 +536,11 @@ int main(void) {
 	functionTable[1].blocksize = 0xfff;
 
 	//Initialize the runtime interface
+
+	// Initialize the reset monitor
+	resetMonitorMonReg(3);
+	resetMonitorEnable();
+	initResetMonitorIsr();
 
 	//Pass information to processing cores and notify them to begin their startup
 	//---------------------------------------------------------------------------
@@ -647,37 +594,37 @@ int main(void) {
 
 	//Initialize the Matlab tasks
 	//---------------------------
-	CruiseControlSystem_M.ModelData.defaultParam = &cruiseControlSystem_defaultParam;
+	CruiseControlSystem_M.ModelData.defaultParam =
+			&cruiseControlSystem_defaultParam;
 	CruiseControlSystem_M.ModelData.dwork = &cruiseControlSystem_dwork;
 	CruiseControlSystem_initialize(&CruiseControlSystem_M,
 			&CruiseControlSystem_U, &CruiseControlSystem_Y);
-
 
 	TractionControl_M.ModelData.defaultParam = &tractionControl_defaultParam;
 	TractionControl_initialize(&TractionControl_M, &TractionControl_U,
 			&TractionControl_Y);
 
-
 	AirbagModelStruct *airbagModelStruct_0 =
 			&dmaPackageStruct_0.airbagModelStruct_0;
-	airbagModelStruct_0->AirbagModel_M.ModelData.defaultParam = &airbagModel_defaultParam;
+	airbagModelStruct_0->AirbagModel_M.ModelData.defaultParam =
+			&airbagModel_defaultParam;
 	airbagModelStruct_0->AirbagModel_M.ModelData.dwork = &airbagModel_dwork;
 	AirbagModel_initialize(&airbagModelStruct_0->AirbagModel_M,
 			&airbagModelStruct_0->AirbagModel_U,
 			&airbagModelStruct_0->AirbagModel_Y);
 
-
-	DerivativeStruct *derivativeStruct_0 = &dmaPackageStruct_0.derivativeStruct_0;
-	derivativeStruct_0->Derivative_M.ModelData.defaultParam = &derivative_defaultParam;
+	DerivativeStruct *derivativeStruct_0 =
+			&dmaPackageStruct_0.derivativeStruct_0;
+	derivativeStruct_0->Derivative_M.ModelData.defaultParam =
+			&derivative_defaultParam;
 	derivativeStruct_0->Derivative_M.ModelData.dwork = &derivative_dwork;
 	Derivative_initialize(&derivativeStruct_0->Derivative_M,
-			&derivativeStruct_0->Derivative_U, &derivativeStruct_0->Derivative_Y);
+			&derivativeStruct_0->Derivative_U,
+			&derivativeStruct_0->Derivative_Y);
 
 	//Initialize the control flow data structures
 	//-------------------------------------------
 	INT8U perr;
-	TransferResult_FLAG0 = OSFlagCreate(TransferResult_FLAG0_INITCOND, &perr);
-	TractionControl_SEM0 = OSSemCreate(TractionControl_SEM0_INITCOND);
 	failed_SEM0 = OSSemCreate(failed_SEM0_INITCOND);
 	dmaReady_FLAG0 = OSFlagCreate(dmaReady_FLAG0_INITCOND, &perr);
 
@@ -689,27 +636,17 @@ int main(void) {
 			CruiseControlSystem_STACK, CruiseControlSystem_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
 
-	OSTaskCreateExt(TractionControl_TASK, NULL,
-			&TractionControl_STACK[TractionControl_STACKSIZE - 1],
-			TractionControl_PRIORITY, TractionControl_PRIORITY,
-			TractionControl_STACK, TractionControl_STACKSIZE, NULL,
-			OS_TASK_OPT_STK_CLR);
-
-	OSTaskCreateExt(TransferResult_TASK, NULL,
-			&TransferResult_STACK[TransferResult_STACKSIZE - 1],
-			TransferResult_PRIORITY, TransferResult_PRIORITY,
-			TransferResult_STACK, TransferResult_STACKSIZE, NULL,
-			OS_TASK_OPT_STK_CLR);
-
 	OSTaskCreateExt(dma_TASK, NULL, &DMA_STACK[DMA_STACKSIZE - 1], DMA_PRIORITY,
 			DMA_PRIORITY, DMA_STACK, DMA_STACKSIZE, NULL, OS_TASK_OPT_STK_CLR);
 
 	OSTaskCreateExt(failed_TASK, NULL, &Failed_STACK[Failed_STACKSIZE - 1],
 			Failed_PRIORITY, Failed_PRIORITY, Failed_STACK, Failed_STACKSIZE,
 			NULL, OS_TASK_OPT_STK_CLR);
+
 	//Wait for confirmation that other cores have completed their startup routines
 	//----------------------------------------------------------------------------
-	waitForCores();
+	while (!coresReady)
+		;
 
 	//Start the OS
 	//------------

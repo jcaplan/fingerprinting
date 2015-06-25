@@ -2,10 +2,10 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>9-Jun-2015 12:20:23 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1433866823891</BspGeneratedUnixTimeStamp>
-        <BspGeneratedLocation>./</BspGeneratedLocation>
-        <BspSettingsFile>ucosMon_bsp/settings.bsp</BspSettingsFile>
+        <BspGeneratedTimeStamp>Jun 23, 2015 4:34:20 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1435091660597</BspGeneratedUnixTimeStamp>
+        <BspGeneratedLocation>/data/jcapla9/fingerprinting/automotive_control/rtos/ucosMon_bsp</BspGeneratedLocation>
+        <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../nios_fprint.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
         <Cpu>processorM_0_cpuM</Cpu>
@@ -1843,6 +1843,12 @@
                 <addressRange>0x02500000 - 0x025003FF</addressRange>
                 <addressSpan>1024</addressSpan>
                 <attributes>memory</attributes>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>processorM_0_reset_monitor_0</slaveDescriptor>
+                <addressRange>0x02800000 - 0x028003FF</addressRange>
+                <addressSpan>1024</addressSpan>
+                <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>processor0_0_sw_reset_0</slaveDescriptor>

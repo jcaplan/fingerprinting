@@ -45,8 +45,7 @@ PPM_NET_CB(do_reset){
             physical_address[i] = 0;
             fprint_table[i] = 0;
         }
-        fprint_table[33] = 0;
-        diagnosticLevel = 3;
+        fprint_table[32] = 0;
         ppmCreateDynamicBridge("TLB_SLAVE", 0x0, 0xffffffff, "TLB_MASTER", 0x0);
     }
 }

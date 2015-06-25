@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <peripheral constructor="constructor"
+    destructor="destructor"
+    imagefile="pse.pse"
+    library="peripheral"
+    name="reset_monitor"
+    vendor="mcgill.ca"
+    version="1.0">
+    <docsection name="doc"
+        text="Description">
+        <doctext name="txt"
+            text="reset monitor peripheral model"/>
+    </docsection>
+    <busslaveport addresswidth="32"
+        mustbeconnected="T"
+        name="RESET_MONITOR_SLAVE"
+        size="0x400">
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="SW Reset slave port"/>
+        </docsection>
+        <addressblock name="ab32"
+            size="0x400"
+            width="32">
+            <memorymappedregister access="rw"
+                isvolatile="T"
+                name="enableReg"
+                readfunction="regRd32"
+                width="32"
+                writefunction="writeEnableReg"/>
+            <memorymappedregister access="rw"
+                isvolatile="T"
+                name="monitorReg"
+                offset="0x4"
+                readfunction="regRd32"
+                width="32"
+                writefunction="writeMonitorReg"/>
+            <memorymappedregister access="rw"
+                isvolatile="T"
+                name="coreStatusReg"
+                offset="0x8"
+                readfunction="regRd32"
+                width="32"
+                writefunction="writeCoreReg"/>
+        </addressblock>
+    </busslaveport>
+    <netport name="cpum_notify"
+        type="output"
+        updatefunctionargument="0"/>
+    <fileversion major="1"
+        minor="0"
+        name="_version_0"/>
+ </peripheral>

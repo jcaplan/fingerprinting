@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20150205.0
-//                          Tue Jun  9 13:03:43 2015
+//                          Tue Jun 23 15:17:11 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -37,6 +37,7 @@ struct handlesS {
     icmBusP              cpu0_dmabus_b;
     icmBusP              cpu1_dmabus_b;
     icmBusP              compbus_b;
+    icmBusP              resetmonbus_b;
     icmProcessorP        cpu0_c;
     icmProcessorP        cpu1_c;
     icmProcessorP        cpum_c;
@@ -68,6 +69,7 @@ struct handlesS {
     icmPseP              cpu0_dma_p;
     icmPseP              cpu1_dma_p;
     icmPseP              comparator_p;
+    icmPseP              reset_monitor_p;
     icmNetP              cpu0_irq4_n;
     icmNetP              cpu0_irq0_n;
     icmNetP              cpu0_irq1_n;
@@ -88,4 +90,5 @@ struct handlesS {
     icmNetP              cpum_irq6_n;
     icmNetP              cpum_irq3_n;
     icmNetP              cpum_irq1_n;
+    icmNetP              cpum_notify1_n;
 } handles;

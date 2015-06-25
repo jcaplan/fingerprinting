@@ -2,7 +2,7 @@ set_global_assignment -entity "nios_fprint" -library "nios_fprint" -name IP_TOOL
 set_global_assignment -entity "nios_fprint" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
 set_global_assignment -entity "nios_fprint" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -library "nios_fprint" -name SOPCINFO_FILE [file join $::quartus(qip_path) "../../nios_fprint.sopcinfo"]
-set_global_assignment -entity "nios_fprint" -library "nios_fprint" -name SLD_INFO "QSYS_NAME nios_fprint HAS_SOPCINFO 1 GENERATION_ID 1433866675"
+set_global_assignment -entity "nios_fprint" -library "nios_fprint" -name SLD_INFO "QSYS_NAME nios_fprint HAS_SOPCINFO 1 GENERATION_ID 1435083783"
 set_global_assignment -library "nios_fprint" -name MISC_FILE [file join $::quartus(qip_path) "../../nios_fprint.cmp"]
 set_global_assignment -library "nios_fprint" -name SLD_FILE [file join $::quartus(qip_path) "nios_fprint.regmap"]
 set_global_assignment -library "nios_fprint" -name SLD_FILE [file join $::quartus(qip_path) "nios_fprint.debuginfo"]
@@ -21,7 +21,7 @@ set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_1_rsp_xbar_mux.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_1_rsp_xbar_demux_003.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_1_rsp_xbar_demux.sv"]
-set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_1_cmd_xbar_mux_006.sv"]
+set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_1_cmd_xbar_mux_007.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_1_cmd_xbar_mux_003.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_1_cmd_xbar_mux.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_1_cmd_xbar_demux_003.sv"]
@@ -31,7 +31,7 @@ set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/altera_merlin_reorder_memory.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/altera_avalon_sc_fifo.v"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/altera_avalon_st_pipeline_base.v"]
-set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_1_id_router_006.sv"]
+set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_1_id_router_007.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_1_id_router_003.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_1_id_router.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_1_addr_router_003.sv"]
@@ -50,6 +50,7 @@ set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_0_id_router.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_mm_interconnect_0_addr_router.sv"]
 set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processorM_0.v"]
+set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processorM_0_irq_mapper_001.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processorM_0_irq_mapper.sv"]
 set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processorM_0_mm_interconnect_0.v"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_mm_interconnect_1_rsp_xbar_mux.sv"]
@@ -98,7 +99,6 @@ set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor0_0_mm_interconnect_1_addr_router.sv"]
 set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_mm_interconnect_0.v"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_mm_interconnect_0_rsp_xbar_mux.sv"]
-set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_mm_interconnect_0_rsp_xbar_demux.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_mm_interconnect_0_cmd_xbar_mux.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_mm_interconnect_0_cmd_xbar_demux_001.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_mm_interconnect_0_cmd_xbar_demux.sv"]
@@ -108,6 +108,8 @@ set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/altera_customins_slave_translator.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_cpu1_custom_instruction_master_comb_xconnect.sv"]
 set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/altera_customins_master_translator.v"]
+set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor0_0_scratchpad_1.v"]
+set_global_assignment -library "nios_fprint" -name SOURCE_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor0_0_scratchpad_1.hex"]
 set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_nios_custom_instr_floating_point_2_0.v"]
 set_global_assignment -library "nios_fprint" -name VHDL_FILE [file join $::quartus(qip_path) "submodules/fpoint2_multi.vhd"]
 set_global_assignment -library "nios_fprint" -name VHDL_FILE [file join $::quartus(qip_path) "submodules/fpoint2_multi_datapath.vhd"]
@@ -131,8 +133,8 @@ set_global_assignment -library "nios_fprint" -name VHDL_FILE [file join $::quart
 set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/single_port_ram.v"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/fulltlb.sv"]
 set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_dma_0.v"]
-set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor0_0_scratchpad.v"]
-set_global_assignment -library "nios_fprint" -name SOURCE_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor0_0_scratchpad.hex"]
+set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor0_0_scratchpad_0.v"]
+set_global_assignment -library "nios_fprint" -name SOURCE_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor0_0_scratchpad_0.hex"]
 set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/crc_fingerprint.v"]
 set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/crc_counter.v"]
 set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/crc_fsm_rtla.v"]
@@ -161,8 +163,10 @@ set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join
 set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_mm_interconnect_1.v"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_mm_interconnect_1_addr_router_001.sv"]
 set_global_assignment -library "nios_fprint" -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_mm_interconnect_1_addr_router.sv"]
-set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_scratchpad.v"]
-set_global_assignment -library "nios_fprint" -name SOURCE_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_scratchpad.hex"]
+set_global_assignment -library "nios_fprint" -name SOURCE_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_scratchpad_1.hex"]
+set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_scratchpad_1.v"]
+set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_scratchpad_0.v"]
+set_global_assignment -library "nios_fprint" -name SOURCE_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_scratchpad_0.hex"]
 set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_cpu1.v"]
 set_global_assignment -library "nios_fprint" -name SOURCE_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_cpu1.ocp"]
 set_global_assignment -library "nios_fprint" -name VERILOG_FILE [file join $::quartus(qip_path) "submodules/nios_fprint_processor1_0_cpu1_jtag_debug_module_tck.v"]
@@ -215,9 +219,9 @@ set_global_assignment -entity "nios_fprint_mm_interconnect_1_rsp_xbar_demux_003"
 set_global_assignment -entity "nios_fprint_mm_interconnect_1_rsp_xbar_demux" -library "nios_fprint" -name IP_TOOL_NAME "altera_merlin_demultiplexer"
 set_global_assignment -entity "nios_fprint_mm_interconnect_1_rsp_xbar_demux" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
 set_global_assignment -entity "nios_fprint_mm_interconnect_1_rsp_xbar_demux" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
-set_global_assignment -entity "nios_fprint_mm_interconnect_1_cmd_xbar_mux_006" -library "nios_fprint" -name IP_TOOL_NAME "altera_merlin_multiplexer"
-set_global_assignment -entity "nios_fprint_mm_interconnect_1_cmd_xbar_mux_006" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
-set_global_assignment -entity "nios_fprint_mm_interconnect_1_cmd_xbar_mux_006" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
+set_global_assignment -entity "nios_fprint_mm_interconnect_1_cmd_xbar_mux_007" -library "nios_fprint" -name IP_TOOL_NAME "altera_merlin_multiplexer"
+set_global_assignment -entity "nios_fprint_mm_interconnect_1_cmd_xbar_mux_007" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
+set_global_assignment -entity "nios_fprint_mm_interconnect_1_cmd_xbar_mux_007" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -entity "nios_fprint_mm_interconnect_1_cmd_xbar_mux_003" -library "nios_fprint" -name IP_TOOL_NAME "altera_merlin_multiplexer"
 set_global_assignment -entity "nios_fprint_mm_interconnect_1_cmd_xbar_mux_003" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
 set_global_assignment -entity "nios_fprint_mm_interconnect_1_cmd_xbar_mux_003" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
@@ -236,9 +240,9 @@ set_global_assignment -entity "nios_fprint_mm_interconnect_1_cmd_xbar_demux" -li
 set_global_assignment -entity "altera_merlin_traffic_limiter" -library "nios_fprint" -name IP_TOOL_NAME "altera_merlin_traffic_limiter"
 set_global_assignment -entity "altera_merlin_traffic_limiter" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
 set_global_assignment -entity "altera_merlin_traffic_limiter" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
-set_global_assignment -entity "nios_fprint_mm_interconnect_1_id_router_006" -library "nios_fprint" -name IP_TOOL_NAME "altera_merlin_router"
-set_global_assignment -entity "nios_fprint_mm_interconnect_1_id_router_006" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
-set_global_assignment -entity "nios_fprint_mm_interconnect_1_id_router_006" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
+set_global_assignment -entity "nios_fprint_mm_interconnect_1_id_router_007" -library "nios_fprint" -name IP_TOOL_NAME "altera_merlin_router"
+set_global_assignment -entity "nios_fprint_mm_interconnect_1_id_router_007" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
+set_global_assignment -entity "nios_fprint_mm_interconnect_1_id_router_007" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -entity "nios_fprint_mm_interconnect_1_id_router_003" -library "nios_fprint" -name IP_TOOL_NAME "altera_merlin_router"
 set_global_assignment -entity "nios_fprint_mm_interconnect_1_id_router_003" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
 set_global_assignment -entity "nios_fprint_mm_interconnect_1_id_router_003" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
@@ -290,6 +294,9 @@ set_global_assignment -entity "nios_fprint_mm_interconnect_0_id_router" -library
 set_global_assignment -entity "nios_fprint_mm_interconnect_0_addr_router" -library "nios_fprint" -name IP_TOOL_NAME "altera_merlin_router"
 set_global_assignment -entity "nios_fprint_mm_interconnect_0_addr_router" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
 set_global_assignment -entity "nios_fprint_mm_interconnect_0_addr_router" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
+set_global_assignment -entity "nios_fprint_processorM_0_irq_mapper_001" -library "nios_fprint" -name IP_TOOL_NAME "altera_irq_mapper"
+set_global_assignment -entity "nios_fprint_processorM_0_irq_mapper_001" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
+set_global_assignment -entity "nios_fprint_processorM_0_irq_mapper_001" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -entity "nios_fprint_processorM_0_irq_mapper" -library "nios_fprint" -name IP_TOOL_NAME "altera_irq_mapper"
 set_global_assignment -entity "nios_fprint_processorM_0_irq_mapper" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
 set_global_assignment -entity "nios_fprint_processorM_0_irq_mapper" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
@@ -386,9 +393,6 @@ set_global_assignment -entity "nios_fprint_processor1_0_mm_interconnect_0" -libr
 set_global_assignment -entity "nios_fprint_processor1_0_mm_interconnect_0_rsp_xbar_mux" -library "nios_fprint" -name IP_TOOL_NAME "altera_merlin_multiplexer"
 set_global_assignment -entity "nios_fprint_processor1_0_mm_interconnect_0_rsp_xbar_mux" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
 set_global_assignment -entity "nios_fprint_processor1_0_mm_interconnect_0_rsp_xbar_mux" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
-set_global_assignment -entity "nios_fprint_processor1_0_mm_interconnect_0_rsp_xbar_demux" -library "nios_fprint" -name IP_TOOL_NAME "altera_merlin_demultiplexer"
-set_global_assignment -entity "nios_fprint_processor1_0_mm_interconnect_0_rsp_xbar_demux" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
-set_global_assignment -entity "nios_fprint_processor1_0_mm_interconnect_0_rsp_xbar_demux" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -entity "nios_fprint_processor1_0_mm_interconnect_0_cmd_xbar_mux" -library "nios_fprint" -name IP_TOOL_NAME "altera_merlin_multiplexer"
 set_global_assignment -entity "nios_fprint_processor1_0_mm_interconnect_0_cmd_xbar_mux" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
 set_global_assignment -entity "nios_fprint_processor1_0_mm_interconnect_0_cmd_xbar_mux" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
@@ -416,6 +420,9 @@ set_global_assignment -entity "nios_fprint_processor1_0_cpu1_custom_instruction_
 set_global_assignment -entity "altera_customins_master_translator" -library "nios_fprint" -name IP_TOOL_NAME "altera_customins_master_translator"
 set_global_assignment -entity "altera_customins_master_translator" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
 set_global_assignment -entity "altera_customins_master_translator" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
+set_global_assignment -entity "nios_fprint_processor0_0_scratchpad_1" -library "nios_fprint" -name IP_TOOL_NAME "altera_avalon_onchip_memory2"
+set_global_assignment -entity "nios_fprint_processor0_0_scratchpad_1" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
+set_global_assignment -entity "nios_fprint_processor0_0_scratchpad_1" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -entity "nios_fprint_processor1_0_nios_custom_instr_floating_point_2_0" -library "nios_fprint" -name IP_TOOL_NAME "altera_nios_custom_instr_floating_point_2"
 set_global_assignment -entity "nios_fprint_processor1_0_nios_custom_instr_floating_point_2_0" -library "nios_fprint" -name IP_TOOL_VERSION "100.99.98.97"
 set_global_assignment -entity "nios_fprint_processor1_0_nios_custom_instr_floating_point_2_0" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
@@ -428,9 +435,9 @@ set_global_assignment -entity "fpoint2_combi" -library "nios_fprint" -name IP_TO
 set_global_assignment -entity "nios_fprint_processor1_0_dma_0" -library "nios_fprint" -name IP_TOOL_NAME "altera_avalon_dma"
 set_global_assignment -entity "nios_fprint_processor1_0_dma_0" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
 set_global_assignment -entity "nios_fprint_processor1_0_dma_0" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
-set_global_assignment -entity "nios_fprint_processor0_0_scratchpad" -library "nios_fprint" -name IP_TOOL_NAME "altera_avalon_onchip_memory2"
-set_global_assignment -entity "nios_fprint_processor0_0_scratchpad" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
-set_global_assignment -entity "nios_fprint_processor0_0_scratchpad" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
+set_global_assignment -entity "nios_fprint_processor0_0_scratchpad_0" -library "nios_fprint" -name IP_TOOL_NAME "altera_avalon_onchip_memory2"
+set_global_assignment -entity "nios_fprint_processor0_0_scratchpad_0" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
+set_global_assignment -entity "nios_fprint_processor0_0_scratchpad_0" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -entity "nios_fprint_processor0_0_cpu0" -library "nios_fprint" -name IP_TOOL_NAME "altera_nios2_qsys"
 set_global_assignment -entity "nios_fprint_processor0_0_cpu0" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
 set_global_assignment -entity "nios_fprint_processor0_0_cpu0" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
@@ -446,9 +453,12 @@ set_global_assignment -entity "nios_fprint_processor1_0_mm_interconnect_1_addr_r
 set_global_assignment -entity "nios_fprint_processor1_0_mm_interconnect_1_addr_router" -library "nios_fprint" -name IP_TOOL_NAME "altera_merlin_router"
 set_global_assignment -entity "nios_fprint_processor1_0_mm_interconnect_1_addr_router" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
 set_global_assignment -entity "nios_fprint_processor1_0_mm_interconnect_1_addr_router" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
-set_global_assignment -entity "nios_fprint_processor1_0_scratchpad" -library "nios_fprint" -name IP_TOOL_NAME "altera_avalon_onchip_memory2"
-set_global_assignment -entity "nios_fprint_processor1_0_scratchpad" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
-set_global_assignment -entity "nios_fprint_processor1_0_scratchpad" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
+set_global_assignment -entity "nios_fprint_processor1_0_scratchpad_1" -library "nios_fprint" -name IP_TOOL_NAME "altera_avalon_onchip_memory2"
+set_global_assignment -entity "nios_fprint_processor1_0_scratchpad_1" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
+set_global_assignment -entity "nios_fprint_processor1_0_scratchpad_1" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
+set_global_assignment -entity "nios_fprint_processor1_0_scratchpad_0" -library "nios_fprint" -name IP_TOOL_NAME "altera_avalon_onchip_memory2"
+set_global_assignment -entity "nios_fprint_processor1_0_scratchpad_0" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
+set_global_assignment -entity "nios_fprint_processor1_0_scratchpad_0" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -entity "nios_fprint_processor1_0_cpu1" -library "nios_fprint" -name IP_TOOL_NAME "altera_nios2_qsys"
 set_global_assignment -entity "nios_fprint_processor1_0_cpu1" -library "nios_fprint" -name IP_TOOL_VERSION "13.1"
 set_global_assignment -entity "nios_fprint_processor1_0_cpu1" -library "nios_fprint" -name IP_TOOL_ENV "Qsys"
