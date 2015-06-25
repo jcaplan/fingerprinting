@@ -361,8 +361,8 @@ ucosii_C_LIB_SRCS := \
 	$(ucosii_SRCS_ROOT)/src/os_task.c \
 	$(ucosii_SRCS_ROOT)/src/os_time.c \
 	$(ucosii_SRCS_ROOT)/src/os_tmr.c \
-	mem_manager.c \
-	tlb.c
+	tlb.c \
+	mem_manager.c
 
 
 # Assemble all component C source files 

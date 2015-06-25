@@ -281,7 +281,7 @@ altera_nios2_qsys_ucosii_driver_ASM_LIB_SRCS := \
 	$(altera_nios2_qsys_ucosii_driver_SRCS_ROOT)/src/alt_mcount.S \
 	$(altera_nios2_qsys_ucosii_driver_SRCS_ROOT)/src/alt_log_macro.S \
 	$(altera_nios2_qsys_ucosii_driver_SRCS_ROOT)/src/crt0.S \
-	$(altera_nios2_qsys_ucosii_driver_SRCS_ROOT)/src/os_cpu_a.S
+	$(altera_nios2_qsys_ucosii_driver_SRCS_ROOT)/src/os_cpu_a.S 
 
 # fpoint2_driver sources root 
 fpoint2_driver_SRCS_ROOT := drivers
@@ -341,7 +341,9 @@ hal_C_LIB_SRCS := \
 	$(hal_SRCS_ROOT)/src/alt_times.c \
 	$(hal_SRCS_ROOT)/src/alt_unlink.c \
 	$(hal_SRCS_ROOT)/src/alt_wait.c \
-	$(hal_SRCS_ROOT)/src/alt_write.c
+	$(hal_SRCS_ROOT)/src/alt_write.c \
+	mem_manager.c \
+	tlb.c
 
 # ucosii sources root 
 ucosii_SRCS_ROOT := UCOSII
@@ -360,9 +362,7 @@ ucosii_C_LIB_SRCS := \
 	$(ucosii_SRCS_ROOT)/src/os_sem.c \
 	$(ucosii_SRCS_ROOT)/src/os_task.c \
 	$(ucosii_SRCS_ROOT)/src/os_time.c \
-	$(ucosii_SRCS_ROOT)/src/os_tmr.c \
-	mem_manager.c \
-	tlb.c
+	$(ucosii_SRCS_ROOT)/src/os_tmr.c
 
 
 # Assemble all component C source files 

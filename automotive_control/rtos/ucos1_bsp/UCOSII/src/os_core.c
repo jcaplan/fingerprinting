@@ -26,9 +26,13 @@
 #include <ucos_ii.h>
 #endif
 
+
 #define IS_MONITOR 0
+#define MEM_MANAGEMENT 1
 #if IS_MONITOR == 0
+#if MEM_MANAGEMENT > 0
 #include "mem_manager.h"
+#endif
 #endif
 
 #if IS_MONITOR == 1
@@ -674,28 +678,34 @@ void  OSIntExit (void)
             if (OSLockNesting == 0) {                      /* ... and not locked.                      */
                 OS_SchedNew();
                 if (OSPrioHighRdy != OSPrioCur) {          /* No Ctx Sw if current task is highest rdy */
-
-                    //preemption is occuring.
-                    //pause the task in the fingerprint unit
 #if IS_MONITOR == 0
-                    //Is this a critical task?
-                    //Here we pause the task
-                    if(OSPrioCur < 16){
-                        INT32U* fprint_pause_reg = (INT32U*)(0x8100000 + 4);
-                        INT32U x = *fprint_pause_reg;
-                        *fprint_pause_reg = x | (1 << OSPrioCur);
-                    }
+                	//preemption is occuring.
+                	//pause the task in the fingerprint unit
 
-                    /*
-                     * MEMORY MANAGEMENT
-                     */
+                	//Is this a critical task?
+                	//Here we pause the task
+                if(FprintActive){
+
+                		INT32U* fprint_pause_reg = (INT32U*)(0x8100000 \
+                												+ 4);
+
+                    	FprintActive = 0;
+                    	FprintPausedTaskPriority[FprintPausedTaskIndex] = OSPrioCur;
+                    	FprintPausedTaskID[FprintPausedTaskIndex] = FprintTaskIDCurrent;
+                    	FprintPausedTaskIndex++;
+                		INT32U x = *fprint_pause_reg;
+                		*fprint_pause_reg = x | (1 << FprintTaskIDCurrent);
+
+               	}
+
 
                     // Check if the current task must be deactivated
-
+#if MEM_MANAGEMENT >0
                     managerDisableCurrentTask(OSPrioCur);
                     managerEnableNextTask(OSPrioHighRdy);
-
 #endif
+#endif
+
 
                     OSTCBHighRdy  = OSTCBPrioTbl[OSPrioHighRdy];
 #if OS_TASK_PROFILE_EN > 0
@@ -704,18 +714,25 @@ void  OSIntExit (void)
                     OSCtxSwCtr++;                          /* Keep track of the number of ctx switches */
                     OSIntCtxSw();                          /* Perform interrupt level ctx switch       */
 #if IS_MONITOR == 0
+#if MEM_MANAGEMENT > 0
                     managerCheckPendingDisabled(OSPrioCur);
+#endif
                     /* MEMORY MANAGEMENT
                      * Check if any lines need to be disabled
                      */
                     //Here is where we resume the task
-                    if(OSPrioCur < 16){
-                        INT32U* fprint_pause_reg = (INT32U*)(0x8100000 \
-                                                                + 4);
-                        INT32U x = *fprint_pause_reg;
-                        *fprint_pause_reg = x & ~(1 << OSPrioCur);
+
+                    if(FprintPausedTaskIndex > 0 && OSPrioCur == FprintPausedTaskPriority[FprintPausedTaskIndex - 1]){
+                    	FprintActive = 1;
+                    	FprintPausedTaskIndex--;
+                    	INT32U* fprint_pause_reg = (INT32U*)(0x8100000 \
+                                    							+ 4);
+                    	INT32U x = *fprint_pause_reg;
+                    	*fprint_pause_reg = x & ~(1 << FprintPausedTaskID[FprintPausedTaskIndex]);
+
                     }
 #endif
+
 
 
                 }
@@ -1670,8 +1687,10 @@ void  OS_Sched (void)
                 OSTCBHighRdy = OSTCBPrioTbl[OSPrioHighRdy];
 
 #if IS_MONITOR == 0
+#if MEM_MANAGEMENT > 0
                 managerDisableCurrentTask(OSPrioCur);
                 managerEnableNextTask(OSPrioHighRdy);
+#endif
 #endif
 #if OS_TASK_PROFILE_EN > 0
                 OSTCBHighRdy->OSTCBCtxSwCtr++;         /* Inc. # of context switches to this task      */
@@ -1680,7 +1699,9 @@ void  OS_Sched (void)
                 OSCtxSwCtr++;                          /* Increment context switch counter             */
                 OS_TASK_SW();                          /* Perform a context switch                     */
 #if IS_MONITOR == 0
+#if MEM_MANAGEMENT > 0
                 managerCheckPendingDisabled(OSPrioCur);
+#endif
 #endif
             }
         }
@@ -2078,3 +2099,8 @@ INT8U  OS_TCBInit (INT8U prio, OS_STK *ptos, OS_STK *pbos, INT16U id, INT32U stk
     OS_EXIT_CRITICAL();
     return (OS_ERR_TASK_NO_MORE_TCB);
 }
+
+
+
+
+

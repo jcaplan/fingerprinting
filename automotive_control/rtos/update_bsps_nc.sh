@@ -3,10 +3,12 @@ fprint_root=../../fprint_fpga
 sw_dir=.
 
 
-cp -f $fprint_root/src/software/bsp_mods/alt_exception_entry_gp.S $sw_dir/ucos0_bsp/HAL/src/alt_exception_entry.S
-cp -f $fprint_root/src/software/bsp_mods/alt_exception_entry_gp.S $sw_dir/ucos1_bsp/HAL/src/alt_exception_entry.S
-cp -f $fprint_root/src/software/bsp_mods/os_core.c             $sw_dir/ucos0_bsp/UCOSII/src/
-cp -f $fprint_root/src/software/bsp_mods/os_core.c             $sw_dir/ucos1_bsp/UCOSII/src/
+cp -f bsp_mods/alt_exception_entry_gp.S $sw_dir/ucos0_bsp/HAL/src/alt_exception_entry.S
+cp -f bsp_mods/alt_exception_entry_gp.S $sw_dir/ucos1_bsp/HAL/src/alt_exception_entry.S
+cp -f bsp_mods/os_core.c             $sw_dir/ucos0_bsp/UCOSII/src/
+cp -f bsp_mods/os_core.c             $sw_dir/ucos1_bsp/UCOSII/src/
+cp -f bsp_mods/ucos_ii.h             $sw_dir/ucos0_bsp/UCOSII/inc/
+cp -f bsp_mods/ucos_ii.h             $sw_dir/ucos1_bsp/UCOSII/inc/
 
 # update system.h for monitor bsp
 DIR=.tmp

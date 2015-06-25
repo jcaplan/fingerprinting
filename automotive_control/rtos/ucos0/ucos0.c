@@ -17,6 +17,7 @@
 #include "ucos0.h"
 #include "reset_monitor.h"
 
+INT8U FprintActive = 0;
 /*****************************************************************************
  * TransmissionControl
  *****************************************************************************/
@@ -171,6 +172,9 @@ void Derivative_AirbagModel_TASK(void* pdata){
 
 		int priority = critFuncData->priority;
 
+		//set the flag for the OS context switch
+		FprintActive = 1;
+
 		//Retrieve the arguments before changing the GP
 
 		void *args = functionTable[DERIVATIVE_FUNC_TABLE_INDEX].args;
@@ -183,10 +187,15 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		//restore the original global pointer
 		restore_gp();
 
+		//set the flag for the OS context switch
+		FprintActive = 0;
 
 		//Do the airbag part
 		// Set default block size for fingerprinting
 		fprint_set_block_size(airbagModel_blocksize);
+
+		//set the flag for the OS context switch
+		FprintActive = 1;
 
 		//Set the global pointer in case of compilation issues related
 		//to global variables
@@ -197,6 +206,9 @@ void Derivative_AirbagModel_TASK(void* pdata){
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();
+
+		//restore the flag for the OS context switch
+		FprintActive = 0;
 		//Restore the callee saved registers
 		context_restore(registers);
 
