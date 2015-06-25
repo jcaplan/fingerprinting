@@ -25,7 +25,7 @@
 #define  OS_GLOBALS
 #include <ucos_ii.h>
 #endif
-
+#include "shared_mem_testing.h"
 /*
 *********************************************************************************************************
 *                                       PRIORITY RESOLUTION TABLE
@@ -671,12 +671,17 @@ void  OSIntExit (void)
 
                 	//Is this a critical task?
                 	//Here we pause the task
-                	if(OSPrioCur < 16){
+               	if(FprintActive){
 
                 		INT32U* fprint_pause_reg = (INT32U*)(0x8100000 \
                 												+ 4);
+
+                    	FprintActive = 0;
+                    	FprintPausedTaskPriority[FprintPausedTaskIndex] = OSPrioCur;
+                    	FprintPausedTaskID[FprintPausedTaskIndex] = FprintTaskIDCurrent;
+                    	FprintPausedTaskIndex++;
                 		INT32U x = *fprint_pause_reg;
-                		*fprint_pause_reg = x | (1 << OSPrioCur);
+                		*fprint_pause_reg = x | (1 << FprintTaskIDCurrent);
 
 
                 	}
@@ -690,12 +695,13 @@ void  OSIntExit (void)
                     OSIntCtxSw();                          /* Perform interrupt level ctx switch       */
 
                     //Here is where we resume the task
-                    if(OSPrioCur < 16){
-
+                    if(FprintPausedTaskIndex > 0 && OSPrioCur == FprintPausedTaskPriority[FprintPausedTaskIndex - 1]){
+                    	FprintActive = 1;
+                    	FprintPausedTaskIndex--;
                     	INT32U* fprint_pause_reg = (INT32U*)(0x8100000 \
                                     							+ 4);
                     	INT32U x = *fprint_pause_reg;
-                    	*fprint_pause_reg = x & ~(1 << OSPrioCur);
+                    	*fprint_pause_reg = x & ~(1 << FprintPausedTaskID[FprintPausedTaskIndex]);
 
 
                     }
@@ -2050,3 +2056,8 @@ INT8U  OS_TCBInit (INT8U prio, OS_STK *ptos, OS_STK *pbos, INT16U id, INT32U stk
     OS_EXIT_CRITICAL();
     return (OS_ERR_TASK_NO_MORE_TCB);
 }
+
+
+
+
+

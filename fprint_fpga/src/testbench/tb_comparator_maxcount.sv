@@ -3,7 +3,7 @@
 `define DIR_SIZE	40
 `define MAXCOUNT	10
 `define FPRINT_SPEED	50
-`define FPRINT_NUM	1000000000
+`define FPRINT_NUM	1000
 `define NUM_RUNS	10 
 
 module tb_comparator_maxcount();
@@ -680,7 +680,7 @@ always @(posedge run)begin : test1
 	perform_task( 2 , `FPRINT_NUM , `MAXCOUNT , 0 , 1 , `FPRINT_SPEED , `FPRINT_SPEED );
 	perform_task( 3 , `FPRINT_NUM , `MAXCOUNT , 2 , 3 , `FPRINT_SPEED , `FPRINT_SPEED );
 	perform_task( 4 , `FPRINT_NUM , `MAXCOUNT , 4 , 5 , `FPRINT_SPEED , `FPRINT_SPEED );
-	perform_task( 5 , `FPRINT_NUM , `MAXCOUNT , 6 , 7 , `FPRINT_SPEED , `FPRINT_SPEED );
+	perform_task( 10 , `FPRINT_NUM , `MAXCOUNT , 6 , 7 , `FPRINT_SPEED , `FPRINT_SPEED );
 
 end
 

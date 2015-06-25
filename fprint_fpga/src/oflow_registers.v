@@ -212,7 +212,7 @@ assign oflow_writedata		=	{10'h200}+fifo_output;
 max count "SRAM"
 
 we need ONE write: at address 'csr_maxcount_task_id'
-we need TWO reads: at addresses 'fifo_fprint_task_id' and 'comp_task'
+we need TWO reads: at addresses 'fprint_task_id' and 'comp_task'
 
 how? this is synthesized into registers right now
 **************************************************************/

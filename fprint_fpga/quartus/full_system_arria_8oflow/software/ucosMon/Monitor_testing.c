@@ -31,11 +31,11 @@
 #define CLKS_PER_SEC	50000000
 #define FPRINT_ISR_EN	1
 #define TASK_NAME		testing_task
-#define length			20
-#define blk_sz			0xfff
+#define length			5
+#define blk_sz			0x1ff
 #define pren			1
 #define NUM_RUNS		10
-#define D				printf("\nD: %d\n", dbg++);
+#define DEBUG_PRINT				printf("\nD: %d\n", dbg++);
 
 int dbg = 0;
 
@@ -94,7 +94,7 @@ CriticalFunctionPointers* cp = (CriticalFunctionPointers*) SHARED_MEMORY_BASE;
 INT8U err;
 
 void schedule_task(void* pdata){
-	int num_runs = 0;
+	int num_runs = 1;
 	int i;
 
 	printf("Monitor!\n");
@@ -122,9 +122,10 @@ void schedule_task(void* pdata){
 			cp->task_length[1] = length;
 			cp->fprint_enable[0] = 1;
 			cp->fprint_enable[1] = 1;
-			//*isr_1_ptr = 1;
-			//*isr_0_ptr = 1;
 		altera_avalon_mutex_unlock(mutex);
+		*isr_0_ptr = 1;
+//		OSTimeDlyHMSM(0, 0, 1, 0);
+		*isr_1_ptr = 1;
 
 		//OSTimeDlyHMSM(0, 0, 0, 10);
 
@@ -136,9 +137,10 @@ void schedule_task(void* pdata){
 			cp->task_length[3] = length;
 			cp->fprint_enable[2] = 1;
 			cp->fprint_enable[3] = 1;
-			//*isr_2_ptr = 1;
-			//*isr_3_ptr = 1;
 		altera_avalon_mutex_unlock(mutex);
+		*isr_2_ptr = 1;
+//		OSTimeDlyHMSM(0, 0, 1, 0);
+		*isr_3_ptr = 1;
 
 		//OSTimeDlyHMSM(0, 0, 0, 10);
 
@@ -151,9 +153,10 @@ void schedule_task(void* pdata){
 			cp->task_length[5] = length;
 			cp->fprint_enable[4] = 1;
 			cp->fprint_enable[5] = 1;
-			*isr_4_ptr = 1;
-			*isr_5_ptr = 1;
 		altera_avalon_mutex_unlock(mutex);
+		*isr_4_ptr = 1;
+//		OSTimeDlyHMSM(0, 0, 1, 0);
+		*isr_5_ptr = 1;
 
 		//OSTimeDlyHMSM(0, 0, 0, 10);
 
@@ -165,19 +168,19 @@ void schedule_task(void* pdata){
 			cp->task_length[7] = length;
 			cp->fprint_enable[6] = 1;
 			cp->fprint_enable[7] = 1;
-			*isr_6_ptr = 1;
-			*isr_7_ptr = 1;
 		altera_avalon_mutex_unlock(mutex);
+		*isr_6_ptr = 1;
+//		OSTimeDlyHMSM(0, 0, 1, 0);
+		*isr_7_ptr = 1;
 
 		printf("sch done\n");
 
-		OSFlagPend(schedule_fgrp, 0b110000, OS_FLAG_WAIT_SET_ALL + OS_FLAG_CONSUME, 0, &err);
+		OSFlagPend(schedule_fgrp, 0b111100, OS_FLAG_WAIT_SET_ALL + OS_FLAG_CONSUME, 0, &err);
 
 		for (i = 0; i < NUM_CORES; i++) {
 			core_total_time[i] += cp->core_total_time[i];
 			core_oflow_time[i] += cp->core_oflow_time[i];
-			if(pren)
-				printf("core %d took %llu total, %llu oflow\n", i, cp->core_total_time[i], cp->core_oflow_time[i]);
+				printf("core %d took %llu total, %llu oflow, oflowed %d times\n", i, cp->core_total_time[i], cp->core_oflow_time[i], cp->oflow_count[i]);
 		}
 
 		num_runs++;
@@ -336,7 +339,7 @@ int main(void) {
 	set_maxcount_value(4,10);
 	set_maxcount_value(5,10);
 
-	D
+	DEBUG_PRINT
 
 	//Wait for both cores to be ready
 	int p0 = 0, p1 = 0, p2 = 0, p3 = 0, p4 = 0, p5 = 0, p6 = 0, p7 = 0;
@@ -358,7 +361,7 @@ int main(void) {
 
 	}
 
-	D
+	DEBUG_PRINT
 
 
 	//set memory delay

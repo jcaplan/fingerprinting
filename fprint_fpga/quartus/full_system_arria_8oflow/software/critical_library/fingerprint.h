@@ -5,6 +5,8 @@
  *      Author: Jonah
  */
 #include <stdint.h>
+#include "ucos_ii.h"
+
 #ifndef FINGERPRINT_H_
 #define FINGERPRINT_H_
 

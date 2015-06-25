@@ -11,6 +11,7 @@ typedef struct CriticalFunctionPointers{
 	unsigned short task_id[NUM_CORES];
 	unsigned short task_length[NUM_CORES];
 	unsigned short task_complete[NUM_CORES];
+	unsigned int oflow_count[NUM_CORES];
 	unsigned int checkout[NUM_CORES];
 	unsigned int checkin[2];
 	unsigned int core_ready[NUM_CORES];

@@ -34,4 +34,4 @@ nios2-download -g --cable=1 --instance=8 ${sw_dir}/ucos7/ucos7.elf
 
 
 
-nios2-terminal -c 1 -i 2
+nios2-terminal -c 1 -i 2 

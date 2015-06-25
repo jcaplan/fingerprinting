@@ -9,7 +9,6 @@
 #include <stdint.h>
 #include <system.h>
 #include "fingerprint.h"
-
 //*********************************
 //Control register addresses
 //*********************************
