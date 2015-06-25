@@ -25,7 +25,20 @@
 #define  OS_GLOBALS
 #include <ucos_ii.h>
 #endif
-#include "shared_mem_testing.h"
+
+
+#define IS_MONITOR 0
+#define MEM_MANAGEMENT 0
+#if IS_MONITOR == 0
+#if MEM_MANAGEMENT > 0
+#include "mem_manager.h"
+#endif
+#endif
+
+#if IS_MONITOR == 1
+#include "repos.h"
+#endif
+
 /*
 *********************************************************************************************************
 *                                       PRIORITY RESOLUTION TABLE
@@ -478,7 +491,7 @@ INT16U  OSEventPendMulti (OS_EVENT **pevents_pend, OS_EVENT **pevents_rdy, void 
                  OSTCBCur->OSTCBStatPend = OS_STAT_PEND_TO;
                  OS_EventTaskRemoveMulti(OSTCBCur, pevents_pend);
              }
-			 break;
+             break;
 
         case OS_STAT_PEND_TO:
         default:                                        /* ... remove task from events' wait lists     */
@@ -665,13 +678,13 @@ void  OSIntExit (void)
             if (OSLockNesting == 0) {                      /* ... and not locked.                      */
                 OS_SchedNew();
                 if (OSPrioHighRdy != OSPrioCur) {          /* No Ctx Sw if current task is highest rdy */
-
+#if IS_MONITOR == 0
                 	//preemption is occuring.
                 	//pause the task in the fingerprint unit
 
                 	//Is this a critical task?
                 	//Here we pause the task
-               	if(FprintActive){
+                if(FprintActive){
 
                 		INT32U* fprint_pause_reg = (INT32U*)(0x8100000 \
                 												+ 4);
@@ -683,18 +696,32 @@ void  OSIntExit (void)
                 		INT32U x = *fprint_pause_reg;
                 		*fprint_pause_reg = x | (1 << FprintTaskIDCurrent);
 
+               	}
 
-                	}
 
-                	OSTCBHighRdy  = OSTCBPrioTbl[OSPrioHighRdy];
+                    // Check if the current task must be deactivated
+#if MEM_MANAGEMENT >0
+                    managerDisableCurrentTask(OSPrioCur);
+                    managerEnableNextTask(OSPrioHighRdy);
+#endif
+#endif
 
+
+                    OSTCBHighRdy  = OSTCBPrioTbl[OSPrioHighRdy];
 #if OS_TASK_PROFILE_EN > 0
                     OSTCBHighRdy->OSTCBCtxSwCtr++;         /* Inc. # of context switches to this task  */
 #endif
                     OSCtxSwCtr++;                          /* Keep track of the number of ctx switches */
                     OSIntCtxSw();                          /* Perform interrupt level ctx switch       */
-
+#if IS_MONITOR == 0
+#if MEM_MANAGEMENT > 0
+                    managerCheckPendingDisabled(OSPrioCur);
+#endif
+                    /* MEMORY MANAGEMENT
+                     * Check if any lines need to be disabled
+                     */
                     //Here is where we resume the task
+
                     if(FprintPausedTaskIndex > 0 && OSPrioCur == FprintPausedTaskPriority[FprintPausedTaskIndex - 1]){
                     	FprintActive = 1;
                     	FprintPausedTaskIndex--;
@@ -703,8 +730,11 @@ void  OSIntExit (void)
                     	INT32U x = *fprint_pause_reg;
                     	*fprint_pause_reg = x & ~(1 << FprintPausedTaskID[FprintPausedTaskIndex]);
 
-
                     }
+#endif
+
+
+
                 }
             }
         }
@@ -1655,11 +1685,24 @@ void  OS_Sched (void)
             OS_SchedNew();
             if (OSPrioHighRdy != OSPrioCur) {          /* No Ctx Sw if current task is highest rdy     */
                 OSTCBHighRdy = OSTCBPrioTbl[OSPrioHighRdy];
+
+#if IS_MONITOR == 0
+#if MEM_MANAGEMENT > 0
+                managerDisableCurrentTask(OSPrioCur);
+                managerEnableNextTask(OSPrioHighRdy);
+#endif
+#endif
 #if OS_TASK_PROFILE_EN > 0
                 OSTCBHighRdy->OSTCBCtxSwCtr++;         /* Inc. # of context switches to this task      */
 #endif
+
                 OSCtxSwCtr++;                          /* Increment context switch counter             */
                 OS_TASK_SW();                          /* Perform a context switch                     */
+#if IS_MONITOR == 0
+#if MEM_MANAGEMENT > 0
+                managerCheckPendingDisabled(OSPrioCur);
+#endif
+#endif
             }
         }
     }

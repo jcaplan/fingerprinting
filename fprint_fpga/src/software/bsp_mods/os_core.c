@@ -28,9 +28,11 @@
 
 
 #define IS_MONITOR 0
-#define MEM_MANAGER 0
+#define MEM_MANAGEMENT 0
 #if IS_MONITOR == 0
+#if MEM_MANAGEMENT > 0
 #include "mem_manager.h"
+#endif
 #endif
 
 #if IS_MONITOR == 1
@@ -682,7 +684,7 @@ void  OSIntExit (void)
 
                 	//Is this a critical task?
                 	//Here we pause the task
-               	if(FprintActive){
+                if(FprintActive){
 
                 		INT32U* fprint_pause_reg = (INT32U*)(0x8100000 \
                 												+ 4);
@@ -694,7 +696,7 @@ void  OSIntExit (void)
                 		INT32U x = *fprint_pause_reg;
                 		*fprint_pause_reg = x | (1 << FprintTaskIDCurrent);
 
-
+               	}
 
 
                     // Check if the current task must be deactivated
