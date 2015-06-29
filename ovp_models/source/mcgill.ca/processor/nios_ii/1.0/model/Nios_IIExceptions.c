@@ -635,6 +635,7 @@ static Bool validateFetchAddress(Nios_IIP Nios_II, Uns32 simPC, Bool complete) {
         // Handling for an MPU Present
         //
         if (Nios_IIMPUMiss(Nios_II, MEM_PRIV_X, simPC, attrs)) {
+            vmiPrintf("problem!!!!\n");
             // MPU miss exception of some kind, handled by MPUMiss, so no
             // further action required here.
             return False;
@@ -1199,6 +1200,9 @@ void Nios_IIProcessReset(Nios_IIP Nios_II) {
     Nios_II->exception = EXC_RESET;
 
     Nios_IIRegisterInit(Nios_II);
+
+    Nios_IIDestructMPU(Nios_II);
+    Nios_IIConstructMPU(Nios_II);
 
     // jump to reset vector
     vmirtSetPCException((vmiProcessorP)Nios_II, Nios_II->params.RESET_VECTOR);

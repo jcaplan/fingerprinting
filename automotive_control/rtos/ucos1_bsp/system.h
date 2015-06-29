@@ -4,7 +4,7 @@
  * Machine generated for CPU 'processor1_0_cpu1' in SOPC Builder design 'nios_fprint'
  * SOPC Builder design path: ../../nios_fprint.sopcinfo
  *
- * Generated: Tue Jun 23 16:14:33 EDT 2015
+ * Generated: Fri Jun 26 13:01:39 EDT 2015
  */
 
 /*
@@ -229,6 +229,7 @@
  *
  */
 
+#define ALT_INCLUDE_INSTRUCTION_RELATED_EXCEPTION_API
 #define ALT_MAX_FD 32
 #define ALT_SYS_CLK PROCESSOR1_0_TIMER
 #define ALT_TIMESTAMP_CLK PROCESSOR1_0_TIMESTAMP

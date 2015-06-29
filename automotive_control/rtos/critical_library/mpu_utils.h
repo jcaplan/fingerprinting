@@ -5,7 +5,10 @@
 
 #include "system.h"
 #include "nios2.h"
+#include "sys/alt_exceptions.h"
  
+#define DATA_REGION 1
+#define INST_REGION 0
 
 #ifdef NIOS2_MPU_PRESENT
 
@@ -300,6 +303,22 @@ typedef struct
         unsigned int c;
         unsigned int perm;
 } Nios2MPURegion;
+
+
+/* Global data structure to hold exception information. */
+typedef struct {
+  int exceptions_serviced_with_handler;
+  int mpu_data_exception_count;
+  int mpu_inst_exception_count;
+  int reissue_count;
+  alt_u32 last_valid_badaddr;
+  alt_u32 last_exception_pc;
+  alt_exception_cause last_exception_cause;
+  alt_exception_result desired_exception_result;
+} exception_struct;
+
+exception_struct g_exc_info;
+
 
 /* Routines */
 

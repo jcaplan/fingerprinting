@@ -42,14 +42,12 @@
 #define STACKSIZE_MARGINERROR 				15
 #define CruiseControlSystem_STACKSIZE 		(1000 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
 #define DMA_STACKSIZE 						(1000 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
-#define Failed_STACKSIZE 					(1000 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
 
 /*****************************************************************************
  * Task Priorities
  *****************************************************************************/
 #define CruiseControlSystem_PRIORITY 		13
 #define DMA_PRIORITY 						12
-#define Failed_PRIORITY						11
 
 /*****************************************************************************
  * Task control flow conditions
@@ -82,7 +80,7 @@
 #define NUM_CRITICAL_TASKS 						2
 
 bool coresReady = false;
-
+bool taskFailed = false;
 /*****************************************************************************
  * The global variable declarations for each critical task
  *****************************************************************************/
@@ -121,7 +119,6 @@ P_TractionControl_T tractionControl_defaultParam;
  *****************************************************************************/
 OS_STK CruiseControlSystem_STACK[CruiseControlSystem_STACKSIZE] __attribute__ ((section (".critical")));
 OS_STK DMA_STACK[DMA_STACKSIZE] __attribute__ ((section (".critical")));
-OS_STK Failed_STACK[Failed_STACKSIZE] __attribute__ ((section (".critical")));
 
 /*****************************************************************************
  * Control Flow declarations
@@ -162,11 +159,11 @@ HandleDMAStruct handleDMAStruct_1[2] = { { 1, DMA_CODE_NOACTION, 0, 0, 0 }, { 1,
 typedef struct {
 	AirbagModelStruct airbagModelStruct_0;
 	DerivativeStruct derivativeStruct_0;
+	P_Derivative_T derivative_defaultParam;
+	DW_Derivative_T derivative_dwork;
+	P_AirbagModel_T airbagModel_defaultParam;
+	DW_AirbagModel_T airbagModel_dwork;
 } DMAPackageStruct;
-P_Derivative_T derivative_defaultParam;
-DW_Derivative_T derivative_dwork;
-P_AirbagModel_T airbagModel_defaultParam;
-DW_AirbagModel_T airbagModel_dwork;
 
 DMAPackageStruct dmaPackageStruct_0 __attribute__ ((section (".global_data")));
 
@@ -433,9 +430,18 @@ int result = 0;
 /*****************************************************************************
  * Comparator ISR
  *****************************************************************************/
+void resetCores(void) {
+	OSTaskSuspend(DMA_PRIORITY);
+	int* cpu0_reset = (int*) PROCESSOR0_0_SW_RESET_0_BASE;
+	int* cpu1_reset = (int*) PROCESSOR1_0_SW_RESET_0_BASE;
+	*cpu0_reset = 1;
+	*cpu1_reset = 1;
+	coresReady = false;
+	taskFailed = true;
+	resetMonitorEnable();
+}
 
-#define failed_SEM0_INITCOND 0
-OS_EVENT *failed_SEM0;
+
 
 static void handleCompISR(void* context) {
 	Fprint_Status status;
@@ -455,15 +461,7 @@ static void handleCompISR(void* context) {
 		result = status.successful_reg;
 	}
 	if (status.failed_reg) {
-
-		int* cpu0_reset = (int*) PROCESSOR0_0_SW_RESET_0_BASE;
-		int* cpu1_reset = (int*) PROCESSOR1_0_SW_RESET_0_BASE;
-		*cpu0_reset = 1;
-		*cpu1_reset = 1;
-		coresReady = false;
-		OSTaskSuspend(DMA_PRIORITY);
-		OSSemPost(failed_SEM0);
-
+		resetCores();
 	}
 
 	fprint_reset_irq();
@@ -474,13 +472,19 @@ static void initCompIsr(void) {
 			handleCompISR, (void*) NULL, (void*) NULL);
 }
 
-static void failed_TASK(void* pdata) {
-	while (1) {
-		INT8U perr;
-		OSSemPend(failed_SEM0, 0, &perr);
-		resetMonitorEnable();
-		OSSemPend(failed_SEM0, 0, &perr);
+
+
+/*****************************************************************************
+ * Reset monitor interface
+ *****************************************************************************/
+
+static void handleResetMonitor(void* context) {
+	resetMonitorDisable();
+	coresReady = true;
+	INT8U perr;
+	if (taskFailed) {
 		coresReady = true;
+		taskFailed = false;
 		OSFlagPost(dmaReady_FLAG0, 0xFFFFu, OS_FLAG_CLR, &perr);
 		OSFlagPost(dmaReady_FLAG0,
 				dmaReady_FLAG0_CORE0_M0_BITMASK
@@ -491,17 +495,6 @@ static void failed_TASK(void* pdata) {
 		OSTaskResume(DMA_PRIORITY);
 
 	}
-}
-
-/*****************************************************************************
- * Reset monitor interface
- *****************************************************************************/
-
-static void handleResetMonitor(void* context) {
-	resetMonitorDisable();
-	coresReady = true;
-	OSSemPost(failed_SEM0);
-
 }
 
 static void initResetMonitorIsr(void) {
@@ -528,12 +521,12 @@ int main(void) {
 
 	//Initialize the Function Table
 	//-----------------------------
-	functionTable[0].address = Derivative_CT;
-	functionTable[0].args = &dmaPackageStruct_0.derivativeStruct_0;
-	functionTable[0].blocksize = 0xfff;
-	functionTable[1].address = AirbagModel_CT;
-	functionTable[1].args = &dmaPackageStruct_0.airbagModelStruct_0;
-	functionTable[1].blocksize = 0xfff;
+	functionTable[DERIVATIVE_FUNC_TABLE_INDEX].address = Derivative_CT;
+	functionTable[DERIVATIVE_FUNC_TABLE_INDEX].args = &dmaPackageStruct_0.derivativeStruct_0;
+	functionTable[DERIVATIVE_FUNC_TABLE_INDEX].blocksize = 0xfff;
+	functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].address = AirbagModel_CT;
+	functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].args = &dmaPackageStruct_0.airbagModelStruct_0;
+	functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].blocksize = 0xfff;
 
 	//Initialize the runtime interface
 
@@ -607,8 +600,9 @@ int main(void) {
 	AirbagModelStruct *airbagModelStruct_0 =
 			&dmaPackageStruct_0.airbagModelStruct_0;
 	airbagModelStruct_0->AirbagModel_M.ModelData.defaultParam =
-			&airbagModel_defaultParam;
-	airbagModelStruct_0->AirbagModel_M.ModelData.dwork = &airbagModel_dwork;
+			&dmaPackageStruct_0.airbagModel_defaultParam;
+	airbagModelStruct_0->AirbagModel_M.ModelData.dwork =
+			&dmaPackageStruct_0.airbagModel_dwork;
 	AirbagModel_initialize(&airbagModelStruct_0->AirbagModel_M,
 			&airbagModelStruct_0->AirbagModel_U,
 			&airbagModelStruct_0->AirbagModel_Y);
@@ -616,8 +610,9 @@ int main(void) {
 	DerivativeStruct *derivativeStruct_0 =
 			&dmaPackageStruct_0.derivativeStruct_0;
 	derivativeStruct_0->Derivative_M.ModelData.defaultParam =
-			&derivative_defaultParam;
-	derivativeStruct_0->Derivative_M.ModelData.dwork = &derivative_dwork;
+			&dmaPackageStruct_0.derivative_defaultParam;
+	derivativeStruct_0->Derivative_M.ModelData.dwork =
+			&dmaPackageStruct_0.derivative_dwork;
 	Derivative_initialize(&derivativeStruct_0->Derivative_M,
 			&derivativeStruct_0->Derivative_U,
 			&derivativeStruct_0->Derivative_Y);
@@ -625,7 +620,6 @@ int main(void) {
 	//Initialize the control flow data structures
 	//-------------------------------------------
 	INT8U perr;
-	failed_SEM0 = OSSemCreate(failed_SEM0_INITCOND);
 	dmaReady_FLAG0 = OSFlagCreate(dmaReady_FLAG0_INITCOND, &perr);
 
 	//Declare the OS tasks
@@ -639,9 +633,6 @@ int main(void) {
 	OSTaskCreateExt(dma_TASK, NULL, &DMA_STACK[DMA_STACKSIZE - 1], DMA_PRIORITY,
 			DMA_PRIORITY, DMA_STACK, DMA_STACKSIZE, NULL, OS_TASK_OPT_STK_CLR);
 
-	OSTaskCreateExt(failed_TASK, NULL, &Failed_STACK[Failed_STACKSIZE - 1],
-			Failed_PRIORITY, Failed_PRIORITY, Failed_STACK, Failed_STACKSIZE,
-			NULL, OS_TASK_OPT_STK_CLR);
 
 	//Wait for confirmation that other cores have completed their startup routines
 	//----------------------------------------------------------------------------

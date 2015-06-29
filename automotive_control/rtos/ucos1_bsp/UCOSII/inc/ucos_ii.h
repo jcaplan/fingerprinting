@@ -730,7 +730,7 @@ OS_EXT  INT8U             OSLockNesting;            /* Multitasking lock nesting
 
 OS_EXT  INT8U             OSPrioCur;                /* Priority of current task                        */
 OS_EXT  INT8U             OSPrioHighRdy;            /* Priority of highest priority task               */
-extern  INT8U 			  FprintActive;
+OS_EXT  INT8U 			  FprintActive;
 OS_EXT  INT8U             FprintPausedTaskPriority[8];
 OS_EXT  INT8U             FprintPausedTaskID[8];
 OS_EXT  INT8U             FprintTaskIDCurrent;
