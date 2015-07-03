@@ -33,7 +33,8 @@ typedef struct FunctionTable {
 	void *address;
 	void *args;
 	int blocksize;
-	void *stackAddress[NUMCORES];
+	void *stackAddress[2];
+	int funcCompleteCount;
 } FunctionTable;
 
 

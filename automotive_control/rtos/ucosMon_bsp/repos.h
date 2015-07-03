@@ -55,11 +55,13 @@ struct REPOS_task {
 	void *stackAddressVirt[2];
 	void *stackAddressSP[2];
 	int stackSize;
-
+	int numFuncs;
+	int funcTableFirstIndex;
 	INT32U runtime;
 	INT32U deadline;
-	INT32U priority;
-
+	INT32U taskID;
+	INT32U fprintIDMask;
+	INT32U fprintID;
 
 	struct REPOS_task *next;
 	union{
@@ -82,6 +84,7 @@ bool dmaReady[2];
  */
 REPOS_task REPOSTaskTable[OS_MAX_TASKS];
 REPOS_task *firstTask;
+INT16U fprintIDFreeList;
 
 struct REPOS_core {
 	bool   coreRunningCriticalTask;
@@ -106,7 +109,6 @@ void REPOStaskComplete(int taskID);
 #define BOTH_CORES_REQUIRE_TRANSFER 	3
 
 bool REPOSAlreadyInScratchpad(REPOS_task *task, INT8U core);
-
-
-
+int REPOSgetFreeFprintID(REPOS_task *task);
+int REPOSgetTaskID(int fprintIDMask);
 #endif /* REPOS_H_ */

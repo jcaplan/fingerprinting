@@ -635,7 +635,8 @@ static Bool validateFetchAddress(Nios_IIP Nios_II, Uns32 simPC, Bool complete) {
         // Handling for an MPU Present
         //
         if (Nios_IIMPUMiss(Nios_II, MEM_PRIV_X, simPC, attrs)) {
-            vmiPrintf("problem!!!!\n");
+            const char *name = vmirtProcessorName((vmiProcessorP) Nios_II);
+            vmiPrintf("%s: problem!!!!\n",name);
             // MPU miss exception of some kind, handled by MPUMiss, so no
             // further action required here.
             return False;

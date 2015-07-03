@@ -91,6 +91,23 @@ static void initCpuIsr(void) {
 			PROCESSOR1_0_CPU_IRQ_0_IRQ, handleCPU, (void*) NULL, (void*) NULL);
 }
 
+void waitForPartnerCore(int partnerCore) {
+	//Synchronize with partner
+	//------------------------
+	int done = 0, first = 0;
+	while (done == 0) {
+		if (first == 0) {
+			critFuncData[CORE_ID].checkout = 1;
+			first = 1;
+		}
+		if (critFuncData[partnerCore].checkout == 1) {
+			critFuncData[partnerCore].checkout = 0;
+			done = 1;
+		}
+	}
+}
+
+
 /*****************************************************************************
  * Critical pair Task wrapper
  *****************************************************************************/
@@ -104,24 +121,14 @@ void Derivative_AirbagModel_TASK(void* pdata) {
 			DerivativeStruct*) = functionTable[DERIVATIVE_FUNC_TABLE_INDEX].address;
 	void (*airbagModelFunc)(int,
 			AirbagModelStruct*) = functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].address;
-
+	int partnerCore = 0;
 	while (1) {
 		INT8U perr;
 		OSSemPend(derivative_AirbagModel_SEM0, 0, &perr);
 		//Synchronize with partner
 		//------------------------
-		int done = 0, first = 0;
-		int partnerCore = critFuncData[CORE_ID].partnerCore;
-		while (done == 0) {
-			if (first == 0) {
-				critFuncData[CORE_ID].checkout = 1;
-				first = 1;
-			}
-			if (critFuncData[partnerCore].checkout == 1) {
-				critFuncData[partnerCore].checkout = 0;
-				done = 1;
-			}
-		}
+
+		waitForPartnerCore(partnerCore);
 
 		//Context switch is necessary to clear the callee saved registers
 		long registers[8];
@@ -163,12 +170,15 @@ void Derivative_AirbagModel_TASK(void* pdata) {
 		//set the flag for the OS context switch
 		FprintActive = 1;
 
+
+		waitForPartnerCore(partnerCore);
+
 		//Set the global pointer in case of compilation issues related
 		//to global variables
 		args = functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].args;
 		set_gp(gp);
 
-		airbagModelFunc(priority + 1, args);
+		airbagModelFunc(priority, args);
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();

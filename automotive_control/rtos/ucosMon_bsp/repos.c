@@ -39,6 +39,9 @@ void REPOSInit(void) {
 	task->kind = EVENT_DRIVEN_K; /* driven by task completion on monitor core */
 	task->core[0] = 0;
 	task->core[1] = 1;
+	task->numFuncs = 2; /* two functions run in the given task */
+	task->funcTableFirstIndex = 0;
+	fprintIDFreeList = 0xFFFF;
 	int i, j;
 	for (i = 0; i < 2; i++) {
 		for (j = 0; j < 4; j++) {
@@ -122,8 +125,8 @@ void REPOSgetScratchpadPage(int coreID,REPOS_task *task) {
 	task->dataAddressSP[coreID] = (void *)pageTable[sp][bin];
 	task->stackAddressSP[coreID] = (void *)pageTable[sp][bin+1];
 	core->coreRunningCriticalTask=true;
-	core->scratchpadTask[sp][bin] = task->priority;
-	core->scratchpadTask[sp][bin+1] = task->priority;
+	core->scratchpadTask[sp][bin] = task->taskID;
+	core->scratchpadTask[sp][bin+1] = task->taskID;
 
 }
 
@@ -134,10 +137,10 @@ bool REPOSAlreadyInScratchpad(REPOS_task *task, INT8U core) {
 	bool core_has_task = false;
 	for (i = 0; i < 2; i++) {
 		if ((REPOSCoreTable[core].scratchpadValid[0][i]
-				&& REPOSCoreTable[core].scratchpadTask[0][i] == task->priority)
+				&& REPOSCoreTable[core].scratchpadTask[0][i] == task->taskID)
 				|| (REPOSCoreTable[core].scratchpadValid[1][i]
 						&& REPOSCoreTable[core].scratchpadTask[1][i]
-								== task->priority)) {
+								== task->taskID)) {
 			core_has_task = true;
 		}
 	}
@@ -153,4 +156,33 @@ void REPOStaskComplete(int taskID){
 		REPOS_core *core = &REPOSCoreTable[task->core[i]];
 		core->coreRunningCriticalTask = false;
 	}
+	fprintIDFreeList |= 1 << taskID;
 }
+
+int REPOSgetFreeFprintID(REPOS_task *task) {
+	int i;
+	for(i = 0; i < 16; i++){
+		INT32U mask = 0;
+		if(fprintIDFreeList & (mask = 1 << i)){
+			fprintIDFreeList &= !(mask);
+			task->fprintIDMask = mask;
+			task->fprintID = i;
+			return i;
+		}
+	}
+	return -1;
+}
+
+int REPOSgetTaskID(int fprintIDMask){
+	int i;
+	for(i = 0; i < OS_MAX_TASKS; i++){
+		REPOS_task *task = &REPOSTaskTable[i];
+		if(task->fprintIDMask == fprintIDMask){
+			return task->taskID;
+		}
+	}
+	return -1;
+}
+
+
+

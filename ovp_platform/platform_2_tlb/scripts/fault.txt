@@ -1,9 +1,8 @@
 proc cpu0
-b *0x400fc4
+b *0x401100
 continue
 proc cpu0
 disable 1
 set extreg R5 0x33983
-proc cpum
-b handleResetMonitor
+
 continue

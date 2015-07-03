@@ -61,9 +61,6 @@ void initializeTaskTable(void);
 #define CORE0_SCRATCHPAD_START_ADDRESS 			((void*)0x4200000)
 #define CORE1_SCRATCHPAD_START_ADDRESS 			((void*)0x4200000)
 
-#define AirbagModel_COMPSTATUS_MASK 					0x2
-#define Derivative_COMPSTATUS_MASK 						0x1
-
 #define NUM_CRITICAL_TASKS 						2
 
 bool coresReady = false;
@@ -122,8 +119,9 @@ INT32U dmaQMem[DMA_Q_SIZE];
 /*****************************************************************************
  * Pointers to interrupt other cores
  *****************************************************************************/
-int *core0_IRQ = (int *) PROCESSOR0_0_CPU_IRQ_0_BASE;
-int *core1_IRQ = (int *) PROCESSOR1_0_CPU_IRQ_0_BASE;
+
+int *core_IRQ[NUMCORES] = { (int *) PROCESSOR0_0_CPU_IRQ_0_BASE,
+		(int *) PROCESSOR1_0_CPU_IRQ_0_BASE };
 
 /*****************************************************************************
  * DMA channels for each core
@@ -197,7 +195,7 @@ void CruiseControlSystem_TASK(void* pdata) {
 
 		printf("did traction control\n");
 
-		OSTimeDlyHMSM(0, 0, 0, 20);
+		OSTimeDlyHMSM(0, 0, 0, 10);
 	}
 }
 
@@ -245,7 +243,7 @@ void dma_TASK(void* pdata) {
 
 		//is it already located in the scratchpads??
 		//for both cores
-		int i,core;
+		int i, core;
 		if (start) {
 			for (i = 0; i < 2; i++) {
 				int core = task->core[i];
@@ -269,10 +267,14 @@ void dma_TASK(void* pdata) {
 					printf("sent dma core %d!\n", core);
 				}
 			}
-
+			REPOSgetFreeFprintID(task);
 			/* now start the task */
-			for (core = 0; core < 2; core++) {
-				critFuncData[core].priority = 0;
+			for (i = 0; i < 2; i++) {
+				core = task->core[i];
+				critFuncData[core].priority = task->fprintID;
+				if (critFuncData[core].priority < 0) {
+					printf("big problem no free taskIDs!!!!!!!!!\n");
+				}
 				critFuncData[core].tableIndex = DERIVATIVE_FUNC_TABLE_INDEX;
 				critFuncData[core].tlbDataAddressPhys =
 						task->dataAddressSP[core];
@@ -283,13 +285,13 @@ void dma_TASK(void* pdata) {
 				critFuncData[core].tlbStackAddressVirt =
 						task->stackAddressVirt[core];
 			}
+			//TODO : check that cores have copied info !
+			// while(....);
 
-			critFuncData[0].partnerCore = task->core[1];
-			critFuncData[1].partnerCore = task->core[0];
 			//Notify both cores
 			//-----------------
-			*core0_IRQ = 1;
-			*core1_IRQ = 1;
+			*core_IRQ[task->core[0]] = 1;
+			*core_IRQ[task->core[1]] = 1;
 			//wait until the message succeeds before returning to the top
 		} else { /* retrieve from only core 0 */
 			int core = task->core[0];
@@ -297,7 +299,7 @@ void dma_TASK(void* pdata) {
 					task->stackSize, (void *) core);
 
 			OSFlagPend(dmaReadyFlag, 1 << core, OS_FLAG_WAIT_SET_ALL, 0, &perr);
-			printf("received from core %d!\n",core);
+			printf("received from core %d!\n", core);
 		}
 
 	}
@@ -311,10 +313,7 @@ void handleDMA(void* handle, void* data) {
 	int core = (int) handle;
 	dmaReady[core] = true;
 	INT8U perr;
-	if (core == 0)
-		OSFlagPost(dmaReadyFlag, 0x1, OS_FLAG_SET, &perr);
-	else if (core == 1)
-		OSFlagPost(dmaReadyFlag, 0x2, OS_FLAG_SET, &perr);
+	OSFlagPost(dmaReadyFlag, 1 << core, OS_FLAG_SET, &perr);
 }
 
 void sendDMA(void* sourceAddress, void* destAddress, int size, void *handle) {
@@ -354,26 +353,45 @@ static void handleCompISR(void* context) {
 	//Assume static mapping of fingeprint tasks for now
 	//There is only one possible task that can set this off in this example
 	//---------------------------------------------------------------------
-	if (status.successful_reg & AirbagModel_COMPSTATUS_MASK) {
-
-		//Core 0 -> AirbagModel_Y.output
-		//------------------------------
-		result = status.successful_reg;
-		REPOStaskComplete(DERIVATIVE_AIRBAGMODEL_INDEX);
-		postDmaMessage(DERIVATIVE_AIRBAGMODEL_INDEX, false);
-	}
 	if (status.failed_reg) {
 		int i;
-		for(i = 0; i < 16; i++){
-			if(status.failed_reg & (i << 1)){
-				//TODO : fprint_id != TaskID... need to decouple!
-				failedTaskID = i;
+		for (i = 0; i < 16; i++) {
+			INT32U mask;
+			if (status.failed_reg & (mask = i << 1)) {
+				/* assume only one failure possible */
+				failedTaskID = REPOSgetTaskID(mask);
 				break;
 			}
 		}
 		resetCores();
 		REPOSInit(); /* ORDER MATTERS */
 		initializeTaskTable();
+	}
+
+	if ((result = status.successful_reg)) {
+
+		//figure out what task is complete
+		int i;
+		int taskID = -1;
+		for (i = 0; i < 16; i++) {
+			INT32U mask;
+			if (result & (mask = 1 << i)) {
+				taskID = REPOSgetTaskID(mask);
+				int numFuncs = REPOSTaskTable[taskID].numFuncs;
+				int firstFuncID = REPOSTaskTable[taskID].funcTableFirstIndex;
+				/* Here we check that all the functions inside the task have executed,
+				 * then we check that the task did not fail (since the same FID may have been used twice
+				 * before the handler responds if the functions are tiny).
+				 */
+				if ((numFuncs == functionTable[firstFuncID].funcCompleteCount)
+						&& (!taskFailed
+								|| (taskFailed && taskID != failedTaskID))) { /*function can be decomposed into several chunks, so could be both cases */
+					functionTable[firstFuncID].funcCompleteCount = 0;
+					REPOStaskComplete(taskID);
+					postDmaMessage(taskID, false);
+				}
+			}
+		}
 	}
 
 	fprint_reset_irq();
@@ -383,7 +401,6 @@ static void initCompIsr(void) {
 	alt_ic_isr_register(CFPU_0_CSR_IRQ_INTERRUPT_CONTROLLER_ID, CFPU_0_CSR_IRQ,
 			handleCompISR, (void*) NULL, (void*) NULL);
 }
-
 
 void initializeTaskTable(void) {
 	REPOS_task *task = &REPOSTaskTable[DERIVATIVE_AIRBAGMODEL_INDEX];
@@ -400,8 +417,6 @@ void initializeTaskTable(void) {
 	task->stackSize = 4096;
 }
 
-
-
 /*****************************************************************************
  * Reset monitor interface
  *****************************************************************************/
@@ -413,9 +428,9 @@ static void handleResetMonitor(void* context) {
 		taskFailed = false;
 		//TODO : should be a check for the specific FID calculated from the TID
 		//rather than the TID itself
-		if(failedTaskID < 2){
-			postDmaMessage(0, true);
-		}
+
+		postDmaMessage(failedTaskID, true);
+
 		OSTaskResume(DMA_PRIORITY);
 
 	}
