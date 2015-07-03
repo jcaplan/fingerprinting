@@ -53,13 +53,6 @@ void mem_manager_init(void){
 	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
 	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
 
-	//The core 0 critical task stack must appear to be at the same address as for core 1
-	set_cputable_entry(entry->tlbStackLine, entry->stackVirtualAddress);
-	set_spmtable_entry(entry->tlbStackLine, entry->stackPhysicalAddress);
-	enableTlbLine(entry->tlbStackLine);
-
-
-	activateTlb();
 }
 
 

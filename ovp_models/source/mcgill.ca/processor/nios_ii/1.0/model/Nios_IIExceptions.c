@@ -1201,9 +1201,6 @@ void Nios_IIProcessReset(Nios_IIP Nios_II) {
 
     Nios_IIRegisterInit(Nios_II);
 
-    Nios_IIDestructMPU(Nios_II);
-    Nios_IIConstructMPU(Nios_II);
-
     // jump to reset vector
     vmirtSetPCException((vmiProcessorP)Nios_II, Nios_II->params.RESET_VECTOR);
 }

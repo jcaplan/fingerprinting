@@ -306,8 +306,8 @@ int main() {
 	// Register exception handler.
 	alt_instruction_exception_register(&exc_handler);
 	// Initialize and start the MPU.
-	nios2_mpu_data_init();
-	nios2_mpu_inst_init();
+//	nios2_mpu_data_init();
+//	nios2_mpu_inst_init();
 //	nios2_mpu_enable();
 
 

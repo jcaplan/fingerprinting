@@ -15,11 +15,9 @@
 #include <stdbool.h>
 
 
-#define SEND_DERIVATIVE_AIRBAGMODEL 0
-#define SEND_DERIVATIVE_AIRBAGMODEL_DATA 1
-#define SEND_DERIVATIVE_AIRBAGMODEL_STACK 2
-
-
+#define DERIVATIVE_AIRBAGMODEL_INDEX 0
+#define NUM_SCRATCHPADS 2
+#define NUM_SP_PARTITIONS 2
 typedef struct REPOS_task REPOS_task;
 typedef struct REPOS_core REPOS_core;
 /*
@@ -29,6 +27,8 @@ typedef struct REPOS_core REPOS_core;
  * 2. function definitions
  */
 
+//List of all the pages
+INT32U pageTable[2][4];
 
 typedef enum task_status {
 	PENDING,
@@ -47,9 +47,20 @@ struct REPOS_task {
 	task_status status;
 	task_kind kind;
 	INT32U core[2];
+
+	void *dataAddressPhys;
+	void *dataAddressSP[2];
+	int dataSize;
+	void *stackAddressPhys[2];
+	void *stackAddressVirt[2];
+	void *stackAddressSP[2];
+	int stackSize;
+
 	INT32U runtime;
 	INT32U deadline;
 	INT32U priority;
+
+
 	struct REPOS_task *next;
 	union{
 		struct{
@@ -73,8 +84,12 @@ REPOS_task REPOSTaskTable[OS_MAX_TASKS];
 REPOS_task *firstTask;
 
 struct REPOS_core {
-	INT32U taskRunning;
-	INT32U scratchpadTask[2];
+	bool   coreRunningCriticalTask;
+	INT32U currentTaskID;
+	INT32U scratchpadRunning;
+	INT32U scratchpadTask[2][2]; /* only two bins, each task consumes two pages (1 data one stack) */
+	bool scratchpadValid[2][2]; /* what if it hasn't been used yet? */
+	INT32U scratchpadLastUsed[2][2];
 };
 REPOS_core REPOSCoreTable[NUMCORES];
 
@@ -82,12 +97,15 @@ REPOS_core REPOSCoreTable[NUMCORES];
 void REPOSUpdateTime(void);
 void REPOSInit(void);
 void REPOS_sendDMA(INT32U message);
-//Flag collects a flag, plus a waitlist of tasks waiting on the flag
-//task has conditions on which it is waiting...
+void REPOSgetScratchpadPage(int coreID,REPOS_task *task);
+void REPOStaskComplete(int taskID);
 
-//Interrupts/tasks/timers will post to REPOS ONLY IF there is no initial task on the monitor.
-//Otherwise use the UCOS facilities to initiate the task on the monitor core.
+#define BOTH_CORES_LOADED 				0
+#define CORE0_REQUIRES_TRANSFER 		1
+#define CORE1_REQUIRES_TRANSFER 		2
+#define BOTH_CORES_REQUIRE_TRANSFER 	3
 
+bool REPOSAlreadyInScratchpad(REPOS_task *task, INT8U core);
 
 
 
