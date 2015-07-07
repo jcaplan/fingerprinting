@@ -355,6 +355,7 @@ void dma_TASK(void* pdata) {
 				if (critFuncData[core].priority < 0) {
 					printf("big problem no free taskIDs!!!!!!!!!\n");
 				}
+				//TODO wrong index
 				critFuncData[core].tableIndex = DERIVATIVE_FUNC_TABLE_INDEX;
 				critFuncData[core].tlbDataAddressPhys =
 						task->dataAddressSP[core];
@@ -492,8 +493,6 @@ static void handleResetMonitor(void* context) {
 	coresReady = true;
 	if (taskFailed) {
 		taskFailed = false;
-		//TODO : should be a check for the specific FID calculated from the TID
-		//rather than the TID itself
 
 		postDmaMessage(failedTaskID, true);
 

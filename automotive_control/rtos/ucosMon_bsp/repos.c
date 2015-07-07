@@ -163,13 +163,11 @@ int REPOSgetTaskID(int fprintIDMask){
 void REPOSBeginTask(REPOS_task *task){
 	int i;
 	for(i = 0; i < 2; i++){
-	REPOS_core *core = &REPOSCoreTable[i];
-
-	core->coreRunningCriticalTask=true;
-	core->currentTaskID = task->taskID;
-	core->currentScratchpad = task->currentSP;
-	core->scratchpadActive[core->currentScratchpad][task->currentSPbin] = true;
-
+		REPOS_core *core = &REPOSCoreTable[i];
+		core->coreRunningCriticalTask=true;
+		core->currentTaskID = task->taskID;
+		core->currentScratchpad = task->currentSP;
+		core->scratchpadActive[core->currentScratchpad][task->currentSPbin] = true;
 	}
 }
 
