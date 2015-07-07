@@ -30,6 +30,15 @@ void set_task_directory(Directory_Init_Struct* d){
 
 }
 
+int fprint_get_task_count(int task){
+
+	//Place the start pointer for the given task
+	uint32_t* start = (uint32_t*)(COMPARATOR_BASE_ADDRESS \
+			+ CRC_DIRECTORY_START_BASE) + task;
+	return *start;
+
+}
+
 
 void enable_fprint_task(int task){
 	//When enabling, the current state register
@@ -58,7 +67,7 @@ void fprint_reset_irq(void){
 }
 
 int fprint_status(Fprint_Status* fps){
-		Fprint_Status* f = (uint32_t*)(COMPARATOR_BASE_ADDRESS \
+		Fprint_Status* f = (Fprint_Status*)(COMPARATOR_BASE_ADDRESS \
 												+ COMPARATOR_EXCEPTION_OFFSET);
 		fps->status_reg = f->status_reg;
 		fps->successful_reg = f->successful_reg;

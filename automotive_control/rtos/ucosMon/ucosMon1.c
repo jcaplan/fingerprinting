@@ -166,6 +166,78 @@ CriticalFunctionData critFuncData[NUMCORES] __attribute__ ((section (".shared"))
 
 void sendDMA(void* sourceAddress, void* destAddress, int size, void *handle);
 
+
+
+/*****************************************************************************
+ * REPOS configuration functions
+ *****************************************************************************/
+
+
+
+void initializeTaskTable(void) {
+	REPOS_task *task = &REPOSTaskTable[DERIVATIVE_AIRBAGMODEL_INDEX];
+
+	task->dataAddressPhys = &dmaPackageStruct_0;
+
+	task->stackAddressPhys[0] = (void *) (0x495000);
+	task->stackAddressPhys[1] = (void *) (0x463000);
+
+	task->stackAddressVirt[0] = (void *) (0x463000);
+	task->stackAddressVirt[1] = (void *) (0x463000);
+
+	task->dataSize = sizeof(DMAPackageStruct);
+	task->stackSize = 4096;
+}
+
+void REPOSInit(void) {
+
+	memset(REPOSCoreTable, 0, NUMCORES * sizeof(REPOS_core));
+	memset(REPOSTaskTable, 0, OS_MAX_TASKS * sizeof(REPOS_task));
+
+	int i;
+	for (i = 0; i < OS_MAX_TASKS; i++) {
+
+		REPOS_task *task = &REPOSTaskTable[i];
+		firstTask = task;
+		task->status = PENDING;
+		task->kind = EVENT_DRIVEN_K; /* driven by task completion on monitor core */
+		task->core[0] = 0;
+		task->core[1] = 1;
+		task->numFuncs = 2; /* two functions run in the given task */
+		task->funcTableFirstIndex = 0;
+		task->taskID = i;
+
+	}
+
+	fprintIDFreeList = 0xFFFF;
+	int j;
+	for (i = 0; i < 2; i++) {
+		for (j = 0; j < 4; j++) {
+			pageTable[i][j] = 0x4200000 + ((i * 4 + j) << 12);
+		}
+	}
+	/*
+	 * pageTable
+	 * = {
+	 {
+	 0x4200000,
+	 0x4201000,
+	 0x4202000,
+	 0x4203000
+	 },
+	 {
+	 0x4204000,
+	 0x4205000,
+	 0x4206000,
+	 0x4207000
+	 }
+	 };
+	 */
+
+	initializeTaskTable();
+}
+
+
 /*****************************************************************************
  * CruiseControlSystem Task wrapper
  *****************************************************************************/
@@ -247,8 +319,15 @@ void dma_TASK(void* pdata) {
 		if (start) {
 			for (i = 0; i < 2; i++) {
 				int core = task->core[i];
+
+				REPOSCheckPreemption(core);
+
+
 				bool alreadyInScratchpad = REPOSAlreadyInScratchpad(task, core);
 				if (!alreadyInScratchpad) {
+
+					/* does the code that's already there need to be copied back?? */
+
 
 					REPOSgetScratchpadPage(core, task);
 					//Once the scratchpad locations are known, it is possible to start the trans
@@ -268,6 +347,7 @@ void dma_TASK(void* pdata) {
 				}
 			}
 			REPOSgetFreeFprintID(task);
+			REPOSBeginTask(task);
 			/* now start the task */
 			for (i = 0; i < 2; i++) {
 				core = task->core[i];
@@ -336,7 +416,7 @@ int result = 0;
  * Comparator ISR
  *****************************************************************************/
 void resetCores(void) {
-	OSTaskSuspend(DMA_PRIORITY);
+	OSTaskDel(DMA_PRIORITY);
 	int* cpu0_reset = (int*) PROCESSOR0_0_SW_RESET_0_BASE;
 	int* cpu1_reset = (int*) PROCESSOR1_0_SW_RESET_0_BASE;
 	*cpu0_reset = 1;
@@ -357,15 +437,15 @@ static void handleCompISR(void* context) {
 		int i;
 		for (i = 0; i < 16; i++) {
 			INT32U mask;
-			if (status.failed_reg & (mask = i << 1)) {
+			if (status.failed_reg & (mask = 1 << i)) {
 				/* assume only one failure possible */
 				failedTaskID = REPOSgetTaskID(mask);
+				fprint_get_task_count(i); /* make sure the counter resets */
 				break;
 			}
 		}
 		resetCores();
 		REPOSInit(); /* ORDER MATTERS */
-		initializeTaskTable();
 	}
 
 	if ((result = status.successful_reg)) {
@@ -378,16 +458,15 @@ static void handleCompISR(void* context) {
 			if (result & (mask = 1 << i)) {
 				taskID = REPOSgetTaskID(mask);
 				int numFuncs = REPOSTaskTable[taskID].numFuncs;
-				int firstFuncID = REPOSTaskTable[taskID].funcTableFirstIndex;
 				/* Here we check that all the functions inside the task have executed,
 				 * then we check that the task did not fail (since the same FID may have been used twice
 				 * before the handler responds if the functions are tiny).
 				 */
-				if ((numFuncs == functionTable[firstFuncID].funcCompleteCount)
+				if (((REPOSTaskTable[taskID].funcCompleteCount += fprint_get_task_count(i)) == numFuncs)
 						&& (!taskFailed
 								|| (taskFailed && taskID != failedTaskID))) { /*function can be decomposed into several chunks, so could be both cases */
-					functionTable[firstFuncID].funcCompleteCount = 0;
-					REPOStaskComplete(taskID);
+					REPOSTaskTable[taskID].funcCompleteCount = 0;
+					REPOSTaskComplete(taskID);
 					postDmaMessage(taskID, false);
 				}
 			}
@@ -402,20 +481,7 @@ static void initCompIsr(void) {
 			handleCompISR, (void*) NULL, (void*) NULL);
 }
 
-void initializeTaskTable(void) {
-	REPOS_task *task = &REPOSTaskTable[DERIVATIVE_AIRBAGMODEL_INDEX];
 
-	task->dataAddressPhys = &dmaPackageStruct_0;
-
-	task->stackAddressPhys[0] = (void *) (0x495000);
-	task->stackAddressPhys[1] = (void *) (0x463000);
-
-	task->stackAddressVirt[0] = (void *) (0x463000);
-	task->stackAddressVirt[1] = (void *) (0x463000);
-
-	task->dataSize = sizeof(DMAPackageStruct);
-	task->stackSize = 4096;
-}
 
 /*****************************************************************************
  * Reset monitor interface
@@ -431,7 +497,9 @@ static void handleResetMonitor(void* context) {
 
 		postDmaMessage(failedTaskID, true);
 
-		OSTaskResume(DMA_PRIORITY);
+//		OSTaskResume(DMA_PRIORITY);
+		OSTaskCreateExt(dma_TASK, NULL, &DMA_STACK[DMA_STACKSIZE - 1], DMA_PRIORITY,
+				DMA_PRIORITY, DMA_STACK, DMA_STACKSIZE, NULL, OS_TASK_OPT_NONE);
 
 	}
 }
@@ -471,7 +539,6 @@ int main(void) {
 
 	//Initialize the runtime interface
 	REPOSInit(); /* ORDER MATTERS */
-	initializeTaskTable();
 
 	// Initialize the reset monitor
 	resetMonitorMonReg(3);

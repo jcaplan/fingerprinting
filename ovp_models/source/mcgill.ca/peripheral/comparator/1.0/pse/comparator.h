@@ -1,5 +1,6 @@
 #include "peripheral/impTypes.h"
 
+#define TASK_COUNTER                    0X0
 #define START_POINTER                   0x1
 #define END_POINTER                     0x2
 #define OTHER                           0x3

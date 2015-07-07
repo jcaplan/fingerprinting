@@ -360,29 +360,26 @@ NIOS_II_MORPH_FN(morphCUSTOM_C1) {
     Uns8 C = state->info.C;
     vmiReg gpr_C = NIOS_II_GPR_WR(C);
     Uns8 N = state->info.N;
-
-
-    vmiReg* flag = calloc(1,sizeof(vmiReg));
     
 
     switch(N){
     case 225: // fnegs
-        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FNEG, gpr_C, gpr_B, gpr_A, *flag, 0);
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FNEG, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
         break;
     case 230: // fcmples
-        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FQCMPLE, gpr_C, gpr_B, gpr_A, *flag, 0);
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FQCMPLE, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
         break;
     case 252: // fmuls
-        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FMUL, gpr_C, gpr_B, gpr_A, *flag, 0);
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FMUL, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
         break;
     case 253: // fadds    
-        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FADD, gpr_C, gpr_B, gpr_A, *flag, 0);
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FADD, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
         break;
     case 254: // fsubs
-        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FSUB, gpr_C, gpr_B, gpr_A, *flag, 0);
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FSUB, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
         break;
     case 255: // fdvis
-        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FDIV, gpr_C, gpr_B, gpr_A, *flag, 0);
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FDIV, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
         break;
     default: //etc
         vmiPrintf("Custom instruction error: N = %d not found",N);
@@ -390,7 +387,6 @@ NIOS_II_MORPH_FN(morphCUSTOM_C1) {
         break;
     } 
 
-    free(flag);
 }
 
 NIOS_II_MORPH_FN(morphBRET_I0) {

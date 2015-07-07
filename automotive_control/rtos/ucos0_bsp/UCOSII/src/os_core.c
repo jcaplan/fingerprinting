@@ -729,6 +729,7 @@ void  OSIntExit (void)
                                     							+ 4);
                     	INT32U x = *fprint_pause_reg;
                     	*fprint_pause_reg = x & ~(1 << FprintPausedTaskID[FprintPausedTaskIndex]);
+                    	FprintTaskIDCurrent = FprintPausedTaskID[FprintPausedTaskIndex];
 
                     }
 #endif

@@ -64,4 +64,6 @@ void fprint_set_block_size(int size);
 //Set core assignment table
 void set_core_assignment_table(Core_Assignment_Table* ca);
 
+//Number of times the comparator finished for the task since last interrupt
+int fprint_get_task_count(int task);
 #endif /* FINGERPRINT_H_ */

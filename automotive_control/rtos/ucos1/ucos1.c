@@ -141,6 +141,7 @@ void Derivative_AirbagModel_TASK(void* pdata) {
 
 		//set the flag for the OS context switch
 		FprintActive = 1;
+		FprintTaskIDCurrent = priority;
 
 		//Retrieve the arguments before changing the GP
 
@@ -211,6 +212,9 @@ alt_exception_result exc_handler(alt_exception_cause cause,
 		alt_u32 exception_pc, alt_u32 badaddr) {
 	//TODO: Notify monitor to reset core immediately!!
 	int *coreM_IRQ = (int *) PROCESSORM_0_CPU_IRQ_0_BASE;
+	if(FprintActive){
+		disable_fprint_task(FprintTaskIDCurrent);
+	}
 	*coreM_IRQ = 1;
 	while (1)
 		;
@@ -234,9 +238,14 @@ void nios2_mpu_data_init() {
 	region[1].c = 0;
 	region[1].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
 
+	region[2].index = 0x2;
+	region[2].base = 0x0;
+	region[2].mask = (MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_BASE)/64;
+	region[2].c = 0;
+	region[2].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
 
 	int index;
-	for (index = 2; index < NIOS2_MPU_NUM_DATA_REGIONS; index++) {
+	for (index = 3; index < NIOS2_MPU_NUM_DATA_REGIONS; index++) {
 		region[index].base = 0x0;
 		region[index].index = index;
 		region[index].mask = 0x2000000;
@@ -316,9 +325,9 @@ int main() {
 	// Register exception handler.
 	alt_instruction_exception_register(&exc_handler);
 	// Initialize and start the MPU.
-//	nios2_mpu_data_init();
-//	nios2_mpu_inst_init();
-//	nios2_mpu_enable();
+	nios2_mpu_data_init();
+	nios2_mpu_inst_init();
+	nios2_mpu_enable();
 
 
 

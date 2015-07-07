@@ -163,7 +163,6 @@ void Derivative_AirbagModel_TASK(void* pdata) {
 		OSSemPend(derivative_AirbagModel_SEM0, 0, &perr);
 
 		waitForPartnerCore(partnerCore);
-		functionTable[DERIVATIVE_FUNC_TABLE_INDEX].funcCompleteCount = 1;
 		//Context switch is necessary to clear the callee saved registers
 		long registers[8];
 		context_switch(registers);
@@ -176,6 +175,7 @@ void Derivative_AirbagModel_TASK(void* pdata) {
 
 		//set the flag for the OS context switch
 		FprintActive = 1;
+		FprintTaskIDCurrent = priority;
 
 		//Retrieve the arguments before changing the GP
 
@@ -206,7 +206,6 @@ void Derivative_AirbagModel_TASK(void* pdata) {
 		FprintActive = 1;
 
 		waitForPartnerCore(partnerCore);
-		functionTable[DERIVATIVE_FUNC_TABLE_INDEX].funcCompleteCount++;
 
 		//Set the global pointer in case of compilation issues related
 		//to global variables
@@ -234,11 +233,14 @@ alt_exception_result exc_handler(alt_exception_cause cause,
 		alt_u32 exception_pc, alt_u32 badaddr) {
 	//TODO: Notify monitor to reset core immediately!!
 	int *coreM_IRQ = (int *) PROCESSORM_0_CPU_IRQ_0_BASE;
+	if(FprintActive){
+		OSTaskSuspend(OSPrioCur);
+		disable_fprint_task(FprintTaskIDCurrent);
+	}
 	*coreM_IRQ = 1;
-	while (1)
-		;
 	return 0;
 }
+
 
 void nios2_mpu_data_init() {
 	//Data region is scratchpads + this core's main memory region.
@@ -246,19 +248,27 @@ void nios2_mpu_data_init() {
 	//jtag_uart.
 	//global data region allowed
 	region[0].index = 0x0;
-	region[0].base = 0x431000/64;
-	region[0].mask = (0x432000)/64;
+	region[0].base = 0x0;
+	region[0].mask = (MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_BASE)/64;
 	region[0].c = 0;
-	region[0].perm = MPU_DATA_PERM_SUPER_RW_USER_RW;
+	region[0].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
 
-	region[1].index = 0x0;
-	region[1].base = MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_BASE/64;
-	region[1].mask = (0x463000)/64;
+	/* global data region */
+	region[1].index = 0x1;
+	region[1].base = 0x431000/64;
+	region[1].mask = (0x432000)/64;
 	region[1].c = 0;
-	region[1].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
+	region[1].perm = MPU_DATA_PERM_SUPER_RW_USER_RW;
+
+
+	region[2].index = 0x2;
+	region[2].base = MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_BASE/64;
+	region[2].mask = (0x463000)/64;
+	region[2].c = 0;
+	region[2].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
 
 	int index;
-	for (index = 1; index < NIOS2_MPU_NUM_DATA_REGIONS; index++) {
+	for (index = 3; index < NIOS2_MPU_NUM_DATA_REGIONS; index++) {
 		region[index].base = 0x0;
 		region[index].index = index;
 		region[index].mask = 0x2000000;
@@ -341,9 +351,9 @@ int main() {
 	// Register exception handler.
 	alt_instruction_exception_register(&exc_handler);
 	// Initialize and start the MPU.
-//	nios2_mpu_data_init();
-//	nios2_mpu_inst_init();
-//	nios2_mpu_enable();
+	nios2_mpu_data_init();
+	nios2_mpu_inst_init();
+	nios2_mpu_enable();
 
 
 

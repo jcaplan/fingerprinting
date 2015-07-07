@@ -5,21 +5,19 @@
  *      Author: jonah
  */
 
-
-
 #ifndef REPOS_H_
 #define REPOS_H_
-#include <ucos_ii.h>
-#include "shared_mem.h"
-#include "system.h"
+
+typedef struct REPOS_task REPOS_task;
+typedef struct REPOS_core REPOS_core;
+
 #include <stdbool.h>
+#include "test_includes.h"
 
 
 #define DERIVATIVE_AIRBAGMODEL_INDEX 0
 #define NUM_SCRATCHPADS 2
 #define NUM_SP_PARTITIONS 2
-typedef struct REPOS_task REPOS_task;
-typedef struct REPOS_core REPOS_core;
 /*
  * What are the things that need to happen?
  *

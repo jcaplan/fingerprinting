@@ -175,7 +175,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
         name="cpu0_dbus"/>
     <bus addresswidth="32"
         name="cpu0_ibus"/>
-    <peripheralinstance diagnosticlevel="3"
+    <peripheralinstance diagnosticlevel="0"
         name="cpu0_tlb">
         <vlnvreference name="tlb"
             vendor="mcgill.ca"
@@ -449,7 +449,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
         name="cpu1_tlbbus"/>
     <bus addresswidth="32"
         name="cpu1_tlbbus_in"/>
-    <peripheralinstance diagnosticlevel="3"
+    <peripheralinstance diagnosticlevel="0"
         name="cpu1_tlb">
         <vlnvreference name="tlb"
             vendor="mcgill.ca"

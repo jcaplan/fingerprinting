@@ -150,7 +150,7 @@ ihwaddbus -instancename cpu0_tlbbus_in -addresswidth 32
 ihwaddbus -instancename cpu0_dbus  -addresswidth 32
 ihwaddbus -instancename cpu0_ibus  -addresswidth 32
 
-ihwaddperipheral -instancename cpu0_tlb    -vendor mcgill.ca -type tlb -version 1.0 -diagnosticlevel 3
+ihwaddperipheral -instancename cpu0_tlb    -vendor mcgill.ca -type tlb -version 1.0 -diagnosticlevel 0
 ihwconnect       -instancename cpu0_tlb    -bus cpu0_tlbbus    -busmasterport TLB_MASTER -loaddress 0x0000000 -hiaddress 0xFFFFFFFF
 ihwconnect       -instancename cpu0_tlb    -bus cpu0_tlbbus_in -busslaveport  TLB_SLAVE  
 
@@ -344,7 +344,7 @@ ihwaddbus  -instancename cpu1_tlbbus_in -addresswidth 32
 #
 # TLB
 #
-ihwaddperipheral -instancename cpu1_tlb    -vendor mcgill.ca -type tlb -version 1.0 -diagnosticlevel 3
+ihwaddperipheral -instancename cpu1_tlb    -vendor mcgill.ca -type tlb -version 1.0 -diagnosticlevel 0
 ihwconnect       -instancename cpu1_tlb    -bus cpu1_tlbbus    -busmasterport TLB_MASTER -loaddress 0x0000000 -hiaddress 0xFFFFFFFF
 ihwconnect       -instancename cpu1_tlb    -bus cpu1_tlbbus_in -busslaveport  TLB_SLAVE  
 

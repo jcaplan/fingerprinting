@@ -34,7 +34,6 @@ typedef struct FunctionTable {
 	void *args;
 	int blocksize;
 	void *stackAddress[2];
-	int funcCompleteCount;
 } FunctionTable;
 
 

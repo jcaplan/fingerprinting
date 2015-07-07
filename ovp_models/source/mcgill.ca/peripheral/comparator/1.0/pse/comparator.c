@@ -25,6 +25,7 @@ int checkin[2][16];
 int checkout[2][16];
 int pause[2][16];
 int fprints_ready[2][16];
+int task_count[16];
 int successful_reg;
 int failed_reg;
 exception_reg exception;
@@ -46,10 +47,12 @@ void collision_occurred(int task){
 	//write the exception register
 	//write the checkin and checkout
 	//reset the head and tail
+
 	if(diagnosticLevel == 3){
 		bhmPrintf("collision!\n");
 		bhmPrintf("task %d fprint %x and %x don't match\n",task,fprint[0][tail[0][task]],fprint[1][tail[0][task]]);
 	}
+	task_count[task]++;
 	failed_reg |= (1 << task);
 	fprints_ready[0][task] = 0;
 	fprints_ready[1][task] = 0;
@@ -72,6 +75,7 @@ void task_succeeded(int task){
 
 	//wait if something already happened
 	int i;
+	task_count[task]++;
 	for(i = 0; i < 2; i++){
 		checkin[i][task] = 0;
 		checkout[i][task] = 0;
@@ -148,6 +152,7 @@ void do_comparison(void){
 			//If different number of fingerprints then collision
 			bhmPrintf("checkin\n");
 			if(head[0][task] != head[1][task]){
+				bhmPrintf("head pointers don't match!\n");
 				collision_occurred(task);
 			}else{
 
@@ -158,8 +163,10 @@ void do_comparison(void){
 				//check final condition of test
 				if(test == 1)
 					task_succeeded(task);
-				else
+				else{
 					collision_occurred(task);
+					bhmPrintf("comparison failed!\n");
+				}
 				chin = 0;
 				for(task = 0; task < 16; task++){
 					//If a fingerprint is ready on both cores or the task is complete
@@ -222,31 +229,37 @@ PPM_WRITE_CB(memWr) {
 	 	//case COMPARATOR_EXCEPTION:
 	 	//	bhmPrintf("exception\n"); 		
 	 }
-
-
-    // YOUR CODE HERE (memWr)
 }
 
 PPM_READ_CB(memRd) {
 	COMP_CSR_SLAVE_address address;
 	address.value = (Uns32)(addr- handles.COMP_CSR_SLAVE);
-    if(address.bits.message_type == OTHER){
-    	if(address.reg.address == EXCEPTION){
+	Uns32 result = 0;
+	switch (address.bits.message_type) {
+	case  OTHER:
+		if(address.reg.address == EXCEPTION){
     		if(address.reg.offset == 0){
     			bhmPrintf("STATUS READ: %x\n",exception.value);
-    			return exception.value;
+    			result = exception.value;
     		}
     		else if(address.reg.offset == 4){
     			bhmPrintf("successful_reg: %x\n",successful_reg);
-    			return successful_reg;
+    			result = successful_reg;
     		}
     		else if(address.reg.offset == 8){
     			bhmPrintf("failed_reg: %x\n",failed_reg);
-    			return failed_reg;	
+    			result = failed_reg;	
     		}
     	}
-    }
-    return 0;
+    	break;
+    case START_POINTER:
+    	result = task_count[address.start.pointer];
+    	bhmPrintf("COMPARATOR: task_count[%d]: %x\n",(int)address.start.pointer,result);
+    	task_count[address.start.pointer] = 0;
+    default:
+    	break;
+	} 
+	return result;
 }
 
 
