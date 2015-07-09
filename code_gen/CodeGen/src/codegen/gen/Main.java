@@ -7,7 +7,7 @@ import javax.management.RuntimeErrorException;
 public class Main {
 
 	
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException, ConfigurationException{
 		
 		/*args should contain the configuration file*/
 		if(args.length != 1){

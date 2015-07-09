@@ -11,7 +11,7 @@
 #include "tlb.h"
 #include "context_switch.h"
 #include "critical.h"
-#include "ucos1.h"
+#include "cpu1.h"
 #include "reset_monitor.h"
 #include "mem_manager.h"
 #include "mpu_utils.h"
@@ -207,6 +207,22 @@ void FuelSensor_TASK(void* pdata) {
 /*****************************************************************************
  * MPU stuff
  *****************************************************************************/
+void mem_manager_init(void){
+	//For each critical task set up a position in the table
+
+	//AirbagModel + Derivative
+	MemoryManagerStruct *entry = &memoryManagerTable[derivate_airbagModel_memoryTableIndex];
+	entry->disablePending = false;
+	entry->disablePendSource = 0;
+	entry->taskPriority = Derivative_AirbagModel_PRIORITY;
+	entry->tlbDataLine = 0;
+	entry->tlbStackLine = 1;
+	entry->stackPhysicalAddress = (void*)0x00463000;
+	entry->stackVirtualAddress = (void*)0;
+	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
+	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
+
+}
 
 alt_exception_result exc_handler(alt_exception_cause cause,
 		alt_u32 exception_pc, alt_u32 badaddr) {

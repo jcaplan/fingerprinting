@@ -679,24 +679,24 @@ void  OSIntExit (void)
                 OS_SchedNew();
                 if (OSPrioHighRdy != OSPrioCur) {          /* No Ctx Sw if current task is highest rdy */
 #if IS_MONITOR == 0
-                	//preemption is occuring.
-                	//pause the task in the fingerprint unit
+                    //preemption is occuring.
+                    //pause the task in the fingerprint unit
 
-                	//Is this a critical task?
-                	//Here we pause the task
+                    //Is this a critical task?
+                    //Here we pause the task
                 if(FprintActive){
 
-                		INT32U* fprint_pause_reg = (INT32U*)(0x8100000 \
-                												+ 4);
+                        INT32U* fprint_pause_reg = (INT32U*)(0x8100000 \
+                                                                + 4);
 
-                    	FprintActive = 0;
-                    	FprintPausedTaskPriority[FprintPausedTaskIndex] = OSPrioCur;
-                    	FprintPausedTaskID[FprintPausedTaskIndex] = FprintTaskIDCurrent;
-                    	FprintPausedTaskIndex++;
-                		INT32U x = *fprint_pause_reg;
-                		*fprint_pause_reg = x | (1 << FprintTaskIDCurrent);
+                        FprintActive = 0;
+                        FprintPausedTaskPriority[FprintPausedTaskIndex] = OSPrioCur;
+                        FprintPausedTaskID[FprintPausedTaskIndex] = FprintTaskIDCurrent;
+                        FprintPausedTaskIndex++;
+                        INT32U x = *fprint_pause_reg;
+                        *fprint_pause_reg = x | (1 << FprintTaskIDCurrent);
 
-               	}
+                }
 
 
                     // Check if the current task must be deactivated
@@ -723,13 +723,13 @@ void  OSIntExit (void)
                     //Here is where we resume the task
 
                     if(FprintPausedTaskIndex > 0 && OSPrioCur == FprintPausedTaskPriority[FprintPausedTaskIndex - 1]){
-                    	FprintActive = 1;
-                    	FprintPausedTaskIndex--;
-                    	INT32U* fprint_pause_reg = (INT32U*)(0x8100000 \
-                                    							+ 4);
-                    	INT32U x = *fprint_pause_reg;
-                    	*fprint_pause_reg = x & ~(1 << FprintPausedTaskID[FprintPausedTaskIndex]);
-                    	FprintTaskIDCurrent = FprintPausedTaskID[FprintPausedTaskIndex];
+                        FprintActive = 1;
+                        FprintPausedTaskIndex--;
+                        INT32U* fprint_pause_reg = (INT32U*)(0x8100000 \
+                                                                + 4);
+                        INT32U x = *fprint_pause_reg;
+                        *fprint_pause_reg = x & ~(1 << FprintPausedTaskID[FprintPausedTaskIndex]);
+                        FprintTaskIDCurrent = FprintPausedTaskID[FprintPausedTaskIndex];
 
                     }
 #endif

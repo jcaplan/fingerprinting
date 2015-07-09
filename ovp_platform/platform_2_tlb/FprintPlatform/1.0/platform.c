@@ -36,7 +36,7 @@ static Bool postPlatformConstruct(void) {
     icmLoadProcessorMemory(handles.cpu1_c, 
         "../../automotive_control/rtos/ucos1/ucos1.elf", 0, 0, 1);
     icmLoadProcessorMemory(handles.cpum_c, 
-        "../../automotive_control/rtos/ucosMon/ucosMon.elf", 0, 0, 1);
+        "../../automotive_control/rtos/ucosM/ucosMon.elf", 0, 0, 1);
     return True;
 }
 

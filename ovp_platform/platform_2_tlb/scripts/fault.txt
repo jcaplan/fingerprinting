@@ -1,7 +1,5 @@
 proc cpu0
-b *0x4012d8
-proc cpum
-b handleCompISR
+b *0x40133c
 continue
 proc cpu0
 disable 1

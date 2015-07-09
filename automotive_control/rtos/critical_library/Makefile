@@ -124,7 +124,6 @@ LIB_NAME := critical_library
 
 # Paths to C, C++, and assembly source files.
 C_SRCS += critical.c
-C_SRCS += fingerprint.c
 C_SRCS += AirbagModel.c
 C_SRCS += CollisionAvoidance.c
 C_SRCS += CruiseControlSystem.c
@@ -132,11 +131,8 @@ C_SRCS += Derivative.c
 C_SRCS += FuelSensor.c
 C_SRCS += TractionControl.c
 C_SRCS += TransmissionControl.c
-C_SRCS += mpu_utils.c
-C_SRCS += reset_monitor.c
 CXX_SRCS :=
-ASM_SRCS += context_switch.S
-ASM_SRCS += gp.S
+ASM_SRCS :=
 
 
 # Path to root of object file tree.
@@ -163,7 +159,7 @@ BUILD_PRE_PROCESS :=
 BUILD_POST_PROCESS :=
 
 # Define path to the root of the BSP.
-BSP_ROOT_DIR := ../ucosMon_bsp
+BSP_ROOT_DIR := ../ucosM_bsp
 
 # List of public include directories for -I compiler option (-I added when used).
 

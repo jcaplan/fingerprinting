@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-for i in {0..1} Mon
+for i in {0..1} M
 do
     pushd ucos${i}
     make all

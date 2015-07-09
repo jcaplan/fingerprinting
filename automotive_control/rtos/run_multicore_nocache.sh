@@ -10,7 +10,7 @@ sw_dir=./
 
 nios2-download -g --cable=1 --instance=0 ${sw_dir}/ucos1/ucos1.elf
 nios2-download -g --cable=1 --instance=1 ${sw_dir}/ucos0/ucos0.elf
-nios2-download -g --cable=1 --instance=2 ${sw_dir}/ucosMon/ucosMon.elf
+nios2-download -g --cable=1 --instance=2 ${sw_dir}/ucosM/ucosMon.elf
 
 
 

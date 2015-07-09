@@ -22,11 +22,11 @@ public class Configuration {
 		lineCount = 0;
 	}
 
-	public void throwConfigError(String message) {
-		throw new RuntimeErrorException(new Error(configFilename + ":" + lineCount + ": " + message));
+	public void throwConfigError(String message) throws ConfigurationException {
+		throw new ConfigurationException(configFilename + ":" + lineCount + ": " + message);
 	}
 
-	public void parseConfigFile() throws IOException {
+	public void parseConfigFile() throws IOException, ConfigurationException {
 		FileReader fr = new FileReader(configFilename);
 		reader = new BufferedReader(fr);
 
@@ -79,7 +79,7 @@ public class Configuration {
 		
 	}
 
-	private void parseMapping() throws IOException {
+	private void parseMapping() throws IOException, ConfigurationException {
 		String line = "";
 		while(!(line = reader.readLine()).equals("</MAPPING>")){
 			lineCount++;
@@ -120,7 +120,7 @@ public class Configuration {
 		lineCount++; /*final line*/
 	}
 
-	private void parsePlatform() throws IOException {
+	private void parsePlatform() throws IOException, ConfigurationException {
 		String line = "";
 		while(!(line = reader.readLine()).equals("</PLATFORM>")){
 			lineCount++;
@@ -137,7 +137,7 @@ public class Configuration {
 
 
 
-	private void parseFunctionList() throws IOException {
+	private void parseFunctionList() throws IOException, ConfigurationException {
 		String line = "";
 		while (!(line = reader.readLine()).equals("</FUNCTIONLIST>")) {
 			lineCount++;
@@ -203,7 +203,7 @@ public class Configuration {
 
 	}
 
-	private void parseDataflow() throws IOException {
+	private void parseDataflow() throws IOException, ConfigurationException {
 		String line = "";
 		while (!(line = reader.readLine()).equals("</DATAFLOW>")) {
 			lineCount++;

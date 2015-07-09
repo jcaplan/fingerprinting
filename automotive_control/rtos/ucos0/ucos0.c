@@ -15,7 +15,7 @@
 #include "mpu_utils.h"
 #include "priv/alt_exception_handler_registry.h"
 #include "mem_manager.h"
-#include "ucos0.h"
+#include "cpu0.h"
 #include "reset_monitor.h"
 
 
@@ -228,6 +228,29 @@ void Derivative_AirbagModel_TASK(void* pdata) {
 /*****************************************************************************
  * MPU stuff
  *****************************************************************************/
+void mem_manager_init(void){
+	//For each critical task set up a position in the table
+
+	//AirbagModel + Derivative
+	MemoryManagerStruct *entry = &memoryManagerTable[derivate_airbagModel_memoryTableIndex];
+	entry->disablePending = false;
+	entry->disablePendSource = 0;
+	entry->taskPriority = Derivative_AirbagModel_PRIORITY;
+	entry->tlbDataLine = 0;
+	entry->tlbStackLine = 1;
+	entry->stackPhysicalAddress = (void*)0x00495000;
+	entry->stackVirtualAddress = (void*)0x00463000;
+	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
+	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
+
+	//The core 0 critical task stack must appear to be at the same address as for core 1
+	set_cputable_entry(entry->tlbStackLine, entry->stackVirtualAddress);
+	set_spmtable_entry(entry->tlbStackLine, entry->stackPhysicalAddress);
+	enableTlbLine(entry->tlbStackLine);
+
+
+	activateTlb();
+}
 
 alt_exception_result exc_handler(alt_exception_cause cause,
 		alt_u32 exception_pc, alt_u32 badaddr) {
