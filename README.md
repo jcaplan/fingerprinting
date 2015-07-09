@@ -17,5 +17,5 @@ Code generation project to map applications onto platforms and generate code for
 #crc_gen
 Generate arbitrary CRC circuits in VHDL
 
-#ctrl_systems
-Design example of automotive control system generated in Matlab and port to Nios multicore system. Design project of Anthony Delage, Alexander Lunan, Gregory Williamson.
+#automotive_control
+Design example of automotive control system generated in Matlab and port to Nios multicore system. Design project of Anthony Delage, Alexander Lunan, Gregory Williamson. Expanded to include code_gen templates for ported Nios system, application and BSP generation scripts for the Nios SBT
