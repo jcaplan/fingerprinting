@@ -5,13 +5,13 @@
 # -E for event driven, runs when all the inputs are available
 <FUNCTIONLIST>
 #here
--name AirbagModel          -dir /example_dir/AirbagModel_ert_rtw         -T  50 -c -Priority 1
+-name AirbagModel          -dir /example_dir/AirbagModel_ert_rtw         -E     -c -Priority 1
 -name CollisionAvoidance   -dir /example_dir/CollisionAvoidance_ert_rtw  -T 100    -Priority 2
 -name CruiseControlSystem  -dir /example_dir/CruiseControlSystem_ert_rtw -T  20 -c -Priority 3
--name Derivative           -dir /example_dir/Derivative_ert_rtw          -T  12 -c -Priority 4
--name FuelSensor           -dir /example_dir/FuelSensor_ert_rtw          -T  75    -Priority 5
--name TractionControl      -dir /example_dir/TractionControl_ert_rtw     -T     -c -Priority 6
--name TransmissionControl  -dir /example_dir/TransmissionControl_ert_rtw -T  15    -Priority 7
+-name Derivative           -dir /example_dir/Derivative_ert_rtw          -E     -c -Priority 4
+-name FuelSensor           -dir /example_dir/FuelSensor_ert_rtw          -T 100    -Priority 5
+-name TractionControl      -dir /example_dir/TractionControl_ert_rtw     -E     -c -Priority 6
+-name TransmissionControl  -dir /example_dir/TransmissionControl_ert_rtw -T 100    -Priority 7
 </FUNCTIONLIST>
 
 #The dataflow is given for each pair of variables. One pair per line. 

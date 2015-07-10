@@ -224,7 +224,7 @@ void mem_manager_init(void){
 
 }
 
-alt_exception_result exc_handler(alt_exception_cause cause,
+alt_exception_result handleMPUexception(alt_exception_cause cause,
 		alt_u32 exception_pc, alt_u32 badaddr) {
 	//TODO: Notify monitor to reset core immediately!!
 	int *coreM_IRQ = (int *) PROCESSORM_0_CPU_IRQ_0_BASE;
@@ -339,7 +339,7 @@ int main() {
 	//----------------
 
 	// Register exception handler.
-	alt_instruction_exception_register(&exc_handler);
+	alt_instruction_exception_register(&handleMPUexception);
 	// Initialize and start the MPU.
 	nios2_mpu_data_init();
 	nios2_mpu_inst_init();

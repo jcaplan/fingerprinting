@@ -10,9 +10,6 @@ for i in {0..1} M
 do
 	${NIOS2COMMANDSHELL} nios2-bsp ucosii ./${DIRROOT}${i}_bsp ../nios_fprint.sopcinfo \
 	--cpu-name processor${i}_0_cpu${i}
-	
-	# ${NIOS2COMMANDSHELL} nios2-app-generate-makefile --app-dir ./${DIRROOT}${i} \
-	# --bsp-dir ${DIRROOT}${i}_bsp --elf-name ${DIRROOT}${i}.elf --no-src
 done
 
 

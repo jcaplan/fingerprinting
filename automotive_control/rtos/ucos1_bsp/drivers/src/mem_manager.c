@@ -49,29 +49,21 @@ void managerDisableCurrentTask(INT8U OSPrioCur){
 
 void managerEnableNextTask(INT8U OSPrioHighRdy){
 
-	MemoryManagerStruct *entry = &memoryManagerTable[derivate_airbagModel_memoryTableIndex];
+	MemoryManagerStruct *entry = getTaskEntry(OSPrioHighRdy);
 
-	switch(OSPrioHighRdy){
-	case Derivative_AirbagModel_PRIORITY:
+	if(entry){
 		if(entry->stackVirtualAddress != 0){
 			set_cputable_entry(entry->tlbStackLine, entry->stackVirtualAddress);
 			set_spmtable_entry(entry->tlbStackLine, entry->stackPhysicalAddress);
 			enableTlbLine(entry->tlbStackLine);
 		}
-
 		if(entry->dataVirtualAddress != 0){
 			set_cputable_entry(entry->tlbDataLine, entry->dataVirtualAddress);
 			set_spmtable_entry(entry->tlbDataLine, entry->dataPhysicalAddress);
 			enableTlbLine(entry->tlbDataLine);
 		}
-
 		activateTlb();
-		break;
-	default:
-		break;
 	}
-
-
 }
 
 

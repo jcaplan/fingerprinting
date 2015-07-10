@@ -117,7 +117,7 @@ typedef struct {
 
 exception_struct g_exc_info;
 
-alt_exception_result exc_handler(
+alt_exception_result handleMPUexception(
     alt_exception_cause cause,
     alt_u32 exception_pc,
     alt_u32 badaddr)
@@ -452,7 +452,7 @@ int main()
   exception_struct *exc_info = &g_exc_info;
   // Register exception handler.
   //    - This will manage everything EXCEPT interrupts and the unimplemented instruction exception.
-  alt_instruction_exception_register(&exc_handler);
+  alt_instruction_exception_register(&handleMPUexception);
   // Initialize and start the MPU.
   nios2_mpu_data_init();
   nios2_mpu_inst_init();

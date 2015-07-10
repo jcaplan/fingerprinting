@@ -252,7 +252,7 @@ void mem_manager_init(void){
 	activateTlb();
 }
 
-alt_exception_result exc_handler(alt_exception_cause cause,
+alt_exception_result handleMPUexception(alt_exception_cause cause,
 		alt_u32 exception_pc, alt_u32 badaddr) {
 	//TODO: Notify monitor to reset core immediately!!
 	int *coreM_IRQ = (int *) PROCESSORM_0_CPU_IRQ_0_BASE;
@@ -289,6 +289,8 @@ void nios2_mpu_data_init() {
 	region[2].mask = (0x463000)/64;
 	region[2].c = 0;
 	region[2].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
+
+
 
 	int index;
 	for (index = 3; index < NIOS2_MPU_NUM_DATA_REGIONS; index++) {
@@ -372,7 +374,7 @@ int main() {
 	//----------------
 
 	// Register exception handler.
-	alt_instruction_exception_register(&exc_handler);
+	alt_instruction_exception_register(&handleMPUexception);
 	// Initialize and start the MPU.
 	nios2_mpu_data_init();
 	nios2_mpu_inst_init();
@@ -403,9 +405,7 @@ int main() {
 			Derivative_AirbagModel_PRIORITY, Derivative_AirbagModel_PRIORITY,
 			(OS_STK *) 0x00463000, Derivative_AirbagModel_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
-//	OSTaskCreateExt(Derivative_AirbagModel_TASK, NULL, &Derivative_AirbagModel_STACK[Derivative_AirbagModel_STACKSIZE - 1],
-//				Derivative_AirbagModel_PRIORITY, Derivative_AirbagModel_PRIORITY,
-//				Derivative_AirbagModel_STACK, Derivative_AirbagModel_STACKSIZE, NULL,OS_TASK_OPT_STK_CLR);
+
 
 	//Notify the monitor that startup is completed
 	//--------------------------------------------

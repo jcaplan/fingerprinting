@@ -4,8 +4,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.management.RuntimeErrorException;
+
+import org.jgap.gui.ConfigFrame.ConfigListSelectionListener;
 
 import codegen.gen.Function.Type;
 
@@ -58,12 +61,14 @@ public class Configuration {
 
 		reader.close();
 		
+		Collections.sort(funcList);
+		
 	}
 
 	void printConfiguration() {
 		for(Function f : funcList){
 			System.out.println(f.codeDirectory);
-			System.out.print(f.name + ": critical = " + f.critical);
+			System.out.print(f.name + ": priority = " + f.priority + ", critical = " + f.critical);
 			if(f.type == Type.eventDriven){
 				System.out.println(", event driven");
 			} else {
@@ -139,6 +144,7 @@ public class Configuration {
 
 	private void parseFunctionList() throws IOException, ConfigurationException {
 		String line = "";
+		String rootdir = "";
 		while (!(line = reader.readLine()).equals("</FUNCTIONLIST>")) {
 			lineCount++;
 			if (!line.startsWith("#")) {
@@ -157,6 +163,28 @@ public class Configuration {
 							throwConfigError("-name expects value");
 						}
 						f.name = arg;
+						i++;
+						break;
+					case "-rootdir":
+						if (i == tokens.length - 1) {
+							throwConfigError(": " + "-dir expects value");
+						}
+						arg = tokens[i + 1];
+						if (arg.startsWith("-")) {
+							throwConfigError("-dir expects value");
+						}
+						rootdir= arg;
+						i++;
+						break;
+					case "-subdir":
+						if (i == tokens.length - 1) {
+							throwConfigError(": " + "-dir expects value");
+						}
+						arg = tokens[i + 1];
+						if (arg.startsWith("-")) {
+							throwConfigError("-dir expects value");
+						}
+						f.codeDirectory = rootdir + "/" + arg;
 						i++;
 						break;
 					case "-dir":
@@ -188,6 +216,17 @@ public class Configuration {
 					case "-c":
 						f.critical = true;
 						break;
+					case "-Priority":
+						if (i == tokens.length - 1) {
+							throwConfigError("-T expects value");
+						}
+						arg = tokens[i+1];
+						if (arg.startsWith("-")) {
+							throwConfigError("-T expects value");
+						}
+						f.priority = Integer.parseInt(arg);
+						i++;
+						break;
 					default:
 						throwConfigError("Unrecognized argument in FUNCTIONLIST: "
 								+ token);
@@ -195,8 +234,9 @@ public class Configuration {
 					}
 
 				}
-				funcList.add(f);
-
+				if(f.name != null){
+					funcList.add(f);
+				}
 			}
 		}
 		lineCount++; /*final line*/

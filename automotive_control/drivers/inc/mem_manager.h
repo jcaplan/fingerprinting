@@ -8,13 +8,7 @@ typedef struct MemoryManagerStruct MemoryManagerStruct;
 #include <stdbool.h>
 #include <stdlib.h>
 #include "tlb.h"
-
-/* ALT_CPU_CPU_ID_VALUE is offset by 1 */
-#if ALT_CPU_CPU_ID_VALUE == 1
-#include "cpu0.h"
-#elif ALT_CPU_CPU_ID_VALUE == 2
-#include "cpu1.h"
-#endif
+#include "shared_mem.h"
 
 
 #define derivate_airbagModel_memoryTableIndex 0

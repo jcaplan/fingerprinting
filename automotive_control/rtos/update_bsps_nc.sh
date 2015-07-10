@@ -9,8 +9,6 @@ cp -f bsp_mods/os_core.c             $sw_dir/ucos0_bsp/UCOSII/src/
 cp -f bsp_mods/os_core.c             $sw_dir/ucos1_bsp/UCOSII/src/
 cp -f bsp_mods/ucos_ii.h             $sw_dir/ucos0_bsp/UCOSII/inc/
 cp -f bsp_mods/ucos_ii.h             $sw_dir/ucos1_bsp/UCOSII/inc/
-cp -f bsp_mods/cpu0.h                $sw_dir/ucos0_bsp/drivers/inc
-cp -f bsp_mods/cpu1.h                $sw_dir/ucos1_bsp/drivers/inc
 
 
 # update system.h for monitor bsp

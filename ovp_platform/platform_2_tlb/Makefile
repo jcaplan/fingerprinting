@@ -34,6 +34,11 @@ debug:
       --extlib model.$(IMPERAS_SHRSUF) --idebug\
       -o simulator.log   
 
+debug1:
+	$(SIMULATOR) \
+      --icmobject FprintPlatform/1.0/platform.$(IMPERAS_ARCH).$(IMPERAS_SHRSUF) \
+      -o simulator.log    --idebug
+
 
 
 ic-run1:

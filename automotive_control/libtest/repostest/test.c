@@ -4,6 +4,10 @@
 #include <assert.h>
 
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
+
+int testTime;
 
 void checkoutTask(int taskID) {
 	int i;
@@ -58,24 +62,46 @@ void initializeTaskTable(void) {
 	task->stackSize = 4096;
 }
 
+int rand_lim(int limit) {
+/* return a random number between 0 and limit inclusive.
+ */
+
+    int divisor = RAND_MAX/(limit+1);
+    int retval;
+
+    do {
+        retval = rand() / divisor;
+    } while (retval > limit);
+
+    return retval;
+}
+
+void startHook(void *args){
+	printf("started task %d at time %d\n",(int )args,testTime);
+
+	checkoutTask((int)args);
+	checkinTask((int)args);
+}
+
 void REPOSInit(void) {
 
 	memset(REPOSCoreTable, 0, NUMCORES * sizeof(REPOS_core));
 	memset(REPOSTaskTable, 0, OS_MAX_TASKS * sizeof(REPOS_task));
-
+	srand(time(NULL));
 	int i;
 	for (i = 0; i < OS_MAX_TASKS; i++) {
 
 		REPOS_task *task = &REPOSTaskTable[i];
-		firstTask = task;
 		task->status = PENDING;
-		task->kind = EVENT_DRIVEN_K; /* driven by task completion on monitor core */
+		task->kind = PERIODIC_K; /* driven by task completion on monitor core */
+		task->data.periodic.period = rand_lim(50)+1;
 		task->core[0] = 0;
 		task->core[1] = 1;
 		task->numFuncs = 2; /* two functions run in the given task */
 		task->funcTableFirstIndex = 0;
 		task->taskID = i;
-
+		task->startHook = startHook;
+		task->startHookArgs = i;
 	}
 
 	fprintIDFreeList = 0xFFFF;
@@ -127,7 +153,7 @@ void checkNoScratchpadsActive() {
 	printf("***PASS: all scratchpads contain inactive tasks\n");
 }
 
-int main() {
+void test1(void){
 
 	REPOSInit();
 	checkPrintTable();
@@ -163,6 +189,34 @@ int main() {
 		checkCoreRunning(0);
 		checkCoreRunning(1);
 	}
+}
+
+void printTaskPeriods(void){
+	int i;
+	for(i = 0; i < OS_MAX_TASKS; i++){
+		printf("task %d, period %d\n",i,(int)REPOSTaskTable[i].data.periodic.period);
+	}
+}
+
+void test2(void ){
+
+	REPOSInit();
+	printTaskPeriods();
+	testTime = 0;
+	int i;
+	for(i = 0; i < 1000; i++){
+		REPOSUpdateTime();
+		testTime++;
+	}
+
+
+}
+int main() {
+
+//	test1();
+
+	test2();
+
 
 	return 0;
 }

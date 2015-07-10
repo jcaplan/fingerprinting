@@ -63,11 +63,12 @@ struct REPOS_task {
 	INT32U fprintID;
 	INT32U currentSP;
 	INT32U currentSPbin;
-	struct REPOS_task *next;
+	void (*startHook)(void *args);
+	void *startHookArgs;
 	union{
 		struct{
 			INT32U period;
-			INT32U rest_time;
+			INT32U countdown;
 		}periodic;
 		struct{
 			INT32U flag;
@@ -83,7 +84,6 @@ bool dmaReady[2];
  * but max capacity for list is statically assigned
  */
 REPOS_task REPOSTaskTable[OS_MAX_TASKS];
-REPOS_task *firstTask;
 INT16U fprintIDFreeList;
 
 struct REPOS_core {

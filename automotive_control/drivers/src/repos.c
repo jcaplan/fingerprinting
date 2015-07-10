@@ -11,20 +11,16 @@
 
 void REPOSUpdateTime(void) {
 
-	REPOS_task *task = firstTask;
-
-	while (task != NULL) {
-		if (task->kind == PERIODIC_K) {
-			if (task->status == RUNNING) {
-				task->runtime++;
-				//TODO: Check if overrun
-			} else { /* task is not running */
-				/* then it has rested for another millisecond */
-				task->data.periodic.rest_time++;
-				//TODO: Check if ready to go
+	int i;
+	for(i = 0; i < OS_MAX_TASKS; i++){
+		REPOS_task *task = &REPOSTaskTable[i];
+		if(task->kind == PERIODIC_K){
+			if(task->data.periodic.countdown-- == 0){
+				//reset the timer
+				task->data.periodic.countdown = task->data.periodic.period-1;
+				task->startHook(task->startHookArgs);
 			}
 		}
-		task = task->next;
 	}
 }
 

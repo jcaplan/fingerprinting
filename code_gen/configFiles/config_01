@@ -1,0 +1,36 @@
+#periodic tasks, some are critical, all independent (no dataflow between tasks)
+
+
+#Comments start with #
+# -c for critical task
+# -T for task period in ms
+# -E for event driven, runs when all the inputs are available
+<FUNCTIONLIST>
+
+-rootdir /home/jonah/fingerprinting/automotive_control/CompiledC
+-name AirbagModel          -subdir AirbagModel_ert_rtw         -T  50 -c -Priority 1
+-name CollisionAvoidance   -subdir CollisionAvoidance_ert_rtw  -T 100    -Priority 3
+-name CruiseControlSystem  -subdir CruiseControlSystem_ert_rtw -T  20 -c -Priority 2
+-name Derivative           -subdir Derivative_ert_rtw          -T  12 -c -Priority 5
+-name FuelSensor           -subdir FuelSensor_ert_rtw          -T  75    -Priority 7
+-name TractionControl      -subdir TractionControl_ert_rtw     -T  20 -c -Priority 4
+-name TransmissionControl  -subdir TransmissionControl_ert_rtw -T  15    -Priority 6
+</FUNCTIONLIST>
+
+<DATAFLOW>
+</DATAFLOW>
+
+
+<PLATFORM>
+-usedefault
+</PLATFORM>
+
+<MAPPING>
+AirbagModel cpum
+CollisionAvoidance cpu1
+CruiseControlSystem cpu0 cpu1
+Derivative cpu0 cpu1
+FuelSensor cpu0
+TractionControl cpu0 cpu1
+TransmissionControl cpum
+</MAPPING>
