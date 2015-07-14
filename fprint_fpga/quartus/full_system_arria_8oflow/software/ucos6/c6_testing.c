@@ -20,6 +20,7 @@ int *isr_6_ptr = (int *) PROCESSOR6_0_CPU_IRQ_0_BASE;
 int *isr_6_oflow_ptr = (int *) PROCESSOR6_0_CPU_OFLOW_IRQ_0_BASE;
 
 int overflow;
+alt_u64 t_oflow = 0;
 
 CriticalFunctionPointers* cp = (CriticalFunctionPointers*)SHARED_MEMORY_BASE;
 
@@ -28,7 +29,7 @@ CriticalFunctionPointers* cp = (CriticalFunctionPointers*)SHARED_MEMORY_BASE;
 
 OS_STK execution_task_stk[TASK_STACKSIZE] __attribute__ ((section (".critical")));
 
-#define EXECUTION_TASK_PRIORITY		2
+#define EXECUTION_TASK_PRIORITY		1
 
 OS_EVENT* execution_mbox;
 
@@ -42,7 +43,7 @@ static void handle_cpu6_interrupt(void* context) {
 		task_id = cp->task_id[PHYSICAL_CORE_ID];
 		task_length = cp->task_length[PHYSICAL_CORE_ID];
 		fprint_enable = cp->fprint_enable[PHYSICAL_CORE_ID];
-
+		fprint_blocksize = cp->fprint_blocksize[PHYSICAL_CORE_ID];
 		*isr_6_ptr = 0;
 	altera_avalon_mutex_unlock(mutex);
 
@@ -57,7 +58,6 @@ static void init_cpu6_isr(void) {
 }
 
 static void handle_cpu6_oflow_interrupt(void *context) {
-	alt_u64 t = 0;
 
 	altera_avalon_mutex_lock(mutex, 1);
 
@@ -66,12 +66,12 @@ static void handle_cpu6_oflow_interrupt(void *context) {
 		if(overflow){
 			OSTaskSuspend(EXECUTION_TASK_PRIORITY);
 
-			t = alt_timestamp();
+			t_oflow = alt_timestamp();
 		} else {
 			OSTaskResume(EXECUTION_TASK_PRIORITY);
 
-			t = alt_timestamp() - t;
-			cp->core_oflow_time[PHYSICAL_CORE_ID] += t;
+			t_oflow = alt_timestamp() - t_oflow;
+			cp->core_oflow_time[PHYSICAL_CORE_ID] += t_oflow;
 			cp->oflow_count[PHYSICAL_CORE_ID] += 1;
 		}
 
@@ -89,6 +89,8 @@ static void init_cpu6_oflow_isr(void) {
 
 INT8U err;
 void execution_task(void* pdata){
+
+	alt_u64 t = 0;
 
 	while(1){
 		OSSemPend(execution_mbox, 0, &err);
@@ -111,16 +113,19 @@ void execution_task(void* pdata){
 			altera_avalon_mutex_unlock(mutex);
 		}
 
+		fprint_set_block_size(fprint_blocksize);
 		int args[3] = {task_id,task_length,fprint_enable};
 
 		FprintActive = 1;
 		FprintTaskIDCurrent = task_id;
+		t_oflow = 0;
 		alt_timestamp_start();
+		t = alt_timestamp();
 			long registers[8];
 			context_switch(registers);
 				task_pt((void*)&args);
 			context_restore(registers);
-		alt_u64 t = alt_timestamp();
+		t = alt_timestamp() - t;
 
 		altera_avalon_mutex_lock(mutex, 1);
 			cp->core_total_time[PHYSICAL_CORE_ID] = t;
@@ -138,13 +143,10 @@ int main(void) {
 
 	altera_avalon_mutex_lock(mutex, 1);
 		task_pt = cp->task_pt;
-		fprint_blocksize = cp->fprint_blocksize[PHYSICAL_CORE_ID];
 	altera_avalon_mutex_unlock(mutex);
 
 	init_cpu6_isr();
 	init_cpu6_oflow_isr();
-
-	fprint_set_block_size(fprint_blocksize);
 
 	int arg_1 = EXECUTION_TASK_PRIORITY;
 		OSTaskCreateExt(execution_task, (void*) &arg_1, (void *) &execution_task_stk[TASK_STACKSIZE - 1],
