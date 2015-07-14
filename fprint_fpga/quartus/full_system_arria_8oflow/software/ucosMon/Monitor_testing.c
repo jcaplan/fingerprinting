@@ -30,14 +30,13 @@
 #define TASK_STACKSIZE	1024		//Stack size for all tasks
 #define CLKS_PER_SEC	50000000
 #define FPRINT_ISR_EN	1
-#define TASK_NAME		testing_task
-#define length			5
-#define blk_sz			0x1ff
-#define pren			1
-#define NUM_RUNS		10
-#define DEBUG_PRINT				printf("\nD: %d\n", dbg++);
 
-int dbg = 0;
+#define TASK_NAME		testing_task
+
+#define maxcount		10
+#define dir_size		32
+
+#define NUM_RUNS		1
 
 /*
  * Definition of Task Priorities
@@ -91,112 +90,176 @@ int status;
 CriticalFunctionPointers cpg;
 CriticalFunctionPointers* cp = (CriticalFunctionPointers*) SHARED_MEMORY_BASE;
 
-INT8U err;
+Core_Assignment_Table ca;
 
-void schedule_task(void* pdata){
+void start_task(INT8U task_id, INT8U C0, INT8U C1, INT8U length, INT8U fprint_enable, int blk_sz) {
+
+
+	//correct table
+	ca.table[0][task_id] = C0;
+	ca.table[1][task_id] = C1;
+
+	set_core_assignment_table(&ca);
+
+	altera_avalon_mutex_lock(mutex, 1);
+		cp->task_id[C0] = task_id;
+		cp->task_id[C1] = task_id;
+		cp->task_length[C0] = length;
+		cp->task_length[C1] = length;
+		cp->fprint_enable[C0] = fprint_enable;
+		cp->fprint_enable[C1] = fprint_enable;
+		cp->fprint_blocksize[C0] = blk_sz;
+		cp->fprint_blocksize[C1] = blk_sz;
+	altera_avalon_mutex_unlock(mutex);
+
+	switch(C0) {
+
+		case 0: *isr_0_ptr = 1;
+				break;
+
+		case 1: *isr_1_ptr = 1;
+				break;
+
+		case 2: *isr_2_ptr = 1;
+				break;
+
+		case 3: *isr_3_ptr = 1;
+				break;
+
+		case 4: *isr_4_ptr = 1;
+				break;
+
+		case 5: *isr_5_ptr = 1;
+				break;
+
+		case 6: *isr_6_ptr = 1;
+				break;
+
+		case 7: *isr_7_ptr = 1;
+				break;
+
+		default: break;
+	}
+
+	switch(C1) {
+
+		case 0: *isr_0_ptr = 1;
+				break;
+
+		case 1: *isr_1_ptr = 1;
+				break;
+
+		case 2: *isr_2_ptr = 1;
+				break;
+
+		case 3: *isr_3_ptr = 1;
+				break;
+
+		case 4: *isr_4_ptr = 1;
+				break;
+
+		case 5: *isr_5_ptr = 1;
+				break;
+
+		case 6: *isr_6_ptr = 1;
+				break;
+
+		case 7: *isr_7_ptr = 1;
+				break;
+
+		default: break;
+	}
+}
+
+INT8U err;
+void test_func() {
 	int num_runs = 1;
 	int i;
 
-	printf("Monitor!\n");
+	INT8U task_id;
+	INT8U C0;
+	INT8U C1;
+	INT8U length;
+	INT8U fprint_en= 1;
+	int blk_sz;
+
+	OS_FLAGS f = 0;
 
 	alt_u64 core_total_time[NUM_CORES];
 	alt_u64 core_oflow_time[NUM_CORES];
+	int oflow_count[NUM_CORES];
 
-	for (i = 0; i < NUM_CORES; i++) {
-		core_total_time[i] = 0;
-		core_oflow_time[i] = 0;
-	}
+	printf("Testing!\n\n");
 
-	OSFlagPend(schedule_fgrp, 0b111100, OS_FLAG_WAIT_SET_ALL + OS_FLAG_CONSUME, 0, &err);
+	length = 1;
+	while(length <= 5) {
 
-	while(num_runs <= NUM_RUNS){
+		blk_sz = 0xfff;
+		while(blk_sz >= 0x11f) {
 
-		while(getchar() != 'c');
-		printf("Scheduling %d!\n", num_runs);
+			for (i = 0; i < NUM_CORES; i++) {
+				core_total_time[i] = 0;
+				core_oflow_time[i] = 0;
+				oflow_count[i] = 0;
+			}
 
-		altera_avalon_mutex_lock(mutex, 1);
-			//cp->task_pt = testing_task;
-			cp->task_id[0] = 2;
-			cp->task_id[1] = 2;
-			cp->task_length[0] = length;
-			cp->task_length[1] = length;
-			cp->fprint_enable[0] = 1;
-			cp->fprint_enable[1] = 1;
-		altera_avalon_mutex_unlock(mutex);
-		*isr_0_ptr = 1;
-//		OSTimeDlyHMSM(0, 0, 1, 0);
-		*isr_1_ptr = 1;
+			num_runs = 1;
 
-		//OSTimeDlyHMSM(0, 0, 0, 10);
+			while(num_runs <= NUM_RUNS){
 
-		altera_avalon_mutex_lock(mutex, 1);
-			//cp->task_pt = testing_task;
-			cp->task_id[2] = 3;
-			cp->task_id[3] = 3;
-			cp->task_length[2] = length;
-			cp->task_length[3] = length;
-			cp->fprint_enable[2] = 1;
-			cp->fprint_enable[3] = 1;
-		altera_avalon_mutex_unlock(mutex);
-		*isr_2_ptr = 1;
-//		OSTimeDlyHMSM(0, 0, 1, 0);
-		*isr_3_ptr = 1;
+				task_id = 2;
+				f |= 1<<task_id;
+				C0 = 0;
+				C1 = 1;
+				start_task(task_id, C0, C1, length, fprint_en, blk_sz);
 
-		//OSTimeDlyHMSM(0, 0, 0, 10);
+				task_id = 3;
+				f |= 1<<task_id;
+				C0 = 2;
+				C1 = 3;
+				start_task(task_id, C0, C1, length, fprint_en, blk_sz);
 
+				task_id = 4;
+				f |= 1<<task_id;
+				C0 = 4;
+				C1 = 5;
+				start_task(task_id, C0, C1, length, fprint_en, blk_sz);
 
-		altera_avalon_mutex_lock(mutex, 1);
-			//cp->task_pt = testing_task;
-			cp->task_id[4] = 4;
-			cp->task_id[5] = 4;
-			cp->task_length[4] = length;
-			cp->task_length[5] = length;
-			cp->fprint_enable[4] = 1;
-			cp->fprint_enable[5] = 1;
-		altera_avalon_mutex_unlock(mutex);
-		*isr_4_ptr = 1;
-//		OSTimeDlyHMSM(0, 0, 1, 0);
-		*isr_5_ptr = 1;
+				task_id = 5;
+				f |= 1<<task_id;
+				C0 = 6;
+				C1 = 7;
+				start_task(task_id, C0, C1, length, fprint_en, blk_sz);
 
-		//OSTimeDlyHMSM(0, 0, 0, 10);
+				//printf("waiting on %x\n", f);
 
-		altera_avalon_mutex_lock(mutex, 1);
-			//cp->task_pt = testing_task;
-			cp->task_id[6] = 5;
-			cp->task_id[7] = 5;
-			cp->task_length[6] = length;
-			cp->task_length[7] = length;
-			cp->fprint_enable[6] = 1;
-			cp->fprint_enable[7] = 1;
-		altera_avalon_mutex_unlock(mutex);
-		*isr_6_ptr = 1;
-//		OSTimeDlyHMSM(0, 0, 1, 0);
-		*isr_7_ptr = 1;
+				OSFlagPend(schedule_fgrp, f, OS_FLAG_WAIT_SET_ALL + OS_FLAG_CONSUME, 0, &err);
 
-		printf("sch done\n");
+				for (i = 0; i < NUM_CORES; i++) {
+					core_total_time[i] += cp->core_total_time[i];
+					core_oflow_time[i] += cp->core_oflow_time[i];
+					oflow_count[i] += cp->oflow_count[i];
+					//printf("core %d took %llu total, %llu oflow, oflowed %d times\n", i, cp->core_total_time[i], cp->core_oflow_time[i], cp->oflow_count[i]);
+					OSTimeDlyHMSM(0,0,0,10);
+				}
+				num_runs++;
+			}
 
-		OSFlagPend(schedule_fgrp, 0b111100, OS_FLAG_WAIT_SET_ALL + OS_FLAG_CONSUME, 0, &err);
-
-		for (i = 0; i < NUM_CORES; i++) {
-			core_total_time[i] += cp->core_total_time[i];
-			core_oflow_time[i] += cp->core_oflow_time[i];
-				printf("core %d took %llu total, %llu oflow, oflowed %d times\n", i, cp->core_total_time[i], cp->core_oflow_time[i], cp->oflow_count[i]);
+			printf("\n\nblk_sz = %x, length = %d\n", blk_sz, length);
+			for (i = 0; i < NUM_CORES; i++) {
+				printf("%llu\t%llu\t%d\t", core_total_time[i]/NUM_RUNS, core_oflow_time[i]/NUM_RUNS, oflow_count[i]/NUM_RUNS);
+				OSTimeDlyHMSM(0,0,0,10);
+			}
+			blk_sz -= 16;
 		}
-
-		num_runs++;
-
+		length++;
 	}
+}
 
-	printf("Stopping\n\n\n");
-	//OSTimeDlyHMSM(0, 0, 5, 0);
-	printf("Avg times\n\n");
-	for (i = 0; i < NUM_CORES; i++) {
-		printf("%llu\n%llu\n", core_total_time[i]/NUM_RUNS, core_oflow_time[i]/NUM_RUNS);
-	}
 
-	while(1){
-		OSTimeDlyHMSM(0, 0, 5, 0);
-	}
+void schedule_task(void* pdata){
+	printf("Monitor!\n");
+	test_func();
 }
 
 
@@ -217,7 +280,6 @@ static void handle_collision_interrupt(void* context) {
 	}
 
 	fprint_reset_irq();
-	//OSSemPost(done);
 }
 
 static void init_collision_isr(void) {
@@ -251,95 +313,50 @@ int main(void) {
 		printf("error");
 				exit(1);
 	}
+
 	if(FPRINT_ISR_EN) {
 		init_collision_isr();
 	}
-
 
 
 	mutex = altera_avalon_mutex_open(MUTEX_0_NAME);	//Initialize the hardware mutex
 	altera_avalon_mutex_lock(mutex, 1);
 		{
 			cp->task_pt = TASK_NAME;
-			for(i=0;i<8;i++) {
-				cp->fprint_blocksize[i] = blk_sz;
-			}
 			cp->init_complete = 1;
 		}
 	altera_avalon_mutex_unlock(mutex);
 
 
 
-	OS_FLAGS f = 0b111100;
+	OS_FLAGS f = 0;
 	schedule_fgrp = OSFlagCreate(f, &err);
-	done = OSSemCreate(0);
-	//for(i=0 ; i<16 ; i++) {
-		//task_sem[i] = OSSemCreate(0);
-	//}
+
 
 	//Initialize the directory for the fingerprinting unit:
 	Directory_Init_Struct d;
 
-	int dir_size = 40;
-	for(i = 0; i < 2; i++){
-		d.core_id = i;
-		d.key = 2;
-		d.start_ptr = 0;
-		d.end_ptr = d.start_ptr+dir_size;
-		set_task_directory(&d);
-
-		d.key = 3;
-		d.start_ptr = 50;
-		d.end_ptr = d.start_ptr+dir_size;
-		set_task_directory(&d);
-
-		d.key = 4;
-		d.start_ptr = 100;
-		d.end_ptr = d.start_ptr+dir_size;
-		set_task_directory(&d);
-
-		d.key = 5;
-		d.start_ptr = 150;
-		d.end_ptr = d.start_ptr+dir_size;
-		set_task_directory(&d);
+	for(j = 0; j < CA_TABLE_NUM_TASKS; j++){
+		for(i = 0; i < 2; i++) {
+			d.core_id = i;
+			d.key = j;
+			d.start_ptr = j*dir_size;
+			d.end_ptr = d.start_ptr+dir_size-1;
+			set_task_directory(&d);
+		}
 	}
-
-
-
-	Core_Assignment_Table ca;
 
 	//Default table
 	for(i = 0; i < CA_TABLE_MAX_REDUNDANCY; i++){
 		for(j = 0; j < CA_TABLE_NUM_TASKS; j++){
-			ca.table[i][j] = i;
+			ca.table[i][j] = 0;
 		}
 	}
 
-
-
-	//correct table
-	ca.table[0][2] = 0;
-	ca.table[1][2] = 1;
-	ca.table[0][3] = 2;
-	ca.table[1][3] = 3;
-	ca.table[0][4] = 4;
-	ca.table[1][4] = 5;
-	ca.table[0][5] = 6;
-	ca.table[1][5] = 7;
-
-
-
-	set_core_assignment_table(&ca);
-
-
-
-	//set maxcount values for tasks
-	set_maxcount_value(2,10);
-	set_maxcount_value(3,10);
-	set_maxcount_value(4,10);
-	set_maxcount_value(5,10);
-
-	DEBUG_PRINT
+	//set maxcount values for all tasks
+	for(i = 0; i < CA_TABLE_NUM_TASKS; i++){
+		set_maxcount_value(i,maxcount);
+	}
 
 	//Wait for both cores to be ready
 	int p0 = 0, p1 = 0, p2 = 0, p3 = 0, p4 = 0, p5 = 0, p6 = 0, p7 = 0;
@@ -361,15 +378,12 @@ int main(void) {
 
 	}
 
-	DEBUG_PRINT
-
-
 	//set memory delay
 	//enable_memory_delay();
 	//set_memory_factor(8);
 
 	//create the tasks
-	int arg_5 = CRITICAL_TASK_PRIORITY;
+	int arg_5 = SCHEDULE_TASK_PRIORITY;
 	OSTaskCreateExt(schedule_task, &arg_5, &schedule_task_stk[TASK_STACKSIZE - 1],
 			SCHEDULE_TASK_PRIORITY, SCHEDULE_TASK_PRIORITY,
 			schedule_task_stk, TASK_STACKSIZE, NULL,OS_TASK_OPT_STK_CHK + OS_TASK_OPT_STK_CLR);;

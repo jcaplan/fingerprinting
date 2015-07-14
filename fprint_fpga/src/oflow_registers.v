@@ -24,7 +24,8 @@ module oflow_registers(
 	input [`CRC_KEY_WIDTH-1 : 0]					count_inc_task_id,
 	input [`CRC_KEY_WIDTH-1 : 0]					count_dec_task_id,
 	
-	input											count_inc_logical_core_id
+	input											count_inc_logical_core_id,
+	input											reset_task
 );
 
 wire											task_ids_equal;
@@ -249,7 +250,9 @@ integer j;
 			fprint_mem_count_0[count_inc_task_id] = fprint_mem_count_on_inc_0 + 1;
 		end
 		
-		if (fprint_mem_count_dec_0) begin
+		if (reset_task) begin
+			fprint_mem_count_0[count_dec_task_id] = 0;
+		end else if (fprint_mem_count_dec_0) begin
 			fprint_mem_count_0[count_dec_task_id] = fprint_mem_count_on_dec_0 - 1;
 		end
 			
@@ -265,7 +268,9 @@ integer j;
 			fprint_mem_count_1[count_inc_task_id] = fprint_mem_count_on_inc_1 + 1;
 		end
 		
-		if (fprint_mem_count_dec_1) begin
+		if (reset_task) begin
+			fprint_mem_count_1[count_dec_task_id] = 0;
+		end else if (fprint_mem_count_dec_1) begin
 			fprint_mem_count_1[count_dec_task_id] = fprint_mem_count_on_dec_1 - 1;
 		end
 			
@@ -294,7 +299,7 @@ begin
 		overflow_status_reg[count_inc_task_id] = 1;
 	end
 	
-	if(underflow & overflow_present_on_dec) begin
+	if((underflow & overflow_present_on_dec) | reset_task) begin
 		physical_id_table[count_dec_task_id] = 0;
 		overflow_status_reg[count_dec_task_id] = 0;
 	end
