@@ -7,10 +7,15 @@ public class Core {
 	boolean isMonitor;
 	ArrayList<Function> funcList;
 	ArrayList<String> includes;
+	public String bspDir;
+	int mainMemStartAddress;
+	int mainMemSize;
 	
-	public Core(String name, boolean isMonitor){
+	public Core(String name, boolean isMonitor, int memStartAddress, int memSize){
 		this.name = name;
 		this.isMonitor = isMonitor;
+		this.mainMemStartAddress = memStartAddress;
+		this.mainMemSize = memSize;
 		funcList = new ArrayList<>();
 		includes = new ArrayList<>();
 	}
@@ -23,20 +28,24 @@ public class Core {
 		}
 	}
 
-	public void printIncludes() {
+	public String printIncludes() {
+		String s = "";
 		for (String include : includes) {
-			System.out.println("#include " + include);
+			s += "#include " + include + "\n";
 		}
+		return s;
 	}
 
-	public void printVarDeclarations() {
+	public String printVarDeclarations() {
+		String s = "";
 		for (Function f : funcList){
 			if(!f.critical){
-				f.printVarDeclarations();
+				s += f.getVarDeclarationString();
 			} else if(isMonitor) {
-				f.printVarDeclarations();
+				s += f.getVarDeclarationString();
 			}
 		}
+		return s;
 		
 	}
 	

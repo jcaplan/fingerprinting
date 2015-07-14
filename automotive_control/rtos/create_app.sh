@@ -1,6 +1,5 @@
 #!/bin/bash
 
-${NIOS_CODEGEN_ROOT:?"Need to set NIOS_CODEGEN_ROOT non-empty"}
 
 
 DIRROOT=ucos

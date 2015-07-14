@@ -129,17 +129,7 @@ int *core_IRQ[NUMCORES] = { (int *) PROCESSOR0_0_CPU_IRQ_0_BASE,
 alt_dma_txchan txchan[NUMCORES];
 alt_dma_rxchan rxchan[NUMCORES];
 
-typedef struct {
-	int core;
-	int action;
-	void* sourceAddress;
-	void* destAddress;
-	int size;
-} HandleDMAStruct;
 
-#define DMA_CODE_DERIVATIVE			0
-#define DMA_CODE_AIRBAGMODEL		1
-#define DMA_CODE_NOACTION			255
 
 typedef struct {
 	AirbagModelStruct airbagModelStruct_0;
@@ -351,12 +341,11 @@ void dma_TASK(void* pdata) {
 			/* now start the task */
 			for (i = 0; i < 2; i++) {
 				core = task->core[i];
-				critFuncData[core].priority = task->fprintID;
+				critFuncData[core].priority = taskID;
 				if (critFuncData[core].priority < 0) {
 					printf("big problem no free taskIDs!!!!!!!!!\n");
 				}
-				//TODO wrong index
-				critFuncData[core].tableIndex = DERIVATIVE_FUNC_TABLE_INDEX;
+				critFuncData[core].tableIndex = taskID;
 				critFuncData[core].tlbDataAddressPhys =
 						task->dataAddressSP[core];
 				critFuncData[core].tlbDataAddressVirt = task->dataAddressPhys;

@@ -1,18 +1,23 @@
 #periodic tasks, some are critical, all independent (no dataflow between tasks)
 
 
+#function list must come first!!
+
 #Comments start with #
 # -c for critical task
 # -T for task period in ms
 # -E for event driven, runs when all the inputs are available
+# -S for stacksize, if S is not present then assume profiler was used
+# 	if profiler was used: should have a profile.log file in the function folders
 <FUNCTIONLIST>
+
 -rootdir /home/jonah/fingerprinting/automotive_control/CompiledC
 -name AirbagModel          -subdir AirbagModel_ert_rtw         -T  50 -c -Priority 1
--name CollisionAvoidance   -subdir CollisionAvoidance_ert_rtw  -T 100    -Priority 2
--name CruiseControlSystem  -subdir CruiseControlSystem_ert_rtw -T  20 -c -Priority 3
--name Derivative           -subdir Derivative_ert_rtw          -T  12 -c -Priority 4
--name FuelSensor           -subdir FuelSensor_ert_rtw          -T  75    -Priority 5
--name TractionControl      -subdir TractionControl_ert_rtw     -T  30 -c -Priority 6
+-name CollisionAvoidance   -subdir CollisionAvoidance_ert_rtw  -T 100    -Priority 5
+-name CruiseControlSystem  -subdir CruiseControlSystem_ert_rtw -T  20 -c -Priority 2
+-name Derivative           -subdir Derivative_ert_rtw          -T  12 -c -Priority 3
+-name FuelSensor           -subdir FuelSensor_ert_rtw          -T  75    -Priority 6
+-name TractionControl      -subdir TractionControl_ert_rtw     -T  30 -c -Priority 4
 -name TransmissionControl  -subdir TransmissionControl_ert_rtw -T  15    -Priority 7
 </FUNCTIONLIST>
 
@@ -22,6 +27,9 @@
 
 <PLATFORM>
 -usedefault
+-name cpu0 -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucos0_bsp
+-name cpu1 -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucos1_bsp
+-name cpum -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucosM_bsp
 </PLATFORM>
 
 <MAPPING>
@@ -33,3 +41,16 @@ FuelSensor cpu1
 TractionControl cpum
 TransmissionControl cpu0
 </MAPPING>
+
+
+#if this section is omitted then the program will automatically attempt to determine the max stack heigh
+#for each function
+<STACK_PROFILE>
+AirbagModel 132
+CollisionAvoidance 136
+CruiseControlSystem 140
+Derivative 124
+FuelSensor 28
+TractionControl 120
+TransmissionControl 24
+</STACK_PROFILE>

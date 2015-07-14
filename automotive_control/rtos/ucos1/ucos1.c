@@ -74,7 +74,7 @@ OS_EVENT *derivative_AirbagModel_SEM0;
  * Interrupt from other cores
  *****************************************************************************/
 static void handleCPU(void* context) {
-	if (critFuncData[1].tableIndex == DERIVATIVE_FUNC_TABLE_INDEX) {
+	if (critFuncData[1].tableIndex == DERIVATIVE_AIRBAGMODEL_INDEX) {
 		//The monitor will provide a translation mapping for the stack
 		//and for the global data... two translations received in data structure
 

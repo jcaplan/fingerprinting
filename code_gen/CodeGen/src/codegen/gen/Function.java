@@ -1,6 +1,7 @@
 package codegen.gen;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Function implements Comparable<Function>{
 
@@ -16,6 +17,15 @@ public class Function implements Comparable<Function>{
 	ArrayList<String> includeFiles;
 	ArrayList<String> varDeclarations;
 	ArrayList<String> initialization;
+	public int stackSize;
+	StackBin stackBin;
+	static Comparator<Function> stackCompareDecreasing = new Comparator<Function>() {
+         @Override
+         public int compare(Function f1, Function f2) {
+           return f2.stackSize - f1.stackSize;
+         }
+     };
+     
 	
 	public Function(){
 		critical = false;
@@ -68,10 +78,12 @@ public class Function implements Comparable<Function>{
 	}
 
 
-	public void printVarDeclarations() {
+	public String getVarDeclarationString() {
+		String s = "";
 		for(String dec : varDeclarations){
-			System.out.println(dec);
+			s += dec + "\n";
 		}
+		return s;
 		
 	}
 

@@ -17,7 +17,7 @@
  * Note that OS_STK allocates 32 bit words so these numbers represent words
  *****************************************************************************/
 #define STACKSIZE_MINOFFSET   				314
-#define STACKSIZE_MARGINERROR 				50
+#define STACKSIZE_MARGINERROR 				20
 #define CollisionAvoidance_STACKSIZE 		(156 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
 #define TransmissionControl_STACKSIZE 		(156 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)
 #define Derivative_AirbagModel_STACKSIZE	(156 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR)

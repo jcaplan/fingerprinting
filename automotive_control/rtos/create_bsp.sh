@@ -35,8 +35,6 @@ ${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${DIRROOT}0_bsp/setti
 --cmd enable_sw_package reset_monitor \
 --cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer
 
-
-
 # cpu1
 ${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${DIRROOT}1_bsp/settings.bsp \
 --cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x32020 0x30fe0 \
@@ -53,8 +51,6 @@ ${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${DIRROOT}1_bsp/setti
 --cmd enable_sw_package fingerprint \
 --cmd enable_sw_package reset_monitor \
 --cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer
-
-
 
 # cpum
 ${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${DIRROOT}M_bsp/settings.bsp \

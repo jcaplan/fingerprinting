@@ -6,13 +6,11 @@ public class Platform {
 	public Platform(Configuration config){
 		this.config = config;
 		coreList = new Core[3];
-		coreList[0] = new Core("cpu0",false);
-		coreList[1] = new Core("cpu1",false);
-		coreList[2] = new Core("cpum",true);
-		
-		addFunctionsToCores();
+		coreList[0] = new Core("cpu0",false,0x64020,0x30fe0);
+		coreList[1] = new Core("cpu1",false,0x32020,0x30fe0);
+		coreList[2] = new Core("cpum",true,0x20,0x30fe0);
 	}
-	private void addFunctionsToCores() {
+	void addFunctionsToCores() {
 		for(Core c : coreList){
 			for(Function f : config.funcList){
 				if(f.cores.contains(c.name)){

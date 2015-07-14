@@ -74,7 +74,8 @@ do
 	echo "now do profiling"
 	
 	FUNCROOT=$(basename ${dir%_ert_rtw})
-	java  -jar ${NIOS_CODEGEN_ROOT}/CodeGen.jar -p --prof-objdump ./prof/ucos.objdump  --root-func ${FUNCROOT}_step --log $dir/profile.log
+	java  -jar ${NIOS_CODEGEN_ROOT}/CodeGen.jar -p --prof-objdump ./prof/ucos.objdump  \
+	--root-func ${FUNCROOT}_step --log $dir/profile.log
 	if [ "$?" !=  "0" ]
 	then
 		echo "Error running profiler"

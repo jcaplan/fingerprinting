@@ -17,6 +17,7 @@
 #define DERIVATIVE_FUNC_TABLE_INDEX 0
 #define AIRBAGMODEL_FUNC_TABLE_INDEX 1
 
+#define DERIVATIVE_AIRBAGMODEL_INDEX 0
 
 typedef struct SharedMemorySymbolTable {
 	struct FunctionTable *ftable;

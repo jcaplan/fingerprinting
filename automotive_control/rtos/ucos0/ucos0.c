@@ -80,13 +80,12 @@ SharedMemorySymbolTable *stab;
  *****************************************************************************/
 OS_EVENT *derivative_AirbagModel_SEM0;
 
-int *core0_IRQ = (int *) PROCESSOR0_0_CPU_IRQ_0_BASE;
 
 /*****************************************************************************
  * Interrupt from other cores
  *****************************************************************************/
 static void handleCPU(void* context) {
-	if (critFuncData[CORE_ID].tableIndex == DERIVATIVE_FUNC_TABLE_INDEX) {
+	if (critFuncData[CORE_ID].tableIndex == DERIVATIVE_AIRBAGMODEL_INDEX) {
 		//The monitor will provide a translation mapping for the stack
 		//and for the global data... two translations received in data structure
 
@@ -96,6 +95,7 @@ static void handleCPU(void* context) {
 		updateMemoryManagerTable(derivate_airbagModel_memoryTableIndex,
 				&critFuncData[CORE_ID]);
 
+		int *core0_IRQ = (int *) PROCESSOR0_0_CPU_IRQ_0_BASE;
 		*core0_IRQ = 0;
 		OSSemPost(derivative_AirbagModel_SEM0);
 	}
@@ -105,6 +105,23 @@ static void initCpuIsr(void) {
 	alt_ic_isr_register(PROCESSOR0_0_CPU_IRQ_0_IRQ_INTERRUPT_CONTROLLER_ID,
 			PROCESSOR0_0_CPU_IRQ_0_IRQ, handleCPU, (void*) NULL, (void*) NULL);
 }
+
+void waitForPartnerCore(int partnerCore) {
+	//Synchronize with partner
+	//------------------------
+	int done = 0, first = 0;
+	while (done == 0) {
+		if (first == 0) {
+			critFuncData[CORE_ID].checkout = 1;
+			first = 1;
+		}
+		if (critFuncData[partnerCore].checkout == 1) {
+			critFuncData[partnerCore].checkout = 0;
+			done = 1;
+		}
+	}
+}
+
 
 /*****************************************************************************
  * CollisionAvoidance Task wrapper
@@ -128,21 +145,6 @@ void TransmissionControl_TASK(void* pdata) {
 	}
 }
 
-void waitForPartnerCore(int partnerCore) {
-	//Synchronize with partner
-	//------------------------
-	int done = 0, first = 0;
-	while (done == 0) {
-		if (first == 0) {
-			critFuncData[CORE_ID].checkout = 1;
-			first = 1;
-		}
-		if (critFuncData[partnerCore].checkout == 1) {
-			critFuncData[partnerCore].checkout = 0;
-			done = 1;
-		}
-	}
-}
 
 /*****************************************************************************
  * Critical pair Task wrapper
