@@ -142,6 +142,10 @@ BSP_CFLAGS_DEBUG = -g
 # BSP_CFLAGS_OPTIMIZATION in Makefile. 
 BSP_CFLAGS_OPTIMIZATION = -O0
 
+# Custom flags passed to the compiler when compiling C, C++, and .S files. This 
+# setting defines the value of BSP_CFLAGS_USER_FLAGS in Makefile. 
+BSP_CFLAGS_USER_FLAGS = -fomit-frame-pointer
+
 # C/C++ compiler warning level. "-Wall" is commonly used.This setting defines 
 # the value of BSP_CFLAGS_WARNINGS in Makefile. 
 BSP_CFLAGS_WARNINGS = -Wall
@@ -283,6 +287,17 @@ altera_nios2_qsys_ucosii_driver_ASM_LIB_SRCS := \
 	$(altera_nios2_qsys_ucosii_driver_SRCS_ROOT)/src/crt0.S \
 	$(altera_nios2_qsys_ucosii_driver_SRCS_ROOT)/src/os_cpu_a.S
 
+# fingerprint sources root 
+fingerprint_SRCS_ROOT := drivers
+
+# fingerprint sources 
+fingerprint_C_LIB_SRCS := \
+	$(fingerprint_SRCS_ROOT)/src/fingerprint.c
+
+fingerprint_ASM_LIB_SRCS := \
+	$(fingerprint_SRCS_ROOT)/src/context_switch.S \
+	$(fingerprint_SRCS_ROOT)/src/gp.S
+
 # fpoint2_driver sources root 
 fpoint2_driver_SRCS_ROOT := drivers
 
@@ -343,6 +358,28 @@ hal_C_LIB_SRCS := \
 	$(hal_SRCS_ROOT)/src/alt_wait.c \
 	$(hal_SRCS_ROOT)/src/alt_write.c
 
+# mem_manager sources root 
+mem_manager_SRCS_ROOT := drivers
+
+# mem_manager sources 
+mem_manager_C_LIB_SRCS := \
+	$(mem_manager_SRCS_ROOT)/src/tlb.c \
+	$(mem_manager_SRCS_ROOT)/src/mem_manager.c
+
+# mpu_utils sources root 
+mpu_utils_SRCS_ROOT := drivers
+
+# mpu_utils sources 
+mpu_utils_C_LIB_SRCS := \
+	$(mpu_utils_SRCS_ROOT)/src/mpu_utils.c
+
+# reset_monitor sources root 
+reset_monitor_SRCS_ROOT := drivers
+
+# reset_monitor sources 
+reset_monitor_C_LIB_SRCS := \
+	$(reset_monitor_SRCS_ROOT)/src/reset_monitor.c
+
 # ucosii sources root 
 ucosii_SRCS_ROOT := UCOSII
 
@@ -360,9 +397,7 @@ ucosii_C_LIB_SRCS := \
 	$(ucosii_SRCS_ROOT)/src/os_sem.c \
 	$(ucosii_SRCS_ROOT)/src/os_task.c \
 	$(ucosii_SRCS_ROOT)/src/os_time.c \
-	$(ucosii_SRCS_ROOT)/src/os_tmr.c \
-	mem_manager.c \
-	tlb.c
+	$(ucosii_SRCS_ROOT)/src/os_tmr.c
 
 
 # Assemble all component C source files 
@@ -372,12 +407,17 @@ COMPONENT_C_LIB_SRCS += \
 	$(altera_avalon_sysid_qsys_driver_C_LIB_SRCS) \
 	$(altera_avalon_timer_driver_C_LIB_SRCS) \
 	$(altera_nios2_qsys_ucosii_driver_C_LIB_SRCS) \
+	$(fingerprint_C_LIB_SRCS) \
 	$(hal_C_LIB_SRCS) \
+	$(mem_manager_C_LIB_SRCS) \
+	$(mpu_utils_C_LIB_SRCS) \
+	$(reset_monitor_C_LIB_SRCS) \
 	$(ucosii_C_LIB_SRCS)
 
 # Assemble all component assembly source files 
 COMPONENT_ASM_LIB_SRCS += \
-	$(altera_nios2_qsys_ucosii_driver_ASM_LIB_SRCS)
+	$(altera_nios2_qsys_ucosii_driver_ASM_LIB_SRCS) \
+	$(fingerprint_ASM_LIB_SRCS)
 
 # Assemble all component C++ source files 
 COMPONENT_CPP_LIB_SRCS += \

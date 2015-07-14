@@ -1,9 +1,7 @@
-proc cpu1
-b *0x4010d0
+proc cpu0
+b *0x40133c
 continue
-proc cpu1
+proc cpu0
 disable 1
-set extreg R5 0x33983
+set extreg R4 0
 continue
-
-

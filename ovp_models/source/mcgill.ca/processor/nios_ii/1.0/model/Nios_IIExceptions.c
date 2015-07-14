@@ -635,6 +635,7 @@ static Bool validateFetchAddress(Nios_IIP Nios_II, Uns32 simPC, Bool complete) {
         // Handling for an MPU Present
         //
         if (Nios_IIMPUMiss(Nios_II, MEM_PRIV_X, simPC, attrs)) {
+            vmiPrintf("problem!!!!\n");
             // MPU miss exception of some kind, handled by MPUMiss, so no
             // further action required here.
             return False;
@@ -1013,6 +1014,7 @@ static void Nios_IIRegisterInit (Nios_IIP Nios_II) {
     // Reset Values
     //
     TYPE_status nxt_status = {.reg = 0x00000000};
+    TYPE_config nxt_config = {.reg = 0x00000000};
 
     //
     // Contains shadow register sets and external interrupt controller
@@ -1034,9 +1036,10 @@ static void Nios_IIRegisterInit (Nios_IIP Nios_II) {
     Nios_II->tlbacc.reg       = 0x00000000;
     Nios_II->tlbmisc.reg      = 0x00000000;
     Nios_II->badaddr          = 0x00000000; // Read Only
-    Nios_II->config.reg       = 0x00000000;
     Nios_II->mpubase.reg      = 0x00000000;
     Nios_II->mpuacc.reg       = 0x00000000;
+
+    Nios_IIWriteConfig(Nios_II, nxt_config);
 
     //
     // Read Write Attributes

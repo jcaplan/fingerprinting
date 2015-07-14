@@ -1,0 +1,44 @@
+
+#Comments start with #
+# -c for critical task
+# -T for task period in ms
+# -E for event driven, runs when all the inputs are available
+<FUNCTIONLIST>
+#here
+-name AirbagModel          -dir /example_dir/AirbagModel_ert_rtw         -E     -c -Priority 1
+-name CollisionAvoidance   -dir /example_dir/CollisionAvoidance_ert_rtw  -T 100    -Priority 2
+-name CruiseControlSystem  -dir /example_dir/CruiseControlSystem_ert_rtw -T  20 -c -Priority 3
+-name Derivative           -dir /example_dir/Derivative_ert_rtw          -E     -c -Priority 4
+-name FuelSensor           -dir /example_dir/FuelSensor_ert_rtw          -T 100    -Priority 5
+-name TractionControl      -dir /example_dir/TractionControl_ert_rtw     -E     -c -Priority 6
+-name TransmissionControl  -dir /example_dir/TransmissionControl_ert_rtw -T 100    -Priority 7
+</FUNCTIONLIST>
+
+#The dataflow is given for each pair of variables. One pair per line. 
+#The names must correspond to the variables found in the function header file. 
+<DATAFLOW>
+#form is:
+#modelname.outputname modelname.inputname
+CruiseControlSystem.Out1          Derivative.In1
+CruiseControlSystem.Out1          TractionControl.CurrentSpeedPoweredAxle
+TractionControl.ControlFeedback   CruiseControlSystem.In2
+Derivative.Out1                   AirbagModel.Force
+</DATAFLOW>
+
+
+<PLATFORM>
+-usedefault
+</PLATFORM>
+
+#default platform has three cores cpu0, cpu1, and cpum
+#critical tasks must be either mapped to cpum, or else mapped to BOTH cpu0 and cpu1
+#all critical tasks will be verified using fingerprinting
+<MAPPING>
+AirbagModel cpu0 cpu1
+CollisionAvoidance cpu0
+CruiseControlSystem cpum
+Derivative cpu0 cpu1
+FuelSensor cpu1
+TractionControl cpum
+TransmissionControl cpu0
+</MAPPING>

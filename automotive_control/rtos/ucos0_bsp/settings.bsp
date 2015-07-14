@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Jun 23, 2015 4:26:25 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1435091185291</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>9-Jul-2015 1:02:49 AM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1436418169299</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>./</BspGeneratedLocation>
         <BspSettingsFile>ucos0_bsp/settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../nios_fprint.sopcinfo</SopcDesignFile>
@@ -26,7 +26,7 @@
                 <SettingName>hal.timestamp_timer</SettingName>
                 <Identifier>ALT_TIMESTAMP_CLK</Identifier>
                 <Type>UnquotedString</Type>
-                <Value>processor0_0_timestamp</Value>
+                <Value>none</Value>
                 <DefaultValue>none</DefaultValue>
                 <DestinationFile>system_h_define</DestinationFile>
                 <Description>Slave descriptor of timestamp timer device. This device is used by Altera HAL timestamp drivers for high-resolution time measurement. This setting defines the value of ALT_TIMESTAMP_CLK in system.h.</Description>
@@ -530,7 +530,7 @@
                 <SettingName>hal.make.bsp_cflags_user_flags</SettingName>
                 <Identifier>BSP_CFLAGS_USER_FLAGS</Identifier>
                 <Type>UnquotedString</Type>
-                <Value>none</Value>
+                <Value>-fomit-frame-pointer</Value>
                 <DefaultValue>none</DefaultValue>
                 <DestinationFile>makefile_variable</DestinationFile>
                 <Description>Custom flags passed to the compiler when compiling C, C++, and .S files. This setting defines the value of BSP_CFLAGS_USER_FLAGS in Makefile.</Description>
@@ -974,7 +974,7 @@
                 <SettingName>ucosii.miscellaneous.os_max_events</SettingName>
                 <Identifier>OS_MAX_EVENTS</Identifier>
                 <Type>DecimalNumber</Type>
-                <Value>20</Value>
+                <Value>60</Value>
                 <DefaultValue>60</DefaultValue>
                 <DestinationFile>system_h_define</DestinationFile>
                 <Description>Maximum number of event control blocks</Description>
@@ -1250,7 +1250,7 @@
                 <SettingName>ucosii.event_flag.os_max_flags</SettingName>
                 <Identifier>OS_MAX_FLAGS</Identifier>
                 <Type>DecimalNumber</Type>
-                <Value>10</Value>
+                <Value>20</Value>
                 <DefaultValue>20</DefaultValue>
                 <DestinationFile>system_h_define</DestinationFile>
                 <Description>Maximum number of Event Flags groups. CAUTION: This is required by the HAL and many Altera device drivers; use caution in reducing this value.</Description>
@@ -1598,7 +1598,7 @@
                 <SettingName>ucosii.os_tmr_en</SettingName>
                 <Identifier>OS_TMR_EN</Identifier>
                 <Type>Boolean</Type>
-                <Value>1</Value>
+                <Value>0</Value>
                 <DefaultValue>0</DefaultValue>
                 <DestinationFile>system_h_define</DestinationFile>
                 <Description>Enable code for timers</Description>
@@ -1706,9 +1706,9 @@
                 <regionName>memory_0_onchip_memoryMain_BEFORE_RESET</regionName>
                 <memoryName>memory_0_onchip_memoryMain</memoryName>
                 <offset>0</offset>
-                <size>409600</size>
+                <size>204800</size>
                 <baseAddress>0x400000</baseAddress>
-                <addressRange>0x00400000 - 0x00463FFF</addressRange>
+                <addressRange>0x00400000 - 0x00431FFF</addressRange>
         </LinkerRegion>
         <LinkerRegion>
                 <regionName>reset</regionName>
@@ -1882,4 +1882,20 @@
                 <sectionName>.stack_bin</sectionName>
                 <regionName>stack_bin</regionName>
         </LinkerSection>
+        <SoftwarePackageInfo>
+                <name>reset_monitor</name>
+                <version>default</version>
+        </SoftwarePackageInfo>
+        <SoftwarePackageInfo>
+                <name>mpu_utils</name>
+                <version>default</version>
+        </SoftwarePackageInfo>
+        <SoftwarePackageInfo>
+                <name>mem_manager</name>
+                <version>default</version>
+        </SoftwarePackageInfo>
+        <SoftwarePackageInfo>
+                <name>fingerprint</name>
+                <version>default</version>
+        </SoftwarePackageInfo>
 </sch:Settings>

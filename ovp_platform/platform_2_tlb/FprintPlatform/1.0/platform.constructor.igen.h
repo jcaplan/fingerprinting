@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20150205.0
-//                          Tue Jun 23 15:17:11 2015
+//                          Mon Jul  6 14:14:46 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -463,8 +463,6 @@ void platformConstructor(void) {
     icmConnectPSEBus( handles.cpu0_tlb_p, handles.cpu0_tlbbus_in_b, "TLB_SLAVE", 0, 0x0, 0x0);
 
     icmConnectPSEBus( handles.cpu0_tlb_p, handles.cpu0_iobus_b, "TLB_CSR", 0, 0x300000, 0x3003ff);
-    icmSetPSEdiagnosticLevel(handles.cpu0_tlb_p, 3);
-
 
 ////////////////////////////////////////////////////////////////////////////////
 //                             PSE cpu0_jtag_uart
@@ -616,8 +614,6 @@ void platformConstructor(void) {
     icmConnectPSEBus( handles.cpu1_tlb_p, handles.cpu1_tlbbus_in_b, "TLB_SLAVE", 0, 0x0, 0x0);
 
     icmConnectPSEBus( handles.cpu1_tlb_p, handles.cpu1_iobus_b, "TLB_CSR", 0, 0x300000, 0x3003ff);
-    icmSetPSEdiagnosticLevel(handles.cpu1_tlb_p, 3);
-
 
 ////////////////////////////////////////////////////////////////////////////////
 //                             PSE cpu1_jtag_uart

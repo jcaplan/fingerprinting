@@ -4,7 +4,7 @@
  * Machine generated for CPU 'processor0_0_cpu0' in SOPC Builder design 'nios_fprint'
  * SOPC Builder design path: ../../nios_fprint.sopcinfo
  *
- * Generated: Tue Jun 23 16:13:44 EDT 2015
+ * Generated: Thu Jul 09 01:02:22 EDT 2015
  */
 
 /*
@@ -232,7 +232,7 @@
 #define ALT_INCLUDE_INSTRUCTION_RELATED_EXCEPTION_API
 #define ALT_MAX_FD 32
 #define ALT_SYS_CLK PROCESSOR0_0_TIMER
-#define ALT_TIMESTAMP_CLK PROCESSOR0_0_TIMESTAMP
+#define ALT_TIMESTAMP_CLK none
 
 
 /*
@@ -556,8 +556,8 @@
 #define OS_FLAG_QUERY_EN 1
 #define OS_FLAG_WAIT_CLR_EN 1
 #define OS_LOWEST_PRIO 20
-#define OS_MAX_EVENTS 20
-#define OS_MAX_FLAGS 10
+#define OS_MAX_EVENTS 60
+#define OS_MAX_FLAGS 20
 #define OS_MAX_MEM_PART 60
 #define OS_MAX_QS 20
 #define OS_MAX_TASKS 10
@@ -614,6 +614,6 @@
 #define OS_TMR_CFG_NAME_SIZE 16
 #define OS_TMR_CFG_TICKS_PER_SEC 10
 #define OS_TMR_CFG_WHEEL_SIZE 2
-#define OS_TMR_EN 1
+#define OS_TMR_EN 0
 
 #endif /* __SYSTEM_H_ */

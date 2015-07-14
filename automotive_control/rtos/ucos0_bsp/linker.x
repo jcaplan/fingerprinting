@@ -4,7 +4,7 @@
  * Machine generated for CPU 'processor0_0_cpu0' in SOPC Builder design 'nios_fprint'
  * SOPC Builder design path: ../../nios_fprint.sopcinfo
  *
- * Generated: Tue Jun 23 16:13:44 EDT 2015
+ * Generated: Thu Jul 09 01:02:50 EDT 2015
  */
 
 /*
@@ -50,7 +50,7 @@
 
 MEMORY
 {
-    memory_0_onchip_memoryMain_BEFORE_RESET : ORIGIN = 0x400000, LENGTH = 409600
+    memory_0_onchip_memoryMain_BEFORE_RESET : ORIGIN = 0x400000, LENGTH = 204800
     reset : ORIGIN = 0x464000, LENGTH = 32
     memory_0_onchip_memoryMain : ORIGIN = 0x464020, LENGTH = 200672
     stack_bin : ORIGIN = 0x495000, LENGTH = 4096

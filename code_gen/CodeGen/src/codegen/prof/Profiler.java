@@ -48,7 +48,7 @@ public class Profiler {
 	}
 
 	
-	private int getMaxStackSize(String name) {
+	public int getMaxStackSize(String name) {
 		Function f = cfg.getFunction(name);
 		return getMaxStackSize(f);
 	}
