@@ -83,11 +83,11 @@ void dma_TASK(void* pdata) {
 					OSFlagPend(dmaReadyFlag, 1 << core, OS_FLAG_WAIT_SET_ALL, 0,
 							&perr);
 				} else {
-					// sendDMA(task->dataAddressPhys, task->dataAddressSP[core],
-					// 		task->dataSize, (void *) core);
+					sendDMA(task->dataAddressPhys, task->dataAddressSP[core],
+							task->dataSize, (void *) core);
 
-					// OSFlagPend(dmaReadyFlag, 1 << core, OS_FLAG_WAIT_SET_ALL, 0,
-					// 		&perr);
+					OSFlagPend(dmaReadyFlag, 1 << core, OS_FLAG_WAIT_SET_ALL, 0,
+							&perr);
 
 				}
 				printf("sent dma core %d!\n", core);

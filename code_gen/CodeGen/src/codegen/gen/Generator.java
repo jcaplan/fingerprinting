@@ -37,7 +37,7 @@ public class Generator {
 		generateAppScript();
 		generateCriticalLibrary();
 		generateRunScript();
-		
+		generateCompileBSPScript();
 		//Parse source
 		initHeaders();
 		getVariableDeclarations();
@@ -61,10 +61,18 @@ public class Generator {
 				generateProcessoringCore(core);
 			}
 		}
-
+		
+		File bsp = new File(config.outputDir + "/cpuM_bsp");
+		if(!bsp.exists()){
+			config.niosSBT.runCommand(new String[]{config.outputDir+"/compile_bsp.sh"});
+		}
+		config.niosSBT.runCommand(new String[]{config.outputDir+"/create_app.sh"});
+		
 	}
 
 
+
+	
 
 	private void generateCriticalLibrary() throws FileNotFoundException {
 		File critDir = new File(config.outputDir + "/critical_library");
@@ -85,8 +93,29 @@ public class Generator {
 		writer.print(getCriticalSourceString());
 		writer.close();
 		
-		config.niosSBT.generateCriticalLibrary(config.outputDir + "/critical_library", platform.getCore("cpum").bspDir);
+		File scriptOutput = new File(config.outputDir + "/generate_lib.sh");
+		writer = new PrintWriter(scriptOutput);
+		writer.print(generateCriticalLibraryString());
+		writer.close();
 		
+		config.niosSBT.generateCriticalLibrary(config.outputDir + "/critical_library", platform.getCore("cpum").bspDir);
+	}
+	
+	public String generateCriticalLibraryString() {
+		
+		
+		String cmd = "";
+		cmd += "#!/bin/bash\n"+
+				"\n"+
+				"OUTPUT_DIR=" + config.outputDir + "\n"+
+				"NIOS2COMMANDSHELL=" + config.niosSBT.sbtLocation + "\n" +
+				"LIBDIR=${OUTPUT_DIR}/critical_library\n"+
+				"\n"+
+				"${NIOS2COMMANDSHELL} nios2-lib-generate-makefile --lib-dir ${LIBDIR} \n"+
+				"--lib-name \"critical_library\" --bps-dir ${OUTPUT_DIR}/cpuM_bsp --src-dir $ {LIBDIR}\n";
+
+				
+		return cmd;
 	}
 
 	private void generateAppScript() throws FileNotFoundException {
@@ -104,20 +133,37 @@ public class Generator {
 		writer.close();
 
 		output.setExecutable(true);
-		File make = new File(config.outputDir + "/cpu0/Makefile");
-		config.niosSBT.runCommand(new String[]{config.outputDir+"/create_app.sh"});
 		
 	}
 
+	
+	private void generateCompileBSPScript() throws IOException{
+		String s = "#!/bin/bash\n"+
+				"OUTPUT_DIR="+ config.outputDir + "\n"+
+				"NIOS2COMMANDSHELL=" + config.niosSBT.sbtLocation + "\n"+
+				"\n"+
+				"\n"+
+				"for i in {0..1} M\n"+
+				"do\n"+
+				"	bsp_dir=${OUTPUT_DIR}/cpu${i}_bsp\n"+
+				"    ${NIOS2COMMANDSHELL} nios2-bsp-generate-files --settings=${bsp_dir}/settings.bsp --bsp-dir=${bsp_dir}\n"+
+				"\n"+
+				"done\n"+
+				"\n"+
+				"source ${OUTPUT_DIR}/update_bsps.sh\n"+
+				"\n";
+		
+		PrintWriter writer;
+		File output = new File(config.outputDir + "/compile_bsp.sh");		
+		writer = new PrintWriter(output);
+		writer.print(s);
+		writer.close();
+		output.setExecutable(true);
+	}
+	
 	private void generateRunScript() throws FileNotFoundException {
 		PrintWriter writer;
-		File output = new File(config.outputDir + "/RUN.sh");		
-		writer = new PrintWriter(output);
-		writer.print(getAppScriptString());
-		writer.close();
-
-		output.setExecutable(true);
-		output = new File(config.outputDir + "/RUN.sh");
+		File output = new File(config.outputDir + "/RUN.sh");
 		writer = new PrintWriter(output);
 		writer.print(getRunScriptString());
 		
@@ -460,13 +506,40 @@ public class Generator {
 		updateMainMemorySize();
 	}
 
-	private void updateStackBinRegions() {
+	private void updateStackBinRegions() throws IOException {
 		int numBins = 0;
 		if((numBins = stackBins.size()) > 1) { /* default num of stack bins */
+			String cmd = "";
+			cmd +=  "#!/bin/bash"+
+					"\n"+
+					"\n"+
+					"OUTPUT_DIR=" + config.outputDir + "\n"+
+					"NIOS2COMMANDSHELL=" + config.niosSBT.sbtLocation + "\n"+
+					"\n";
 			Core c = platform.getCore("cpu0");
+			cmd += updateBspStackBins(numBins,c,0,stackBins);
+			c = platform.getCore("cpu1");
+			cmd += updateBspStackBins(numBins, c,1,stackBins);
+			
+			if(!cmd.isEmpty()){
+			File file = new File(config.outputDir + "/update_bsp_mem_regions.sh");
+			PrintWriter writer;
+			
+			
+			writer = new PrintWriter(file);
+			writer.print(cmd);
+			writer.close();
+			
+			file.setExecutable(true);
+
+			//Instead of checking inside StackBin,
+			//parse once here, check every line for all stack bins,
+			
+			c = platform.getCore("cpu0");
 			config.niosSBT.updateBspStackBins(numBins,c,0,stackBins);
 			c = platform.getCore("cpu1");
 			config.niosSBT.updateBspStackBins(numBins, c,1,stackBins);
+			}
 		}
 	}
 
@@ -1326,7 +1399,7 @@ public class Generator {
 		s += "#!/bin/bash\n"+
 				"\n"+
 				"\n"+
-				"NIOS2COMMANDSHELL=/home/jonah/altera/13.1/nios2eds/nios2_command_shell.sh\n"+
+				"NIOS2COMMANDSHELL=" + config.niosSBT.sbtLocation + "\n"+
 				"\n"+
 				"for i in {0..1} M\n"+
 				"do\n"+
@@ -1343,14 +1416,10 @@ public class Generator {
 		s += "#!/bin/bash\n"+
 				"\n"+
 				"\n"+
-				"NIOS2COMMANDSHELL=/home/jonah/altera/13.1/nios2eds/nios2_command_shell.sh\n"+
+				"OUTPUTDIR="+ config.outputDir +
 				"\n"+
-				"for i in {0..1} M\n"+
-				"do\n"+
-				"    pushd cpu${i}\n"+
-				"    ${NIOS2COMMANDSHELL} make all\n"+
-				"    popd\n"+
-				"done\n"+
+				"source ${OUTPUTDIR}/compile_bsp.sh\n"+
+				"source ${OUTPUTDIR}/compile_app.sh\n"+
 				"\n";
 		return s;
 	}
@@ -1366,7 +1435,7 @@ public class Generator {
 				"\n"+
 				"\n"+
 				"OUTPUT_DIR=" + config.outputDir + "\n"+
-				"NIOS2COMMANDSHELL=/home/jonah/altera/13.1/nios2eds/nios2_command_shell.sh\n"+
+				"NIOS2COMMANDSHELL=" + config.niosSBT.sbtLocation + "\n"+
 				"\n"+
 				"\n"+
 				"for i in {0..1} M\n"+
@@ -1770,6 +1839,50 @@ public class Generator {
 		return s;
 	}
 
+	
+	public String updateBspStackBins(int numBins, Core core, int coreID,
+			ArrayList<StackBin> sbList) {
+		// first shrink size of mainMemory
+		// then add more stack regions
+		// each function should get a stack region
+		String bspSettings = core.name;
+		String cmd = "";
+		for (int i = 1; i < sbList.size(); i++) {
+			StackBin sb = sbList.get(i);
+				cmd += ResizeMainMem(bspSettings, core.mainMemStartAddressOffset, core.mainMemSize);
+				cmd += addStackBins(bspSettings, sb.startAddress[coreID], sb.name);
+		}
+		
+		return cmd;
+	}
+
+
+
+	private String addStackBins(String coreID, 
+			int binStartAddress, String name) {
+		String cmd ="${NIOS2COMMANDSHELL}" + " nios2-bsp-update-settings \\\n" +
+				"--settings ${OUTPUT_DIR}/" + coreID + "_bsp/settings.bsp"  + " \\\n" + 
+				"--cmd add_memory_region " + name +
+				" memory_0_onchip_memoryMain " +
+				"0x" + Integer.toString(binStartAddress, 16) +
+				" 0x" + Integer.toString(StackBin.size, 16) + " \\\n--cmd" +
+				" add_section_mapping " + "." + name + " " + name + "\n\n";
+
+		return cmd;
+	}
+
+	private String ResizeMainMem(String coreID, int mainMemStartAddress,
+			int newSize) {
+		String cmd = "${NIOS2COMMANDSHELL}" + " nios2-bsp-update-settings \\\n"+
+				"--settings ${OUTPUT_DIR}/" + coreID + "_bsp/settings.bsp" + " \\\n--cmd update_memory_region" +
+				" memory_0_onchip_memoryMain memory_0_onchip_memoryMain "+
+				"0x" + Integer.toString(mainMemStartAddress, 16)+
+				" 0x" + Integer.toString(newSize, 16) + "\n\n";
+		return cmd;
+
+	}
+
+	
 	
 	/*************************************************************
 	 * HELPERS

@@ -1,8 +1,6 @@
 package codegen.gen;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
 
@@ -58,8 +56,8 @@ public class NiosSBTCommand {
 						updateStackBins(bspSettings, sb.startAddress[coreID], sb.name);
 					}
 				} else {
-					addStackBins(bspSettings, sb.startAddress[coreID], sb.name);
 					ResizeMainMem(bspSettings, core.mainMemStartAddressOffset, core.mainMemSize);
+					addStackBins(bspSettings, sb.startAddress[coreID], sb.name);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -104,12 +102,9 @@ public class NiosSBTCommand {
 		runCommand(cmd);
 	}
 
+	
 	public void runCommand(String[] cmd) {
-		
-
-
-		
-		
+				
 		ProcessBuilder builder = null;
 		Process p = null;
 		try {
