@@ -150,7 +150,7 @@ ihwaddbus -instancename cpu0_tlbbus_in -addresswidth 32
 ihwaddbus -instancename cpu0_dbus  -addresswidth 32
 ihwaddbus -instancename cpu0_ibus  -addresswidth 32
 
-ihwaddperipheral -instancename cpu0_tlb    -vendor mcgill.ca -type tlb -version 1.0 -diagnosticlevel 0
+ihwaddperipheral -instancename cpu0_tlb    -vendor mcgill.ca -type tlb -version 1.0 -diagnosticlevel 3
 ihwconnect       -instancename cpu0_tlb    -bus cpu0_tlbbus    -busmasterport TLB_MASTER -loaddress 0x0000000 -hiaddress 0xFFFFFFFF
 ihwconnect       -instancename cpu0_tlb    -bus cpu0_tlbbus_in -busslaveport  TLB_SLAVE  
 
@@ -196,7 +196,7 @@ ihwconnect   -instancename cpu0_flash_bridge -busmasterport mp1 -bus flashbus   
 #
 #proc mkram { name bus lo hi }
 mkram cpu0_breakmem     cpu0_iobus     0x00008020 0x00008100
-mkram cpu0_scratchpad   cpu0_tlbbus     0x04200000 0x04203FFF
+mkram cpu0_scratchpad   cpu0_tlbbus     0x04200000 0x04207FFF
 
 # IO bus bridgepb_cpu_to_io 0x0800_0000 0x087F_FFFF
 #
@@ -344,7 +344,7 @@ ihwaddbus  -instancename cpu1_tlbbus_in -addresswidth 32
 #
 # TLB
 #
-ihwaddperipheral -instancename cpu1_tlb    -vendor mcgill.ca -type tlb -version 1.0 -diagnosticlevel 0
+ihwaddperipheral -instancename cpu1_tlb    -vendor mcgill.ca -type tlb -version 1.0 -diagnosticlevel 3
 ihwconnect       -instancename cpu1_tlb    -bus cpu1_tlbbus    -busmasterport TLB_MASTER -loaddress 0x0000000 -hiaddress 0xFFFFFFFF
 ihwconnect       -instancename cpu1_tlb    -bus cpu1_tlbbus_in -busslaveport  TLB_SLAVE  
 
@@ -390,7 +390,7 @@ ihwconnect   -instancename cpu1_flash_bridge -busmasterport mp1 -bus flashbus   
 #
 #proc mkram { name bus lo hi }
 mkram cpu1_breakmem     cpu1_iobus       0x00008020 0x00008100
-mkram cpu1_scratchpad   cpu1_tlbbus      0x04200000 0x04203FFF
+mkram cpu1_scratchpad   cpu1_tlbbus      0x04200000 0x04207FFF
 # IO bus bridgepb_cpu_to_io 0x0800_0000 0x087F_FFFF
 #
 ihwaddbridge -instancename cpu1_local_bridge
@@ -614,7 +614,7 @@ isetattribute    -handle       cpum_timestamp -name timeoutPeriod   -value 50000
 # DMA 0
 ###############
 ihwaddbus -instancename cpu0_dmabus  -addresswidth 32
-ihwaddperipheral -instancename cpu0_dma -vendor mcgill.ca -type dma -diagnosticlevel 0
+ihwaddperipheral -instancename cpu0_dma -vendor mcgill.ca -type dma -diagnosticlevel 3
 ihwconnect       -instancename cpu0_dma -bus cpu0_dmabus -busmasterport MWRITE -loaddress 0 -hiaddress 0XFFFFFFFF
 ihwconnect 		 -instancename cpu0_dma -bus cpu0_dmabus -busmasterport MREAD  -loaddress 0 -hiaddress 0XFFFFFFFF
 ihwconnect       -instancename cpu0_dma -bus cpum_dbus   -busslaveport  DMACSP -loaddress 0x2100000 -hiaddress 0x210001F

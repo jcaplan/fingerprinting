@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20150205.0
-//                          Mon Jul  6 14:14:46 2015
+//                          Fri Jul 17 06:24:15 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -463,6 +463,8 @@ void platformConstructor(void) {
     icmConnectPSEBus( handles.cpu0_tlb_p, handles.cpu0_tlbbus_in_b, "TLB_SLAVE", 0, 0x0, 0x0);
 
     icmConnectPSEBus( handles.cpu0_tlb_p, handles.cpu0_iobus_b, "TLB_CSR", 0, 0x300000, 0x3003ff);
+    icmSetPSEdiagnosticLevel(handles.cpu0_tlb_p, 3);
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //                             PSE cpu0_jtag_uart
@@ -614,6 +616,8 @@ void platformConstructor(void) {
     icmConnectPSEBus( handles.cpu1_tlb_p, handles.cpu1_tlbbus_in_b, "TLB_SLAVE", 0, 0x0, 0x0);
 
     icmConnectPSEBus( handles.cpu1_tlb_p, handles.cpu1_iobus_b, "TLB_CSR", 0, 0x300000, 0x3003ff);
+    icmSetPSEdiagnosticLevel(handles.cpu1_tlb_p, 3);
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //                             PSE cpu1_jtag_uart
@@ -851,6 +855,8 @@ void platformConstructor(void) {
     icmConnectPSEBus( handles.cpu0_dma_p, handles.cpu0_dmabus_b, "MREAD", 1, 0x0, 0xffffffff);
 
     icmConnectPSEBus( handles.cpu0_dma_p, handles.cpum_dbus_b, "DMACSP", 0, 0x2100000, 0x210001f);
+    icmSetPSEdiagnosticLevel(handles.cpu0_dma_p, 3);
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                PSE cpu1_dma
@@ -994,7 +1000,7 @@ void platformConstructor(void) {
 //                           Memory cpu0_scratchpad
 ////////////////////////////////////////////////////////////////////////////////
 
-    handles.cpu0_scratchpad_m = icmNewMemory("cpu0_scratchpad", 0x7, 0x3fff);
+    handles.cpu0_scratchpad_m = icmNewMemory("cpu0_scratchpad", 0x7, 0x8fff);
 
 
     icmConnectMemoryToBus( handles.cpu0_tlbbus_b, "sp1", handles.cpu0_scratchpad_m, 0x4200000);
@@ -1012,7 +1018,7 @@ void platformConstructor(void) {
 //                           Memory cpu1_scratchpad
 ////////////////////////////////////////////////////////////////////////////////
 
-    handles.cpu1_scratchpad_m = icmNewMemory("cpu1_scratchpad", 0x7, 0x3fff);
+    handles.cpu1_scratchpad_m = icmNewMemory("cpu1_scratchpad", 0x7, 0x8fff);
 
 
     icmConnectMemoryToBus( handles.cpu1_tlbbus_b, "sp1", handles.cpu1_scratchpad_m, 0x4200000);

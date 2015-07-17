@@ -21,13 +21,20 @@ public class Configuration {
 	ArrayList<Function> funcList;
 	boolean stackProfilingRequired = true;
 	public NiosSBTCommand niosSBT;
+	String sopcinfoFilename;
 	String outputDir;
 
-	public Configuration(String filename, String outputDir) {
-		configFilename = filename;
+	public Configuration(String configFilename, String outputDir) {
+		this.configFilename = configFilename;
 		this.outputDir = outputDir;
 		funcList = new ArrayList<>();
 		lineCount = 0;
+	}
+
+	public Configuration(String configFile, String outputDir,
+			String sopcinfoFilename) {
+		this(configFile,outputDir);
+		this.sopcinfoFilename = sopcinfoFilename;
 	}
 
 	public void throwConfigError(String message) throws ConfigurationException {
@@ -187,6 +194,9 @@ public class Configuration {
 						i++;
 						break;
 					case "-bsp-dir":
+						if(sopcinfoFilename != null){
+							throwConfigError("Should not set bspdir when using sopcinfo option");
+						}
 						if (i == tokens.length - 1) {
 							throwConfigError("-name expects value");
 						}
@@ -196,6 +206,13 @@ public class Configuration {
 						}
 						core.bspDir = arg;
 						i++;
+						break;
+					case "-usedefault":
+						sopcinfoFilename =  "${NIOS_CODEGEN_ROOT}/platform/nios_fprint.sopcinfo";
+						platform.useDefaultBSPs();
+						break;
+					default:
+						//TODO error?
 						break;
 					}
 				}
@@ -373,6 +390,10 @@ public class Configuration {
 			System.out.print(array.get(i) + ", ");
 		}
 		System.out.println(array.get(array.size() - 1));
+	}
+
+	public boolean generateBSPRequired() {
+		return sopcinfoFilename != null;
 	}
 
 }

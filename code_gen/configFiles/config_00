@@ -27,9 +27,9 @@
 
 <PLATFORM>
 -usedefault
--name cpu0 -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucos0_bsp
--name cpu1 -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucos1_bsp
--name cpum -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucosM_bsp
+# -name cpu0 -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucos0_bsp
+# -name cpu1 -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucos1_bsp
+# -name cpum -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucosM_bsp
 </PLATFORM>
 
 <MAPPING>

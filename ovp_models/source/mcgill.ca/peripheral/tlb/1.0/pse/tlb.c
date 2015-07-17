@@ -72,13 +72,13 @@ void update_mapping(void){
     fprint_table[0] = 0;
     int en_reg = TLB_CSR_ab32_data.lineEnableReg.value;
     int i; 
-    for(i = 0; i < 32; i++){
+    for(i = 31; i >= 0; i--){
         if(en_reg & (1 << i)){
             fprint_table[++fprint_table[0]] = physical_address[i];
             ppmCreateDynamicBridge("TLB_SLAVE",virtual_address[i] << 12,0x1000, "TLB_MASTER", physical_address[i] << 12);
             
             if(diagnosticLevel == 3){
-                bhmPrintf("Translation create %x -> %x\n", virtual_address[i] << 12,physical_address[i] << 12);
+                bhmMessage("I","TLB","Translation create %x -> %x\n",virtual_address[i] << 12,physical_address[i] << 12);
             }
             enabled[i] = (virtual_address[i] << 12) ;
         }else{

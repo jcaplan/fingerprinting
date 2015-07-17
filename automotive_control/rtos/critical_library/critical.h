@@ -10,9 +10,7 @@
 
 #include "fingerprint.h"
 #include "AirbagModel.h"
-#include "CruiseControlSystem.h"
 #include "Derivative.h"
-#include "TractionControl.h"
 
 
 typedef struct {

@@ -8,13 +8,19 @@ public class Core {
 	ArrayList<Function> funcList;
 	ArrayList<String> includes;
 	public String bspDir;
-	int mainMemStartAddress;
+	int mainMemStartAddressOffset;
 	int mainMemSize;
+	int index;
+	
+	public Core(String name, boolean isMonitor, int memStartAddress, int memSize, int index){
+		this(name,isMonitor,memStartAddress,memSize);
+		this.index = index;
+	}
 	
 	public Core(String name, boolean isMonitor, int memStartAddress, int memSize){
 		this.name = name;
 		this.isMonitor = isMonitor;
-		this.mainMemStartAddress = memStartAddress;
+		this.mainMemStartAddressOffset = memStartAddress;
 		this.mainMemSize = memSize;
 		funcList = new ArrayList<>();
 		includes = new ArrayList<>();
@@ -39,11 +45,13 @@ public class Core {
 	public String printVarDeclarations() {
 		String s = "";
 		for (Function f : funcList){
+			s += "/* " + f + "*/\n";
 			if(!f.critical){
 				s += f.getVarDeclarationString();
 			} else if(isMonitor) {
 				s += f.getVarDeclarationString();
 			}
+			s += "\n";
 		}
 		return s;
 		
@@ -54,14 +62,18 @@ public class Core {
 		return name;
 	}
 
-	public void printInitializations() {
+	public String printInitializations(int tab) {
+		String s = "";
 		for (Function f : funcList){
 			if(!f.critical){ 
-				f.printInitialization();
+				s += f.printInitialization(tab);
+				s += "\n";
 			} else if(isMonitor) {
-				f.printInitialization();
+				s += f.printInitialization(tab);
+				s += "\n";
 			}
 		}
+		return s;
 		
 	}
 	

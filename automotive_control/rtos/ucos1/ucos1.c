@@ -17,11 +17,10 @@
 #include "mpu_utils.h"
 #include "priv/alt_exception_handler_registry.h"
 
-
 /*****************************************************************************
  * Defines
  *****************************************************************************/
-#define CORE_ID 							1
+
 #define NULL ((void *)0)
 int *core1_IRQ = (int *) PROCESSOR1_0_CPU_IRQ_0_BASE;
 
@@ -68,22 +67,23 @@ OS_STK Derivative_AirbagModel_STACK[Derivative_AirbagModel_STACKSIZE] __attribut
 /*****************************************************************************
  * Control Flow declarations
  *****************************************************************************/
-OS_EVENT *derivative_AirbagModel_SEM0;
 
+OS_EVENT *critical_SEM[2];
 /*****************************************************************************
  * Interrupt from other cores
  *****************************************************************************/
 static void handleCPU(void* context) {
-	if (critFuncData[1].tableIndex == DERIVATIVE_AIRBAGMODEL_INDEX) {
 		//The monitor will provide a translation mapping for the stack
 		//and for the global data... two translations received in data structure
 
-		updateMemoryManagerTable(derivate_airbagModel_memoryTableIndex,
-				&critFuncData[CORE_ID]);
+		int taskIndex = critFuncData[CORE_ID].tableIndex;
+		updateMemoryManagerTable(taskIndex, &critFuncData[CORE_ID]);
 
+		int *core1_IRQ = (int *) PROCESSOR1_0_CPU_IRQ_0_BASE;
 		*core1_IRQ = 0;
-		OSSemPost(derivative_AirbagModel_SEM0);
-	}
+		OSSemPost(critical_SEM[taskIndex]);
+
+
 }
 
 static void initCpuIsr(void) {
@@ -107,7 +107,6 @@ void waitForPartnerCore(int partnerCore) {
 	}
 }
 
-
 /*****************************************************************************
  * Critical pair Task wrapper
  *****************************************************************************/
@@ -124,7 +123,7 @@ void Derivative_AirbagModel_TASK(void* pdata) {
 	int partnerCore = 0;
 	while (1) {
 		INT8U perr;
-		OSSemPend(derivative_AirbagModel_SEM0, 0, &perr);
+		OSSemPend(critical_SEM[0], 0, &perr);
 		//Synchronize with partner
 		//------------------------
 
@@ -159,10 +158,10 @@ void Derivative_AirbagModel_TASK(void* pdata) {
 		FprintActive = 0;
 
 		//Transfer result
-		DerivativeStruct *output = (DerivativeStruct *)args;
-		AirbagModelStruct *input = functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].args;
+		DerivativeStruct *output = (DerivativeStruct *) args;
+		AirbagModelStruct *input =
+				functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].args;
 		input->AirbagModel_U.Force = output->Derivative_Y.Out1;
-
 
 		//Do the airbag part
 		// Set default block size for fingerprinting
@@ -170,7 +169,6 @@ void Derivative_AirbagModel_TASK(void* pdata) {
 
 		//set the flag for the OS context switch
 		FprintActive = 1;
-
 
 		waitForPartnerCore(partnerCore);
 
@@ -201,24 +199,22 @@ void FuelSensor_TASK(void* pdata) {
 	}
 }
 
-
-
-
 /*****************************************************************************
  * MPU stuff
  *****************************************************************************/
-void mem_manager_init(void){
+void mem_manager_init(void) {
 	//For each critical task set up a position in the table
 
 	//AirbagModel + Derivative
-	MemoryManagerStruct *entry = &memoryManagerTable[derivate_airbagModel_memoryTableIndex];
+	MemoryManagerStruct *entry =
+			&memoryManagerTable[derivate_airbagModel_memoryTableIndex];
 	entry->disablePending = false;
 	entry->disablePendSource = 0;
 	entry->taskPriority = Derivative_AirbagModel_PRIORITY;
 	entry->tlbDataLine = 0;
 	entry->tlbStackLine = 1;
-	entry->stackPhysicalAddress = (void*)0x00463000;
-	entry->stackVirtualAddress = (void*)0;
+	entry->stackPhysicalAddress = (void*) 0x00463000;
+	entry->stackVirtualAddress = (void*) 0;
 	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
 	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
 
@@ -228,7 +224,7 @@ alt_exception_result handleMPUexception(alt_exception_cause cause,
 		alt_u32 exception_pc, alt_u32 badaddr) {
 	//TODO: Notify monitor to reset core immediately!!
 	int *coreM_IRQ = (int *) PROCESSORM_0_CPU_IRQ_0_BASE;
-	if(FprintActive){
+	if (FprintActive) {
 		disable_fprint_task(FprintTaskIDCurrent);
 	}
 	*coreM_IRQ = 1;
@@ -240,23 +236,23 @@ alt_exception_result handleMPUexception(alt_exception_cause cause,
 void nios2_mpu_data_init() {
 	//Data region is scratchpads + this core's main memory region.
 	Nios2MPURegion region[NIOS2_MPU_NUM_DATA_REGIONS];
-	//jtag_uart.
+	//monitor region
 	region[0].index = 0x0;
-	region[0].base = MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_BASE/64;
-	region[0].mask = (0x431000)/64;
+	region[0].base = MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_BASE / 64;
+	region[0].mask = (0x431000) / 64;
 	region[0].c = 0;
 	region[0].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
 
 	//0x431-0x432 -> global data
 	region[1].index = 0x1;
-	region[1].base = 0x464000/64;
-	region[1].mask = (0x496000)/64;
+	region[1].base = 0x464000 / 64;
+	region[1].mask = (0x496000) / 64;
 	region[1].c = 0;
 	region[1].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
 
 	region[2].index = 0x2;
 	region[2].base = 0x0;
-	region[2].mask = (MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_BASE)/64;
+	region[2].mask = (MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_BASE) / 64;
 	region[2].c = 0;
 	region[2].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
 
@@ -276,19 +272,17 @@ void nios2_mpu_inst_init() {
 
 	Nios2MPURegion region[NIOS2_MPU_NUM_INST_REGIONS];
 
-
-		int index;
-		for (index = 0; index < NIOS2_MPU_NUM_INST_REGIONS; index++) {
-			region[index].base = 0x0;
-			region[index].index = index;
-			region[index].mask = 0x2000000;
-			region[index].c = 0;
-			region[index].perm = MPU_INST_PERM_SUPER_EXEC_USER_EXEC; //No access for user and supervisor
-		}
+	int index;
+	for (index = 0; index < NIOS2_MPU_NUM_INST_REGIONS; index++) {
+		region[index].base = 0x0;
+		region[index].index = index;
+		region[index].mask = 0x2000000;
+		region[index].c = 0;
+		region[index].perm = MPU_INST_PERM_SUPER_EXEC_USER_EXEC; //No access for user and supervisor
+	}
 
 	nios2_mpu_load_region(region, NIOS2_MPU_NUM_INST_REGIONS, INST_REGION);
 }
-
 
 /*****************************************************************************
  * Main entry point
@@ -303,7 +297,6 @@ int main() {
 
 	//Initialize OS Context switch flag
 	FprintActive = 0;
-
 
 	//Symbol table is at known location
 	//---------------------------------
@@ -330,10 +323,8 @@ int main() {
 
 	//Initialize the control flow data structures
 	//-------------------------------------------
-	derivative_AirbagModel_SEM0 = OSSemCreate(
+	critical_SEM[0] = OSSemCreate(
 			derivative_AirbagModel_SEM0_INITCOND);
-
-
 
 	//Start up the MPU
 	//----------------
@@ -344,8 +335,6 @@ int main() {
 	nios2_mpu_data_init();
 	nios2_mpu_inst_init();
 	nios2_mpu_enable();
-
-
 
 	mem_manager_init();
 

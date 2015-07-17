@@ -88,10 +88,59 @@ public class Function implements Comparable<Function>{
 	}
 
 
-	public void printInitialization() {
+	public String printInitialization(int tab) {
+		String init = "";
 		for(String s : initialization){
-			System.out.println(s);
+			for(int i = 0; i < tab; i++){
+				init += "\t";
+			}
+			init += s + "\n";
 		}
+		return init;
 		
 	}
+
+
+	public String printInitializationWithStruct(int tab) {
+		String init = "";
+		init += "	RT_MODEL_" + this + "_T *" + this + "_M =\n"+
+				"			&" + this + "PackageStruct." + this + "_STRUCT." + this + "_M;\n";
+		init += "	ExtU_" + this + "_T *" + this + "_U =\n"+
+				"			&" + this + "PackageStruct." + this + "_STRUCT." + this + "_U;\n";
+		init += "	ExtY_" + this + "_T *" + this + "_Y =\n"+
+				"			&" + this + "PackageStruct." + this + "_STRUCT." + this + "_Y;\n";
+		init += "	P_" + this + "_T *" + this + "_P =\n"+
+				"			&" +  this + "PackageStruct." + this + "_P;\n";
+		for (String s : initialization){
+			if(s.contains("DW")){
+				init += "	DW_" + this + "_T *" + this + "_DW =\n"+
+						"			&" + this + "PackageStruct." + this + "_DW;\n";
+				break;
+			}
+		}
+		for(String s : initialization){
+			
+			
+			s = s.replaceAll("&", "");
+			
+			
+			for(int i = 0; i < tab; i++){
+				init += "\t";
+			}
+			init += s + "\n";
+		}
+		init += "\n";
+		return init;
+	}
+	
+	public int getStackEnd(int core) {
+		return stackBin.getStackEnd(this,core);
+	}
+
+
+	public int getStackStart(int core) {
+		return stackBin.getStackStart(this,core);
+	}
+
+
 }

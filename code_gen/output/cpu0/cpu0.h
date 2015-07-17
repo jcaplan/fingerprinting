@@ -16,16 +16,30 @@
  *
  * Note that OS_STK allocates 32 bit words so these numbers represent words
  *****************************************************************************/
-#define STACKSIZE_MINOFFSET                       314
-#define STACKSIZE_MARGINERROR                     20
-#define AirbagModel_STACKSIZE                     ( 132 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define Derivative_STACKSIZE                      ( 124 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define CollisionAvoidance_STACKSIZE              ( 136 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define TransmissionControl_STACKSIZE             (  24 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define STACKSIZE_MINOFFSET                       316
+#define STACKSIZE_MARGINERROR                     150
+#define AirbagModel_STACKSIZE                     (  33 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define CruiseControlSystem_STACKSIZE             (  35 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define TractionControl_STACKSIZE                 (  30 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define FuelSensor_STACKSIZE                      (   7 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define TransmissionControl_STACKSIZE             (   6 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 /*****************************************************************************
  * Task Priorities
  *****************************************************************************/
 #define AirbagModel_PRIORITY                      1
-#define Derivative_PRIORITY                       3
-#define CollisionAvoidance_PRIORITY               5
+#define CruiseControlSystem_PRIORITY              2
+#define TractionControl_PRIORITY                  4
+#define FuelSensor_PRIORITY                       6
 #define TransmissionControl_PRIORITY              7
+/*****************************************************************************
+ * Task Table indices
+ *****************************************************************************/
+#define AIRBAGMODEL_TABLE_INDEX                   0
+#define CRUISECONTROLSYSTEM_TABLE_INDEX           1
+#define TRACTIONCONTROL_TABLE_INDEX               2
+/*****************************************************************************
+ * Task Periods
+ *****************************************************************************/
+#define AIRBAGMODEL_PERIOD                        50
+#define CRUISECONTROLSYSTEM_PERIOD                20
+#define TRACTIONCONTROL_PERIOD                    30

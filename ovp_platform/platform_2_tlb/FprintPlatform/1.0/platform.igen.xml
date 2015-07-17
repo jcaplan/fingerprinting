@@ -175,7 +175,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
         name="cpu0_dbus"/>
     <bus addresswidth="32"
         name="cpu0_ibus"/>
-    <peripheralinstance diagnosticlevel="0"
+    <peripheralinstance diagnosticlevel="3"
         name="cpu0_tlb">
         <vlnvreference name="tlb"
             vendor="mcgill.ca"
@@ -277,7 +277,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
     <memoryinstance name="cpu0_scratchpad">
         <vlnvreference name="ram"/>
         <busslaveportconnection connection="cpu0_tlbbus"
-            hiaddress="0x4203fff"
+            hiaddress="0x4208fff"
             loaddress="0x4200000"
             name="sp1"/>
     </memoryinstance>
@@ -449,7 +449,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
         name="cpu1_tlbbus"/>
     <bus addresswidth="32"
         name="cpu1_tlbbus_in"/>
-    <peripheralinstance diagnosticlevel="0"
+    <peripheralinstance diagnosticlevel="3"
         name="cpu1_tlb">
         <vlnvreference name="tlb"
             vendor="mcgill.ca"
@@ -551,7 +551,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
     <memoryinstance name="cpu1_scratchpad">
         <vlnvreference name="ram"/>
         <busslaveportconnection connection="cpu1_tlbbus"
-            hiaddress="0x4203fff"
+            hiaddress="0x4208fff"
             loaddress="0x4200000"
             name="sp1"/>
     </memoryinstance>
@@ -852,7 +852,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
     </peripheralinstance>
     <bus addresswidth="32"
         name="cpu0_dmabus"/>
-    <peripheralinstance diagnosticlevel="0"
+    <peripheralinstance diagnosticlevel="3"
         name="cpu0_dma">
         <vlnvreference name="dma"
             vendor="mcgill.ca"/>

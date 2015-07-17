@@ -55,8 +55,10 @@ do
 		exit 1
 	fi
 
-	echo "nios2-app-update-makefile --app-dir prof --add-src-files $SRCLIST --set-user-flags -fomit-frame-pointer --set OBJDUMP_INCLUDE_SOURCE 0"	
-	$NIOS2COMMANDSHELL nios2-app-update-makefile --app-dir prof --add-src-files $SRCLIST --set-user-flags -fomit-frame-pointer --set OBJDUMP_INCLUDE_SOURCE 0 &> /dev/null
+	echo "nios2-app-update-makefile --app-dir prof --add-src-files \
+	$SRCLIST --set-user-flags -fomit-frame-pointer --set OBJDUMP_INCLUDE_SOURCE 0"	
+	$NIOS2COMMANDSHELL nios2-app-update-makefile --app-dir prof --add-src-files \
+	 $SRCLIST --set-user-flags -fomit-frame-pointer --set OBJDUMP_INCLUDE_SOURCE 0 &> /dev/null
 	if [ "$?" !=  "0" ]
 	then
 		echo "Error updating makefile for $dir"

@@ -5,7 +5,6 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include "includes.h"
-#include "sys/alt_dma.h"
 #include <altera_avalon_mutex.h>
 #include "fingerprint.h"
 #include "critical.h"
@@ -17,6 +16,8 @@
 #include "gp.h"
 #include "reset_monitor.h"
 #include "repos.h"
+#include "dma.h"
+
 
 /*****************************************************************************
  * Defines
@@ -25,7 +26,6 @@
 //Nios IDE doesn't seem to recognize NULL
 #define NULL ((void *)0)
 
-void postDmaMessage(INT32U task, bool start);
 void initializeTaskTable(void);
 /*****************************************************************************
  * Stack sizes
@@ -55,11 +55,6 @@ void initializeTaskTable(void);
 /*****************************************************************************
  * Task control flow conditions
  *****************************************************************************/
-
-#define CORE0_SCRATCHPAD_GLOBAL_ADDRESS 			((void*)0x4203000)
-#define CORE1_SCRATCHPAD_GLOBAL_ADDRESS 			((void*)0x4203000)
-#define CORE0_SCRATCHPAD_START_ADDRESS 			((void*)0x4200000)
-#define CORE1_SCRATCHPAD_START_ADDRESS 			((void*)0x4200000)
 
 #define NUM_CRITICAL_TASKS 						2
 
@@ -108,13 +103,25 @@ OS_STK DMA_STACK[DMA_STACKSIZE] __attribute__ ((section (".critical")));
 /*****************************************************************************
  * Control Flow declarations
  *****************************************************************************/
-OS_FLAG_GRP *TransferResult_FLAG0;
-OS_EVENT *TractionControl_SEM0;
+
 
 OS_EVENT *dmaQ;
 OS_FLAG_GRP *dmaReadyFlag;
 #define DMA_Q_SIZE 12
 INT32U dmaQMem[DMA_Q_SIZE];
+
+
+
+typedef struct {
+	AirbagModelStruct AirbagModel_STRUCT;
+	DerivativeStruct Derivative_STRUCT;
+	P_Derivative_T Derivative_P;
+	DW_Derivative_T Derivative_DW;
+	P_AirbagModel_T AirbagModel_P;
+	DW_AirbagModel_T AirbagModel_DW;
+} DMAPackageStruct;
+
+DMAPackageStruct dmaPackageStruct_0 __attribute__ ((section (".global_data")));
 
 /*****************************************************************************
  * Pointers to interrupt other cores
@@ -123,24 +130,8 @@ INT32U dmaQMem[DMA_Q_SIZE];
 int *core_IRQ[NUMCORES] = { (int *) PROCESSOR0_0_CPU_IRQ_0_BASE,
 		(int *) PROCESSOR1_0_CPU_IRQ_0_BASE };
 
-/*****************************************************************************
- * DMA channels for each core
- *****************************************************************************/
-alt_dma_txchan txchan[NUMCORES];
-alt_dma_rxchan rxchan[NUMCORES];
 
 
-
-typedef struct {
-	AirbagModelStruct airbagModelStruct_0;
-	DerivativeStruct derivativeStruct_0;
-	P_Derivative_T derivative_defaultParam;
-	DW_Derivative_T derivative_dwork;
-	P_AirbagModel_T airbagModel_defaultParam;
-	DW_AirbagModel_T airbagModel_dwork;
-} DMAPackageStruct;
-
-DMAPackageStruct dmaPackageStruct_0 __attribute__ ((section (".global_data")));
 
 /*****************************************************************************
  * Hardware mutex
@@ -153,8 +144,6 @@ alt_mutex_dev* mutex;
 SharedMemorySymbolTable shared_stab __attribute__ ((section (".shared")));
 FunctionTable functionTable[NUM_CRITICAL_TASKS] __attribute__ ((section (".shared")));
 CriticalFunctionData critFuncData[NUMCORES] __attribute__ ((section (".shared")));
-
-void sendDMA(void* sourceAddress, void* destAddress, int size, void *handle);
 
 
 
@@ -188,7 +177,6 @@ void REPOSInit(void) {
 	for (i = 0; i < OS_MAX_TASKS; i++) {
 
 		REPOS_task *task = &REPOSTaskTable[i];
-		firstTask = task;
 		task->status = PENDING;
 		task->kind = EVENT_DRIVEN_K; /* driven by task completion on monitor core */
 		task->core[0] = 0;
@@ -238,7 +226,7 @@ void CruiseControlSystem_TASK(void* pdata) {
 				&CruiseControlSystem_Y);
 
 		//---------------------------------
-		dmaPackageStruct_0.derivativeStruct_0.Derivative_U.In1 =
+		dmaPackageStruct_0.Derivative_STRUCT.Derivative_U.In1 =
 				CruiseControlSystem_Y.Out1;
 
 		//CruiseControlSystem -> TractionControl
@@ -261,145 +249,6 @@ void CruiseControlSystem_TASK(void* pdata) {
 	}
 }
 
-/*****************************************************************************
- * DMA functions
- *****************************************************************************/
-
-void initDMA(void) {
-
-	txchan[0] = alt_dma_txchan_open("/dev/processor0_0_dma_0");
-	rxchan[0] = alt_dma_rxchan_open("/dev/processor0_0_dma_0");
-
-	txchan[1] = alt_dma_txchan_open("/dev/processor1_0_dma_0");
-	rxchan[1] = alt_dma_rxchan_open("/dev/processor1_0_dma_0");
-
-}
-
-void postDmaMessage(INT32U task, bool start) {
-	INT32U message = task;
-	if (start) {
-		message |= 1 << 31;
-	}
-	OSQPost(dmaQ, (void *) message);
-}
-
-void parseDmaMessage(INT32U message, bool *start, INT32U *task) {
-	*start = message & (1 << 31);
-	*task = message & (0x7FFFFFFF);
-}
-bool dmaReady[NUMCORES];
-void dma_TASK(void* pdata) {
-
-	while (1) {
-		INT8U perr;
-		INT32U message = (INT32U) OSQPend(dmaQ, 0, &perr);
-		bool start;
-		INT32U taskID;
-		parseDmaMessage(message, &start, &taskID);
-
-		printf("dma task %lu\n", (unsigned long) taskID);
-
-		REPOS_task *task = &REPOSTaskTable[taskID];
-
-		//need to decide what to do with the task...
-
-		//is it already located in the scratchpads??
-		//for both cores
-		int i, core;
-		if (start) {
-			for (i = 0; i < 2; i++) {
-				int core = task->core[i];
-
-				REPOSCheckPreemption(core);
-
-
-				bool alreadyInScratchpad = REPOSAlreadyInScratchpad(task, core);
-				if (!alreadyInScratchpad) {
-
-					/* does the code that's already there need to be copied back?? */
-
-
-					REPOSgetScratchpadPage(core, task);
-					//Once the scratchpad locations are known, it is possible to start the trans
-					/* send to both cores */
-					sendDMA(task->dataAddressPhys, task->dataAddressSP[core],
-							task->dataSize, (void *) core);
-
-					OSFlagPend(dmaReadyFlag, 1 << core, OS_FLAG_WAIT_SET_ALL, 0,
-							&perr);
-
-					sendDMA(task->stackAddressPhys[core],
-							task->stackAddressSP[core], task->stackSize,
-							(void *) core);
-					OSFlagPend(dmaReadyFlag, 1 << core, OS_FLAG_WAIT_SET_ALL, 0,
-							&perr);
-					printf("sent dma core %d!\n", core);
-				}
-			}
-			REPOSgetFreeFprintID(task);
-			REPOSBeginTask(task);
-			/* now start the task */
-			for (i = 0; i < 2; i++) {
-				core = task->core[i];
-				critFuncData[core].priority = taskID;
-				if (critFuncData[core].priority < 0) {
-					printf("big problem no free taskIDs!!!!!!!!!\n");
-				}
-				critFuncData[core].tableIndex = taskID;
-				critFuncData[core].tlbDataAddressPhys =
-						task->dataAddressSP[core];
-				critFuncData[core].tlbDataAddressVirt = task->dataAddressPhys;
-				critFuncData[core].tlbStackAddressPhys =
-						task->stackAddressSP[core];
-				/* both cores share the core 1 physical address */
-				critFuncData[core].tlbStackAddressVirt =
-						task->stackAddressVirt[core];
-			}
-			//TODO : check that cores have copied info !
-			// while(....);
-
-			//Notify both cores
-			//-----------------
-			*core_IRQ[task->core[0]] = 1;
-			*core_IRQ[task->core[1]] = 1;
-			//wait until the message succeeds before returning to the top
-		} else { /* retrieve from only core 0 */
-			int core = task->core[0];
-			sendDMA(task->stackAddressSP[core], task->stackAddressPhys[core],
-					task->stackSize, (void *) core);
-
-			OSFlagPend(dmaReadyFlag, 1 << core, OS_FLAG_WAIT_SET_ALL, 0, &perr);
-			printf("received from core %d!\n", core);
-		}
-
-	}
-
-}
-
-volatile int derivativeMsgCount = 0;
-
-void handleDMA(void* handle, void* data) {
-
-	int core = (int) handle;
-	dmaReady[core] = true;
-	INT8U perr;
-	OSFlagPost(dmaReadyFlag, 1 << core, OS_FLAG_SET, &perr);
-}
-
-void sendDMA(void* sourceAddress, void* destAddress, int size, void *handle) {
-	int rc;
-	int core = (int) handle;
-	if ((rc = alt_dma_txchan_send(txchan[core], sourceAddress, size, NULL, NULL))
-			< 0) {
-		printf("dma failed!\n");
-	}
-
-	/* Post the receive request */
-	if ((rc = alt_dma_rxchan_prepare(rxchan[core], destAddress, size, handleDMA,
-			handle)) < 0) {
-		//Failure
-	}
-}
 int result = 0;
 
 /*****************************************************************************
@@ -518,11 +367,11 @@ int main(void) {
 	//-----------------------------
 	functionTable[DERIVATIVE_FUNC_TABLE_INDEX].address = Derivative_CT;
 	functionTable[DERIVATIVE_FUNC_TABLE_INDEX].args =
-			&dmaPackageStruct_0.derivativeStruct_0;
+			&dmaPackageStruct_0.Derivative_STRUCT;
 	functionTable[DERIVATIVE_FUNC_TABLE_INDEX].blocksize = 0xfff;
 	functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].address = AirbagModel_CT;
 	functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].args =
-			&dmaPackageStruct_0.airbagModelStruct_0;
+			&dmaPackageStruct_0.AirbagModel_STRUCT;
 	functionTable[AIRBAGMODEL_FUNC_TABLE_INDEX].blocksize = 0xfff;
 
 	//Initialize the runtime interface
@@ -596,21 +445,21 @@ int main(void) {
 			&TractionControl_Y);
 
 	AirbagModelStruct *airbagModelStruct_0 =
-			&dmaPackageStruct_0.airbagModelStruct_0;
+			&dmaPackageStruct_0.AirbagModel_STRUCT;
 	airbagModelStruct_0->AirbagModel_M.ModelData.defaultParam =
-			&dmaPackageStruct_0.airbagModel_defaultParam;
+			&dmaPackageStruct_0.AirbagModel_P;
 	airbagModelStruct_0->AirbagModel_M.ModelData.dwork =
-			&dmaPackageStruct_0.airbagModel_dwork;
+			&dmaPackageStruct_0.AirbagModel_DW;
 	AirbagModel_initialize(&airbagModelStruct_0->AirbagModel_M,
 			&airbagModelStruct_0->AirbagModel_U,
 			&airbagModelStruct_0->AirbagModel_Y);
 
 	DerivativeStruct *derivativeStruct_0 =
-			&dmaPackageStruct_0.derivativeStruct_0;
+			&dmaPackageStruct_0.Derivative_STRUCT;
 	derivativeStruct_0->Derivative_M.ModelData.defaultParam =
-			&dmaPackageStruct_0.derivative_defaultParam;
+			&dmaPackageStruct_0.Derivative_P;
 	derivativeStruct_0->Derivative_M.ModelData.dwork =
-			&dmaPackageStruct_0.derivative_dwork;
+			&dmaPackageStruct_0.Derivative_DW;
 	Derivative_initialize(&derivativeStruct_0->Derivative_M,
 			&derivativeStruct_0->Derivative_U,
 			&derivativeStruct_0->Derivative_Y);

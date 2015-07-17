@@ -18,6 +18,7 @@ public class Main {
 		String logFile = null;
 		String nios2CmdDir = "";
 		String outputDir = "";
+		String sopcinfoFilename = "";
 		int c;
 		LongOpt[] longopts = new LongOpt[9];
 		longopts[0] = new LongOpt("config-file", LongOpt.REQUIRED_ARGUMENT,
@@ -26,6 +27,7 @@ public class Main {
 		longopts[2] = new LongOpt("nios2-cmd-dir", LongOpt.REQUIRED_ARGUMENT,
 				null, 2);
 		longopts[3] = new LongOpt("output-dir", LongOpt.REQUIRED_ARGUMENT, null, 3);
+		longopts[4] = new LongOpt("sopcinfo", LongOpt.OPTIONAL_ARGUMENT, null,4);
 
 		// One colon: required
 		// Two colons: optional
@@ -49,6 +51,9 @@ public class Main {
 			case 3:
 				outputDir = g.getOptarg();
 				break;
+			case 4:
+				sopcinfoFilename = g.getOptarg();
+				break;
 			case '?':
 				throw new Exception("Unrecognized option");
 			}
@@ -56,9 +61,19 @@ public class Main {
 
 		// Check that there are no leftover arguments...
 		int index;
-		if ((index = g.getOptind()) < args.length)
+		if ((index = g.getOptind()) < args.length){
 			throw new Exception("unrecognized option argument: " + args[index]);
-
+		}
+		if (configFile.equals("")) {
+			throw new RuntimeErrorException(new Error(
+					"must enter configFile"));
+		}
+		if (nios2CmdDir.isEmpty()) {
+			throw new RuntimeErrorException(new Error(
+					"must enter location for Nios SBT"));
+		}
+			
+			
 		/* args should contain the configuration file */
 		File f;
 		FileOutputStream fos;
@@ -74,27 +89,17 @@ public class Main {
 			System.setOut(ps);
 		}
 
-		if (configFile.equals("")) {
-			throw new RuntimeErrorException(new Error(
-					"must enter configFile"));
-		}
-		if (nios2CmdDir.isEmpty()) {
-			throw new RuntimeErrorException(new Error(
-					"must enter location for Nios SBT"));
-		}
-		if (outputDir.isEmpty()){
-			throw new RuntimeErrorException(new Error(
-					"output directory required"));
-			
-		}
 		
-		Configuration config = new Configuration(configFile,outputDir);
+		
+		
+		Configuration config = new Configuration(configFile,outputDir, sopcinfoFilename);
 		config.niosSBT = new NiosSBTCommand(nios2CmdDir);
 		config.parseConfigFile();
 
 		config.printConfiguration();
 		Generator gen = new Generator(config);
 		gen.generateCores();
+		gen.printStackResults();
 		// ps.close();
 		// ps2.close();
 

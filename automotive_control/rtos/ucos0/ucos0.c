@@ -78,27 +78,27 @@ SharedMemorySymbolTable *stab;
 /*****************************************************************************
  * Control Flow declarations
  *****************************************************************************/
-OS_EVENT *derivative_AirbagModel_SEM0;
+OS_EVENT *critical_SEM[2];
 
 
 /*****************************************************************************
  * Interrupt from other cores
  *****************************************************************************/
 static void handleCPU(void* context) {
-	if (critFuncData[CORE_ID].tableIndex == DERIVATIVE_AIRBAGMODEL_INDEX) {
+
 		//The monitor will provide a translation mapping for the stack
 		//and for the global data... two translations received in data structure
 
 		//Dont set anything here explicitly
 		//Set the entries in the memory manager
-
-		updateMemoryManagerTable(derivate_airbagModel_memoryTableIndex,
+		int taskIndex = critFuncData[CORE_ID].tableIndex;
+		updateMemoryManagerTable(taskIndex,
 				&critFuncData[CORE_ID]);
 
 		int *core0_IRQ = (int *) PROCESSOR0_0_CPU_IRQ_0_BASE;
 		*core0_IRQ = 0;
-		OSSemPost(derivative_AirbagModel_SEM0);
-	}
+		OSSemPost(critical_SEM[taskIndex]);
+
 }
 
 static void initCpuIsr(void) {
@@ -162,7 +162,7 @@ void Derivative_AirbagModel_TASK(void* pdata) {
 	int partnerCore = 1; /* static variable */
 	while (1) {
 		INT8U perr;
-		OSSemPend(derivative_AirbagModel_SEM0, 0, &perr);
+		OSSemPend(critical_SEM[0], 0, &perr);
 
 		waitForPartnerCore(partnerCore);
 		//Context switch is necessary to clear the callee saved registers
@@ -369,7 +369,7 @@ int main() {
 
 	//Initialize the control flow data structures
 	//-------------------------------------------
-	derivative_AirbagModel_SEM0 = OSSemCreate(
+	critical_SEM[0] = OSSemCreate(
 			derivative_AirbagModel_SEM0_INITCOND);
 
 	//Start up the MPU
@@ -403,7 +403,7 @@ int main() {
 
 	//The stack must look like it matches
 	OSTaskCreateExt(Derivative_AirbagModel_TASK, NULL,
-			(OS_STK*) (0x00463000 + 4 * (Derivative_AirbagModel_STACKSIZE - 2)),
+			(OS_STK*) (0x00463000 + 4 * (Derivative_AirbagModel_STACKSIZE - 1)),
 			Derivative_AirbagModel_PRIORITY, Derivative_AirbagModel_PRIORITY,
 			(OS_STK *) 0x00463000, Derivative_AirbagModel_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);

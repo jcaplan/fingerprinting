@@ -1,14 +1,14 @@
 #!/bin/bash
 
-
+${NIOS_CODEGEN_ROOT:?"Need to set NIOS_CODEGEN_ROOT non-empty"}
 DIRROOT=ucos
 NIOS2COMMANDSHELL=/home/jonah/altera/13.1/nios2eds/nios2_command_shell.sh
 SOPC_BUILDER_PATH=$(pwd)/drivers
-
+SOPCINFO_LOCATION=../nios_fprint.sopcinfo
 
 for i in {0..1} M
 do
-	${NIOS2COMMANDSHELL} nios2-bsp ucosii ./${DIRROOT}${i}_bsp ../nios_fprint.sopcinfo \
+	${NIOS2COMMANDSHELL} nios2-bsp ucosii ./${DIRROOT}${i}_bsp ${SOPCINFO_LOCATION} \
 	--cpu-name processor${i}_0_cpu${i}
 done
 

@@ -32,11 +32,11 @@ static Bool postPlatformConstruct(void) {
     icmAdvanceTime(0);
 
     icmLoadProcessorMemory(handles.cpu0_c, 
-        "../../automotive_control/rtos/ucos0/ucos0.elf", 0, 0, 1);
+        "/home/jonah/fingerprinting/code_gen/output/cpu0/cpu0.elf", 0, 0, 1);
     icmLoadProcessorMemory(handles.cpu1_c, 
-        "../../automotive_control/rtos/ucos1/ucos1.elf", 0, 0, 1);
+        "/home/jonah/fingerprinting/code_gen/output/cpu1/cpu1.elf", 0, 0, 1);
     icmLoadProcessorMemory(handles.cpum_c, 
-        "../../automotive_control/rtos/ucosM/ucosMon.elf", 0, 0, 1);
+        "/home/jonah/fingerprinting/code_gen/output/cpuM/cpuM.elf", 0, 0, 1);
     return True;
 }
 
