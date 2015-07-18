@@ -21,13 +21,13 @@ public class StackBin {
 	}
 
 	public int getStackEnd(Function f, int coreID) {
-		int stackEnd = f.stackSize + STACKSIZE_MARGINERROR + STACKSIZE_MINOFFSET-4;
+		int stackEnd = f.stackSize + STACKSIZE_MARGINERROR + STACKSIZE_MINOFFSET;
 		int funcIndex = getFuncIndex(f);
 		if(funcIndex == 1){
 			stackEnd += getStackEnd(bin[0],coreID)+4;
 		}
 		
-		return stackEnd - 8;
+		return stackEnd - 4;
 	}
 	
 

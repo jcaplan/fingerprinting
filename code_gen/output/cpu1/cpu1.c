@@ -448,8 +448,11 @@ int main() {
 	//Put the location of the stack for the task in shared memory
 	//-----------------------------------------------------------
 	functionTable[AIRBAGMODEL_TABLE_INDEX].stackAddress[CORE_ID] = &AirbagModel_STACK;
+	functionTable[AIRBAGMODEL_TABLE_INDEX].address = AirbagModel_CT;
 	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].stackAddress[CORE_ID] = &CruiseControlSystem_STACK;
+	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].address = CruiseControlSystem_CT;
 	functionTable[TRACTIONCONTROL_TABLE_INDEX].stackAddress[CORE_ID] = &TractionControl_STACK;
+	functionTable[TRACTIONCONTROL_TABLE_INDEX].address = TractionControl_CT;
 
 	CollisionAvoidance_M->ModelData.defaultParam = &CollisionAvoidance_P;
 	CollisionAvoidance_M->ModelData.dwork = &CollisionAvoidance_DW;

@@ -14,10 +14,7 @@
 #include "cpuM.h"
 #include "reset_monitor.h"
 #include "repos.h"
-#include "AirbagModel.h"
-#include "CruiseControlSystem.h"
 #include "Derivative.h"
-#include "TractionControl.h"
 
 
 
@@ -249,11 +246,11 @@ void initializeTaskTable(void) {
 
 	task->dataAddressPhys = &AirbagModelPackageStruct;
 
-	task->stackAddressPhys[0] = (void *) (0x4957cc);
-	task->stackAddressPhys[1] = (void *) (0x4637cc);
+	task->stackAddressPhys[0] = (void *) (0x4957d4);
+	task->stackAddressPhys[1] = (void *) (0x4637d4);
 
-	task->stackAddressVirt[0] = (void *) (0x4637cc);
-	task->stackAddressVirt[1] = (void *) (0x4637cc);
+	task->stackAddressVirt[0] = (void *) (0x4637d4);
+	task->stackAddressVirt[1] = (void *) (0x4637d4);
 
 	task->dataSize = sizeof(AirbagModelPackageStruct);
 	task->stackSize = (AirbagModel_STACKSIZE * 4);
@@ -396,13 +393,10 @@ int main(void) {
 
 	//Initialize the Function Table
 	//-----------------------------
-	functionTable[AIRBAGMODEL_TABLE_INDEX].address = AirbagModel_CT;
 	functionTable[AIRBAGMODEL_TABLE_INDEX].args = &AirbagModelPackageStruct;
 	functionTable[AIRBAGMODEL_TABLE_INDEX].blocksize = 0xfff;
-	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].address = CruiseControlSystem_CT;
 	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].args = &CruiseControlSystemPackageStruct;
 	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].blocksize = 0xfff;
-	functionTable[TRACTIONCONTROL_TABLE_INDEX].address = TractionControl_CT;
 	functionTable[TRACTIONCONTROL_TABLE_INDEX].args = &TractionControlPackageStruct;
 	functionTable[TRACTIONCONTROL_TABLE_INDEX].blocksize = 0xfff;
 	//Initialize the runtime interface

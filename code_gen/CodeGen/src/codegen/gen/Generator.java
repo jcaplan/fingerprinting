@@ -34,8 +34,8 @@ public class Generator {
 		if(config.generateBSPRequired()){
 			generateBSPs();
 		}
-		generateAppScript();
 		generateCriticalLibrary();
+		generateAppScript();
 		generateRunScript();
 		generateCompileBSPScript();
 		//Parse source
@@ -387,13 +387,27 @@ public class Generator {
 		for(Function f: funcList){
 			String outputDir = config.outputDir + "/critical_library";
 			copySourceFiles(f.codeDirectory, outputDir);
-			File ert_main = new File(outputDir + "/ert_main.c");
-			try {
-				FileUtils.forceDelete(ert_main);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			deleteFile(outputDir + "/ert_main.c");
+			
 		}
+		
+		for (Function f : fprintList){
+			String outputDir = config.outputDir + "/cpu0";
+			copySourceFiles(f.codeDirectory, outputDir);
+			deleteFile(outputDir + "/ert_main.c");
+		}
+		
+	}
+
+	private void deleteFile(String name) {
+
+		File file = new File(name);
+		try {
+			FileUtils.forceDelete(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		/* need fprint in cpu0 also */
 		
 	}
 
@@ -793,7 +807,11 @@ public class Generator {
 
 		for (Function f : funcList) {
 			if (f.critical) {
-				c = platform.getCore("cpum");
+				if(f.cores.contains("cpu0")){
+					c = platform.getCore("cpu0");
+				} else {
+					c = platform.getCore("cpum");
+				}
 			} else {
 				c = platform.getCore(f.cores.get(0));
 			}
@@ -1280,7 +1298,10 @@ public class Generator {
 				String upperCaseName = f.toString().toUpperCase();
 				s += "	functionTable[" + upperCaseName + 
 						"_TABLE_INDEX].stackAddress[CORE_ID] = &" +
-						f + "_STACK;\n";
+						f + "_STACK;\n" + 
+						"	functionTable[" + upperCaseName + 
+						"_TABLE_INDEX].address = " + f + "_CT;\n";
+						;
 			}
 		}
 		s += "\n";
@@ -1721,8 +1742,7 @@ public class Generator {
 		for(Function f : fprintList){
 
 			String funcIndex = f.toString().toUpperCase() + "_TABLE_INDEX";
-			s += "	functionTable[" + funcIndex + "].address = " + f + "_CT;\n"+
-					"	functionTable[" + funcIndex + "].args = &" + f + "PackageStruct;\n"+
+			s += "	functionTable[" + funcIndex + "].args = &" + f + "PackageStruct;\n"+
 					"	functionTable[" + funcIndex + "].blocksize = 0xfff;\n";			 
 		}
 		

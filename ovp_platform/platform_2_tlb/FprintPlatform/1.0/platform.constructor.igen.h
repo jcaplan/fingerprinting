@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20150205.0
-//                          Fri Jul 17 06:24:15 2015
+//                          Sat Jul 18 15:18:44 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1000,7 +1000,7 @@ void platformConstructor(void) {
 //                           Memory cpu0_scratchpad
 ////////////////////////////////////////////////////////////////////////////////
 
-    handles.cpu0_scratchpad_m = icmNewMemory("cpu0_scratchpad", 0x7, 0x8fff);
+    handles.cpu0_scratchpad_m = icmNewMemory("cpu0_scratchpad", 0x7, 0x7fff);
 
 
     icmConnectMemoryToBus( handles.cpu0_tlbbus_b, "sp1", handles.cpu0_scratchpad_m, 0x4200000);
@@ -1018,7 +1018,7 @@ void platformConstructor(void) {
 //                           Memory cpu1_scratchpad
 ////////////////////////////////////////////////////////////////////////////////
 
-    handles.cpu1_scratchpad_m = icmNewMemory("cpu1_scratchpad", 0x7, 0x8fff);
+    handles.cpu1_scratchpad_m = icmNewMemory("cpu1_scratchpad", 0x7, 0x7fff);
 
 
     icmConnectMemoryToBus( handles.cpu1_tlbbus_b, "sp1", handles.cpu1_scratchpad_m, 0x4200000);

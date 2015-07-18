@@ -15,6 +15,9 @@
 #include "mem_manager.h"
 #include "cpu0.h"
 #include "reset_monitor.h"
+#include "AirbagModel.h"
+#include "CruiseControlSystem.h"
+#include "TractionControl.h"
 #include "FuelSensor.h"
 #include "TransmissionControl.h"
 
@@ -462,8 +465,11 @@ int main() {
 	//Put the location of the stack for the task in shared memory
 	//-----------------------------------------------------------
 	functionTable[AIRBAGMODEL_TABLE_INDEX].stackAddress[CORE_ID] = &AirbagModel_STACK;
+	functionTable[AIRBAGMODEL_TABLE_INDEX].address = AirbagModel_CT;
 	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].stackAddress[CORE_ID] = &CruiseControlSystem_STACK;
+	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].address = CruiseControlSystem_CT;
 	functionTable[TRACTIONCONTROL_TABLE_INDEX].stackAddress[CORE_ID] = &TractionControl_STACK;
+	functionTable[TRACTIONCONTROL_TABLE_INDEX].address = TractionControl_CT;
 
 	FuelSensor_M->ModelData.defaultParam = &FuelSensor_P;
 	FuelSensor_M->ModelData.dwork = &FuelSensor_DW;
@@ -493,17 +499,17 @@ int main() {
 	// -------------------
 
 	OSTaskCreateExt(AirbagModel_TASK, NULL,
-			0x463f8c,
+			0x463f9c,
 			AirbagModel_PRIORITY, AirbagModel_PRIORITY,
-			0x4637cc, AirbagModel_STACKSIZE, NULL,
+			0x4637d4, AirbagModel_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
 	OSTaskCreateExt(CruiseControlSystem_TASK, NULL,
-			0x4637c8,
+			0x4637d0,
 			CruiseControlSystem_PRIORITY, CruiseControlSystem_PRIORITY,
 			0x463000, CruiseControlSystem_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
 	OSTaskCreateExt(TractionControl_TASK, NULL,
-			0x4627b4,
+			0x4627bc,
 			TractionControl_PRIORITY, TractionControl_PRIORITY,
 			0x462000, TractionControl_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);

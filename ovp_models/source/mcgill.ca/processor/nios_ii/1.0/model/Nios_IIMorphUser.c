@@ -363,12 +363,58 @@ NIOS_II_MORPH_FN(morphCUSTOM_C1) {
     
 
     switch(N){
+    case 224: // fabss
+        vmimtFUnopRR(vmi_FT_32_IEEE_754, vmi_FABS, gpr_C, gpr_A, VMI_NOREG, 0);
+        break;  
     case 225: // fnegs
         vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FNEG, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
         break;
+  
+
+    case 226: // fcmpnes
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FQCMPNEQ, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
+        break;
+    case 227: // fcmeqs
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FQCMPEQ, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
+        break;
+    case 228: // fcmpges
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FQCMPGE, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
+        break;
+    case 229: // fcmpgts
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FQCMPGT, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
+        break;            
+   
+
     case 230: // fcmples
         vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FQCMPLE, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
         break;
+
+    case 231: // fcmplts
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FQCMPLT, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
+        break;
+    case 232: // fmaxs
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FMAX, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
+        break;
+    case 233: // fmins
+        vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FMIN, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
+        break;
+    
+
+    case 248: //round nearest f-> i
+        vmimtFConvertRR( vmi_FT_32_IEEE_754, gpr_C, vmi_FT_32_INT, gpr_A, vmi_FPR_NEAREST, VMI_NOREG, 0);
+        break;
+
+    case 249: //fixsi truncate f -> i
+        vmimtFConvertRR( vmi_FT_32_IEEE_754, gpr_C, vmi_FT_32_INT, gpr_A, vmi_FPR_AWAY, VMI_NOREG, 0);
+        break;
+    case 250: // floatis i -> f
+        vmimtFConvertRR( vmi_FT_32_INT, gpr_C, vmi_FT_32_IEEE_754, gpr_A, vmi_FPR_NEAREST, VMI_NOREG, 0);
+        break;
+    case 251: // fsqrts
+        vmimtFUnopRR(vmi_FT_32_IEEE_754, vmi_FSQRT, gpr_C, gpr_A, VMI_NOREG, 0);
+        break;
+    
+
     case 252: // fmuls
         vmimtFBinopRRR(vmi_FT_32_IEEE_754, vmi_FMUL, gpr_C, gpr_B, gpr_A, VMI_NOREG, 0);
         break;

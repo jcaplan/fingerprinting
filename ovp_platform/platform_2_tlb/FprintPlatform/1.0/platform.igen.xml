@@ -277,7 +277,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
     <memoryinstance name="cpu0_scratchpad">
         <vlnvreference name="ram"/>
         <busslaveportconnection connection="cpu0_tlbbus"
-            hiaddress="0x4208fff"
+            hiaddress="0x4207fff"
             loaddress="0x4200000"
             name="sp1"/>
     </memoryinstance>
@@ -551,7 +551,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
     <memoryinstance name="cpu1_scratchpad">
         <vlnvreference name="ram"/>
         <busslaveportconnection connection="cpu1_tlbbus"
-            hiaddress="0x4208fff"
+            hiaddress="0x4207fff"
             loaddress="0x4200000"
             name="sp1"/>
     </memoryinstance>
