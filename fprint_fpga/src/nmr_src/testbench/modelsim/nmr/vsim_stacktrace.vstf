@@ -1,0 +1,42 @@
+# Current time Mon Jul 20 05:25:04 2015
+# ModelSim Stack Trace
+# Program = vsim
+# Id = "10.1d"
+# Version = "2012.11"
+# Date = "Nov  2 2012"
+# Platform = linuxpe
+# 0    0xf7ffd430: '<unknown (@0xf7ffd430)>'
+# 1    0x00241145: 'abort + 0x175' in '/lib/libc.so.6'
+# 2    0x00238b86: '_assert_fail_base + 0x146' in '/lib/libc.so.6'
+# 3    0x00238c41: '_assert_fail + 0x51' in '/lib/libc.so.6'
+# 4    0x083c553e: '<unknown (@0x83c553e)>'
+# 5    0x083c7ea0: '<unknown (@0x83c7ea0)>'
+# 6    0x08061dc6: '<unknown (@0x8061dc6)>'
+# End of Stack Trace
+
+
+# Current time Mon Jul 20 05:25:04 2015
+# ModelSim Stack Trace
+# Program = vsim
+# Id = "10.1d"
+# Version = "2012.11"
+# Date = "Nov  2 2012"
+# Platform = linuxpe
+# 0    0xf7ffd430: '<unknown (@0xf7ffd430)>'
+# 1    0x00241145: 'abort + 0x175' in '/lib/libc.so.6'
+# 2    0x00238b86: '_assert_fail_base + 0x146' in '/lib/libc.so.6'
+# 3    0x00238c41: '_assert_fail + 0x51' in '/lib/libc.so.6'
+# 4    0x083c5631: '<unknown (@0x83c5631)>'
+# 5    0x00242eaa: 'exit + 0xda' in '/lib/libc.so.6'
+# 6    0x083c5a32: '<unknown (@0x83c5a32)>'
+# 7    0x083c8858: '<unknown (@0x83c8858)>'
+# 8    0xf7ffd40b: '<unknown (@0xf7ffd40b)>'
+# 9    0x00241145: 'abort + 0x175' in '/lib/libc.so.6'
+# 10   0x00238b86: '_assert_fail_base + 0x146' in '/lib/libc.so.6'
+# 11   0x00238c41: '_assert_fail + 0x51' in '/lib/libc.so.6'
+# 12   0x083c553e: '<unknown (@0x83c553e)>'
+# 13   0x083c7ea0: '<unknown (@0x83c7ea0)>'
+# 14   0x08061dc6: '<unknown (@0x8061dc6)>'
+# End of Stack Trace
+
+

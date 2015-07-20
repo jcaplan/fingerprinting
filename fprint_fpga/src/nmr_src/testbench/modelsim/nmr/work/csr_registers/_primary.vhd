@@ -1,0 +1,61 @@
+library verilog;
+use verilog.vl_types.all;
+entity csr_registers is
+    generic(
+        idle            : integer := 0;
+        st_csr_regs_write: integer := 1;
+        st_csr_cat_write: integer := 2;
+        st_csr_maxcount_write: integer := 3;
+        st_csr_pointer_start_write: integer := 4;
+        st_csr_pointer_end_write: integer := 5;
+        st_csr_nmr_write: integer := 6;
+        st_csr_read     : integer := 7;
+        st_waitrequest  : integer := 8;
+        st_comparator_regs_write: integer := 9;
+        st_comparator_status_ack: integer := 10
+    );
+    port(
+        clk             : in     vl_logic;
+        reset           : in     vl_logic;
+        csr_address     : in     vl_logic_vector(9 downto 0);
+        csr_read        : in     vl_logic;
+        csr_readdata    : out    vl_logic_vector(31 downto 0);
+        csr_write       : in     vl_logic;
+        csr_writedata   : in     vl_logic_vector(31 downto 0);
+        csr_waitrequest : out    vl_logic;
+        comparator_task_id: in     vl_logic_vector(3 downto 0);
+        comparator_logical_core_id: in     vl_logic_vector(1 downto 0);
+        comparator_status_write: in     vl_logic;
+        comparator_mismatch_detected: in     vl_logic;
+        csr_status_ack  : out    vl_logic;
+        comparator_nmr  : out    vl_logic;
+        fprint_task_id  : in     vl_logic_vector(3 downto 0);
+        fprint_physical_core_id: in     vl_logic_vector(3 downto 0);
+        fprint_logical_core_id: out    vl_logic_vector(1 downto 0);
+        fprint_nmr      : out    vl_logic_vector(15 downto 0);
+        oflow_task_id   : in     vl_logic_vector(3 downto 0);
+        oflow_logical_core_id: in     vl_logic_vector(1 downto 0);
+        oflow_physical_core_id: out    vl_logic_vector(3 downto 0);
+        csr_fprint_maxcount: out    vl_logic_vector(9 downto 0);
+        oflow_nmr       : out    vl_logic;
+        csr_task_id     : out    vl_logic_vector(3 downto 0);
+        csr_logical_core_id: out    vl_logic_vector(1 downto 0);
+        csr_pointer_start_write: out    vl_logic;
+        csr_pointer_end_write: out    vl_logic;
+        csr_pointer_data: out    vl_logic_vector(9 downto 0);
+        comp_pointer_ack: in     vl_logic;
+        irq             : out    vl_logic
+    );
+    attribute mti_svvh_generic_type : integer;
+    attribute mti_svvh_generic_type of idle : constant is 1;
+    attribute mti_svvh_generic_type of st_csr_regs_write : constant is 1;
+    attribute mti_svvh_generic_type of st_csr_cat_write : constant is 1;
+    attribute mti_svvh_generic_type of st_csr_maxcount_write : constant is 1;
+    attribute mti_svvh_generic_type of st_csr_pointer_start_write : constant is 1;
+    attribute mti_svvh_generic_type of st_csr_pointer_end_write : constant is 1;
+    attribute mti_svvh_generic_type of st_csr_nmr_write : constant is 1;
+    attribute mti_svvh_generic_type of st_csr_read : constant is 1;
+    attribute mti_svvh_generic_type of st_waitrequest : constant is 1;
+    attribute mti_svvh_generic_type of st_comparator_regs_write : constant is 1;
+    attribute mti_svvh_generic_type of st_comparator_status_ack : constant is 1;
+end csr_registers;

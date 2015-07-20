@@ -5,586 +5,346 @@
 
 module tb_fprint_registers();
 
-
+reg								    		clk;
+reg								    		reset;
 
 //processors
-reg								    		clk,
-reg								    		reset,
-reg 	[(`COMPARATOR_ADDRESS_WIDTH-1):0]	fprint_address,
-reg											fprint_write,
-reg 	[(`NIOS_DATA_WIDTH-1):0]			fprint_writedata,
-wire										fprint_waitrequest,
+reg 	[(`COMPARATOR_ADDRESS_WIDTH-1):0]	fprint_address;
+reg											fprint_write;
+reg 	[(`NIOS_DATA_WIDTH-1):0]			fprint_writedata;
+wire										fprint_waitrequest;
 
-wire [1:0]									fprint_logical_core_id,
-wire [(`CRC_KEY_WIDTH-1):0]					fprint_task_id,
-wire [(`CRC_KEY_WIDTH-1):0]					fprint_physical_core_id,
+//csr_registers
+wire [(`CRC_KEY_WIDTH-1):0]					fprint_task_id;
+wire [(`CRC_KEY_WIDTH-1):0]					fprint_physical_core_id;
+wire [1:0]									fprint_logical_core_id;
 
-//csr_registers	
-reg [1:0]									csr_logical_core_id,
-reg [(`CRC_KEY_WIDTH-1):0]					csr_task_id,
-reg [(`CRC_KEY_WIDTH-1):0]					csr_physical_core_id,
+wire [(`CRC_KEY_SIZE-1):0]					fprint_nmr;
 
-reg											csr_cat_write,
-wire										fprint_cat_ack,
-
-//counter_registers
-wire										fprint_count_inc,
-reg											counter_count_inc_ack,
+//oflow_registers
+wire										fprint_count_inc;
+reg											oflow_count_inc_ack;
 
 //comp_registers
-wire 										fprint_inc_head_pointer,
-reg 										comp_inc_head_pointer_ack,
+wire 										fprint_inc_head_pointer;
+reg 										comp_inc_head_pointer_ack;
 
-reg [`CRC_RAM_ADDRESS_WIDTH-1:0]     		fprint_head_pointer,
-reg [`CRC_RAM_ADDRESS_WIDTH-1:0] 			comp_tail_pointer0,
-reg [`CRC_RAM_ADDRESS_WIDTH-1:0] 			comp_tail_pointer1,
-reg [`CRC_RAM_ADDRESS_WIDTH-1:0] 			comp_tail_pointer2,
-wire [`CRC_WIDTH - 1: 0] 					fprint0,
-wire [`CRC_WIDTH - 1: 0]             		fprint1,
-wire [`CRC_WIDTH - 1: 0]             		fprint2,
+reg [`CRC_RAM_ADDRESS_WIDTH-1:0]     		fprint_head_pointer;
+reg [`CRC_RAM_ADDRESS_WIDTH-1:0] 			comp_tail_pointer_0;
+reg [`CRC_RAM_ADDRESS_WIDTH-1:0] 			comp_tail_pointer_1;
+reg [`CRC_RAM_ADDRESS_WIDTH-1:0] 			comp_tail_pointer_2;
+wire [`CRC_WIDTH - 1: 0] 					fprint_0;
+wire [`CRC_WIDTH - 1: 0]             		fprint_1;
+wire [`CRC_WIDTH - 1: 0]             		fprint_2;
 
 //comparator
-reg 										comparator_task_verified,
-reg [(`CRC_KEY_WIDTH-1):0] 					comparator_task,
-wire 										fprint_task_verified_ack,
+reg [(`CRC_KEY_WIDTH-1):0] 					comparator_task_id;
 
-wire [(`CRC_KEY_SIZE-1):0]  				fprint_checkin
+reg 										fprint_reset_task;
+wire 										fprint_reset_task_ack;
+
+wire [(`CRC_KEY_SIZE-1):0]  				fprint_checkin;
 
 
+//testbench internals
 reg											init_complete;
 
+reg [`CRC_KEY_WIDTH-1:0]					cat_mem_0[`CRC_KEY_SIZE-1:0];
+reg [`CRC_KEY_WIDTH-1:0]					cat_mem_1[`CRC_KEY_SIZE-1:0];
+reg [`CRC_KEY_WIDTH-1:0]					cat_mem_2[`CRC_KEY_SIZE-1:0];
+reg [(`CRC_KEY_SIZE-1):0]					nmr_mem;
 
-integer i,j;
 
-module fprint_registers(
+integer i,j,k;
 
-	//processors
+fprint_registers fprint_registers(
+
 	clk,
 	reset,
+	
+	
 	fprint_address,
 	fprint_write,
 	fprint_writedata,
 	fprint_waitrequest,
-
-	//global
-	fprint_logical_core_id,
+	
+	
 	fprint_task_id,
 	fprint_physical_core_id,
+	fprint_logical_core_id,
 	
-	//csr_registers
-	csr_logical_core_id,
-	csr_task_id,
-	csr_physical_core_id,
+	fprint_nmr,
 	
-	csr_cat_write,
-	fprint_cat_ack,
-
-	//counter_registers
+	
 	fprint_count_inc,
-	counter_count_inc_ack,
+	oflow_count_inc_ack,
 	
-	//comp_registers
+	
 	fprint_inc_head_pointer,
 	comp_inc_head_pointer_ack,
-
-	fprint_head_pointer,
-	comp_tail_pointer0,
-	comp_tail_pointer1,
-	comp_tail_pointer2,
-	fprint0,
-	fprint1,
-	fprint2,
 	
-	//comparator
-	comparator_task_verified,
-	comparator_task,
-	fprint_task_verified_ack,
+	fprint_head_pointer,
+	comp_tail_pointer_0,
+	comp_tail_pointer_1,
+	comp_tail_pointer_2,
+	fprint_0,
+	fprint_1,
+	fprint_2,
+	
+	
+	comparator_task_id,
+	
+	fprint_reset_task,
+	fprint_reset_task_ack,
 	
 	fprint_checkin
 
 );
 
 /******************************
-Set core assignment table
+processor: set_checkout
 *******************************/
-task automatic csr_set_cat;
-input integer logical_id;
+task automatic set_checkout;
 input integer task_id;
 input integer physical_id;
+
 begin
 
-    #`CLK_PERIOD
-    csr_cat_write			=	1;
-	csr_logical_core_id		=	logical_id;
-	csr_task_id				=	task_id;
-	csr_physical_core_id	=	physical_id;
-
-	@ (posedge fprint_cat_ack);
-    
-	csr_cat_write			=	0;
-	csr_logical_core_id		=	0;
-	csr_task_id				=	0;
-	csr_physical_core_id	=	0;
-end
-endtask
-
-/******************************
-Set maxcount
-*******************************/
-task automatic csr_set_maxcount;
-reg integer logical_id;
-reg integer task_id;
-reg integer maxcount;
-begin
-    #`CLK_PERIOD
-    csr_write		=	1;
-	csr_address		=	`COMPARATOR_MAXCOUNT_REG_OFFSET;
-    csr_writedata	=	logical_id << 3*`BYTE |
-						task_id << 2*`BYTE | 
-						maxcount;
-	@ (negedge csr_waitrequest) #`CLK_PERIOD;
-    
-	csr_write 		=	0;
-    csr_writedata	=	0;
-    csr_address		=	0;
-end
-endtask
-
-/******************************
-Set directory start pointer
-*******************************/
-task automatic csr_set_pointer_start;
-reg integer logical_id;
-reg integer task_id;
-reg integer pointer_start;
-begin
-    #`CLK_PERIOD
-    csr_write		=	1;
-	csr_address		=	`CRC_DIRECTORY_START_BASE;
-    csr_writedata	=	logical_id << 3*`BYTE | 
-						task_id << 2*`BYTE |
-						pointer_start;
-	@ (negedge csr_waitrequest) #`CLK_PERIOD;
-    
-	csr_write		=	0;
-    csr_writedata	=	0;
-    csr_address		=	0;
-end
-endtask
-
-/******************************
-Set directory end pointer
-*******************************/
-task automatic csr_set_pointer_end;
-reg integer logical_id;
-reg integer task_id;
-reg integer pointer_end;
-begin
-    #`CLK_PERIOD
-    csr_write		=	1;
-	csr_address		=	`CRC_DIRECTORY_END_BASE;
-    csr_writedata	=	logical_id << 3*`BYTE |
-						task_id << 2*`BYTE |
-						pointer_end;
-	@ (negedge csr_waitrequest) #`CLK_PERIOD;
-    
-	csr_write 		=	0;
-    csr_writedata	=	0;
-    csr_address		=	0;
-end
-endtask
-
-/******************************
- Comparator write status
-*******************************/
-task automatic comparator_set_status;
-reg integer status;
-reg integer logical_id;
-reg integer task_id;
-begin
-
-    #`CLK_PERIOD
-    comparator_status_write					= 1;
-	comparator_collision_detected			= status;
-	comparator_collision_logical_core_id	= logical_id;
-	comparator_task_id						= task_id;
-	@ (posedge csr_status_ack) #`CLK_PERIOD;
-	
-    comparator_status_write					= 0;
-	comparator_task_id						= 0;
-	comparator_collision_detected			= 0;
-	comparator_collision_logical_core_id	= 0;
+    @ (posedge clk)
+	fprint_address		= (physical_id << 4) + 0;
+	fprint_writedata	= {1'b1,task_id[3:0]};
+	fprint_write		= 1;
+	@ (negedge fprint_waitrequest);
+	fprint_address		= 0;
+	fprint_writedata	= 0;
+	fprint_write		= 0;
 
 end
 endtask
 
 /******************************
-ISR
+processor: set checkin
 *******************************/
-task automatic csr_read_status;
-reg integer status;
-reg integer logical_id;
-reg integer task_id;
+task automatic set_checkin;
+input integer task_id;
+input integer physical_id;
+
 begin
-    #`CLK_PERIOD
-    	
-	csr_read = 1;
-	csr_address = `COMPARATOR_EXCEPTION_OFFSET;
-    @ (negedge csr_waitrequest) #`CLK_PERIOD;
-	assert(csr_readdata[`EXCEPTION_REG_EX_BIT] == status) else $error("Status mismatch, exception reg");
-	assert(csr_readdata[`EXCEPTION_REG_TASK_BITS] == task_id) else $error("Task mismatch, ,exception reg");
-	
-	if(status == 0) begin
-		
-		csr_address = `COMPARATOR_SUCCESS_REG_OFFSET;
-		@ (negedge csr_waitrequest) #`CLK_PERIOD;
-		for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
-			if(i==task_id) begin
-				assert(csr_readdata[i] == 1) else $error("success reg");
-			end else begin
-				assert(csr_readdata[i] == 0) else $error("success reg");
-			end
-		end
-	
-	end else begin
-		
-		csr_address = `COMPARATOR_FAIL_REG_OFFSET;
-		@ (negedge csr_waitrequest) #`CLK_PERIOD;
-		for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
-			if(i==task_id) begin
-				assert(csr_readdata[(2*i)+:2] == logical_id) else $error("fail reg");
-			end else begin
-				assert(csr_readdata[(2*i)+:2] == 2'b11) else $error("fail reg");
-			end
-		end
-    
-	end
-    
-	csr_read = 0;
-    csr_write = 1;
-    csr_writedata = 0;
-    csr_address = `COMPARATOR_EXCEPTION_OFFSET;
- 	@ (negedge csr_waitrequest) #`CLK_PERIOD;
-    
-	csr_write = 0;
-    csr_writedata = 0;
-    csr_address = 0;
+
+    @ (posedge clk)
+	fprint_address		= (physical_id << 4) + 0;
+	fprint_writedata	= {1'b0,task_id[3:0]};
+	fprint_write		= 1;
+	@ (negedge fprint_waitrequest);
+	fprint_address		= 0;
+	fprint_writedata	= 0;
+	fprint_write		= 0;
+
 end
 endtask
 
-task automatic set_status_internals;
-reg integer status;
-reg integer logical_id;
-reg integer task_id;
+/******************************
+comparator: reset task
+*******************************/
+task automatic reset_task;
+input integer task_id;
 
-	status_collision_detected			= status;
-	status_collision_logical_core_id	= logical_id;
-	status_collison_task_id				= task_id;
+begin
 
+    @ (posedge clk)
+	comparator_task_id	= task_id;
+	fprint_reset_task	= 1;
+	@ (posedge fprint_reset_task_ack);
+	comparator_task_id	= 0;
+	fprint_reset_task	= 0;
+
+end
+endtask
+
+/******************************
+verify checkout
+*******************************/
+task automatic verify_checkout;
+input integer task_id;
+input integer logical_id;
+input integer checkout_val;
+
+begin
+
+	assert(fprint_registers.checkout_reg[logical_id][task_id] == checkout_val) else $error ("checkout, task %d, lcid %d", task_id, logical_id);
+
+end
+endtask
+
+/******************************
+verify checkin
+*******************************/
+task automatic verify_checkin;
+input integer task_id;
+input integer logical_id;
+input integer checkin_val;
+
+begin
+
+	assert(fprint_registers.checkin_reg[logical_id][task_id] == checkin_val) else $error ("checkin, task %d, lcid %d", task_id, logical_id);
+
+end
+endtask
+
+/******************************
+verify reset task
+*******************************/
+task automatic verify_reset_task;
+input integer task_id;
+
+begin
+
+    verify_checkout(task_id, 0, 0);
+    verify_checkout(task_id, 1, 0);
+    verify_checkout(task_id, 2, 0);
+    verify_checkin(task_id, 0, 0);
+    verify_checkin(task_id, 1, 0);
+    verify_checkin(task_id, 2, 0);
+
+end
 endtask
 
 
-task automatic comparator_write_test;
-reg integer status;
-reg integer logical_id;
-reg integer task_id;
 
-	set_status_internals(status, logical_id, task_id);
-	comparator_set_status(status, logical_id, task_id);
-	@ (negedge irq) #`CLK_PERIOD;
+assign fprint_logical_core_id	=	cat_mem_0[fprint_task_id] == fprint_physical_core_id ? 0 :
+									cat_mem_1[fprint_task_id] == fprint_physical_core_id ? 1 :
+									cat_mem_2[fprint_task_id] == fprint_physical_core_id ? 2 :
+									3;
 
-endtask
-
+assign fprint_nmr				=	nmr_mem;
 
 /******************************
 Initial
 *******************************/
 initial begin
 	
-	init_complete							= 0;
+	init_complete				= 0;
 	
-	clk										= 0;
+	clk							= 0;
 
-	csr_address								= 0;
-	csr_read								= 0;
-	csr_write								= 0;
-	csr_writedata							= 0;
-	
-	comparator_status_write					= 0;
-	comparator_collision_detected			= 0;
-	comparator_collision_logical_core_id	= 0;
-	comparator_task_id						= 0;
-	
-	fprint_cat_ack							= 0;
-	counter_maxcount_ack						= 0;
-	comp_pointer_ack						= 0;
 
-	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
-		for(j=0 ; j<`CRC_KEY_SIZE ; j=j+1) begin
-			cat_mem[i][j] = 0;
-		end
-	end
+	fprint_address				= 0;
+	fprint_write				= 0;
+	fprint_writedata			= 0;
+	oflow_count_inc_ack			= 0;
+	comp_inc_head_pointer_ack	= 0;
+	fprint_head_pointer			= 0;
+	comp_tail_pointer_0			= 0;
+	comp_tail_pointer_1			= 0;
+	comp_tail_pointer_2			= 0;	
+	comparator_task_id			= 0;
+	fprint_reset_task			= 0;
 	
-	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
-		for(j=0 ; j<3 ; j=j+1) begin
-			maxcount_mem[i][j] = 0;
-			pointer_start_mem[i][j] = 0;
-			pointer_end_mem[i][j] = 0;
-		end
+	
+	nmr_mem = 16'hffff;
+	for(i=0 ; i<`CRC_KEY_SIZE ; i++) begin
+		cat_mem_0[i] = 7;
+		cat_mem_1[i] = 8;
+		cat_mem_2[i] = 9;
 	end
 	
 	reset = 1;
+	@ (posedge clk);
 	#`CLK_PERIOD
 	reset = 0;
-	
-	init_complete = 1;
+	init_complete				= 1;
 
 end
 
-
+/******************************
+clk
+*******************************/
 always begin
         clk = #((`CLK_PERIOD)/2) ~clk;
-end
-
-always @ (posedge csr_cat_write) begin
-	cat_mem[csr_task_id][csr_physical_core_id] = csr_logical_core_id;
-	#`CLK_PERIOD
-	fprint_cat_ack = 1;
-	#`CLK_PERIOD
-	fprint_cat_ack = 0;	
-end
-
-always @ (posedge csr_maxcount_write) begin
-	maxcount_mem[csr_maxcount_task_id][csr_maxcount_logical_core_id] = csr_maxcount_data;
-	#`CLK_PERIOD
-	counter_maxcount_ack = 1;
-	#`CLK_PERIOD
-	counter_maxcount_ack = 0;	
-end
-
-always @ (posedge csr_pointer_start_write) begin
-	pointer_start_mem[csr_pointer_task_id][csr_pointer_logical_core_id] = csr_pointer_data;
-	#`CLK_PERIOD
-	comp_pointer_ack = 1;
-	#`CLK_PERIOD
-	comp_pointer_ack = 0;	
-end
-
-always @ (posedge csr_pointer_end_write) begin
-	pointer_end_mem[csr_pointer_task_id][csr_pointer_logical_core_id] = csr_pointer_data;
-	#`CLK_PERIOD
-	comp_pointer_ack = 1;
-	#`CLK_PERIOD
-	comp_pointer_ack = 0;	
-end
-
-always @ (posedge irq) begin
-	csr_read_status(status_collision_detected, status_collision_logical_core_id, status_collison_task_id);
 end
 
 /*****************************************************************
 Things to test:
 	1. Processor actions:
-		a. Write to each core assignment table entry
-		b. Write to each maxcount entry
-		c. Write to each start pointer index
-		d. Write to each end pointer index
-		e. Read from each status register
-		f. Write to the exception register
-	2. Comparator actions:
-		a. write to the status registers
-******************************************************************/
+		a. checkout
+		b. write a fingerprint
+		c. checkin
 
+	2. Comparator actions:
+		a. reset task
+******************************************************************/
 always @(posedge init_complete)begin
 	
 	/**1. a**/
 	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
-		for(j=0 ; j<`CRC_KEY_SIZE ; j=j+1) begin
-			csr_set_cat(2'b10, i, j);
+		for(j=0 ; j<=2 ; j=j+1) begin
+			verify_checkout(i, j, 0);
+			verify_checkin(i, j, 0);
 		end
+	end	
+	
+	
+	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
+		for(j=7 ; j<=9 ; j=j+1) begin
+			set_checkout(i,j);
+		end
+	end
+	
+	for(k=0 ; k<52 ; k++) begin
+		#`CLK_PERIOD;
 	end
 	
 	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
-		for(j=0 ; j<`CRC_KEY_SIZE ; j=j+1) begin
-			assert(cat_mem[i][j] == 2'b10) else $error("cat");
+		for(j=0 ; j<=2 ; j=j+1) begin
+			verify_checkout(i, j, 1);
+			verify_checkin(i, j, 0);
 		end
-	end
-	
+	end	
+
 	$display("Finished test 1. a\t time: %d", $time);
 	
 	/**1. b**/
-	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
-		for(j=0 ; j<3 ; j=j+1) begin
-			csr_set_maxcount(j, i, 21);
-		end
-	end
-	
-	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
-		for(j=0 ; j<3 ; j=j+1) begin
-			assert(maxcount_mem[i][j] == 21) else $error("maxcount");
-		end
-	end
 	
 	$display("Finished test 1. b\t time: %d", $time);
 	
 	
 	/**1. c**/
 	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
-		for(j=0 ; j<3 ; j=j+1) begin
-			csr_set_pointer_start(j, i, 21);
+		for(j=0 ; j<=2 ; j=j+1) begin
+			verify_checkout(i, j, 1);
+			verify_checkin(i, j, 0);
+		end
+	end	
+	
+	
+	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
+		for(j=7 ; j<=9 ; j=j+1) begin
+			set_checkin(i,j);
 		end
 	end
 	
-	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
-		for(j=0 ; j<3 ; j=j+1) begin
-			assert(pointer_start_mem[i][j] == 21) else $error("pointer start");
-		end
+	for(k=0 ; k<52 ; k++) begin
+		#`CLK_PERIOD;
 	end
+	
+	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
+		for(j=0 ; j<=2 ; j=j+1) begin
+			verify_checkout(i, j, 1);
+			verify_checkin(i, j, 1);
+		end
+	end	
 	
 	$display("Finished test 1. c\t time: %d", $time);
 	
-	/**1. d**/
+	/**2. a**/
 	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
-		for(j=0 ; j<3 ; j=j+1) begin
-			csr_set_pointer_end(j, i, 21);
-		end
+		reset_task(i);
+		verify_reset_task(i);
 	end
 	
-	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
-		for(j=0 ; j<3 ; j=j+1) begin
-			assert(pointer_end_mem[i][j] == 21) else $error("pointer end");
-		end
-	end
+	$display("Finished test 2. a\t time: %d", $time);
 	
-	$display("Finished test 1. d\t time: %d", $time);
-	
-	/**2. a (and 1. e,f through ISR) **/
-	
-	
-	// Not working in loops for some reason
-	/*
-	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
-		for(j=0 ; j<3 ; j=j+1) begin
-				
-			comparator_write_test(0,j,i);
-			comparator_write_test(1,j,i);
-			
-		end
-	end
-	*/
-	
-	//Hard coded loop just because
-	comparator_write_test(0,0,0);
-	comparator_write_test(1,0,0);
-	comparator_write_test(0,1,0);
-	comparator_write_test(1,1,0);
-	comparator_write_test(0,2,0);
-	comparator_write_test(1,2,0);
-	
-	comparator_write_test(0,0,1);
-	comparator_write_test(1,0,1);
-	comparator_write_test(0,1,1);
-	comparator_write_test(1,1,1);
-	comparator_write_test(0,2,1);
-	comparator_write_test(1,2,1);
-	
-	comparator_write_test(0,0,2);
-	comparator_write_test(1,0,2);
-	comparator_write_test(0,1,2);
-	comparator_write_test(1,1,2);
-	comparator_write_test(0,2,2);
-	comparator_write_test(1,2,2);
-	
-	comparator_write_test(0,0,3);
-	comparator_write_test(1,0,3);
-	comparator_write_test(0,1,3);
-	comparator_write_test(1,1,3);
-	comparator_write_test(0,2,3);
-	comparator_write_test(1,2,3);
-	
-	comparator_write_test(0,0,4);
-	comparator_write_test(1,0,4);
-	comparator_write_test(0,1,4);
-	comparator_write_test(1,1,4);
-	comparator_write_test(0,2,4);
-	comparator_write_test(1,2,4);
-	
-	comparator_write_test(0,0,5);
-	comparator_write_test(1,0,5);
-	comparator_write_test(0,1,5);
-	comparator_write_test(1,1,5);
-	comparator_write_test(0,2,5);
-	comparator_write_test(1,2,5);
-	
-	comparator_write_test(0,0,6);
-	comparator_write_test(1,0,6);
-	comparator_write_test(0,1,6);
-	comparator_write_test(1,1,6);
-	comparator_write_test(0,2,6);
-	comparator_write_test(1,2,6);
-	
-	comparator_write_test(0,0,7);
-	comparator_write_test(1,0,7);
-	comparator_write_test(0,1,7);
-	comparator_write_test(1,1,7);
-	comparator_write_test(0,2,7);
-	comparator_write_test(1,2,7);
-	
-	comparator_write_test(0,0,8);
-	comparator_write_test(1,0,8);
-	comparator_write_test(0,1,8);
-	comparator_write_test(1,1,8);
-	comparator_write_test(0,2,8);
-	comparator_write_test(1,2,8);
-	
-	comparator_write_test(0,0,9);
-	comparator_write_test(1,0,9);
-	comparator_write_test(0,1,9);
-	comparator_write_test(1,1,9);
-	comparator_write_test(0,2,9);
-	comparator_write_test(1,2,9);
-	
-	comparator_write_test(0,0,10);
-	comparator_write_test(1,0,10);
-	comparator_write_test(0,1,10);
-	comparator_write_test(1,1,10);
-	comparator_write_test(0,2,10);
-	comparator_write_test(1,2,10);
-	
-	comparator_write_test(0,0,11);
-	comparator_write_test(1,0,11);
-	comparator_write_test(0,1,11);
-	comparator_write_test(1,1,11);
-	comparator_write_test(0,2,11);
-	comparator_write_test(1,2,11);
-	
-	comparator_write_test(0,0,12);
-	comparator_write_test(1,0,12);
-	comparator_write_test(0,1,12);
-	comparator_write_test(1,1,12);
-	comparator_write_test(0,2,12);
-	comparator_write_test(1,2,12);
-	
-	comparator_write_test(0,0,13);
-	comparator_write_test(1,0,13);
-	comparator_write_test(0,1,13);
-	comparator_write_test(1,1,13);
-	comparator_write_test(0,2,13);
-	comparator_write_test(1,2,13);
-	
-	comparator_write_test(0,0,14);
-	comparator_write_test(1,0,14);
-	comparator_write_test(0,1,14);
-	comparator_write_test(1,1,14);
-	comparator_write_test(0,2,14);
-	comparator_write_test(1,2,14);
-	
-	comparator_write_test(0,0,15);
-	comparator_write_test(1,0,15);
-	comparator_write_test(0,1,15);
-	comparator_write_test(1,1,15);
-	comparator_write_test(0,2,15);
-	comparator_write_test(1,2,15);
+
 
 	//finishing
 	$display("Finished all tests, stopping\t time: %d", $time);
