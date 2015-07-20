@@ -19,7 +19,6 @@
 #include "includes.h"                   /* Standard includes for uC/OS-II */
 
 #include "system.h"
-
 extern void OSStartTsk;                 /* The entry point for all tasks. */
 
 #if OS_TMR_EN > 0
@@ -224,6 +223,9 @@ void OSTaskIdleHook(void)
 
 void OSTCBInitHook(OS_TCB *ptcb)
 {
+}
+
+void OSTaskReturnHook (OS_TCB *ptcb){
 }
 
 #endif

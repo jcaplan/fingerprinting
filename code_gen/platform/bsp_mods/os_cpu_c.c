@@ -19,7 +19,6 @@
 #include "includes.h"                   /* Standard includes for uC/OS-II */
 
 #include "system.h"
-
 extern void OSStartTsk;                 /* The entry point for all tasks. */
 
 #if OS_TMR_EN > 0
@@ -193,7 +192,6 @@ void cticks_hook(void);
 
 void OSTimeTickHook (void)
 {
-	REPOSUpdateTime();
 #if OS_TMR_EN > 0
     OSTmrCtr++;
     if (OSTmrCtr >= (OS_TICKS_PER_SEC / OS_TMR_CFG_TICKS_PER_SEC)) {
@@ -225,6 +223,9 @@ void OSTaskIdleHook(void)
 
 void OSTCBInitHook(OS_TCB *ptcb)
 {
+}
+
+void OSTaskReturnHook (OS_TCB *ptcb){
 }
 
 #endif

@@ -192,15 +192,35 @@ public class Generator {
 				"\n"+
 				"OUTPUT_DIR=" + config.outputDir + "\n"+
 				"BSPMOD_DIR=${NIOS_CODEGEN_ROOT}/platform/bsp_mods\n"+
+				"OS_DIR=${NIOS_CODEGEN_ROOT}/platform/micrium_uc_osii\n"+
 				"\n"+
+				"\n"+
+				"for i in {0..1} M\n"+
+				"do\n"+
+				"	cp -f ${BSPMOD_DIR}/os_cpu_c.c            ${OUTPUT_DIR}/cpu${i}_bsp/HAL/src/\n"+
+				"	cp -f ${OS_DIR}/inc/os_cfg.h              ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/inc/\n"+
+				"	cp -f ${OS_DIR}/inc/ucos_ii.h             ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/inc/\n"+
+				"	cp -f ${OS_DIR}/src/os_dbg.c              ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/\n"+
+				"	cp -f ${OS_DIR}/src/os_mem.c              ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/\n"+
+				"	cp -f ${OS_DIR}/src/os_task.c             ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/\n"+
+				"	cp -f ${OS_DIR}/src/os_dbg_r.c            ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/\n"+
+				"	cp -f ${OS_DIR}/src/os_mutex.c            ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/\n"+
+				"	cp -f ${OS_DIR}/src/os_time.c             ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/\n"+
+				"	cp -f ${OS_DIR}/src/os_flag.c             ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/\n"+
+				"	cp -f ${OS_DIR}/src/os_q.c                ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/\n"+
+				"	cp -f ${OS_DIR}/src/os_tmr.c              ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/\n"+
+				"	cp -f ${OS_DIR}/src/os_core.c             ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/\n"+
+				"	cp -f ${OS_DIR}/src/os_mbox.c             ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/\n"+
+				"	cp -f ${OS_DIR}/src/os_sem.c              ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/\n"+
+				"done\n"+
 				"\n"+
 				"cp -f ${BSPMOD_DIR}/alt_exception_entry_gp.S ${OUTPUT_DIR}/cpu0_bsp/HAL/src/alt_exception_entry.S\n"+
 				"cp -f ${BSPMOD_DIR}/alt_exception_entry_gp.S ${OUTPUT_DIR}/cpu1_bsp/HAL/src/alt_exception_entry.S\n"+
-				"cp -f ${BSPMOD_DIR}/os_core.c             ${OUTPUT_DIR}/cpu0_bsp/UCOSII/src/\n"+
-				"cp -f ${BSPMOD_DIR}/os_core.c             ${OUTPUT_DIR}/cpu1_bsp/UCOSII/src/\n"+
-				"cp -f ${BSPMOD_DIR}/ucos_ii.h             ${OUTPUT_DIR}/cpu0_bsp/UCOSII/inc/\n"+
-				"cp -f ${BSPMOD_DIR}/ucos_ii.h             ${OUTPUT_DIR}/cpu1_bsp/UCOSII/inc/\n"+
-				"cp -f ${BSPMOD_DIR}/os_cpu_c.c            ${OUTPUT_DIR}/cpuM_bsp/HAL/src/"+
+				"cp -f ${BSPMOD_DIR}/os_core.c                ${OUTPUT_DIR}/cpu0_bsp/UCOSII/src/\n"+
+				"cp -f ${BSPMOD_DIR}/os_core.c                ${OUTPUT_DIR}/cpu1_bsp/UCOSII/src/\n"+
+				"cp -f ${BSPMOD_DIR}/ucos_ii.h                ${OUTPUT_DIR}/cpu0_bsp/UCOSII/inc/\n"+
+				"cp -f ${BSPMOD_DIR}/ucos_ii.h                ${OUTPUT_DIR}/cpu1_bsp/UCOSII/inc/\n"+
+				"cp -f ${BSPMOD_DIR}/os_cpu_c_MON.c           ${OUTPUT_DIR}/cpuM_bsp/HAL/src/os_cpu_c.c\n"+
 				"\n"+
 				"\n"+
 				"# update system.h for monitor bsp\n"+
@@ -1469,7 +1489,9 @@ public class Generator {
 				"	--bsp-dir ${BSPDIR} --elf-name cpu${i}.elf --src-files \\\n"+
 				" 	$SRCLIST --set APP_CFLAGS_USER_FLAGS -fomit-frame-pointer --set OBJDUMP_INCLUDE_SOURCE 0 \\\n"+
 				" 	--use-lib-dir ${OUTPUT_DIR}/critical_library\\\n"+
+				"	--set APP_CFLAGS_DEBUG_LEVEL \"-g -gdwarf-2\" \\\n"+
 				"	--set APP_INCLUDE_DIRS ${OUTPUT_DIR}/critical_library\n"+
+
 				"\n"+
 				"	if [ \"$?\" !=  \"0\" ]\n"+
 				"	then\n"+

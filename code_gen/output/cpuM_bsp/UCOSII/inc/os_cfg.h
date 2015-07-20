@@ -54,8 +54,14 @@ extern "C"
 
                                        /* ------------------------ SEMAPHORES ------------------------ */
 #define OS_SEM_PEND_ABORT_EN      1    /*    Include code for OSSemPendAbort()                         */
+              
 
-                                                                                                                     
+#define OS_MEM_NAME_EN 1u
+#define OS_FLAG_NAME_EN 1u
+#define OS_TASK_NAME_EN 1u
+#define OS_TASK_REG_TBL_SIZE 1u
+
+                                                                                                       
 #include "system.h"
 
 #ifdef __cplusplus

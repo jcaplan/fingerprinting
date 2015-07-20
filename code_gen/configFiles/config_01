@@ -15,7 +15,7 @@
 -name AirbagModel          -subdir AirbagModel_ert_rtw         -T  50 -c -Priority 1
 -name CollisionAvoidance   -subdir CollisionAvoidance_ert_rtw  -T 100    -Priority 5
 -name CruiseControlSystem  -subdir CruiseControlSystem_ert_rtw -T  20 -c -Priority 2
--name Derivative           -subdir Derivative_ert_rtw          -T  12 -c -Priority 3
+-name Derivative           -subdir Derivative_ert_rtw          -T  40 -c -Priority 3
 -name FuelSensor           -subdir FuelSensor_ert_rtw          -T  75    -Priority 6
 -name TractionControl      -subdir TractionControl_ert_rtw     -T  30 -c -Priority 4
 -name TransmissionControl  -subdir TransmissionControl_ert_rtw -T  15    -Priority 7

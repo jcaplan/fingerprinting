@@ -366,7 +366,7 @@ void Derivative_TASK(void* pdata) {
 	while (1) {
 		Derivative_step(Derivative_M, &Derivative_U,
 			&Derivative_Y);
-		OSTimeDlyHMSM(0, 0, 0, 12);
+		OSTimeDlyHMSM(0, 0, 0, 40);
 	}
 }
 

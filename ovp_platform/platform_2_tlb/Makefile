@@ -28,7 +28,8 @@ run2:
       --extlib model.$(IMPERAS_SHRSUF) \
       -o simulator.log 
 
-debug:
+
+debug2:
 	$(SIMULATOR) \
       --icmobject FprintPlatform/1.0/platform.$(IMPERAS_ARCH).$(IMPERAS_SHRSUF) \
       --extlib model.$(IMPERAS_SHRSUF) --idebug\
@@ -39,13 +40,31 @@ debug1:
       --icmobject FprintPlatform/1.0/platform.$(IMPERAS_ARCH).$(IMPERAS_SHRSUF) \
       -o simulator.log    --idebug
 
+debug3:
+	$(SIMULATOR) \
+      --icmobject FprintPlatform/1.0/platform.$(IMPERAS_ARCH).$(IMPERAS_SHRSUF) \
+      -o simulator.log --idebug \
+      --extlib FprintPlatform/cpu0=nios_iiCpuHelper \
+      --extlib FprintPlatform/cpu0=vapHelper \
+      --extlib FprintPlatform/cpu0=vapTools \
+      --extlib FprintPlatform/cpu1=nios_iiCpuHelper \
+      --extlib FprintPlatform/cpu1=vapHelper \
+      --extlib FprintPlatform/cpu1=vapTools \
+      --extlib FprintPlatform/cpum=nios_iiCpuHelper \
+      --extlib FprintPlatform/cpum=vapHelper \
+      --extlib FprintPlatform/cpum=vapTools \
+      --extlib FprintPlatform/cpum=uCOSIIOsHelper \
+      --callcommand "FprintPlatform/cpum/vapTools_0/schedulertrace -on" \
+      --callcommand "FprintPlatform/cpum/uCOSIIOsHelper_0/ostrace -all -on" \
+      --callcommand "FprintPlatform/cpum/uCOSIIOsHelper_0/logtofile -on" \
+      --callcommand "FprintPlatform/cpum/uCOSIIOsHelper_0/logtosim -off"
 
 
 ic-run1:
-	IMPERAS_RUNTIME=CpuManager FprintPlatform/1.0/platform.$(IMPERAS_ARCH).exe application/application.OR1K.elf 
+	IMPERAS_RUNTIME=CpuManager FprintPlatform/1.0/platform.$(IMPERAS_ARCH).exe application/application.nios_ii.elf 
 
 ic-run2: loadExtLib.ic
-	IMPERAS_RUNTIME=CpuManager IMPERAS_TOOLS=loadExtLib.ic pFprintPlatform/1.0/platform.$(IMPERAS_ARCH).exe application/application.OR1K.elf
+	IMPERAS_RUNTIME=CpuManager IMPERAS_TOOLS=loadExtLib.ic pFprintPlatform/1.0/platform.$(IMPERAS_ARCH).exe application/application.nios_ii.elf
 
 loadExtLib.ic:
 	$(V) echo "--extlib CPU1=modelAttrs@model.$(IMPERAS_SHRSUF)" > loadExtLib.ic
