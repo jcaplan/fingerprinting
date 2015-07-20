@@ -16,7 +16,7 @@ module comp_registers(
 	output [`CRC_RAM_ADDRESS_WIDTH-1:0]     fprint_head_pointer,
 
 	input 									increment_head_pointer,
-	output wire 									increment_hp_ack,
+	output wire 						    increment_hp_ack,
 	input [`CRC_RAM_ADDRESS_WIDTH-1:0]		start_pointer_ex,
 	input [`CRC_RAM_ADDRESS_WIDTH-1:0]      end_pointer_ex,
 	input [`CRC_RAM_ADDRESS_WIDTH-1:0]		start_pointer_comp,
@@ -33,7 +33,10 @@ module comp_registers(
 	input 									comp_increment_tail_pointer,
 	input 									comp_reset_fprint_ready,
 	output 									reset_fprint_ack,
-	input 									comp_mismatch_detected
+	input 									comp_mismatch_detected,
+	
+	input									comp_reset_task,
+	output wire								reset_task
 
 );
 
@@ -49,7 +52,6 @@ reg  [(`CRC_KEY_SIZE-1):0]       		fprints_ready		[1:0];
 reg [`CRC_RAM_ADDRESS_WIDTH-1:0] 		comp_head_pointer0;
 reg [`CRC_RAM_ADDRESS_WIDTH-1:0]  		comp_head_pointer1;
 
-wire 									reset_task;
 /*************************************************************
 * FSM
 **************************************************************/
@@ -60,6 +62,8 @@ parameter st_set_pointers 		= 1;
 parameter st_ack_pointers   	= 2;
 parameter st_increment_hp_ack 	= 3;
 parameter st_reset_fprint_ready = 4;
+parameter st_reset_task			= 5;
+
 always @(posedge clk or posedge reset)
 begin
 	if(reset)
@@ -73,6 +77,8 @@ begin
 					state = st_increment_hp_ack;
 				else if(comp_reset_fprint_ready)
 					state = st_reset_fprint_ready;
+				else if(comp_reset_task)
+					state = st_reset_task;
 			st_set_pointers:
 				state = st_ack_pointers;
 			st_ack_pointers:
@@ -80,6 +86,8 @@ begin
 			st_increment_hp_ack:
 				state = idle;
 			st_reset_fprint_ready:
+				state = idle;
+			st_reset_task:
 				state = idle;
 		endcase
 	end
@@ -91,13 +99,13 @@ end
 assign head_tail_ack  		= (state == st_ack_pointers);
 assign set_pointers         = (state == st_set_pointers);
 assign increment_hp_ack 	= (state == st_increment_hp_ack);
+assign reset_task 			= (state == st_reset_task);
 assign fprints_ready_out    = fprints_ready[0] & fprints_ready[1];
 
 assign head0_matches_head1  = (comp_head_pointer0 == comp_head_pointer1);
 assign tail0_matches_head0  = (comp_tail_pointer0 == comp_head_pointer0);
 assign tail1_matches_head1  = (comp_tail_pointer1 == comp_head_pointer1);
 assign reset_fprint_ack     = (state == st_reset_fprint_ready);
-assign reset_task 			= reset_fprint_ack & comp_mismatch_detected;
 
 /*************************************************************
 * Head and Tail pointers
@@ -176,14 +184,14 @@ begin
 	end else begin
 		if(state == st_increment_hp_ack)
 			fprints_ready[logical_core_id][fprint_task_id] = 1'b1;
-		else if(state == st_reset_fprint_ready)begin
+		else if (reset_task) begin
+			fprints_ready[0][comp_task] = 1'b0;    
+			fprints_ready[1][comp_task] = 1'b0;    
+		end else if(state == st_reset_fprint_ready)begin
 			if(tail0_matches_head0)
 				fprints_ready[0][comp_task] = 1'b0;    
 			if(tail1_matches_head1)            
-				fprints_ready[1][comp_task] = 1'b0;
-		end else if (reset_task) begin
-			fprints_ready[0][comp_task] = 1'b0;    
-			fprints_ready[1][comp_task] = 1'b0;        
+				fprints_ready[1][comp_task] = 1'b0;    
 		end
 	end
 end			

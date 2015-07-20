@@ -126,7 +126,7 @@ proc compose { } {
     set_instance_parameter_value timer {alwaysRun} {0}
     set_instance_parameter_value timer {counterSize} {32}
     set_instance_parameter_value timer {fixedPeriod} {0}
-    set_instance_parameter_value timer {period} {10}
+    set_instance_parameter_value timer {period} {1}
     set_instance_parameter_value timer {periodUnits} {MSEC}
     set_instance_parameter_value timer {resetOutput} {0}
     set_instance_parameter_value timer {snapshot} {1}

@@ -26,7 +26,10 @@ module comparator(
 	input 									fprint_reg_ack,
 	output 									comp_status_write,
 	input   								comp_status_ack,
-	output reg		 						comp_mismatch_detected
+	output reg		 						comp_mismatch_detected,
+	
+	output									comp_reset_task,
+	input									reset_task_ack
 );
 
 //First combinational check if a task is ready for comparison
@@ -63,9 +66,10 @@ parameter compare_fprints  			= 6;
 parameter mismatch_detected 		= 7;
 parameter task_verified   			= 8;
 parameter increment_tail_pointer 	= 9;
-parameter check_if_done 			= 10;
+parameter check_if_done				= 10;
 parameter reset_fprint_ready 		= 11;
-parameter write_status_reg 			= 12;
+parameter st_reset_task				= 12;
+parameter write_status_reg 			= 13;
 
 always @ (posedge clk or posedge reset)
 begin
@@ -84,20 +88,17 @@ begin
 				state = check_task_status;
 			check_task_status:
 				//If the task has completed
-				if(checkin[comp_task])
-					state = task_complete;
-				else 
-					state = compare_fprints;	
+				if(fprints_ready[comp_task])
+					state = compare_fprints;
+				else if(checkin[comp_task])
+					state = task_complete;	
 			task_complete:
 				//If the number of fingerprints doesn't match
 				if(~head0_matches_head1)
 					state = mismatch_detected;
-				//If there are no fingerprints left to compare
-				else if(tail0_matches_head0)
-					state = task_verified;
 				//Otherwise there's still work to do
 				else 
-					state = compare_fprints;
+					state = reset_fprint_ready;
 			compare_fprints:
 				if(fprints_match)
 					state = increment_tail_pointer;
@@ -117,9 +118,16 @@ begin
 					else
 						state = init;
 			mismatch_detected:
-				state = reset_fprint_ready;
+				state = task_verified;
 			task_verified:
-				if(fprint_reg_ack)
+				if(fprint_reg_ack) begin
+					if(comp_mismatch_detected)
+						state = st_reset_task;
+					else
+						state = write_status_reg;
+				end
+			st_reset_task:
+				if(reset_task_ack)
 					state = write_status_reg;
 			write_status_reg:
 				if(comp_status_ack)
@@ -135,6 +143,7 @@ assign comp_reset_fprint_ready 		= (state == reset_fprint_ready);
 assign comp_increment_tail_pointer 	= (state == increment_tail_pointer);
 assign comp_task_verified 			= (state == task_verified);
 assign comp_status_write 			= (state == write_status_reg);
+assign comp_reset_task				= (state == st_reset_task);
 
 
 always @ (posedge clk or posedge reset)

@@ -124,6 +124,30 @@
          type = "String";
       }
    }
+   element timer.s1
+   {
+      datum baseAddress
+      {
+         value = "134252800";
+         type = "String";
+      }
+   }
+   element scratchpad_1.s1
+   {
+      datum baseAddress
+      {
+         value = "69222400";
+         type = "String";
+      }
+   }
+   element timestamp.s1
+   {
+      datum baseAddress
+      {
+         value = "134217728";
+         type = "String";
+      }
+   }
    element scratchpad_0.s1
    {
       datum baseAddress
@@ -137,30 +161,6 @@
       datum baseAddress
       {
          value = "134225920";
-         type = "String";
-      }
-   }
-   element timestamp.s1
-   {
-      datum baseAddress
-      {
-         value = "134217728";
-         type = "String";
-      }
-   }
-   element scratchpad_1.s1
-   {
-      datum baseAddress
-      {
-         value = "69222400";
-         type = "String";
-      }
-   }
-   element timer.s1
-   {
-      datum baseAddress
-      {
-         value = "134252800";
          type = "String";
       }
    }
@@ -422,7 +422,7 @@
   <parameter name="alwaysRun" value="false" />
   <parameter name="counterSize" value="32" />
   <parameter name="fixedPeriod" value="false" />
-  <parameter name="period" value="10" />
+  <parameter name="period" value="1" />
   <parameter name="periodUnits" value="MSEC" />
   <parameter name="resetOutput" value="false" />
   <parameter name="snapshot" value="true" />

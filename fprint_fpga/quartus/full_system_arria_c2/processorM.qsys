@@ -100,14 +100,6 @@
          type = "int";
       }
    }
-   element out_system_bridge.s0
-   {
-      datum baseAddress
-      {
-         value = "0";
-         type = "String";
-      }
-   }
    element reset_monitor_0.s0
    {
       datum _tags
@@ -116,19 +108,11 @@
          type = "String";
       }
    }
-   element timer.s1
+   element out_system_bridge.s0
    {
       datum baseAddress
       {
-         value = "134221856";
-         type = "String";
-      }
-   }
-   element button_pio.s1
-   {
-      datum baseAddress
-      {
-         value = "134225920";
+         value = "0";
          type = "String";
       }
    }
@@ -140,11 +124,27 @@
          type = "String";
       }
    }
+   element button_pio.s1
+   {
+      datum baseAddress
+      {
+         value = "134225920";
+         type = "String";
+      }
+   }
    element scratchpad.s1
    {
       datum baseAddress
       {
          value = "136314880";
+         type = "String";
+      }
+   }
+   element timer.s1
+   {
+      datum baseAddress
+      {
+         value = "134221856";
          type = "String";
       }
    }
@@ -380,7 +380,7 @@
   <parameter name="alwaysRun" value="false" />
   <parameter name="counterSize" value="32" />
   <parameter name="fixedPeriod" value="false" />
-  <parameter name="period" value="10" />
+  <parameter name="period" value="1" />
   <parameter name="periodUnits" value="MSEC" />
   <parameter name="resetOutput" value="false" />
   <parameter name="snapshot" value="true" />
