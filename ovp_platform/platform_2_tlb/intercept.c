@@ -90,15 +90,13 @@ static VMI_MEM_WATCH_FN(writeCB) {
 //
 static VMIOS_CONSTRUCTOR_FN(constructor) {
 
-    memDomainP domain   = vmirtGetProcessorPhysicalDataDomain(processor);
-
-    vmirtAddWriteCallback(domain, 0, 0, 0x7ffffff, writeCB, object);
-    vmirtAddWriteCallback(domain, 0, 0x4200000, 0x4208000, writeCB, object);
-    vmirtAddWriteCallback(domain, 0, 0x8100000, 0x8101000,writeCB, object);
-
     const char *type = vmirtProcessorType(processor);
     Uns32 coreID = vmirtCPUId(processor);
     if(!strcmp(type,"nios_ii") && coreID < NUMCORES){
+        memDomainP domain   = vmirtGetProcessorPhysicalDataDomain(processor);
+
+        vmirtAddWriteCallback(domain, 0, 0, 0xffffffff, writeCB, object);
+
         vmiPrintf("INTERCEPT: initializing %s, %d\n",vmirtProcessorName(processor),coreID);
         crcInit();
         fprintInit(coreID, processor);
