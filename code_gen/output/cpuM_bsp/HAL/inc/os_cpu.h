@@ -85,6 +85,7 @@ typedef signed   long  INT32S;                   /* Signed   32 bit quantity    
 typedef float          FP32;                     /* Single precision floating point                    */
 typedef double         FP64;                     /* Double precision floating point                    */
 typedef unsigned int   OS_STK;                   /* Each stack entry is 32-bits                        */
+
 /****************************************************************************
 *                           Nios2 Miscellaneous defines
 ****************************************************************************/

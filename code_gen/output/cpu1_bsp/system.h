@@ -4,7 +4,7 @@
  * Machine generated for CPU 'processor1_0_cpu1' in SOPC Builder design 'nios_fprint'
  * SOPC Builder design path: /home/jonah/fingerprinting/code_gen/platform/nios_fprint.sopcinfo
  *
- * Generated: Sun Jul 19 19:59:08 EDT 2015
+ * Generated: Mon Jul 20 13:40:17 EDT 2015
  */
 
 /*
@@ -413,15 +413,15 @@
 #define PROCESSOR1_0_TIMER_FREQ 50000000
 #define PROCESSOR1_0_TIMER_IRQ 0
 #define PROCESSOR1_0_TIMER_IRQ_INTERRUPT_CONTROLLER_ID 0
-#define PROCESSOR1_0_TIMER_LOAD_VALUE 499999
+#define PROCESSOR1_0_TIMER_LOAD_VALUE 49999
 #define PROCESSOR1_0_TIMER_MULT 0.0010
 #define PROCESSOR1_0_TIMER_NAME "/dev/processor1_0_timer"
-#define PROCESSOR1_0_TIMER_PERIOD 10
+#define PROCESSOR1_0_TIMER_PERIOD 1
 #define PROCESSOR1_0_TIMER_PERIOD_UNITS "ms"
 #define PROCESSOR1_0_TIMER_RESET_OUTPUT 0
 #define PROCESSOR1_0_TIMER_SNAPSHOT 1
 #define PROCESSOR1_0_TIMER_SPAN 32
-#define PROCESSOR1_0_TIMER_TICKS_PER_SEC 100.0
+#define PROCESSOR1_0_TIMER_TICKS_PER_SEC 1000.0
 #define PROCESSOR1_0_TIMER_TIMEOUT_PULSE_OUTPUT 0
 #define PROCESSOR1_0_TIMER_TYPE "altera_avalon_timer"
 
@@ -535,7 +535,7 @@
 #define SYS_ID_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define SYS_ID_NAME "/dev/sys_id"
 #define SYS_ID_SPAN 8
-#define SYS_ID_TIMESTAMP 1435083783
+#define SYS_ID_TIMESTAMP 1437413716
 #define SYS_ID_TYPE "altera_avalon_sysid_qsys"
 
 

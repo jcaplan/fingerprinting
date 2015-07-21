@@ -1,0 +1,184 @@
+$version
+Imperas Tools
+$end
+$comment imperas platform FprintPlatform $end
+$comment imperas cpu FprintPlatform/cpum $end
+$timescale 8ns $end
+$scope module 4_dma $end
+ $var wire 1 ! 4_dma $end
+$upscope $end
+$scope module 5_Derivative $end
+ $var wire 1 # 5_Derivative $end
+$upscope $end
+$scope module 7_uC/OS-II_Idle $end
+ $var wire 1 % 7_uC/OS-II_Idle $end
+$upscope $end
+$scope module 6_uC/OS-II_Stat $end
+ $var wire 1 $ 6_uC/OS-II_Stat $end
+$upscope $end
+$scope module 0_None $end
+ $var wire 1 " 0_None $end
+$upscope $end
+$enddefinitions $end
+#0
+x!
+x#
+x%
+x$
+x"
+#114068
+1!
+z"
+#114327
+1#
+z!
+#117984
+1$
+z#
+#118174
+1%
+z$
+#1348782
+1!
+z%
+#1406894
+1%
+z!
+#5098343
+1#
+z%
+#5102019
+1%
+z#
+#10098327
+1#
+z%
+#10102003
+1%
+z#
+#15098327
+1#
+z%
+#15102003
+1%
+z#
+#20098332
+1#
+z%
+#20102008
+1%
+z#
+#25098371
+1#
+z%
+#25102047
+1$
+z#
+#25102247
+1%
+z$
+#26348554
+1!
+z%
+#26359416
+1%
+z!
+#26363556
+1!
+z%
+#26369506
+1%
+z!
+#30098336
+1#
+z%
+#30102012
+1%
+z#
+#35098342
+1#
+z%
+#35102018
+1%
+z#
+#38848554
+1!
+z%
+#38859443
+1%
+z!
+#38862268
+1!
+z%
+#38868218
+1%
+z!
+#40098327
+1#
+z%
+#40102003
+1%
+z#
+#45098327
+1#
+z%
+#45102003
+1%
+z#
+#50098364
+1#
+z%
+#50102040
+1$
+z#
+#50102240
+1%
+z$
+#51348547
+1!
+z%
+#51359409
+1%
+z!
+#51363549
+1!
+z%
+#51369499
+1%
+z!
+#55098329
+1#
+z%
+#55102005
+1%
+z#
+#60098335
+1#
+z%
+#60102011
+1%
+z#
+#63848547
+1!
+z%
+#63859343
+1%
+z!
+#63862294
+1!
+z%
+#63868244
+1%
+z!
+#65098327
+1#
+z%
+#65102003
+1%
+z#
+#70098330
+1#
+z%
+#70102006
+1%
+z#

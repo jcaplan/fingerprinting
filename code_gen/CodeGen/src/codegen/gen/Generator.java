@@ -1346,7 +1346,8 @@ public class Generator {
 				"	mem_manager_init();\n";
 		
 		s += 	"	// Declare the OS tasks\n"+
-				"	// -------------------\n\n";
+				"	// -------------------\n\n"+
+				"	INT8U perr;";
 		
 		for(Function f : core.funcList){
 			if(core.index == 1 || !f.critical){
@@ -1357,11 +1358,13 @@ public class Generator {
 						"			OS_TASK_OPT_STK_CLR);\n";
 			} else { /* critical tasks on core 0 */
 				s += "	OSTaskCreateExt(" + f + "_TASK, NULL,\n"+
-						"			0x"+ Integer.toHexString(getStackEnd(f,1)) +",\n"+
+						"			(OS_STK *)0x"+ Integer.toHexString(getStackEnd(f,1)) +",\n"+
 						"			" + f + "_PRIORITY, " + f + "_PRIORITY,\n"+
-						"			0x" + Integer.toHexString(getStackStart(f,1)) +", " + f + "_STACKSIZE, NULL,\n"+
+						"			(OS_STK *)0x" + Integer.toHexString(getStackStart(f,1)) +", " + f + "_STACKSIZE, NULL,\n"+
 						"			OS_TASK_OPT_STK_CLR);\n";
 			}
+			
+			s += "	OSTaskNameSet(" + f + "_PRIORITY, (INT8U *)\"" + f + "\", &perr);\n";
 		}
 		
 		s += "\n";
@@ -1858,6 +1861,7 @@ public class Generator {
 					"			" + f + "_PRIORITY, " + f + "_PRIORITY,\n"+
 					"			" + f + "_STACK, " + f + "_STACKSIZE, NULL,\n"+
 					"			OS_TASK_OPT_STK_CLR);\n";
+			s += "	OSTaskNameSet(" + f + "_PRIORITY, (INT8U *)\"" + f + "\", &perr);\n";
 
 		}
 		

@@ -478,26 +478,30 @@ int main() {
 	// Declare the OS tasks
 	// -------------------
 
-	OSTaskCreateExt(AirbagModel_TASK, NULL,
+	INT8U perr;	OSTaskCreateExt(AirbagModel_TASK, NULL,
 			&AirbagModel_STACK[AirbagModel_STACKSIZE - 1],
 			AirbagModel_PRIORITY, AirbagModel_PRIORITY,
 			AirbagModel_STACK, AirbagModel_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(AirbagModel_PRIORITY, (INT8U *)"AirbagModel", &perr);
 	OSTaskCreateExt(CruiseControlSystem_TASK, NULL,
 			&CruiseControlSystem_STACK[CruiseControlSystem_STACKSIZE - 1],
 			CruiseControlSystem_PRIORITY, CruiseControlSystem_PRIORITY,
 			CruiseControlSystem_STACK, CruiseControlSystem_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(CruiseControlSystem_PRIORITY, (INT8U *)"CruiseControlSystem", &perr);
 	OSTaskCreateExt(TractionControl_TASK, NULL,
 			&TractionControl_STACK[TractionControl_STACKSIZE - 1],
 			TractionControl_PRIORITY, TractionControl_PRIORITY,
 			TractionControl_STACK, TractionControl_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(TractionControl_PRIORITY, (INT8U *)"TractionControl", &perr);
 	OSTaskCreateExt(CollisionAvoidance_TASK, NULL,
 			&CollisionAvoidance_STACK[CollisionAvoidance_STACKSIZE - 1],
 			CollisionAvoidance_PRIORITY, CollisionAvoidance_PRIORITY,
 			CollisionAvoidance_STACK, CollisionAvoidance_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(CollisionAvoidance_PRIORITY, (INT8U *)"CollisionAvoidance", &perr);
 
 	resetMonitorCoreReg(CORE_ID);
 

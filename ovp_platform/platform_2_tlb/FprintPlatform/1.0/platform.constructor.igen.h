@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20150205.0
-//                          Sat Jul 18 15:18:44 2015
+//                          Mon Jul 20 18:26:22 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -564,7 +564,7 @@ void platformConstructor(void) {
         "mcgill.ca"         ,    // vendor
         0                   ,    // library
         "fprint"            ,    // name
-        "2.0"               ,    // version
+        "3.0"               ,    // version
         "pse"                    // model
     );
 
@@ -578,8 +578,6 @@ void platformConstructor(void) {
         0,       // unused
         0        // unused
     );
-
-    icmConnectPSEBus( handles.cpu0_fprint_p, handles.compbus_b, "FPRINT_MASTER", 1, 0x0, 0xfffffff);
 
     icmConnectPSEBus( handles.cpu0_fprint_p, handles.cpu0_iobus_b, "FPRINT_CSR_SLAVE", 0, 0x100000, 0x10013f);
 
@@ -717,7 +715,7 @@ void platformConstructor(void) {
         "mcgill.ca"         ,    // vendor
         0                   ,    // library
         "fprint"            ,    // name
-        "2.0"               ,    // version
+        "3.0"               ,    // version
         "pse"                    // model
     );
 
@@ -731,8 +729,6 @@ void platformConstructor(void) {
         0,       // unused
         0        // unused
     );
-
-    icmConnectPSEBus( handles.cpu1_fprint_p, handles.compbus_b, "FPRINT_MASTER", 1, 0x0, 0xfffffff);
 
     icmConnectPSEBus( handles.cpu1_fprint_p, handles.cpu1_iobus_b, "FPRINT_CSR_SLAVE", 0, 0x100000, 0x10013f);
 
@@ -1238,6 +1234,20 @@ void platformConstructor(void) {
     icmNewBusBridge(handles.cpu1_dmabus_b, handles.mmbus_b, "cpu1_dmamm_bridge", "sp1", "mp1", 0x0, 0xf9fff, 0x400000);
 
 ////////////////////////////////////////////////////////////////////////////////
+//                            Bridge comp_bridge_0
+////////////////////////////////////////////////////////////////////////////////
+
+
+    icmNewBusBridge(handles.cpu0_tlbbus_b, handles.compbus_b, "comp_bridge_0", "sp1", "mp1", 0x1000000, 0x1000fff, 0x1000000);
+
+////////////////////////////////////////////////////////////////////////////////
+//                            Bridge comp_bridge_1
+////////////////////////////////////////////////////////////////////////////////
+
+
+    icmNewBusBridge(handles.cpu1_tlbbus_b, handles.compbus_b, "comp_bridge_1", "sp1", "mp1", 0x1000000, 0x1000fff, 0x1000000);
+
+////////////////////////////////////////////////////////////////////////////////
 //                        Bridge cpum_reset_mon_bridge
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1312,8 +1322,6 @@ void platformConstructor(void) {
     icmConnectPSENet( handles.sw_reset_p, handles.cpu0_reset1_n, "cpu0_reset", 0);
 
     icmConnectPSENet( handles.cpu0_tlb_p, handles.cpu0_reset1_n, "TLB_RESET", 0);
-
-    icmConnectPSENet( handles.cpu0_fprint_p, handles.cpu0_reset1_n, "FPRINT_RESET", 0);
 
 ////////////////////////////////////////////////////////////////////////////////
     handles.cpu1_irq3_n = icmNewNet("handles.cpu1_irq3_n" );

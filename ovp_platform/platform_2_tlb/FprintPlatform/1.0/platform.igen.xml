@@ -346,7 +346,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
         name="cpu0_fprint">
         <vlnvreference name="fprint"
             vendor="mcgill.ca"
-            version="2.0"/>
+            version="3.0"/>
         <busslaveportconnection connection="cpu0_iobus"
             hiaddress="0x10013f"
             loaddress="0x100000"
@@ -363,12 +363,6 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             hiaddress="0x3ff"
             loaddress="0x0"
             name="FPRINT_TLB_SLAVE"/>
-        <netportconnection connection="cpu0_reset1"
-            name="FPRINT_RESET"/>
-        <busmasterportconnection connection="compbus"
-            hiaddress="0xfffffff"
-            loaddress="0x0"
-            name="FPRINT_MASTER"/>
     </peripheralinstance>
     <bus addresswidth="32"
         name="cpu0_tlb_fprint_bus"/>
@@ -620,7 +614,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
         name="cpu1_fprint">
         <vlnvreference name="fprint"
             vendor="mcgill.ca"
-            version="2.0"/>
+            version="3.0"/>
         <busslaveportconnection connection="cpu1_iobus"
             hiaddress="0x10013f"
             loaddress="0x100000"
@@ -639,10 +633,6 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             name="FPRINT_TLB_SLAVE"/>
         <netportconnection connection="cpu1_reset1"
             name="FPRINT_RESET"/>
-        <busmasterportconnection connection="compbus"
-            hiaddress="0xfffffff"
-            loaddress="0x0"
-            name="FPRINT_MASTER"/>
     </peripheralinstance>
     <bus addresswidth="32"
         name="cpu1_tlb_fprint_bus"/>
@@ -949,6 +939,26 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
         <netportconnection connection="cpum_irq3"
             name="COMP_IRQ"/>
     </peripheralinstance>
+    <bridge name="comp_bridge_0">
+        <busslaveportconnection connection="cpu0_tlbbus"
+            hiaddress="0x1000fff"
+            loaddress="0x1000000"
+            name="sp1"/>
+        <busmasterportconnection connection="compbus"
+            hiaddress="0x1000fff"
+            loaddress="0x1000000"
+            name="mp1"/>
+    </bridge>
+    <bridge name="comp_bridge_1">
+        <busslaveportconnection connection="cpu1_tlbbus"
+            hiaddress="0x1000fff"
+            loaddress="0x1000000"
+            name="sp1"/>
+        <busmasterportconnection connection="compbus"
+            hiaddress="0x1000fff"
+            loaddress="0x1000000"
+            name="mp1"/>
+    </bridge>
     <bus addresswidth="32"
         name="resetmonbus"/>
     <peripheralinstance diagnosticlevel="3"

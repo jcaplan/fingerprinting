@@ -242,7 +242,7 @@ ihwconnect       -instancename cpu0            -netport d_irq1       -net cpu0_i
 #
 # FPRINT
 #
-ihwaddperipheral -instancename cpu0_fprint -vendor mcgill.ca -type fprint -version 2.0 -diagnosticlevel 0
+ihwaddperipheral -instancename cpu0_fprint -vendor mcgill.ca -type fprint -version 3.0 -diagnosticlevel 0
 ihwconnect       -instancename cpu0_fprint    -bus cpu0_iobus -busslaveport FPRINT_CSR_SLAVE -loaddress 0x0100000 -hiaddress 0x010013F
 isetattribute    -handle       cpu0_fprint -name coreID  -value 0
 
@@ -261,10 +261,10 @@ ihwconnect       -instancename cpu0_tlb    -bus cpu0_tlb_fprint_bus    -busmaste
 ihwconnect       -instancename cpu0_fprint -bus cpu0_tlb_fprint_bus    -busslaveport  FPRINT_TLB_SLAVE  -loaddress 0x000000  -hiaddress 0x000003FF
 
 
-#SW_RESET
+# SW_RESET
 ihwconnect       -instancename sw_reset        -netport cpu0_reset   -net cpu0_reset1
 ihwconnect       -instancename cpu0            -netport reset_n      -net cpu0_reset1
-ihwconnect 		 -instancename cpu0_fprint 	   -netport FPRINT_RESET -net cpu0_reset1;
+# ihwconnect 		 -instancename cpu0_fprint 	   -netport FPRINT_RESET -net cpu0_reset1;
 ihwconnect 		 -instancename cpu0_tlb 	   -netport TLB_RESET    -net cpu0_reset1;
 
 
@@ -434,7 +434,7 @@ ihwconnect       -instancename cpu1            -netport d_irq1       -net cpu1_i
 #
 # FPRINT
 #
-ihwaddperipheral -instancename cpu1_fprint -vendor mcgill.ca -type fprint -version 2.0 -diagnosticlevel 0
+ihwaddperipheral -instancename cpu1_fprint -vendor mcgill.ca -type fprint -version 3.0 -diagnosticlevel 0
 ihwconnect       -instancename cpu1_fprint    -bus cpu1_iobus -busslaveport FPRINT_CSR_SLAVE -loaddress 0x0100000 -hiaddress 0x010013F
 isetattribute    -handle       cpu1_fprint -name coreID  -value 1
 
@@ -658,10 +658,19 @@ ihwconnect       -instancename cpum            -netport d_irq6       -net cpum_i
 ihwaddbus -instancename compbus            -addresswidth 32
 
 ihwaddperipheral -instancename comparator  -vendor mcgill.ca -type comparator -diagnosticlevel 3
+
+ihwaddbridge -instancename comp_bridge_0
+ihwconnect 	 -instancename comp_bridge_0 -busslaveport   sp1 -bus cpu0_tlbbus        -loaddress 0x01000000 -hiaddress 0x01000FFF
+ihwconnect 	 -instancename comp_bridge_0 -busmasterport  mp1 -bus compbus            -loaddress 0x01000000 -hiaddress 0x01000FFF
+
+
+ihwaddbridge -instancename comp_bridge_1
+ihwconnect 	 -instancename comp_bridge_1 -busslaveport   sp1 -bus cpu1_tlbbus        -loaddress 0x01000000 -hiaddress 0x01000FFF
+ihwconnect 	 -instancename comp_bridge_1 -busmasterport  mp1 -bus compbus            -loaddress 0x01000000 -hiaddress 0x01000FFF
+
 ihwconnect       -instancename comparator  -bus compbus   -busslaveport COMP_FPRINT_SLAVE -loaddress 0x01000000 -hiaddress 0x01000FFF
 ihwconnect       -instancename comparator  -bus cpum_dbus -busslaveport COMP_CSR_SLAVE -loaddress 0x02400000 -hiaddress 0x02400FFF
-ihwconnect       -instancename cpu0_fprint -bus compbus -busmasterport FPRINT_MASTER -loaddress 0x00000000 -hiaddress 0x0FFFFFFF 
-ihwconnect       -instancename cpu1_fprint -bus compbus -busmasterport FPRINT_MASTER -loaddress 0x00000000 -hiaddress 0x0FFFFFFF 
+
 #ihwconnect       -instancename cpu2_fprint -bus compbus -busmasterport FPRINT_MASTER -loaddress 0x00000000 -hiaddress 0x0FFFFFFF 
 #ihwconnect       -instancename cpu3_fprint -bus compbus -busmasterport FPRINT_MASTER -loaddress 0x00000000 -hiaddress 0x0FFFFFFF 
 

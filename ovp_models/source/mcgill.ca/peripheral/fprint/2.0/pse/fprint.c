@@ -85,15 +85,15 @@ PPM_NET_CB(do_store) {
 	Uns32 address = ppmReadNet(handles.FPRINT_WRITE_ADDRESS );
 	Uns32 data    = ppmReadNet(handles.FPRINT_WRITE_DATA); 
 
-		if(fprint_pause_hold[0] == FPRINT_VALID){
-		   Uns32 fprint_address = COMPARATOR_BASE_ADDRESS + (((coreID << 4) + 1) << 2);
-		  ppmWriteAddressSpace(handles.FPRINT_MASTER,fprint_address, 4, &fprint_pause_hold[1]);
+		// if(fprint_pause_hold[0] == FPRINT_VALID){
+		//    Uns32 fprint_address = COMPARATOR_BASE_ADDRESS + (((coreID << 4) + 1) << 2);
+		//   ppmWriteAddressSpace(handles.FPRINT_MASTER,fprint_address, 4, &fprint_pause_hold[1]);
 		  
-		  fprint_pause_hold[0] = FPRINT_EMPTY;
-					if(diagnosticLevel >= 1){
-			bhmPrintf("core %d completed fingerprint: %x\n",coreID, fprint_pause_hold[1]);
-		  }
-		}
+		//   fprint_pause_hold[0] = FPRINT_EMPTY;
+		// 			if(diagnosticLevel >= 1){
+		// 	bhmPrintf("core %d completed fingerprint: %x\n",coreID, fprint_pause_hold[1]);
+		//   }
+		// }
 
 
 

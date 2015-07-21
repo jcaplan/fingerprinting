@@ -1,7 +1,7 @@
 proc cpu0
-b *0x40133c
+b *0x464340
 continue
 proc cpu0
 disable 1
-set extreg R4 0
+set extreg R3 0xffffe9
 continue

@@ -25,6 +25,10 @@
 #include "vmi/vmiVersion.h"
 #include "vmi/vmiTypes.h"
 #include <string.h>
+#include "crc.h"
+#include "fprint.h"
+#include <stdbool.h>
+
 //This one is for the trace 2.mtrace
 
 //
@@ -38,34 +42,48 @@ typedef struct vmiosObjectS {
 } vmiosObject;
 
 
-int count = 0;
-
 int oldAddress = 0;
 unsigned *old_value = 0;
 static VMI_MEM_WATCH_FN(writeCB) {
-    
-    // we are interested only in writes made by processors (not artifacts of
-    // simulation or memory accesses by other plugins, for example) so take
-    // action only if processor is non null
-    if(address == oldAddress && value == old_value){
-        return;
-    }
 
-    oldAddress = address;
-    old_value = (unsigned*)value;
     if(processor) {
 
-        //Don't send the same info twice in a row...
+        Uns32 coreID = vmirtCPUId(processor);    
         
+        //current state register
+        Uns32 writeData = *((unsigned *)value);
 
-       // vmiPrintf("processor %s writes %x to %x\n", vmirtProcessorName(processor),*((unsigned *)value),(int)address);        
+        switch(address){
+        case CURRENT_STATE_REG:
+            vmiPrintf("INTERCEPT: cpuid %d\n",coreID);
+            if(writeData & 0x10){
+                enableFingerprinting(coreID,writeData);
+            } else {
+               disableFingerprinting(coreID,writeData);
+            }
+            break;
+        case MAX_COUNT_REG:
+            vmiPrintf("INTERCEPT: cpuid %d\n",coreID);
+            setMaxCount(coreID,writeData);
+            break;
+        case PROCESSOR0_0_SW_RESET:
+            fprintReset(0);
+            break;
+        case PROCESSOR1_0_SW_RESET:
+            fprintReset(1);
+            break;
+        default:
+            break;
+        }
+        if(getFprintEnabled(coreID)){
+            vmiPrintf("INTERCEPT: fingerprinting address: %x, data %x\n",(Uns32 )address,*(Uns32 *)value);
 
-            vmirtWriteNetPort(processor, vmirtGetNetPortHandle(processor, "fprint_write_out_address"), address);
-            vmirtWriteNetPort(processor, vmirtGetNetPortHandle(processor, "fprint_write_out_data"), *((unsigned *)value));
-            vmirtWriteNetPort(processor, vmirtGetNetPortHandle(processor, "fprint_write_out"), 1);
-           // vmiPrintf("hi!\n");
+            do_store(coreID,processor,(Uns32)address, *(Uns32 *)value);
+
+        }
     }
 }
+
 
 //
 // Constructor - install read and write callbacks on processor data domain
@@ -73,28 +91,24 @@ static VMI_MEM_WATCH_FN(writeCB) {
 static VMIOS_CONSTRUCTOR_FN(constructor) {
 
     memDomainP domain   = vmirtGetProcessorPhysicalDataDomain(processor);
-    Uns8       bits     = vmirtGetDomainAddressBits(domain);
-    Addr       highAddr = ((bits==64) ? 0ULL : (1ULL<<bits)) - 1;
 
-    vmirtAddWriteCallback(domain, 0, 0, highAddr, writeCB, object);
+    vmirtAddWriteCallback(domain, 0, 0, 0x7ffffff, writeCB, object);
+    vmirtAddWriteCallback(domain, 0, 0x4200000, 0x4208000, writeCB, object);
+    vmirtAddWriteCallback(domain, 0, 0x8100000, 0x8101000,writeCB, object);
 
-    domain   = vmirtGetProcessorDataDomain(processor);
-    bits     = vmirtGetDomainAddressBits(domain);
-    highAddr = ((bits==64) ? 0ULL : (1ULL<<bits)) - 1;
-
-    vmirtAddWriteCallback(domain, 0, 0, highAddr, writeCB, object);
+    const char *type = vmirtProcessorType(processor);
+    Uns32 coreID = vmirtCPUId(processor);
+    if(!strcmp(type,"nios_ii") && coreID < NUMCORES){
+        vmiPrintf("INTERCEPT: initializing %s, %d\n",vmirtProcessorName(processor),coreID);
+        crcInit();
+        fprintInit(coreID, processor);
+    }
 }
 
 //
 // Destructor
 //
 static VMIOS_DESTRUCTOR_FN(destructor) {
-
-    // vmiPrintf("*** mtrace-plugin: cpu %s:\n", vmirtProcessorName(processor));
-    // vmiPrintf("  number of reads:  %u\n", object->totalReads);
-    // vmiPrintf("  number of writes: %u\n", object->totalWrites);
-    // vmiPrintf("  bytes read:       %u\n", object->totalReadBytes);
-    // vmiPrintf("  bytes written:    %u\n", object->totalWriteBytes);
 }
 
 

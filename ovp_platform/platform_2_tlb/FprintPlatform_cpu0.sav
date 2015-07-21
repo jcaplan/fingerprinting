@@ -1,0 +1,25 @@
+[*]
+[*] GTKWave Analyzer v3.3.58 (w)1999-2014 BSI
+[*] Mon Jul 20 05:43:46 2015
+[*]
+[dumpfile] "/home/jonah/fingerprinting/ovp_platform/platform_2_tlb/FprintPlatform_cpu0.ivcd"
+[dumpfile_mtime] "Mon Jul 20 05:39:06 2015"
+[dumpfile_size] 2150
+[savefile] "/home/jonah/fingerprinting/ovp_platform/platform_2_tlb/FprintPlatform_cpu0.sav"
+[timestart] 0
+[size] 1000 600
+[pos] -1 -1
+*0.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 223
+[signals_width] 206
+[sst_expanded] 1
+[sst_vpaned_height] 160
+@28
+7_AirbagModel.7_AirbagModel
+8_CruiseControlSystem.8_CruiseControlSystem
+9_TractionControl.9_TractionControl
+10_FuelSensor.10_FuelSensor
+@29
+11_TransmissionControl.11_TransmissionControl
+[pattern_trace] 1
+[pattern_trace] 0

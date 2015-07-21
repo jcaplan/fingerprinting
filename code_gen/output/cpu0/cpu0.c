@@ -498,31 +498,36 @@ int main() {
 	// Declare the OS tasks
 	// -------------------
 
-	OSTaskCreateExt(AirbagModel_TASK, NULL,
-			0x463f9c,
+	INT8U perr;	OSTaskCreateExt(AirbagModel_TASK, NULL,
+			(OS_STK *)0x463f9c,
 			AirbagModel_PRIORITY, AirbagModel_PRIORITY,
-			0x4637d4, AirbagModel_STACKSIZE, NULL,
+			(OS_STK *)0x4637d4, AirbagModel_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(AirbagModel_PRIORITY, (INT8U *)"AirbagModel", &perr);
 	OSTaskCreateExt(CruiseControlSystem_TASK, NULL,
-			0x4637d0,
+			(OS_STK *)0x4637d0,
 			CruiseControlSystem_PRIORITY, CruiseControlSystem_PRIORITY,
-			0x463000, CruiseControlSystem_STACKSIZE, NULL,
+			(OS_STK *)0x463000, CruiseControlSystem_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(CruiseControlSystem_PRIORITY, (INT8U *)"CruiseControlSystem", &perr);
 	OSTaskCreateExt(TractionControl_TASK, NULL,
-			0x4627bc,
+			(OS_STK *)0x4627bc,
 			TractionControl_PRIORITY, TractionControl_PRIORITY,
-			0x462000, TractionControl_STACKSIZE, NULL,
+			(OS_STK *)0x462000, TractionControl_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(TractionControl_PRIORITY, (INT8U *)"TractionControl", &perr);
 	OSTaskCreateExt(FuelSensor_TASK, NULL,
 			&FuelSensor_STACK[FuelSensor_STACKSIZE - 1],
 			FuelSensor_PRIORITY, FuelSensor_PRIORITY,
 			FuelSensor_STACK, FuelSensor_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(FuelSensor_PRIORITY, (INT8U *)"FuelSensor", &perr);
 	OSTaskCreateExt(TransmissionControl_TASK, NULL,
 			&TransmissionControl_STACK[TransmissionControl_STACKSIZE - 1],
 			TransmissionControl_PRIORITY, TransmissionControl_PRIORITY,
 			TransmissionControl_STACK, TransmissionControl_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(TransmissionControl_PRIORITY, (INT8U *)"TransmissionControl", &perr);
 
 	resetMonitorCoreReg(CORE_ID);
 

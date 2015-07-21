@@ -529,11 +529,13 @@ int main(void) {
 			Derivative_PRIORITY, Derivative_PRIORITY,
 			Derivative_STACK, Derivative_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(Derivative_PRIORITY, (INT8U *)"Derivative", &perr);
 	OSTaskCreateExt(dma_TASK, NULL,
 			&dma_STACK[dma_STACKSIZE - 1],
 			dma_PRIORITY, dma_PRIORITY,
 			dma_STACK, dma_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(dma_PRIORITY, (INT8U *)"dma", &perr);
 
 
 	//Wait for confirmation that other cores have completed their startup routines

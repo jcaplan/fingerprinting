@@ -47,18 +47,23 @@ debug3:
       --extlib FprintPlatform/cpu0=nios_iiCpuHelper \
       --extlib FprintPlatform/cpu0=vapHelper \
       --extlib FprintPlatform/cpu0=vapTools \
+      --extlib FprintPlatform/cpu0=uCOSIIOsHelper \
       --extlib FprintPlatform/cpu1=nios_iiCpuHelper \
       --extlib FprintPlatform/cpu1=vapHelper \
       --extlib FprintPlatform/cpu1=vapTools \
+      --extlib FprintPlatform/cpu1=uCOSIIOsHelper \
       --extlib FprintPlatform/cpum=nios_iiCpuHelper \
       --extlib FprintPlatform/cpum=vapHelper \
       --extlib FprintPlatform/cpum=vapTools \
       --extlib FprintPlatform/cpum=uCOSIIOsHelper \
-      --callcommand "FprintPlatform/cpum/vapTools_0/schedulertrace -on" \
-      --callcommand "FprintPlatform/cpum/uCOSIIOsHelper_0/ostrace -all -on" \
-      --callcommand "FprintPlatform/cpum/uCOSIIOsHelper_0/logtofile -on" \
-      --callcommand "FprintPlatform/cpum/uCOSIIOsHelper_0/logtosim -off"
+      --callcommand "FprintPlatform/cpu0/vapTools_0/schedulertrace -on" \
+      --callcommand "FprintPlatform/cpu1/vapTools_0/schedulertrace -on" \
+      --callcommand "FprintPlatform/cpum/vapTools_0/schedulertrace -on" 
 
+      # --callcommand "FprintPlatform/cpum/vapTools_0/vcdtrace -address 0x2500058" 
+      # --callcommand "FprintPlatform/cpum/uCOSIIOsHelper_0/ostrace -all -on" \
+      # --callcommand "FprintPlatform/cpum/uCOSIIOsHelper_0/logtofile -on" \
+      # --callcommand "FprintPlatform/cpum/uCOSIIOsHelper_0/logtosim -off" \
 
 ic-run1:
 	IMPERAS_RUNTIME=CpuManager FprintPlatform/1.0/platform.$(IMPERAS_ARCH).exe application/application.nios_ii.elf 
