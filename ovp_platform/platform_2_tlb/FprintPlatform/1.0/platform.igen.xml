@@ -324,7 +324,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             name="sp1"/>
         <attribute content="50000000"
             name="timerFrequency"/>
-        <attribute content="500000"
+        <attribute content="50000"
             name="timeoutPeriod"/>
         <netportconnection connection="cpu0_irq0"
             name="irq"/>
@@ -339,7 +339,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             name="sp1"/>
         <attribute content="50000000"
             name="timerFrequency"/>
-        <attribute content="500000"
+        <attribute content="50000"
             name="timeoutPeriod"/>
     </peripheralinstance>
     <peripheralinstance diagnosticlevel="0"
@@ -592,7 +592,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             name="sp1"/>
         <attribute content="50000000"
             name="timerFrequency"/>
-        <attribute content="500000"
+        <attribute content="50000"
             name="timeoutPeriod"/>
         <netportconnection connection="cpu1_irq0"
             name="irq"/>
@@ -607,7 +607,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             name="sp1"/>
         <attribute content="50000000"
             name="timerFrequency"/>
-        <attribute content="500000"
+        <attribute content="50000"
             name="timeoutPeriod"/>
     </peripheralinstance>
     <peripheralinstance diagnosticlevel="0"
@@ -822,7 +822,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             name="sp1"/>
         <attribute content="50000000"
             name="timerFrequency"/>
-        <attribute content="500000"
+        <attribute content="50000"
             name="timeoutPeriod"/>
         <netportconnection connection="cpum_irq0"
             name="irq"/>
@@ -837,7 +837,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
             name="sp1"/>
         <attribute content="50000000"
             name="timerFrequency"/>
-        <attribute content="500000"
+        <attribute content="50000"
             name="timeoutPeriod"/>
     </peripheralinstance>
     <bus addresswidth="32"

@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20150205.0
-//                          Mon Jul 20 18:26:22 2015
+//                          Wed Jul 22 16:26:21 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -514,7 +514,7 @@ void platformConstructor(void) {
 
     icmAttrListP cpu0_timer_10ms_attrList = icmNewAttrList();
     icmAddUns64Attr(cpu0_timer_10ms_attrList, "timerFrequency", 50000000LL);
-    icmAddUns64Attr(cpu0_timer_10ms_attrList, "timeoutPeriod", 500000LL);
+    icmAddUns64Attr(cpu0_timer_10ms_attrList, "timeoutPeriod", 50000LL);
 
     handles.cpu0_timer_10ms_p = icmNewPSE(
         "cpu0_timer_10ms"   ,   // name
@@ -542,7 +542,7 @@ void platformConstructor(void) {
 
     icmAttrListP cpu0_timestamp_attrList = icmNewAttrList();
     icmAddUns64Attr(cpu0_timestamp_attrList, "timerFrequency", 50000000LL);
-    icmAddUns64Attr(cpu0_timestamp_attrList, "timeoutPeriod", 500000LL);
+    icmAddUns64Attr(cpu0_timestamp_attrList, "timeoutPeriod", 50000LL);
 
     handles.cpu0_timestamp_p = icmNewPSE(
         "cpu0_timestamp"    ,   // name
@@ -665,7 +665,7 @@ void platformConstructor(void) {
 
     icmAttrListP cpu1_timer_10ms_attrList = icmNewAttrList();
     icmAddUns64Attr(cpu1_timer_10ms_attrList, "timerFrequency", 50000000LL);
-    icmAddUns64Attr(cpu1_timer_10ms_attrList, "timeoutPeriod", 500000LL);
+    icmAddUns64Attr(cpu1_timer_10ms_attrList, "timeoutPeriod", 50000LL);
 
     handles.cpu1_timer_10ms_p = icmNewPSE(
         "cpu1_timer_10ms"   ,   // name
@@ -693,7 +693,7 @@ void platformConstructor(void) {
 
     icmAttrListP cpu1_timestamp_attrList = icmNewAttrList();
     icmAddUns64Attr(cpu1_timestamp_attrList, "timerFrequency", 50000000LL);
-    icmAddUns64Attr(cpu1_timestamp_attrList, "timeoutPeriod", 500000LL);
+    icmAddUns64Attr(cpu1_timestamp_attrList, "timeoutPeriod", 50000LL);
 
     handles.cpu1_timestamp_p = icmNewPSE(
         "cpu1_timestamp"    ,   // name
@@ -782,7 +782,7 @@ void platformConstructor(void) {
 
     icmAttrListP cpum_timer_10ms_attrList = icmNewAttrList();
     icmAddUns64Attr(cpum_timer_10ms_attrList, "timerFrequency", 50000000LL);
-    icmAddUns64Attr(cpum_timer_10ms_attrList, "timeoutPeriod", 500000LL);
+    icmAddUns64Attr(cpum_timer_10ms_attrList, "timeoutPeriod", 50000LL);
 
     handles.cpum_timer_10ms_p = icmNewPSE(
         "cpum_timer_10ms"   ,   // name
@@ -810,7 +810,7 @@ void platformConstructor(void) {
 
     icmAttrListP cpum_timestamp_attrList = icmNewAttrList();
     icmAddUns64Attr(cpum_timestamp_attrList, "timerFrequency", 50000000LL);
-    icmAddUns64Attr(cpum_timestamp_attrList, "timeoutPeriod", 500000LL);
+    icmAddUns64Attr(cpum_timestamp_attrList, "timeoutPeriod", 50000LL);
 
     handles.cpum_timestamp_p = icmNewPSE(
         "cpum_timestamp"    ,   // name

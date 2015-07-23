@@ -158,7 +158,7 @@ def updateTimes(newSignalDic):
 
 def mergeTimeList(allTimes):
 	mergedTimes = [allTimes[0]]
-	for i in range(1,len(allTimes) - 1):
+	for i in range(1,len(allTimes)):
 		time = allTimes[i]	
 		if(mergedTimes[-1][0] == time[0]):
 			mergedTimes[-1] = (mergedTimes[-1][0],mergedTimes[-1][1] + time[1])

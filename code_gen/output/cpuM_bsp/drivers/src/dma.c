@@ -139,7 +139,8 @@ void handleDMA(void* handle, void* data) {
 	int core = (int) handle;
 	dmaReady[core] = true;
 	INT8U perr;
-	OSFlagPost(dmaReadyFlag, 1 << core, OS_FLAG_SET, &perr);
+	if(!taskFailed)
+		OSFlagPost(dmaReadyFlag, 1 << core, OS_FLAG_SET, &perr);
 }
 
 void sendDMA(void* sourceAddress, void* destAddress, int size, void *handle) {
@@ -158,3 +159,12 @@ void sendDMA(void* sourceAddress, void* destAddress, int size, void *handle) {
 	}
 }
 
+void resetDMA(){
+	
+	alt_avalon_dma_init (&txchan[0], &rxchan[0], (void*) PROCESSOR0_0_DMA_0_BASE,        
+		PROCESSOR0_0_DMA_0_IRQ_INTERRUPT_CONTROLLER_ID, PROCESSOR0_0_DMA_0_IRQ);  
+	alt_avalon_dma_init (&txchan[1], &rxchan[1], (void*) PROCESSOR1_0_DMA_0_BASE,        
+		PROCESSOR1_0_DMA_0_IRQ_INTERRUPT_CONTROLLER_ID, PROCESSOR1_0_DMA_0_IRQ);  
+	
+	
+}

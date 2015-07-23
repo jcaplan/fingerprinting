@@ -10,7 +10,6 @@
 # -S for stacksize, if S is not present then assume profiler was used
 # 	if profiler was used: should have a profile.log file in the function folders
 <FUNCTIONLIST>
-
 -rootdir /home/jonah/fingerprinting/automotive_control/CompiledC
 -name AirbagModel          -subdir AirbagModel_ert_rtw         -T  50 -c -Priority 1
 -name CollisionAvoidance   -subdir CollisionAvoidance_ert_rtw  -T 100    -Priority 5
@@ -27,9 +26,6 @@
 
 <PLATFORM>
 -usedefault
-# -name cpu0 -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucos0_bsp
-# -name cpu1 -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucos1_bsp
-# -name cpum -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucosM_bsp
 </PLATFORM>
 
 <MAPPING>

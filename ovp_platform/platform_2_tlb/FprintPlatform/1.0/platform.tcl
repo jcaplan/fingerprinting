@@ -223,7 +223,7 @@ ihwconnect       -instancename cpu0           -netport d_irq4  -net cpu0_irq4
 ihwaddperipheral -instancename cpu0_timer_10ms -vendor mcgill.ca -type IntervalTimer32Core -diagnosticlevel 0
 ihwconnect       -instancename cpu0_timer_10ms -bus cpu0_iobus -busslaveport sp1 -loaddress 0x00001020 -hiaddress 0x00001037
 isetattribute    -handle       cpu0_timer_10ms -name timerFrequency  -value 50000000
-isetattribute    -handle       cpu0_timer_10ms -name timeoutPeriod   -value 500000 
+isetattribute    -handle       cpu0_timer_10ms -name timeoutPeriod   -value 50000 
 ihwconnect       -instancename cpu0_timer_10ms -netport irq     -net cpu0_irq0
 ihwconnect       -instancename cpu0            -netport d_irq0 -net cpu0_irq0
 
@@ -231,7 +231,7 @@ ihwconnect       -instancename cpu0            -netport d_irq0 -net cpu0_irq0
 ihwaddperipheral -instancename cpu0_timestamp -vendor mcgill.ca -type IntervalTimer32Core -diagnosticlevel 0
 ihwconnect       -instancename cpu0_timestamp -bus cpu0_iobus -busslaveport sp1 -loaddress 0x00000000 -hiaddress 0x00000017
 isetattribute    -handle       cpu0_timestamp -name timerFrequency  -value 50000000
-isetattribute    -handle       cpu0_timestamp -name timeoutPeriod   -value 500000
+isetattribute    -handle       cpu0_timestamp -name timeoutPeriod   -value 50000
 
 #INTER CPU irq
 ihwconnect       -instancename cpu_irq         -netport cpu0_irq     -net cpu0_irq1
@@ -416,7 +416,7 @@ ihwconnect       -instancename cpu1           -netport d_irq3  -net cpu1_irq3
 ihwaddperipheral -instancename cpu1_timer_10ms -vendor mcgill.ca -type IntervalTimer32Core -diagnosticlevel 0
 ihwconnect       -instancename cpu1_timer_10ms -bus cpu1_iobus -busslaveport sp1 -loaddress 0x00008900 -hiaddress 0x00008917
 isetattribute    -handle       cpu1_timer_10ms -name timerFrequency  -value 50000000
-isetattribute    -handle       cpu1_timer_10ms -name timeoutPeriod   -value 500000 
+isetattribute    -handle       cpu1_timer_10ms -name timeoutPeriod   -value 50000 
 ihwconnect       -instancename cpu1_timer_10ms -netport irq     -net cpu1_irq0
 ihwconnect       -instancename cpu1            -netport d_irq0 -net cpu1_irq0
 
@@ -424,7 +424,7 @@ ihwconnect       -instancename cpu1            -netport d_irq0 -net cpu1_irq0
 ihwaddperipheral -instancename cpu1_timestamp -vendor mcgill.ca -type IntervalTimer32Core -diagnosticlevel 0
 ihwconnect       -instancename cpu1_timestamp -bus cpu1_iobus -busslaveport sp1 -loaddress 0x00000000 -hiaddress 0x00000017
 isetattribute    -handle       cpu1_timestamp -name timerFrequency  -value 50000000
-isetattribute    -handle       cpu1_timestamp -name timeoutPeriod   -value 500000
+isetattribute    -handle       cpu1_timestamp -name timeoutPeriod   -value 50000
 
 #INTER CPU irq
 ihwconnect       -instancename cpu_irq         -netport cpu1_irq     -net cpu1_irq1
@@ -595,7 +595,7 @@ ihwconnect       -instancename cpum           -netport d_irq4  -net cpum_irq4
 ihwaddperipheral -instancename cpum_timer_10ms -vendor mcgill.ca -type IntervalTimer32Core -diagnosticlevel 0
 ihwconnect       -instancename cpum_timer_10ms -bus cpum_iobus -busslaveport sp1 -loaddress 0x00001020 -hiaddress 0x00001037
 isetattribute    -handle       cpum_timer_10ms -name timerFrequency  -value 50000000
-isetattribute    -handle       cpum_timer_10ms -name timeoutPeriod   -value 500000 
+isetattribute    -handle       cpum_timer_10ms -name timeoutPeriod   -value 50000 
 ihwconnect       -instancename cpum_timer_10ms -netport irq     -net cpum_irq0
 ihwconnect       -instancename cpum            -netport d_irq0 -net cpum_irq0
 
@@ -604,7 +604,7 @@ ihwconnect       -instancename cpum            -netport d_irq0 -net cpum_irq0
 ihwaddperipheral -instancename cpum_timestamp -vendor mcgill.ca -type IntervalTimer32Core -diagnosticlevel 0
 ihwconnect       -instancename cpum_timestamp -bus cpum_iobus -busslaveport sp1 -loaddress 0x00000000 -hiaddress 0x00000017
 isetattribute    -handle       cpum_timestamp -name timerFrequency  -value 50000000
-isetattribute    -handle       cpum_timestamp -name timeoutPeriod   -value 500000
+isetattribute    -handle       cpum_timestamp -name timeoutPeriod   -value 50000
 
 ###############################################################################
 # DMA

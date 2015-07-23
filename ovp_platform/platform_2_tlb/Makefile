@@ -29,21 +29,16 @@ run2:
       -o simulator.log 
 
 
-debug2:
+debug1:
 	$(SIMULATOR) \
       --icmobject FprintPlatform/1.0/platform.$(IMPERAS_ARCH).$(IMPERAS_SHRSUF) \
       --extlib model.$(IMPERAS_SHRSUF) --idebug\
       -o simulator.log   
 
-debug1:
+debug:
 	$(SIMULATOR) \
       --icmobject FprintPlatform/1.0/platform.$(IMPERAS_ARCH).$(IMPERAS_SHRSUF) \
-      -o simulator.log    --idebug
-
-debug3:
-	$(SIMULATOR) \
-      --icmobject FprintPlatform/1.0/platform.$(IMPERAS_ARCH).$(IMPERAS_SHRSUF) \
-      -o simulator.log --idebug \
+      --extlib model.$(IMPERAS_SHRSUF) -o simulator.log --idebug \
       --extlib FprintPlatform/cpu0=nios_iiCpuHelper \
       --extlib FprintPlatform/cpu0=vapHelper \
       --extlib FprintPlatform/cpu0=vapTools \
@@ -58,7 +53,9 @@ debug3:
       --extlib FprintPlatform/cpum=uCOSIIOsHelper \
       --callcommand "FprintPlatform/cpu0/vapTools_0/schedulertrace -on" \
       --callcommand "FprintPlatform/cpu1/vapTools_0/schedulertrace -on" \
-      --callcommand "FprintPlatform/cpum/vapTools_0/schedulertrace -on" 
+      --callcommand "FprintPlatform/cpum/vapTools_0/schedulertrace -on" \
+      --callcommand "FprintPlatform/cpum/vapTools_0/functionprofile -on -dotfile cpum.dot" \
+
 
       # --callcommand "FprintPlatform/cpum/vapTools_0/vcdtrace -address 0x2500058" 
       # --callcommand "FprintPlatform/cpum/uCOSIIOsHelper_0/ostrace -all -on" \

@@ -1964,10 +1964,12 @@ public class Generator {
 	}
 
 	public void printStackResults(){
-		System.out.println("\nStack results:");
+		System.out.println("\nStack results (in bytes):");
+		System.out.println("<STACK_PROFILE>");
 		for (Function f : funcList) {
-			System.out.println(f.name + " max stack: " + f.stackSize + " bytes");
+			System.out.println(f.name + " " + f.stackSize);
 		}
+		System.out.println("</STACK_PROFILE>");
 	}
 	
 }

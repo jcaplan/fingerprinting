@@ -131,7 +131,8 @@ CriticalFunctionData critFuncData[NUMCORES] __attribute__ ((section (".shared"))
  * Reset monitor interface
  *****************************************************************************/
 void resetCores(void) {
-	OSTaskDel(dma_PRIORITY);
+	resetDMA();
+	OSTaskSuspend(dma_PRIORITY);
 	int* cpu0_reset = (int*) PROCESSOR0_0_SW_RESET_0_BASE;
 	int* cpu1_reset = (int*) PROCESSOR1_0_SW_RESET_0_BASE;
 	*cpu0_reset = 1;
@@ -146,6 +147,7 @@ static void handleResetMonitor(void* context) {
 	if (taskFailed) {
 		taskFailed = false;
 
+		initDMA();
 		postDmaMessage(failedTaskID, true);
 
 		OSTaskCreateExt(dma_TASK, NULL, &dma_STACK[dma_STACKSIZE - 1], dma_PRIORITY,

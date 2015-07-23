@@ -20,11 +20,11 @@
 void set_task_directory(Directory_Init_Struct* d){
 
 	//Place the start pointer for the given task
-	uint32_t* start = (uint32_t*)(COMPARATOR_BASE_ADDRESS \
+	uint32_t* start = (uint32_t*)(COMPARATOR_BASE_ADDRESS 
 			+ CRC_DIRECTORY_START_BASE) + d->key + (d->core_id << 6);
 	*start = d->start_ptr;
 	//Place the end pointer for the given task
-	uint32_t* end   = (uint32_t*)(COMPARATOR_BASE_ADDRESS \
+	uint32_t* end   = (uint32_t*)(COMPARATOR_BASE_ADDRESS 
 			+ CRC_DIRECTORY_END_BASE) + d->key + (d->core_id << 6);
 	*end = d->end_ptr;
 
@@ -33,7 +33,7 @@ void set_task_directory(Directory_Init_Struct* d){
 int fprint_get_task_count(int task){
 
 	//Place the start pointer for the given task
-	uint32_t* start = (uint32_t*)(COMPARATOR_BASE_ADDRESS \
+	uint32_t* start = (uint32_t*)(COMPARATOR_BASE_ADDRESS 
 			+ CRC_DIRECTORY_START_BASE) + task;
 	return *start;
 
@@ -43,7 +43,7 @@ int fprint_get_task_count(int task){
 void enable_fprint_task(int task){
 	//When enabling, the current state register
 	//takes the key with a 1 in the MSB.
-	uint32_t* fprint_currentstate = (uint32_t*)(FPRINT_BASE_ADDRESS \
+	uint32_t* fprint_currentstate = (uint32_t*)(FPRINT_BASE_ADDRESS 
 											+ FPRINT_SPR_CURRENTSTATE);
 	*fprint_currentstate = 0x10 | task;
 
@@ -53,7 +53,7 @@ void disable_fprint_task(int task){
 	//When a task is checked in, the task number
 	//must be rewritten to the current state register
 	//with the MSB set to 0.
-	uint32_t* fprint_currentstate = (uint32_t*)(FPRINT_BASE_ADDRESS \
+	uint32_t* fprint_currentstate = (uint32_t*)(FPRINT_BASE_ADDRESS 
 											+ FPRINT_SPR_CURRENTSTATE);
 	*fprint_currentstate = task;
 
@@ -61,13 +61,13 @@ void disable_fprint_task(int task){
 void fprint_reset_irq(void){
 	//In the case of a collision
 	//Reset the exception register in the fingerprint unit.
-	uint32_t* fprint_collision = (uint32_t*)(COMPARATOR_BASE_ADDRESS \
+	uint32_t* fprint_collision = (uint32_t*)(COMPARATOR_BASE_ADDRESS 
 											+ COMPARATOR_EXCEPTION_OFFSET);
 	*fprint_collision = 0;
 }
 
 int fprint_status(Fprint_Status* fps){
-		Fprint_Status* f = (Fprint_Status*)(COMPARATOR_BASE_ADDRESS \
+		Fprint_Status* f = (Fprint_Status*)(COMPARATOR_BASE_ADDRESS 
 												+ COMPARATOR_EXCEPTION_OFFSET);
 		fps->status_reg = f->status_reg;
 		fps->successful_reg = f->successful_reg;
@@ -78,7 +78,7 @@ int fprint_status(Fprint_Status* fps){
 
 
 void fprint_set_block_size(int size){
-	uint32_t* fprint_blocksize_reg = (uint32_t*)(FPRINT_BASE_ADDRESS \
+	uint32_t* fprint_blocksize_reg = (uint32_t*)(FPRINT_BASE_ADDRESS 
 												+ 0x10);
 
 	*fprint_blocksize_reg = size;
@@ -86,7 +86,7 @@ void fprint_set_block_size(int size){
 }
 
 void set_core_assignment(int table_column, int core_id, int task_id){
-	uint32_t* fprint_core_entry = (uint32_t*)(COMPARATOR_BASE_ADDRESS \
+	uint32_t* fprint_core_entry = (uint32_t*)(COMPARATOR_BASE_ADDRESS 
 													+ (table_column << 8) + COMPARATOR_CORE_ASSIGNMENT_OFFSET);
 
     *fprint_core_entry = (task_id << 4) + core_id;
