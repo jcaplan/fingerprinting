@@ -1,0 +1,58 @@
+
+////////////////////////////////////////////////////////////////////////////////
+//
+//                W R I T T E N   B Y   I M P E R A S   I G E N
+//
+//                             Version 20150205.0
+//                          Thu Jul 23 18:31:27 2015
+//
+////////////////////////////////////////////////////////////////////////////////
+
+#include "comparator.igen.h"
+//////////////////////////////// Callback stubs ////////////////////////////////
+
+PPM_REG_WRITE_CB(catRegWrite) {
+    // YOUR CODE HERE (catRegWrite)
+    *(Uns32*)user = data;
+}
+
+PPM_REG_READ_CB(csrRd32) {
+    // YOUR CODE HERE (csrRd32)
+    return *(Uns32*)user;
+}
+
+PPM_REG_WRITE_CB(currentStateWrite) {
+    // YOUR CODE HERE (currentStateWrite)
+    *(Uns32*)user = data;
+}
+
+PPM_REG_WRITE_CB(exceptionRegWrite) {
+    // YOUR CODE HERE (exceptionRegWrite)
+    *(Uns32*)user = data;
+}
+
+PPM_REG_WRITE_CB(fprintWrite) {
+    // YOUR CODE HERE (fprintWrite)
+    *(Uns32*)user = data;
+}
+
+PPM_REG_WRITE_CB(nmrRegWrite) {
+    // YOUR CODE HERE (nmrRegWrite)
+    *(Uns32*)user = data;
+}
+
+PPM_REG_WRITE_CB(successCounterRegWrite) {
+    // YOUR CODE HERE (successCounterRegWrite)
+    *(Uns32*)user = data;
+}
+
+PPM_CONSTRUCTOR_CB(constructor) {
+    // YOUR CODE HERE (pre constructor)
+    periphConstructor();
+    // YOUR CODE HERE (post constructor)
+}
+
+PPM_DESTRUCTOR_CB(destructor) {
+    // YOUR CODE HERE (destructor)
+}
+

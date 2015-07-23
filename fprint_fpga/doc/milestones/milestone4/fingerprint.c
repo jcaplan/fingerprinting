@@ -31,17 +31,17 @@ void fprint_disable_task(int task_id){
 }
 
 
-void fprint_reset_irq(void){
+void comp_reset_irq(void){
 	//In the case of a collision
 	//Reset the exception register in the fingerprint unit.
-	uint32_t* fprint_collision = (uint32_t*)(COMPARATOR_BASE_ADDRESS 
-		+ COMPARATOR_EXCEPTION_OFFSET);
+	uint32_t* fprint_collision = (uint32_t*)(COMP_BASE_ADDRESS 
+		+ COMP_EXCEPTION_OFFSET);
 	*fprint_collision = 0;
 }
 
 int comp_get_status(Fprint_Status* fps){
-		Fprint_Status* f = (uint32_t*)(COMPARATOR_BASE_ADDRESS + 
-			COMPARATOR_EXCEPTION_OFFSET);
+		Fprint_Status* f = (uint32_t*)(COMP_BASE_ADDRESS + 
+			COMP_EXCEPTION_OFFSET);
 		fps->status_reg = f->status_reg;
 		fps->successful_reg = f->successful_reg;
 		fps->failed_reg = f->failed_reg;
@@ -50,8 +50,8 @@ int comp_get_status(Fprint_Status* fps){
 
 
 void comp_set_core_assignment(int table_column, int core_id, int task_id){
-	uint32_t* fprint_core_entry = (uint32_t*)(COMPARATOR_BASE_ADDRESS + 
-		COMPARATOR_CORE_ASSIGNMENT_OFFSET);
+	uint32_t* fprint_core_entry = (uint32_t*)(COMP_BASE_ADDRESS + 
+		COMP_CORE_ASSIGNMENT_OFFSET);
 
     *fprint_core_entry = (table_column << COMP_DATA_CORE_SHIFT) 
     + (task_id << COMP_DATA_TASKID_SHIFT) +  core_id;
@@ -68,18 +68,18 @@ void comp_set_core_assignment_table(Core_Assignment_Table* ca){
 	}
 }
 
-void comp_set_success_maxcount_value(int task_id, int logical_core_id, int maxcount) {
+void comp_set_success_maxcount_value(int task_id, int maxcount) {
 
-	uint32_t* fprint_maxcount_reg = (uint32_t*)(COMPARATOR_BASE_ADDRESS 
+	uint32_t* fprint_maxcount_reg = (uint32_t*)(COMP_BASE_ADDRESS 
 		+ COMP_SUCCESS_COUNTER_MAX_REG);
-	*fprint_maxcount_reg = (logical_core_id << COMP_DATA_CORE_SHIFT) 
+	*fprint_maxcount_reg =
 		+ (task_id << COMP_DATA_TASKID_SHIFT) + maxcount;
 }
 
 void comp_set_nmr(int task_id, int nmr) {
 
-	uint32_t* nmr_reg = (uint32_t*)(COMPARATOR_BASE_ADDRESS 
-		+ COMPARATOR_NMR_REG_OFFSET);
+	uint32_t* nmr_reg = (uint32_t*)(COMP_BASE_ADDRESS 
+		+ COMP_NMR_REG_OFFSET);
 
 	*nmr_reg = (task_id << COMP_DATA_TASKID_SHIFT) + nmr;
 }

@@ -83,5 +83,6 @@ void comp_set_core_assignment_table(Core_Assignment_Table* ca);
 void comp_set_nmr(int task_id, int nmr);
 void comp_checkpoint_irq_reset(int core_id);
 int comp_get_success_count(int task);
+void comp_set_success_maxcount_value(int task_id, int maxcount);
 
 #endif /* FINGERPRINT_H_ */

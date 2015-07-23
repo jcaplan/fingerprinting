@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <peripheral constructor="constructor"
+    destructor="destructor"
+    imagefile="pse.pse"
+    library="peripheral"
+    name="comparator"
+    vendor="mcgill.ca"
+    version="2.0">
+    <docsection name="doc"
+        text="Description">
+        <doctext name="txt"
+            text="Comparator peripheral model"/>
+    </docsection>
+    <busslaveport addresswidth="32"
+        name="COMP_CSR_SLAVE"
+        size="0x1000">
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="Comparator control register slave port"/>
+        </docsection>
+        <addressblock name="ab32"
+            size="0x1000"
+            width="32">
+            <memorymappedregister access="rw"
+                isvolatile="T"
+                name="exceptionReg"
+                readfunction="csrRd32"
+                width="32"
+                writefunction="exceptionRegWrite"/>
+            <memorymappedregister access="r"
+                isvolatile="T"
+                name="statusReg"
+                offset="0x4"
+                readfunction="csrRd32"
+                width="32"/>
+            <memorymappedregister access="r"
+                isvolatile="T"
+                name="successReg"
+                offset="0x8"
+                readfunction="csrRd32"
+                width="32"/>
+            <memorymappedregister access="r"
+                isvolatile="T"
+                name="failedReg"
+                offset="0xc"
+                readfunction="csrRd32"
+                width="32"/>
+            <memorymappedregister access="w"
+                isvolatile="T"
+                name="catReg"
+                offset="0x10"
+                width="32"
+                writefunction="catRegWrite">
+                <field name="data"
+                    width="16"/>
+                <field bitoffset="16"
+                    name="taskID"
+                    width="8"/>
+                <field bitoffset="24"
+                    name="coreID"
+                    width="8"/>
+            </memorymappedregister>
+            <memorymappedregister access="w"
+                isvolatile="T"
+                name="nmrReg"
+                offset="0x14"
+                width="32"
+                writefunction="nmrRegWrite">
+                <field name="data"
+                    width="16"/>
+                <field bitoffset="16"
+                    name="taskID"
+                    width="8"/>
+            </memorymappedregister>
+            <memorymappedregister access="w"
+                isvolatile="T"
+                name="successCounterReg"
+                offset="0x18"
+                width="32"
+                writefunction="successCounterRegWrite">
+                <field name="data"
+                    width="16"/>
+                <field bitoffset="16"
+                    name="taskID"
+                    width="8"/>
+            </memorymappedregister>
+        </addressblock>
+    </busslaveport>
+    <busslaveport addresswidth="32"
+        name="COMP_FPRINT_SLAVE"
+        size="0x1000">
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="Comparator fprint slave port"/>
+        </docsection>
+        <addressblock name="ab32"
+            size="0x1000"
+            width="32">
+            <memorymappedregister access="w"
+                isvolatile="T"
+                name="currentState"
+                width="32"
+                writefunction="currentStateWrite">
+                <field name="taskID"
+                    width="4"/>
+                <field bitoffset="4"
+                    name="enable"
+                    width="1"/>
+                <field bitoffset="5"
+                    name="coreID"
+                    width="4"/>
+            </memorymappedregister>
+            <memorymappedregister access="w"
+                isvolatile="T"
+                name="fprint"
+                offset="0x4"
+                width="32"
+                writefunction="fprintWrite">
+                <field name="taskID"
+                    width="4"/>
+                <field bitoffset="4"
+                    name="coreID"
+                    width="4"/>
+                <field bitoffset="9"
+                    name="messageID"
+                    width="1"/>
+                <field bitoffset="16"
+                    name="fprint"
+                    width="16"/>
+                <field bitoffset="8"
+                    name="__pad8"
+                    width="1"/>
+                <field bitoffset="10"
+                    name="__pad10"
+                    width="6"/>
+            </memorymappedregister>
+        </addressblock>
+    </busslaveport>
+    <busmasterport addresswidth="32"
+        name="COMP_CHECKPOINT_IRQ_MASTER"/>
+    <netport name="COMP_IRQ"
+        type="output"
+        updatefunctionargument="0">
+        <docsection name="doc"
+            text="Description">
+            <doctext name="txt"
+                text="comparator interrupt"/>
+        </docsection>
+    </netport>
+    <fileversion major="1"
+        minor="0"
+        name="_version_0"/>
+ </peripheral>

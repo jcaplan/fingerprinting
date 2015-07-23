@@ -8,33 +8,24 @@ digraph prof {
   subgraph cluster_kernel {
     label = "KERNEL";
     "F1" [label = "Derivative_TASK(0)"];
-    "F1" -> "F2" [label = 31];
-    "F5" [label = "__muldf3(0)"];
-    "F5" -> "F6" [label = 8];
-    "F6" [label = "__muldi3(8)"];
-    "F4" [label = "__pack_d(7)"];
-    "F9" [label = "OS_Sched(7)"];
-    "F8" [label = "OSTimeDly(0)"];
-    "F8" -> "F9" [label = 7];
+    "F1" -> "F2" [label = 3];
+    "F3" [label = "__adddf3(1)"];
+    "F4" [label = "__muldf3(0)"];
+    "F4" -> "F5" [label = 1];
+    "F5" [label = "__muldi3(1)"];
     "F2" [label = "OSTimeDlyHMSM(0)"];
-    "F2" -> "F3" [label = 8];
-    "F2" -> "F5" [label = 8];
-    "F2" -> "F7" [label = 8];
-    "F2" -> "F8" [label = 7];
+    "F2" -> "F3" [label = 1];
+    "F2" -> "F4" [label = 1];
+    "F2" -> "F6" [label = 1];
     "F0" [label = "OSStartTsk(0)"];
-    "F0" -> "F1" [label = 31];
-    "F7" [label = "__divdf3(8)"];
-    "F3" [label = "__floatunsidf(1)"];
-    "F3" -> "F4" [label = 7];
+    "F0" -> "F1" [label = 3];
+    "F6" [label = "__divdf3(1)"];
     "F1" [color="#d0ffd0"];
-    "F5" [color="#d0ffd0"];
-    "F6" [color="#fa1c17"];
-    "F4" [color="#f5382e"];
-    "F9" [color="#f5382e"];
-    "F8" [color="#d0ffd0"];
+    "F3" [color="#d6e2b8"];
+    "F4" [color="#d0ffd0"];
+    "F5" [color="#d6e2b8"];
     "F2" [color="#d0ffd0"];
     "F0" [color="#d0ffd0"];
-    "F7" [color="#fa1c17"];
-    "F3" [color="#d6e2b8"];
+    "F6" [color="#d6e2b8"];
   }
 }

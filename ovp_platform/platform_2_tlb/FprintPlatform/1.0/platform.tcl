@@ -657,7 +657,7 @@ ihwconnect       -instancename cpum            -netport d_irq6       -net cpum_i
 
 ihwaddbus -instancename compbus            -addresswidth 32
 
-ihwaddperipheral -instancename comparator  -vendor mcgill.ca -type comparator -diagnosticlevel 3
+ihwaddperipheral -instancename comparator  -vendor mcgill.ca -type comparator -version 2.0 -diagnosticlevel 3
 
 ihwaddbridge -instancename comp_bridge_0
 ihwconnect 	 -instancename comp_bridge_0 -busslaveport   sp1 -bus cpu0_tlbbus        -loaddress 0x01000000 -hiaddress 0x01000FFF

@@ -131,8 +131,7 @@ CriticalFunctionData critFuncData[NUMCORES] __attribute__ ((section (".shared"))
  * Reset monitor interface
  *****************************************************************************/
 void resetCores(void) {
-	resetDMA();
-	OSTaskSuspend(dma_PRIORITY);
+	OSTaskDel(dma_PRIORITY);
 	int* cpu0_reset = (int*) PROCESSOR0_0_SW_RESET_0_BASE;
 	int* cpu1_reset = (int*) PROCESSOR1_0_SW_RESET_0_BASE;
 	*cpu0_reset = 1;
@@ -147,7 +146,6 @@ static void handleResetMonitor(void* context) {
 	if (taskFailed) {
 		taskFailed = false;
 
-		initDMA();
 		postDmaMessage(failedTaskID, true);
 
 		OSTaskCreateExt(dma_TASK, NULL, &dma_STACK[dma_STACKSIZE - 1], dma_PRIORITY,
@@ -175,7 +173,7 @@ static void initResetMonitorIsr(void) {
 static void handleComp(void* context) {
 	int result = 0;
 	Fprint_Status status;
-	fprint_status(&status);
+	comp_get_status(&status);
 
 	//Assume static mapping of fingeprint tasks for now
 	//There is only one possible task that can set this off in this example
@@ -187,7 +185,6 @@ static void handleComp(void* context) {
 			if (status.failed_reg & (mask = 1 << i)) {
 				/* assume only one failure possible */
 				failedTaskID = REPOSgetTaskID(mask);
-				fprint_get_task_count(i); /* make sure the counter resets */
 				break;
 			}
 		}
@@ -204,14 +201,11 @@ static void handleComp(void* context) {
 			INT32U mask;
 			if (result & (mask = 1 << i)) {
 				taskID = REPOSgetTaskID(mask);
-				int numFuncs = REPOSTaskTable[taskID].numFuncs;
 				/* Here we check that all the functions inside the task have executed,
 				 * then we check that the task did not fail (since the same FID may have been used twice
 				 * before the handler responds if the functions are tiny).
 				 */
-				if (((REPOSTaskTable[taskID].funcCompleteCount += fprint_get_task_count(i)) == numFuncs)
-						&& (!taskFailed
-								|| (taskFailed && taskID != failedTaskID))) { /*function can be decomposed into several chunks, so could be both cases */
+				if (!taskFailed || (taskFailed && taskID != failedTaskID)) { /*function can be decomposed into several chunks, so could be both cases */
 					REPOSTaskTable[taskID].funcCompleteCount = 0;
 					REPOSTaskComplete(taskID);
 					postDmaMessage(taskID, false);
@@ -220,7 +214,7 @@ static void handleComp(void* context) {
 		}
 	}
 
-	fprint_reset_irq();
+	comp_reset_irq();
 }
 
 static void initCompIsr(void) {
@@ -427,34 +421,11 @@ int main(void) {
 	//Only one task is being fingerprinted
 	//Assign FID=0
 	//------------------------------------
-	Directory_Init_Struct d;
 	int i,j;
 
-	d.core_id = 0;
-	d.key = 0;
-	d.start_ptr = 0;
-	d.end_ptr = 169;
-	set_task_directory(&d);
-
-	d.core_id = 1;
-	set_task_directory(&d);
-	d.core_id = 0;
-	d.key = 1;
-	d.start_ptr = 170;
-	d.end_ptr = 339;
-	set_task_directory(&d);
-
-	d.core_id = 1;
-	set_task_directory(&d);
-	d.core_id = 0;
-	d.key = 2;
-	d.start_ptr = 340;
-	d.end_ptr = 509;
-	set_task_directory(&d);
-
-	d.core_id = 1;
-	set_task_directory(&d);
-	Core_Assignment_Table ca;
+	for (i = 0; i < CA_TABLE_NUM_TASKS; i++){
+		comp_set_success_maxcount_value(i,1);
+	}	Core_Assignment_Table ca;
 	//Default table
 	for (i = 0; i < CA_TABLE_MAX_REDUNDANCY; i++) {
 		for (j = 0; j < CA_TABLE_NUM_TASKS; j++) {
@@ -463,7 +434,7 @@ int main(void) {
 	}
 	ca.table[0][0] = 0;
 	ca.table[1][0] = 1;
-	set_core_assignment_table(&ca);
+	comp_set_core_assignment_table(&ca);
 
 	initCompIsr();
 

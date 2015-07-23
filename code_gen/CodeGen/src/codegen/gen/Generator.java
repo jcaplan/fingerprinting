@@ -1587,7 +1587,7 @@ public class Generator {
 				"static void handleComp(void* context) {\n"+
 				"	int result = 0;\n"+
 				"	Fprint_Status status;\n"+
-				"	fprint_status(&status);\n"+
+				"	comp_get_status(&status);\n"+
 				"\n"+
 				"	//Assume static mapping of fingeprint tasks for now\n"+
 				"	//There is only one possible task that can set this off in this example\n"+
@@ -1599,7 +1599,6 @@ public class Generator {
 				"			if (status.failed_reg & (mask = 1 << i)) {\n"+
 				"				/* assume only one failure possible */\n"+
 				"				failedTaskID = REPOSgetTaskID(mask);\n"+
-				"				fprint_get_task_count(i); /* make sure the counter resets */\n"+
 				"				break;\n"+
 				"			}\n"+
 				"		}\n"+
@@ -1616,14 +1615,11 @@ public class Generator {
 				"			INT32U mask;\n"+
 				"			if (result & (mask = 1 << i)) {\n"+
 				"				taskID = REPOSgetTaskID(mask);\n"+
-				"				int numFuncs = REPOSTaskTable[taskID].numFuncs;\n"+
 				"				/* Here we check that all the functions inside the task have executed,\n"+
 				"				 * then we check that the task did not fail (since the same FID may have been used twice\n"+
 				"				 * before the handler responds if the functions are tiny).\n"+
 				"				 */\n"+
-				"				if (((REPOSTaskTable[taskID].funcCompleteCount += fprint_get_task_count(i)) == numFuncs)\n"+
-				"						&& (!taskFailed\n"+
-				"								|| (taskFailed && taskID != failedTaskID))) { /*function can be decomposed into several chunks, so could be both cases */\n"+
+				"				if (!taskFailed || (taskFailed && taskID != failedTaskID)) { /*function can be decomposed into several chunks, so could be both cases */\n"+
 				"					REPOSTaskTable[taskID].funcCompleteCount = 0;\n"+
 				"					REPOSTaskComplete(taskID);\n"+
 				"					postDmaMessage(taskID, false);\n"+
@@ -1632,7 +1628,7 @@ public class Generator {
 				"		}\n"+
 				"	}\n"+
 				"\n"+
-				"	fprint_reset_irq();\n"+
+				"	comp_reset_irq();\n"+
 				"}\n"+
 				"\n"+
 				"static void initCompIsr(void) {\n"+
@@ -1797,24 +1793,15 @@ public class Generator {
 				"	//Only one task is being fingerprinted\n"+
 				"	//Assign FID=0\n"+
 				"	//------------------------------------\n"+
-				"	Directory_Init_Struct d;\n"+
 				"	int i,j;\n\n";
+		s += 	"	for (i = 0; i < CA_TABLE_NUM_TASKS; i++){\n" + 
+				"		comp_set_success_maxcount_value(i,1);\n" + 
+				"	}";
 		
 				
 //		s += "	for (i = 0; i < " + fprintList.size() + "; i++) {\n";
 		//TODO hard-coded!!
-		int increment = 512 /fprintList.size();
-		for(int i = 0; i < fprintList.size(); i++){
-			s += "	d.core_id = 0;\n"+
-					"	d.key = " + i + ";\n"+
-					"	d.start_ptr = " + (i * increment) + ";\n"+
-					"	d.end_ptr = " + (((i + 1) * increment)-1) + ";\n"+
-					"	set_task_directory(&d);\n"+
-					"\n"+
-					"	d.core_id = 1;\n"+
-					"	set_task_directory(&d);\n";
-
-		}
+	
 		
 //		s += "	}\n";
 		
@@ -1827,7 +1814,7 @@ public class Generator {
 				"	}\n"+
 				"	ca.table[0][0] = 0;\n"+
 				"	ca.table[1][0] = 1;\n"+
-				"	set_core_assignment_table(&ca);\n"+
+				"	comp_set_core_assignment_table(&ca);\n"+
 				"\n"+
 				"	initCompIsr();\n"+
 				"\n"+

@@ -927,7 +927,8 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
     <peripheralinstance diagnosticlevel="3"
         name="comparator">
         <vlnvreference name="comparator"
-            vendor="mcgill.ca"/>
+            vendor="mcgill.ca"
+            version="2.0"/>
         <busslaveportconnection connection="compbus"
             hiaddress="0x1000fff"
             loaddress="0x1000000"
