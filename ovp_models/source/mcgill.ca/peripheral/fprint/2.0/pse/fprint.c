@@ -25,6 +25,7 @@ Uns32 count_old;
 Uns32 pauseReg;
 Uns32 currentState[8];
 Uns32 pause_index;
+Uns32 pausedTaskReg;
 Uns32 coreID;
 Uns32 mode = 0;
 

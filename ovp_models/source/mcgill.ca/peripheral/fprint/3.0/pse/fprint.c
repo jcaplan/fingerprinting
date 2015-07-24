@@ -60,7 +60,6 @@ PPM_NET_CB(do_store) {
 
 PPM_REG_READ_CB(pause) {
 
-
 	return *(Uns32*)user;
 }
 

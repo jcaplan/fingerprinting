@@ -22,8 +22,7 @@ typedef struct {
 	Uns32 coreID;
 	Uns32 mode;
 	bool fprintEnabled;
-	Uns32 currentTask;
-	Uns32 fprint_pause_hold[2];
+	Uns32 currentTask;;
 	memEndian endian;
 	memDomainP domain;
 	Uns32 countMax;
@@ -100,28 +99,6 @@ void setMaxCount(Uns32 coreID, Uns32 writeData) {
 }
 
 
-void pause(Uns32 coreID) {
-	fprintStruct *fp = &fprint[coreID];
-	fp->fprint_pause_hold[0] = FPRINT_EMPTY;
-	fp->fprint[fp->pause_index] = fp->fprint_old;
-	fp->currentState[fp->pause_index] = fp->currentTask;
-	// Uns32 address = COMPARATOR_BASE_ADDRESS + (((coreID << 4) + 2) << 2);
-	// vmirtWrite4ByteDomain(fp->domain, address, fp->endian, fp->currentState[fp->pause_index], MEM_AA_FALSE);
-	fp->pause_index++;
-	fp->fprint[fp->pause_index] = 0;
-	fp->fprintEnabled  = false;
-	fp->currentTask = 0;
-}
-
-void unpause(Uns32 coreID) {
-	fprintStruct *fp = &fprint[coreID];
-	if(fp->pause_index > 0){
-  		fp->pause_index--;
-		fp->currentTask = fp->currentState[fp->pause_index];
-    	// Uns32 address = COMPARATOR_BASE_ADDRESS + (((coreID << 4) + 3) << 2);
-	// vmirtWrite4ByteDomain(fp->domain, address, fp->endian, fp->currentState[fp->pause_index], MEM_AA_FALSE);
-	}
-}
 
 
 void fprintReset(Uns32 coreID){
@@ -142,8 +119,25 @@ void fprintReset(Uns32 coreID){
 	fp->currentTask = 0;
 	fp->countMax = 0;
 	fp->fprintEnabled = false;
-	fp->fprint_pause_hold[0] = FPRINT_EMPTY;
-	fp->fprint_pause_hold[1] = 1;
 
 }
 
+void fprintPauseStrobe(int coreID) {
+	fprintStruct *fp = &fprint[coreID];
+	if(fp->fprintEnabled){
+		fp->fprint[fp->pause_index] = fp->fprint_old;
+		fp->currentState[fp->pause_index] = fp->currentTask;
+		fp->pause_index++;
+		fp->fprint[fp->pause_index] = 0;
+		fp->currentTask = 0;
+	}
+}
+
+void fprintUnpauseStrobe(int coreID) {
+	fprintStruct *fp = &fprint[coreID];
+	//~pause_task_reg[paused_cs_tos]
+	if(fp->pause_index > 0 && !(fp->pauseReg & (1 << fp->currentState[fp->pause_index-1]))){
+  		fp->pause_index--;
+		fp->currentTask = fp->currentState[fp->pause_index];	
+    }
+}

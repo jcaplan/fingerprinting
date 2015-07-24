@@ -84,6 +84,29 @@ static VMI_MEM_WATCH_FN(writeCB) {
     }
 }
 
+static VMI_MEM_WATCH_FN(readCB) {
+
+    if(processor) {
+
+        Uns32 coreID = vmirtCPUId(processor);    
+        
+
+        switch(address){
+        case PAUSE_STROBE:
+            fprintPauseStrobe(coreID);
+            break;
+        case UNPAUSE_STROBE:
+            fprintUnpauseStrobe(coreID);
+            break;
+        case PAUSE_REG:
+
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 
 //
 // Constructor - install read and write callbacks on processor data domain
@@ -96,10 +119,12 @@ static VMIOS_CONSTRUCTOR_FN(constructor) {
         memDomainP domain   = vmirtGetProcessorPhysicalDataDomain(processor);
 
         vmirtAddWriteCallback(domain, 0, 0, 0xffffffff, writeCB, object);
+        vmirtAddReadCallback (domain, 0, 0, 0x08100400, readCB, object);
 
         vmiPrintf("INTERCEPT: initializing %s, %d\n",vmirtProcessorName(processor),coreID);
         crcInit();
         fprintInit(coreID, processor);
+
     }
 }
 
