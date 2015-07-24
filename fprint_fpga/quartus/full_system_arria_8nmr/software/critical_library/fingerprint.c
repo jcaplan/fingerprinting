@@ -98,7 +98,7 @@ void set_maxcount_value(int task_id, int logical_core_id, int maxcount) {
 
 	uint32_t* fprint_maxcount_reg = (uint32_t*)(COMPARATOR_BASE_ADDRESS + COMPARATOR_MAXCOUNT_REG_OFFSET);
 
-	*fprint_maxcount_reg = (task_id << 16) + (logical_core_id << 16) + maxcount;
+	*fprint_maxcount_reg = (logical_core_id << 24) + (task_id << 16) + maxcount;
 }
 
 void set_nmr(int task_id, int nmr) {

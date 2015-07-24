@@ -178,6 +178,7 @@ void start_task(INT8U task_id, INT8U nmr, INT8U C0, INT8U C1, INT8U C2, INT8U le
 	}
 
 	if(nmr) {
+	printf("Task %d NMR\n", task_id);
 		switch(C2) {
 
 			case 0: *isr_0_ptr = 1;
@@ -215,6 +216,7 @@ void test_func() {
 	int i;
 
 	INT8U task_id;
+	INT8U nmr;
 	INT8U C0;
 	INT8U C1;
 	INT8U C2;
@@ -233,7 +235,7 @@ void test_func() {
 	length = 1;
 	while(length <= 5) {
 
-		blk_sz = 0xfff;
+		blk_sz = 0xffff;
 		while(blk_sz >= 0x11f) {
 
 			for (i = 0; i < NUM_CORES; i++) {
@@ -247,32 +249,41 @@ void test_func() {
 			while(num_runs <= NUM_RUNS){
 
 				task_id = 2;
+				nmr = 0;
 				f |= 1<<task_id;
 				C0 = 0;
 				C1 = 1;
-				C2 = 2;
+				C2 = 0;
+				start_task(task_id, nmr, C0, C1, C2, length, fprint_en, blk_sz);
 
-				start_task(task_id, 1, C0, C1, C2, length, fprint_en, blk_sz);
 
-				/*
 				task_id = 3;
+				nmr = 0;
 				f |= 1<<task_id;
 				C0 = 2;
 				C1 = 3;
-				start_task(task_id, C0, C1, length, fprint_en, blk_sz);
+				C2 = 0;
+				start_task(task_id, nmr, C0, C1, C2, length, fprint_en, blk_sz);
+
 
 				task_id = 4;
+				nmr = 0;
 				f |= 1<<task_id;
 				C0 = 4;
 				C1 = 5;
-				start_task(task_id, C0, C1, length, fprint_en, blk_sz);
+				C2 = 0;
+				start_task(task_id, nmr, C0, C1, C2, length, fprint_en, blk_sz);
+
+
 
 				task_id = 5;
+				nmr = 0;
 				f |= 1<<task_id;
 				C0 = 6;
 				C1 = 7;
-				start_task(task_id, C0, C1, length, fprint_en, blk_sz);
-				 */
+				C2 = 0;
+				start_task(task_id, nmr, C0, C1, C2, length, fprint_en, blk_sz);
+
 
 				printf("waiting on %x\n", f);
 
@@ -314,10 +325,10 @@ static void handle_collision_interrupt(void* context) {
 	for(i = 0; i < 16; i++) {
 		if((status.successful_reg & (1 << i)) == (1 << i)) {
 			OSFlagPost (schedule_fgrp, 1 << i , OS_FLAG_SET, &err);
-			printf("success %d\n",i);
+			//printf("success %d\t%x\n",i,status.successful_reg);
 		}
-		if((status.failed_reg & (3 << i)) != (3 << i)) {
-			printf("failure %d\n",i);
+		if((status.failed_reg & (3 << 2*i)) != (3 << 2*i)) {
+			//printf("failure %d\t%x\n",i,status.failed_reg);
 			OSFlagPost (schedule_fgrp, 1 << i , OS_FLAG_SET, &err);
 		}
 	}

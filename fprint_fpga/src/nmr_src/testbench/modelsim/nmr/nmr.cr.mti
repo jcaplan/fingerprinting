@@ -1,16 +1,16 @@
-/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comp_registers.sv {1 {vlog -work work -sv +incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comp_registers.sv
-Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
--- Compiling module tb_comp_registers
-
-Top level modules:
-	tb_comp_registers
-
-} {} {}} /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_oflow_registers.sv {1 {vlog -work work -sv +incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_oflow_registers.sv
+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_oflow_registers.sv {1 {vlog -work work -sv +incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_oflow_registers.sv
 Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
 -- Compiling module tb_oflow_registers
 
 Top level modules:
 	tb_oflow_registers
+
+} {} {}} /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comp_registers.sv {1 {vlog -work work -sv +incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comp_registers.sv
+Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+-- Compiling module tb_comp_registers
+
+Top level modules:
+	tb_comp_registers
 
 } {} {}} /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/oflow_registers.v {1 {vlog -work work +incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/oflow_registers.v
 Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
