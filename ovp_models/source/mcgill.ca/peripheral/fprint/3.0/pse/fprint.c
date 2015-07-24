@@ -65,7 +65,7 @@ PPM_REG_READ_CB(pause) {
 
 PPM_REG_READ_CB(regRd32) {
 	// YOUR CODE HERE (regRd32)
-	return *(Uns32*)user;
+	return 0xdeadbeef;
 }
 
 PPM_REG_WRITE_CB(regWr32) {

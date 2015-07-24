@@ -141,3 +141,7 @@ void fprintUnpauseStrobe(int coreID) {
 		fp->currentTask = fp->currentState[fp->pause_index];	
     }
 }
+
+void setPauseReg(Uns32 coreID, Uns32 writeData){
+	fprint[coreID].pauseReg = writeData;
+}

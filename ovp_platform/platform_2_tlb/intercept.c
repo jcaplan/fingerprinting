@@ -72,6 +72,9 @@ static VMI_MEM_WATCH_FN(writeCB) {
         case PROCESSOR1_0_SW_RESET:
             fprintReset(1);
             break;
+        case PAUSE_REG:
+            setPauseReg(coreID,writeData);
+            break;
         default:
             break;
         }
@@ -96,10 +99,8 @@ static VMI_MEM_WATCH_FN(readCB) {
             fprintPauseStrobe(coreID);
             break;
         case UNPAUSE_STROBE:
-            fprintUnpauseStrobe(coreID);
             break;
         case PAUSE_REG:
-
             break;
         default:
             break;
