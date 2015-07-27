@@ -7,12 +7,12 @@
 `define MAX_DIR_SIZE		`CRC_RAM_SIZE/16
 `define DIR_SIZE			20
 `define MAXCOUNT			10
-`define FPRINT_SPEED		50
+`define FPRINT_SPEED		20
 `define FPRINT_NUM			1000
 `define FPRINT_SKIP_NUM		500
 `define FPRINT_SKIP_OFF		-1
 `define NUM_RUNS			3
-`define FAIL_RUN			10
+`define FAIL_RUN			-1
 `define NUM_TASKS			2
 
 module tb_cfpu();

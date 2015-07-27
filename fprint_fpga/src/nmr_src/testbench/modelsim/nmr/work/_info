@@ -18,7 +18,7 @@ r1
 Z9 !s90 -reportprogress|300|-work|work|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/cfpu.v|
 Z10 o-work work -O0
 Z11 !s92 -work work +incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src -O0
-Z12 !s108 1437700551.007767
+Z12 !s108 1438013858.428784
 Z13 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/cfpu.v|
 !i10b 1
 !s85 0
@@ -38,7 +38,7 @@ r1
 Z19 !s90 -reportprogress|300|-work|work|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/comp_registers.v|
 R10
 R11
-Z20 !s108 1437700551.093614
+Z20 !s108 1438013858.498296
 Z21 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/comp_registers.v|
 !i10b 1
 !s85 0
@@ -58,7 +58,7 @@ r1
 Z27 !s90 -reportprogress|300|-work|work|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/comparator.v|
 R10
 R11
-Z28 !s108 1437700551.177212
+Z28 !s108 1438013858.585081
 Z29 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/comparator.v|
 !i10b 1
 !s85 0
@@ -78,7 +78,7 @@ r1
 Z35 !s90 -reportprogress|300|-work|work|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/csr_registers.v|
 R10
 R11
-Z36 !s108 1437700551.293612
+Z36 !s108 1438013858.705903
 Z37 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/csr_registers.v|
 !i10b 1
 !s85 0
@@ -98,7 +98,7 @@ r1
 Z43 !s90 -reportprogress|300|-work|work|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/fifo.v|
 R10
 R11
-Z44 !s108 1437700551.377702
+Z44 !s108 1438013858.788820
 Z45 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/fifo.v|
 !i10b 1
 !s85 0
@@ -118,166 +118,166 @@ r1
 Z51 !s90 -reportprogress|300|-work|work|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/fprint_registers.v|
 R10
 R11
-Z52 !s108 1437700551.448169
-Z53 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/fprint_registers.v|
 !i10b 1
 !s85 0
+Z52 !s108 1438013858.858501
+Z53 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/fprint_registers.v|
 !s101 -O0
 voflow_registers
-Z54 !s100 h3FR`jZ4fD@LS`F@Fhbm`3
-Z55 IVDAzk4ml>GUBGaMm]7RFS2
-Z56 VlXL`zg_kR6m;>_Kd=VcRD2
+!i10b 1
+!s100 QagP<P5n_lThnjBN8GbU41
+IhUPQW:FFOTh3AbOLhFn<a3
+Z54 VlXL`zg_kR6m;>_Kd=VcRD2
 R4
-R5
-Z57 8/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/oflow_registers.v
-Z58 F/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/oflow_registers.v
+w1438013851
+Z55 8/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/oflow_registers.v
+Z56 F/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/oflow_registers.v
 L0 2
 R8
 r1
+!s85 0
 31
-Z59 !s90 -reportprogress|300|-work|work|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/oflow_registers.v|
+!s108 1438013858.945658
+!s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/oflow_registers.v|
+Z57 !s90 -reportprogress|300|-work|work|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/oflow_registers.v|
+!s101 -O0
 R10
 R11
-!i10b 1
-!s85 0
-Z60 !s108 1437700551.534003
-Z61 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/oflow_registers.v|
-!s101 -O0
 vtb_cfpu
-Z62 DXx6 sv_std 3 std 0 22 F[19LRNL:5;XmIFh[XOPn1
-!i10b 1
-!s100 0kmU893RCG9@=c1:[`40:3
-IjXTAA^E>I:OSiAQSU;kO20
-Z63 V1YL`4oCP4W@Pl`B^DPTM<1
-Z64 !s105 tb_cfpu_sv_unit
+Z58 DXx6 sv_std 3 std 0 22 F[19LRNL:5;XmIFh[XOPn1
+Z59 !s100 GVG]>HA0<FdZ0O8J?7<8^3
+Z60 IIGQc]dn@zOCYRP4a4lGkN0
+Z61 V1YL`4oCP4W@Pl`B^DPTM<1
+Z62 !s105 tb_cfpu_sv_unit
 S1
 R4
-w1437700616
-Z65 8/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_cfpu.sv
-Z66 F/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_cfpu.sv
+Z63 w1438012347
+Z64 8/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_cfpu.sv
+Z65 F/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_cfpu.sv
 L0 18
 R8
 r1
-!s85 0
 31
-!s108 1437700624.098300
-!s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_cfpu.sv|
-Z67 !s90 -reportprogress|300|-work|work|-sv|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_cfpu.sv|
+Z66 !s90 -reportprogress|300|-work|work|-sv|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_cfpu.sv|
+Z67 o-work work -sv -O0
+Z68 !s92 -work work -sv +incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src -O0
+Z69 !s108 1438013857.829250
+Z70 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_cfpu.sv|
+!i10b 1
+!s85 0
 !s101 -O0
-Z68 o-work work -sv -O0
-Z69 !s92 -work work -sv +incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src -O0
 vtb_comp_registers
-R62
-Z70 !s100 nb;7dDJ1O<zG4m:J7BDZa2
-Z71 I5<h7ZjNHl7TIPa:@X4kGC1
-Z72 V=UVW1i43GU?^4OX1=@RjT3
-Z73 !s105 tb_comp_registers_sv_unit
+R58
+Z71 !s100 nb;7dDJ1O<zG4m:J7BDZa2
+Z72 I5<h7ZjNHl7TIPa:@X4kGC1
+Z73 V=UVW1i43GU?^4OX1=@RjT3
+Z74 !s105 tb_comp_registers_sv_unit
 S1
 R4
-Z74 w1437697063
-Z75 8/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comp_registers.sv
-Z76 F/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comp_registers.sv
+Z75 w1437697063
+Z76 8/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comp_registers.sv
+Z77 F/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comp_registers.sv
 L0 6
 R8
 r1
 31
-Z77 !s90 -reportprogress|300|-work|work|-sv|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comp_registers.sv|
+Z78 !s90 -reportprogress|300|-work|work|-sv|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comp_registers.sv|
+R67
 R68
-R69
-Z78 !s108 1437700550.544827
-Z79 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comp_registers.sv|
+Z79 !s108 1438013857.955480
+Z80 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comp_registers.sv|
 !i10b 1
 !s85 0
 !s101 -O0
 vtb_comparator
-R62
-Z80 !s100 PP^Kl2]kh5Vllik97FS=b0
-Z81 I<U?bHHk0@Al[2BNPoWhSZ3
-Z82 Vi;g=8;nE?DodmWBVHbDIH3
-Z83 !s105 tb_comparator_sv_unit
+R58
+Z81 !s100 PP^Kl2]kh5Vllik97FS=b0
+Z82 I<U?bHHk0@Al[2BNPoWhSZ3
+Z83 Vi;g=8;nE?DodmWBVHbDIH3
+Z84 !s105 tb_comparator_sv_unit
 S1
 R4
-R74
-Z84 8/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comparator.sv
-Z85 F/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comparator.sv
+R75
+Z85 8/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comparator.sv
+Z86 F/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comparator.sv
 L0 6
 R8
 r1
 31
-Z86 !s90 -reportprogress|300|-work|work|-sv|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comparator.sv|
+Z87 !s90 -reportprogress|300|-work|work|-sv|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comparator.sv|
+R67
 R68
-R69
-Z87 !s108 1437700550.638321
-Z88 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comparator.sv|
+Z88 !s108 1438013858.056401
+Z89 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_comparator.sv|
 !i10b 1
 !s85 0
 !s101 -O0
 vtb_csr_registers
-R62
-Z89 !s100 KY1?e6YWd7;IOf?M3A?830
-Z90 I1CNDf[4kh9fBNiQ2EiemY0
-Z91 Vf_iVRV1M]U;YkNVUAn11j2
-Z92 !s105 tb_csr_registers_sv_unit
+R58
+Z90 !s100 KY1?e6YWd7;IOf?M3A?830
+Z91 I1CNDf[4kh9fBNiQ2EiemY0
+Z92 Vf_iVRV1M]U;YkNVUAn11j2
+Z93 !s105 tb_csr_registers_sv_unit
 S1
 R4
-R74
-Z93 8/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_csr_registers.sv
-Z94 F/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_csr_registers.sv
+R75
+Z94 8/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_csr_registers.sv
+Z95 F/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_csr_registers.sv
 L0 6
 R8
 r1
 31
-Z95 !s90 -reportprogress|300|-work|work|-sv|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_csr_registers.sv|
+Z96 !s90 -reportprogress|300|-work|work|-sv|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_csr_registers.sv|
+R67
 R68
-R69
-Z96 !s108 1437700550.716763
-Z97 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_csr_registers.sv|
+Z97 !s108 1438013858.135682
+Z98 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_csr_registers.sv|
 !i10b 1
 !s85 0
 !s101 -O0
 vtb_fprint_registers
-R62
-Z98 !s100 eHE:hQG0T`Dj;jFzi9j:z1
-Z99 ImcRZX9HZXEm<ZaCI?9ToM1
-Z100 V^T[9Uj>6XBU`WALeF6IMM2
-Z101 !s105 tb_fprint_registers_sv_unit
+R58
+Z99 !s100 eHE:hQG0T`Dj;jFzi9j:z1
+Z100 ImcRZX9HZXEm<ZaCI?9ToM1
+Z101 V^T[9Uj>6XBU`WALeF6IMM2
+Z102 !s105 tb_fprint_registers_sv_unit
 S1
 R4
-R74
-Z102 8/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_fprint_registers.sv
-Z103 F/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_fprint_registers.sv
+R75
+Z103 8/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_fprint_registers.sv
+Z104 F/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_fprint_registers.sv
 L0 6
 R8
 r1
 31
-Z104 !s90 -reportprogress|300|-work|work|-sv|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_fprint_registers.sv|
+Z105 !s90 -reportprogress|300|-work|work|-sv|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_fprint_registers.sv|
+R67
 R68
-R69
-Z105 !s108 1437700550.817593
-Z106 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_fprint_registers.sv|
+Z106 !s108 1438013858.238457
+Z107 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_fprint_registers.sv|
 !i10b 1
 !s85 0
 !s101 -O0
 vtb_oflow_registers
-R62
-Z107 !s100 ^njiGaEa:79F;WhE5QZ8U1
-Z108 IDbV4bD_KU<^A_9DQl>@TT0
-Z109 V<hoGlM6L5BUFUOaBXVFf<2
-Z110 !s105 tb_oflow_registers_sv_unit
+R58
+Z108 !s100 ^njiGaEa:79F;WhE5QZ8U1
+Z109 IDbV4bD_KU<^A_9DQl>@TT0
+Z110 V<hoGlM6L5BUFUOaBXVFf<2
+Z111 !s105 tb_oflow_registers_sv_unit
 S1
 R4
-R74
-Z111 8/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_oflow_registers.sv
-Z112 F/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_oflow_registers.sv
+R75
+Z112 8/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_oflow_registers.sv
+Z113 F/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_oflow_registers.sv
 L0 6
 R8
 r1
 31
-Z113 !s90 -reportprogress|300|-work|work|-sv|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_oflow_registers.sv|
+Z114 !s90 -reportprogress|300|-work|work|-sv|+incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_oflow_registers.sv|
+R67
 R68
-R69
-Z114 !s108 1437700550.906898
-Z115 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_oflow_registers.sv|
+Z115 !s108 1438013858.328130
+Z116 !s107 /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v|/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_oflow_registers.sv|
 !i10b 1
 !s85 0
 !s101 -O0
