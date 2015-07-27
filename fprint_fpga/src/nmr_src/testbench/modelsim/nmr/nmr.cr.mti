@@ -78,18 +78,18 @@ Top level modules:
 } {} {}} /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v {1 {vlog -work work +incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/crc_defines.v
 Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
 
-} {} {}} /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/cfpu.v {1 {vlog -work work +incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/cfpu.v
-Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
--- Compiling module cfpu
-
-Top level modules:
-	cfpu
-
 } {} {}} /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_csr_registers.sv {1 {vlog -work work -sv +incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/testbench/tb_csr_registers.sv
 Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
 -- Compiling module tb_csr_registers
 
 Top level modules:
 	tb_csr_registers
+
+} {} {}} /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/cfpu.v {1 {vlog -work work +incdir+/home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src /home/hauror/Documents/SURE/fingerprinting/fprint_fpga/src/nmr_src/cfpu.v
+Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+-- Compiling module cfpu
+
+Top level modules:
+	cfpu
 
 } {} {}}

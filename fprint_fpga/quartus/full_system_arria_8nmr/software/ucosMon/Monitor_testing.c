@@ -33,8 +33,8 @@
 
 #define TASK_NAME		testing_task
 
-#define maxcount		10
-#define dir_size		32
+#define maxcount		20
+#define dir_size		20
 
 #define NUM_RUNS		1
 
@@ -178,7 +178,6 @@ void start_task(INT8U task_id, INT8U nmr, INT8U C0, INT8U C1, INT8U C2, INT8U le
 	}
 
 	if(nmr) {
-	printf("Task %d NMR\n", task_id);
 		switch(C2) {
 
 			case 0: *isr_0_ptr = 1;
@@ -235,8 +234,8 @@ void test_func() {
 	length = 1;
 	while(length <= 5) {
 
-		blk_sz = 0xffff;
-		while(blk_sz >= 0x11f) {
+		blk_sz = 0xff;
+		while(blk_sz >= 0x001) {
 
 			for (i = 0; i < NUM_CORES; i++) {
 				core_total_time[i] = 0;
@@ -248,34 +247,38 @@ void test_func() {
 
 			while(num_runs <= NUM_RUNS){
 
+///*
 				task_id = 2;
-				nmr = 0;
+				nmr = 1;
 				f |= 1<<task_id;
 				C0 = 0;
 				C1 = 1;
-				C2 = 0;
+				C2 = 2;
 				start_task(task_id, nmr, C0, C1, C2, length, fprint_en, blk_sz);
+//*/
 
-
+///*
 				task_id = 3;
-				nmr = 0;
+				nmr = 1;
 				f |= 1<<task_id;
-				C0 = 2;
-				C1 = 3;
-				C2 = 0;
+				C0 = 3;
+				C1 = 4;
+				C2 = 5;
 				start_task(task_id, nmr, C0, C1, C2, length, fprint_en, blk_sz);
+//*/
 
-
+///*
 				task_id = 4;
 				nmr = 0;
 				f |= 1<<task_id;
-				C0 = 4;
-				C1 = 5;
+				C0 = 6;
+				C1 = 7;
 				C2 = 0;
 				start_task(task_id, nmr, C0, C1, C2, length, fprint_en, blk_sz);
+//*/
 
 
-
+/*
 				task_id = 5;
 				nmr = 0;
 				f |= 1<<task_id;
@@ -283,9 +286,9 @@ void test_func() {
 				C1 = 7;
 				C2 = 0;
 				start_task(task_id, nmr, C0, C1, C2, length, fprint_en, blk_sz);
+*/
 
-
-				printf("waiting on %x\n", f);
+				//printf("waiting on %x\n", f);
 
 				OSFlagPend(schedule_fgrp, f, OS_FLAG_WAIT_SET_ALL + OS_FLAG_CONSUME, 0, &err);
 
@@ -301,10 +304,11 @@ void test_func() {
 
 			printf("\n\nblk_sz = %x, length = %d\n", blk_sz, length);
 			for (i = 0; i < NUM_CORES; i++) {
-				printf("%llu\t%llu\t%d\t", core_total_time[i]/NUM_RUNS, core_oflow_time[i]/NUM_RUNS, oflow_count[i]/NUM_RUNS);
+				printf("%llu\t\t%llu\t\t%d\n", core_total_time[i]/NUM_RUNS, core_oflow_time[i]/NUM_RUNS, oflow_count[i]/NUM_RUNS);
 				OSTimeDlyHMSM(0,0,0,10);
 			}
-			blk_sz -= 16;
+			printf("\n\n");
+			blk_sz -= 2;
 		}
 		length++;
 	}

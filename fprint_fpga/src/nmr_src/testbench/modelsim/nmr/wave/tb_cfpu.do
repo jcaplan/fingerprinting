@@ -274,86 +274,86 @@ add wave -noupdate -group comp_registers /tb_cfpu/cfpu_block/comp_registers/poin
 add wave -noupdate -group comp_registers /tb_cfpu/cfpu_block/comp_registers/inc_head_pointer
 add wave -noupdate -group comp_registers /tb_cfpu/cfpu_block/comp_registers/inc_tail_pointer
 add wave -noupdate -group comp_registers /tb_cfpu/cfpu_block/comp_registers/reset_task
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/idle
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_count_inc
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_count_dec
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_fprint_regs_set
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_comparator_regs_set
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_fifo_oflow_write
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_fifo_uflow_write
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_oflow_status_set
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_oflow_status_reset
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_oflow_count_inc_ack
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_oflow_count_dec_ack
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_reset_task
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_oflow_reset_task_ack
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_fifo_rd_en
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_output_ready
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/clk
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/reset
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_write
-add wave -noupdate -group oflow_registers -radix hexadecimal /tb_cfpu/cfpu_block/oflow_registers/oflow_writedata
-add wave -noupdate -group oflow_registers -radix hexadecimal /tb_cfpu/cfpu_block/oflow_registers/oflow_address
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_waitrequest
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/oflow_task_id
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/oflow_logical_core_id
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/oflow_physical_core_id
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/csr_fprint_maxcount
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_nmr
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fprint_task_id
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fprint_logical_core_id
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fprint_count_inc
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_count_inc_ack
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/comparator_task_id
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/comparator_count_dec
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_count_dec_ack
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_fprints_ready
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_fprints_remaining
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/oflow_fprints_remaining_logical_core_id
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_reset_task
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_reset_task_ack
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fprint_oflow_status
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/comparator_oflow_status
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fprint_count
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/overflow
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/underflow
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/overflow_status_reg_0
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/overflow_status_reg_1
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/overflow_status_reg_2
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fprint_oflow_status_0
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fprint_oflow_status_1
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fprint_oflow_status_2
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/comparator_oflow_status_0
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/comparator_oflow_status_1
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/comparator_oflow_status_2
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/reset_task
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/count_inc
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/count_dec
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fprint_regs_set
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/comparator_regs_set
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/count_logical_id
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_status_set
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_status_reset
-add wave -noupdate -group oflow_registers -radix unsigned -childformat {{{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[15]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[14]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[13]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[12]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[11]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[10]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[9]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[8]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[7]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[6]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[5]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[4]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[3]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[2]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[1]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[0]} -radix unsigned}} -subitemconfig {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[15]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[14]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[13]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[12]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[11]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[10]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[9]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[8]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[7]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[6]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[5]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[4]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[3]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[2]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[1]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[0]} {-height 16 -radix unsigned}} /tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_1
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_2
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fprint_count_0
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fprint_count_1
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fprint_count_2
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/comparator_count_0
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/comparator_count_1
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/comparator_count_2
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fifo_uflow_write_done
-add wave -noupdate -group oflow_registers -radix hexadecimal /tb_cfpu/cfpu_block/oflow_registers/fifo_data_in
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fifo_rd_en
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fifo_wr_en
-add wave -noupdate -group oflow_registers -radix hexadecimal /tb_cfpu/cfpu_block/oflow_registers/fifo_data_out
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fifo_empty
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fifo_full
-add wave -noupdate -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/state
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/k
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/l
-add wave -noupdate -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fifo_state
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/idle
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_count_inc
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_count_dec
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_fprint_regs_set
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_comparator_regs_set
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_fifo_oflow_write
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_fifo_uflow_write
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_oflow_status_set
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_oflow_status_reset
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_oflow_count_inc_ack
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_oflow_count_dec_ack
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_reset_task
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_oflow_reset_task_ack
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_fifo_rd_en
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/st_output_ready
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/clk
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/reset
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_write
+add wave -noupdate -expand -group oflow_registers -radix hexadecimal /tb_cfpu/cfpu_block/oflow_registers/oflow_writedata
+add wave -noupdate -expand -group oflow_registers -radix hexadecimal /tb_cfpu/cfpu_block/oflow_registers/oflow_address
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_waitrequest
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/oflow_task_id
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/oflow_logical_core_id
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/oflow_physical_core_id
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/csr_fprint_maxcount
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_nmr
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fprint_task_id
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fprint_logical_core_id
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fprint_count_inc
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_count_inc_ack
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/comparator_task_id
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/comparator_count_dec
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_count_dec_ack
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_fprints_ready
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_fprints_remaining
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/oflow_fprints_remaining_logical_core_id
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_reset_task
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_reset_task_ack
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fprint_oflow_status
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/comparator_oflow_status
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fprint_count
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/overflow
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/underflow
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/overflow_status_reg_0
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/overflow_status_reg_1
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/overflow_status_reg_2
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fprint_oflow_status_0
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fprint_oflow_status_1
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fprint_oflow_status_2
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/comparator_oflow_status_0
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/comparator_oflow_status_1
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/comparator_oflow_status_2
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/reset_task
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/count_inc
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/count_dec
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fprint_regs_set
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/comparator_regs_set
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/count_logical_id
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_status_set
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/oflow_status_reset
+add wave -noupdate -expand -group oflow_registers -radix unsigned -childformat {{{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[15]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[14]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[13]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[12]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[11]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[10]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[9]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[8]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[7]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[6]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[5]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[4]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[3]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[2]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[1]} -radix unsigned} {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[0]} -radix unsigned}} -subitemconfig {{/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[15]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[14]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[13]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[12]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[11]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[10]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[9]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[8]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[7]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[6]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[5]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[4]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[3]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[2]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[1]} {-height 16 -radix unsigned} {/tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0[0]} {-height 16 -radix unsigned}} /tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_0
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_1
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fprint_mem_count_2
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fprint_count_0
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fprint_count_1
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fprint_count_2
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/comparator_count_0
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/comparator_count_1
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/comparator_count_2
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fifo_uflow_write_done
+add wave -noupdate -expand -group oflow_registers -radix hexadecimal /tb_cfpu/cfpu_block/oflow_registers/fifo_data_in
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fifo_rd_en
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fifo_wr_en
+add wave -noupdate -expand -group oflow_registers -radix hexadecimal /tb_cfpu/cfpu_block/oflow_registers/fifo_data_out
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fifo_empty
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/fifo_full
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/state
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/k
+add wave -noupdate -expand -group oflow_registers /tb_cfpu/cfpu_block/oflow_registers/l
+add wave -noupdate -expand -group oflow_registers -radix unsigned /tb_cfpu/cfpu_block/oflow_registers/fifo_state
 add wave -noupdate -group comparator /tb_cfpu/cfpu_block/comparator/idle
 add wave -noupdate -group comparator /tb_cfpu/cfpu_block/comparator/st_set_task
 add wave -noupdate -group comparator /tb_cfpu/cfpu_block/comparator/st_load_pointer
@@ -397,9 +397,9 @@ add wave -noupdate -group comparator /tb_cfpu/cfpu_block/comparator/fprints_matc
 add wave -noupdate -group comparator /tb_cfpu/cfpu_block/comparator/fprints_match_0_1
 add wave -noupdate -group comparator /tb_cfpu/cfpu_block/comparator/fprints_match_1_2
 add wave -noupdate -group comparator /tb_cfpu/cfpu_block/comparator/fprints_match_2_0
-add wave -noupdate -group comparator /tb_cfpu/cfpu_block/comparator/state
+add wave -noupdate -group comparator -radix unsigned /tb_cfpu/cfpu_block/comparator/state
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {589553 ps} 0}
+WaveRestoreCursors {{Cursor 1} {13335 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 543
 configure wave -valuecolwidth 361
@@ -415,4 +415,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {2788548 ps} {2793156 ps}
+WaveRestoreZoom {2304238 ps} {2304446 ps}
