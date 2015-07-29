@@ -5,6 +5,18 @@ fprint_dir=${fprint_root}/quartus/full_system_arria_8nmr
 programming_dir=${fprint_dir}/output_files
 sw_dir=${fprint_dir}/software
 
+ucosMon_dir=${sw_dir}/ucosMon
+ucosMon_bsp_dir=${sw_dir}/ucosMon_bsp
+
+pushd $ucosMon_dir
+make
+popd
+
+pushd $ucosMon_bsp_dir
+make
+popd
+
+
 pushd $programming_dir
 nios2-configure-sof  fprint_1_1.sof
 popd

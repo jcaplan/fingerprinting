@@ -62,6 +62,8 @@ wire											comparator_oflow_status_2;
 	
 wire											reset_task;
 
+wire											set_task;
+
 wire											count_inc;
 wire											count_dec;
 
@@ -240,6 +242,8 @@ end
 /*************************************************************
 * fprint mem count FSM outputs
 **************************************************************/
+assign set_task					=	(state == idle);
+
 assign count_inc				=	(state == st_count_inc);
 assign count_dec				=	(state == st_count_dec);
 	
@@ -270,10 +274,12 @@ assign reset_task				=	(state == st_reset_task);
 assign oflow_reset_task_ack		=	(state == st_oflow_reset_task_ack);
 
 always @ (posedge clk) begin
-	if(count_inc)
-		oflow_task_id = fprint_task_id;
-	else if(count_dec)
-		oflow_task_id = comparator_task_id;
+	if(set_task) begin
+		if(fprint_count_inc)
+			oflow_task_id = fprint_task_id;
+		else if(comparator_count_dec)
+			oflow_task_id = comparator_task_id;
+	end
 end
 
 always @ (posedge clk) begin
