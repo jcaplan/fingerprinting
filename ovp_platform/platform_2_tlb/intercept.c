@@ -44,6 +44,8 @@ typedef struct vmiosObjectS {
 
 int oldAddress = 0;
 unsigned *old_value = 0;
+
+
 static VMI_MEM_WATCH_FN(writeCB) {
 
     if(processor) {
@@ -87,18 +89,33 @@ static VMI_MEM_WATCH_FN(writeCB) {
     }
 }
 
-static VMI_MEM_WATCH_FN(readCB) {
+
+static VMI_MEM_WATCH_FN(resetFprint) {
 
     if(processor) {
 
-        Uns32 coreID = vmirtCPUId(processor);    
         
 
+        switch(address){
+        case PROCESSOR0_0_SW_RESET:
+            fprintReset(0);
+            break;
+        case PROCESSOR1_0_SW_RESET:
+            fprintReset(1);
+            break;
+        }
+    }
+}
+
+static VMI_MEM_WATCH_FN(readCB) {
+    if(processor) {
+        Uns32 coreID = vmirtCPUId(processor);    
         switch(address){
         case PAUSE_STROBE:
             fprintPauseStrobe(coreID);
             break;
         case UNPAUSE_STROBE:
+            fprintUnpauseStrobe(coreID);
             break;
         case PAUSE_REG:
             break;
@@ -126,6 +143,10 @@ static VMIOS_CONSTRUCTOR_FN(constructor) {
         crcInit();
         fprintInit(coreID, processor);
 
+    } else if (!strcmp(type,"nios_ii") && coreID == NUMCORES) {
+        vmiPrintf("INTERCEPT: initializing %s, %d\n",vmirtProcessorName(processor),coreID);
+        memDomainP domain   = vmirtGetProcessorPhysicalDataDomain(processor);
+        vmirtAddWriteCallback(domain, 0, 0x3000000, 0x30023FF, resetFprint, object);
     }
 }
 

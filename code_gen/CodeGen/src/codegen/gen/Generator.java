@@ -7,7 +7,6 @@ import org.apache.commons.io.FileUtils;
 
 import codegen.gen.Function.Type;
 import codegen.prof.Profiler;
-import codegen.test.CriticalityTest;
 
 public class Generator {
 
@@ -459,6 +458,10 @@ public class Generator {
 		writer.print(getMonitorMiscDecl());
 		writer.print(getWhiteSpace(5));
 		writer.print(getSharedMemoryDeclarations(core));
+		writer.print(getWhiteSpace(5));
+		writer.print(getTaskRelocationString());
+		
+		
 		writer.print(getWhiteSpace(5));
 		writer.print(getResetMonitorString(core));
 		writer.print(getWhiteSpace(5));
@@ -1162,11 +1165,9 @@ public class Generator {
 			Integer.toHexString(f.stackBin.startAddress[core.index] + platform.mainMemoryBase) + ";\n"+
 			"	entry->stackVirtualAddress = (void*)0x";
 			
-			if(core.index == 0){
-				s += Integer.toHexString(f.stackBin.startAddress[1] + platform.mainMemoryBase);
-			} else {
-				s += "0";
-			}
+
+				s += Integer.toHexString(f.stackBin.startAddress[1]);
+
 			s +=";\n"+
 			"	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/\n"+
 			"	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/\n"+
@@ -1236,7 +1237,7 @@ public class Generator {
 				"	//monitor core - global_data\n"+
 				"	region[0].index = 0x0;\n"+
 				"	region[0].base = MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_BASE / 64;\n"+
-				"	region[0].mask = (0x431000) / 64;\n"+
+				"	region[0].mask = (0x432000) / 64;\n"+
 				"	region[0].c = 0;\n"+
 				"	region[0].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;\n"+
 				"\n"+
@@ -1248,24 +1249,35 @@ public class Generator {
 					otherCoreIndex = 1;
 				}
 
-				StackBin lastStackBin =  stackBins.get(stackBins.size()-1);
+//				StackBin lastStackBin =  stackBins.get(stackBins.size()-1);
 				Core otherCore = platform.getCore("cpu" + otherCoreIndex);
 				s += "	region[1].base = 0x" + Integer.toHexString(platform.mainMemoryBase + otherCore.mainMemStartAddressOffset & 0xFFFFF000) + "/ 64;\n"+
-						"	region[1].mask = 0x" + Integer.toHexString(platform.mainMemoryBase + lastStackBin.startAddress[otherCoreIndex]) + "/ 64;\n"+
+//						"	region[1].mask = 0x" + Integer.toHexString(platform.mainMemoryBase + lastStackBin.startAddress[otherCoreIndex]) + "/ 64;\n"+
+						"	region[1].mask = 0x" + Integer.toHexString(platform.mainMemoryBase + 0x32000 + otherCore.mainMemStartAddressOffset & 0xFFFFF000) + "/ 64;\n"+
 						"	region[1].c = 0;\n"+
 						"	region[1].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;\n";
+				
 				
 				
 				s += "\n"+
 				"	//catch null pointers\n"+
 				"	region[2].index = 0x2;\n"+
 				"	region[2].base = 0x0;\n"+
-				"	region[2].mask = (MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_BASE) / 64;\n"+
+				"	region[2].mask = 0x31000 / 64;\n"+
 				"	region[2].c = 0;\n"+
 				"	region[2].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;\n"+
 				"\n"+
+				
+				"	//no scratchpad physical address\n" + 
+						"	region[3].index = 0x3;\n" + 
+						"	region[3].base = 0x4200000 / 64;\n" + 
+						"	region[3].mask = 0x4208000 / 64;\n" + 
+						"	region[3].c = 0;\n" + 
+						"	region[3].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;\n\n"+
+				
+						
 				"	int index;\n"+
-				"	for (index = 3; index < NIOS2_MPU_NUM_DATA_REGIONS; index++) {\n"+
+				"	for (index = 4; index < NIOS2_MPU_NUM_DATA_REGIONS; index++) {\n"+
 				"		region[index].base = 0x0;\n"+
 				"		region[index].index = index;\n"+
 				"		region[index].mask = 0x2000000;\n"+
@@ -1350,7 +1362,7 @@ public class Generator {
 				"	INT8U perr;";
 		
 		for(Function f : core.funcList){
-			if(core.index == 1 || !f.critical){
+			if(!f.critical){
 				s += "	OSTaskCreateExt(" + f + "_TASK, NULL,\n"+
 						"			&" + f + "_STACK[" + f + "_STACKSIZE - 1],\n"+
 						"			" + f + "_PRIORITY, " + f + "_PRIORITY,\n"+
@@ -1358,9 +1370,9 @@ public class Generator {
 						"			OS_TASK_OPT_STK_CLR);\n";
 			} else { /* critical tasks on core 0 */
 				s += "	OSTaskCreateExt(" + f + "_TASK, NULL,\n"+
-						"			(OS_STK *)0x"+ Integer.toHexString(getStackEnd(f,1)) +",\n"+
+						"			(OS_STK *)0x"+ Integer.toHexString(getStackEnd(f,1) & 0x3FFFFF) +",\n"+
 						"			" + f + "_PRIORITY, " + f + "_PRIORITY,\n"+
-						"			(OS_STK *)0x" + Integer.toHexString(getStackStart(f,1)) +", " + f + "_STACKSIZE, NULL,\n"+
+						"			(OS_STK *)0x" + Integer.toHexString(getStackStart(f,1) & 0x3FFFFF) +", " + f + "_STACKSIZE, NULL,\n"+
 						"			OS_TASK_OPT_STK_CLR);\n";
 			}
 			
@@ -1540,32 +1552,28 @@ public class Generator {
 	private String getResetMonitorString(Core core) {
 		String s = "";
 		
-		s += "/*****************************************************************************\n"+
-				" * Reset monitor interface\n"+
-				" *****************************************************************************/\n"+
-				"void resetCores(void) {\n"+
-				"	OSTaskDel(dma_PRIORITY);\n"+
-				"	int* cpu0_reset = (int*) PROCESSOR0_0_SW_RESET_0_BASE;\n"+
-				"	int* cpu1_reset = (int*) PROCESSOR1_0_SW_RESET_0_BASE;\n"+
-				"	*cpu0_reset = 1;\n"+
-				"	*cpu1_reset = 1;\n"+
-				"	coresReady = false;\n"+
-				"	taskFailed = true;\n"+
-				"	resetMonitorEnable();\n"+
-				"}\n"+
-				"static void handleResetMonitor(void* context) {\n"+
-				"	resetMonitorDisable();\n"+
-				"	coresReady = true;\n"+
-				"	if (taskFailed) {\n"+
-				"		taskFailed = false;\n"+
-				"\n"+
-				"		postDmaMessage(failedTaskID, true);\n"+
-				"\n"+
-				"		OSTaskCreateExt(dma_TASK, NULL, &dma_STACK[dma_STACKSIZE - 1], dma_PRIORITY,\n"+
-				"				dma_PRIORITY, dma_STACK, dma_STACKSIZE, NULL, OS_TASK_OPT_NONE);\n"+
-				"\n"+
-				"	}\n"+
-				"}\n"+
+		s += "/*****************************************************************************\n" + 
+				" * Reset monitor interface\n" + 
+				" *****************************************************************************/\n" + 
+				"void resetCores(void) {\n" + 
+				"	int* cpu0_reset = (int*) PROCESSOR0_0_SW_RESET_0_BASE;\n" + 
+				"	int* cpu1_reset = (int*) PROCESSOR1_0_SW_RESET_0_BASE;\n" + 
+				"	*cpu0_reset = 1;\n" + 
+				"	*cpu1_reset = 1;\n" + 
+				"	coresReady = false;\n" + 
+				"	taskFailed = true;\n" + 
+				"	resetMonitorEnable();\n" + 
+				"}\n" + 
+				"static void handleResetMonitor(void* context) {\n" + 
+				"	resetMonitorDisable();\n" + 
+				"	coresReady = true;\n" + 
+				"	if (taskFailed) {\n" + 
+				"		taskFailed = false;\n" + 
+				"\n" + 
+				"		postDmaMessage(failedTaskID, true);\n" + 
+				"\n" + 
+				"	}\n" + 
+				"}\n" + 
 				"\n"+
 				"static void initResetMonitorIsr(void) {\n"+
 				"	alt_ic_isr_register(\n"+
@@ -1592,19 +1600,21 @@ public class Generator {
 				"	//Assume static mapping of fingeprint tasks for now\n"+
 				"	//There is only one possible task that can set this off in this example\n"+
 				"	//---------------------------------------------------------------------\n"+
-				"	if (status.failed_reg) {\n"+
-				"		int i;\n"+
-				"		for (i = 0; i < 16; i++) {\n"+
-				"			INT32U mask;\n"+
-				"			if (status.failed_reg & (mask = 1 << i)) {\n"+
-				"				/* assume only one failure possible */\n"+
-				"				failedTaskID = REPOSgetTaskID(mask);\n"+
-				"				break;\n"+
-				"			}\n"+
-				"		}\n"+
-				"		resetCores();\n"+
-				"		REPOSInit(); /* ORDER MATTERS */\n"+
-				"	}\n"+
+				"	if (status.failed_reg) {\n" + 
+				"		int i;\n" + 
+				"		for (i = 0; i < 16; i++) {\n" + 
+				"			INT32U mask;\n" + 
+				"			if (status.failed_reg & (mask = 1 << i)) {\n" + 
+				"				/* assume only one failure possible */\n" + 
+				"				failedTaskID = REPOSgetTaskID(mask);\n" + 
+				"				REPOSTaskReset(failedTaskID);" + 
+				"				postDmaMessage(failedTaskID, true);\n" + 
+				"				break;\n" + 
+				"			}\n" + 
+				"		}\n" + 
+				"		// resetCores();\n" + 
+				"		// REPOSInit(); \n" + 
+				"	}"+
 				"\n"+
 				"	if ((result = status.successful_reg)) {\n"+
 				"\n"+
@@ -1659,16 +1669,17 @@ public class Generator {
 			//TODO hard coded!!!
 			String core0PhysSP = Integer.toHexString(getStackStart(f,0));
 			String core1PhysSP = Integer.toHexString(getStackStart(f,1));
-			String core0VirtSp = core1PhysSP;
-			String core1VirtSP = core1PhysSP;
+			String core0VirtSp = Integer.toHexString(getStackStart(f,1) & 0x3FFFFF);
+			String core1VirtSP = Integer.toHexString(getStackStart(f,1) & 0x3FFFFF);
 			s+= "	task = &REPOSTaskTable[" + funcIndex + "];\n"+
 					"\n"+
 					"	task->dataAddressPhys = &" + f + "PackageStruct;\n"+
+					"	task->dataAddressVirt = (void *)((int)&" + f + "PackageStruct & 0x3FFFFF);"+
 					"\n"+
 					"	task->stackAddressPhys[0] = (void *) (0x" + core0PhysSP + ");\n"+
 					"	task->stackAddressPhys[1] = (void *) (0x" + core1PhysSP + ");\n"+
 					"\n"+
-					"	task->stackAddressVirt[0] = (void *) (0x" + core0VirtSp + ");\n"+
+					"	task->stackAddressVirt[0] = (void *) (0x" + core0VirtSp  + ");\n"+
 					"	task->stackAddressVirt[1] = (void *) (0x" + core1VirtSP + ");\n"+
 					"\n"+
 					"	task->dataSize = sizeof(" + f + "PackageStruct" + ");\n"+
@@ -1763,7 +1774,7 @@ public class Generator {
 		for(Function f : fprintList){
 
 			String funcIndex = f.toString().toUpperCase() + "_TABLE_INDEX";
-			s += "	functionTable[" + funcIndex + "].args = &" + f + "PackageStruct;\n"+
+			s += "	functionTable[" + funcIndex + "].args =  (void *)((int)&" + f + "PackageStruct & 0x3FFFFF);\n"+
 					"	functionTable[" + funcIndex + "].blocksize = 0xfff;\n";			 
 		}
 		
@@ -1797,13 +1808,7 @@ public class Generator {
 		s += 	"	for (i = 0; i < CA_TABLE_NUM_TASKS; i++){\n" + 
 				"		comp_set_success_maxcount_value(i,1);\n" + 
 				"	}";
-		
-				
-//		s += "	for (i = 0; i < " + fprintList.size() + "; i++) {\n";
-		//TODO hard-coded!!
-	
-		
-//		s += "	}\n";
+		//TODO: no need to change maxcount without dataflow
 		
 		s += "	Core_Assignment_Table ca;\n"+
 				"	//Default table\n"+
@@ -1913,6 +1918,29 @@ public class Generator {
 				" 0x" + Integer.toString(newSize, 16) + "\n\n";
 		return cmd;
 
+	}
+
+	
+
+	private String getTaskRelocationString() {
+		String s = "/*****************************************************************************\n"+
+				" * Pointer relocation functions\n"+
+				" *****************************************************************************/\n";
+		
+		for(Function f : fprintList){
+			s += 	"void " + f + "UpdatePointers" + "(INT32U baseAddress, RT_MODEL_" + f + "_T *" + f + "_M){\n"+
+					"	" + f + "_M->ModelData.defaultParam = (P_" + f + "_T *)(baseAddress + sizeof(" + f  + "Struct));\n";
+			for(String dec : f.varDeclarations){
+				if(dec.contains("DW")){
+					s += "	" + f + "_M->ModelData.dwork = (DW_" + f + "_T *)(baseAddress + sizeof(" + f + "Struct) + sizeof(P_" + f + "_T));\n";
+					break;
+				}
+			}
+		
+		s += "}\n\n";
+		}
+		
+		return s;
 	}
 
 	

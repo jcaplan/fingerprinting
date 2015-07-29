@@ -303,7 +303,7 @@ void mem_manager_init(void) {
 	entry->tlbDataLine = 0;
 	entry->tlbStackLine = 1;
 	entry->stackPhysicalAddress = (void*)0x463000;
-	entry->stackVirtualAddress = (void*)0x0;
+	entry->stackVirtualAddress = (void*)0x63000;
 	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
 	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
 
@@ -316,7 +316,7 @@ void mem_manager_init(void) {
 	entry->tlbDataLine = 2;
 	entry->tlbStackLine = 3;
 	entry->stackPhysicalAddress = (void*)0x463000;
-	entry->stackVirtualAddress = (void*)0x0;
+	entry->stackVirtualAddress = (void*)0x63000;
 	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
 	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
 
@@ -329,7 +329,7 @@ void mem_manager_init(void) {
 	entry->tlbDataLine = 4;
 	entry->tlbStackLine = 5;
 	entry->stackPhysicalAddress = (void*)0x462000;
-	entry->stackVirtualAddress = (void*)0x0;
+	entry->stackVirtualAddress = (void*)0x62000;
 	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
 	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
 
@@ -385,26 +385,33 @@ void nios2_mpu_data_init() {
 	//monitor core - global_data
 	region[0].index = 0x0;
 	region[0].base = MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_BASE / 64;
-	region[0].mask = (0x431000) / 64;
+	region[0].mask = (0x432000) / 64;
 	region[0].c = 0;
 	region[0].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
 
 	//other core's region - stack
 	region[1].index = 0x1;
 	region[1].base = 0x464000/ 64;
-	region[1].mask = 0x494000/ 64;
+	region[1].mask = 0x496000/ 64;
 	region[1].c = 0;
 	region[1].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
 
 	//catch null pointers
 	region[2].index = 0x2;
 	region[2].base = 0x0;
-	region[2].mask = (MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_BASE) / 64;
+	region[2].mask = 0x31000 / 64;
 	region[2].c = 0;
 	region[2].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
 
+	//no scratchpad physical address
+	region[3].index = 0x3;
+	region[3].base = 0x4200000 / 64;
+	region[3].mask = 0x4208000 / 64;
+	region[3].c = 0;
+	region[3].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
+
 	int index;
-	for (index = 3; index < NIOS2_MPU_NUM_DATA_REGIONS; index++) {
+	for (index = 4; index < NIOS2_MPU_NUM_DATA_REGIONS; index++) {
 		region[index].base = 0x0;
 		region[index].index = index;
 		region[index].mask = 0x2000000;
@@ -460,6 +467,7 @@ int main() {
 	    &CollisionAvoidance_Y);
 
 
+
 	critical_SEM[0] = OSSemCreate(0);
 	critical_SEM[1] = OSSemCreate(0);
 	critical_SEM[2] = OSSemCreate(0);
@@ -479,21 +487,21 @@ int main() {
 	// -------------------
 
 	INT8U perr;	OSTaskCreateExt(AirbagModel_TASK, NULL,
-			&AirbagModel_STACK[AirbagModel_STACKSIZE - 1],
+			(OS_STK *)0x63f9c,
 			AirbagModel_PRIORITY, AirbagModel_PRIORITY,
-			AirbagModel_STACK, AirbagModel_STACKSIZE, NULL,
+			(OS_STK *)0x637d4, AirbagModel_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
 	OSTaskNameSet(AirbagModel_PRIORITY, (INT8U *)"AirbagModel", &perr);
 	OSTaskCreateExt(CruiseControlSystem_TASK, NULL,
-			&CruiseControlSystem_STACK[CruiseControlSystem_STACKSIZE - 1],
+			(OS_STK *)0x637d0,
 			CruiseControlSystem_PRIORITY, CruiseControlSystem_PRIORITY,
-			CruiseControlSystem_STACK, CruiseControlSystem_STACKSIZE, NULL,
+			(OS_STK *)0x63000, CruiseControlSystem_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
 	OSTaskNameSet(CruiseControlSystem_PRIORITY, (INT8U *)"CruiseControlSystem", &perr);
 	OSTaskCreateExt(TractionControl_TASK, NULL,
-			&TractionControl_STACK[TractionControl_STACKSIZE - 1],
+			(OS_STK *)0x627bc,
 			TractionControl_PRIORITY, TractionControl_PRIORITY,
-			TractionControl_STACK, TractionControl_STACKSIZE, NULL,
+			(OS_STK *)0x62000, TractionControl_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
 	OSTaskNameSet(TractionControl_PRIORITY, (INT8U *)"TractionControl", &perr);
 	OSTaskCreateExt(CollisionAvoidance_TASK, NULL,

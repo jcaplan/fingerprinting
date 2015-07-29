@@ -76,7 +76,7 @@ typedef struct Fprint_Status{
 
 void fprint_enable_task(int task_id);
 void fprint_disable_task(int task_id);
-void fprint_reset_irq(void);
+void comp_reset_irq(void);
 int comp_get_status(Fprint_Status* fps);
 void comp_set_core_assignment(int table_column, int core_id, int task_id);
 void comp_set_core_assignment_table(Core_Assignment_Table* ca);

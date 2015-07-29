@@ -96,7 +96,7 @@ bool comp_check_task_failed(int task, int failed_reg){
 }
 
 int comp_get_failed_core(int task, int failed_reg){
-	int mask = (0x3 << task);
+	int mask = (0x3 << (2*task));
 	return ((failed_reg & mask) >> task);
 }
 

@@ -263,9 +263,9 @@ ihwconnect       -instancename cpu0_fprint -bus cpu0_tlb_fprint_bus    -busslave
 
 # SW_RESET
 ihwconnect       -instancename sw_reset        -netport cpu0_reset   -net cpu0_reset1
-ihwconnect       -instancename cpu0            -netport reset_n      -net cpu0_reset1
-# ihwconnect 		 -instancename cpu0_fprint 	   -netport FPRINT_RESET -net cpu0_reset1;
-ihwconnect 		 -instancename cpu0_tlb 	   -netport TLB_RESET    -net cpu0_reset1;
+# ihwconnect       -instancename cpu0            -netport reset_n      -net cpu0_reset1
+ihwconnect 		 -instancename cpu0_fprint 	   -netport FPRINT_RESET -net cpu0_reset1;
+# ihwconnect 		 -instancename cpu0_tlb 	   -netport TLB_RESET    -net cpu0_reset1;
 
 
 
@@ -454,9 +454,9 @@ ihwconnect       -instancename cpu1_fprint -bus cpu1_tlb_fprint_bus    -busslave
 
 #SW_RESET
 ihwconnect       -instancename sw_reset        -netport cpu1_reset   -net cpu1_reset1
-ihwconnect       -instancename cpu1            -netport reset_n      -net cpu1_reset1
+# ihwconnect       -instancename cpu1            -netport reset_n      -net cpu1_reset1
 ihwconnect 		 -instancename cpu1_fprint 	   -netport FPRINT_RESET -net cpu1_reset1;
-ihwconnect 		 -instancename cpu1_tlb 	   -netport TLB_RESET    -net cpu1_reset1;
+# ihwconnect 		 -instancename cpu1_tlb 	   -netport TLB_RESET    -net cpu1_reset1;
 
 
 ###############################################################################

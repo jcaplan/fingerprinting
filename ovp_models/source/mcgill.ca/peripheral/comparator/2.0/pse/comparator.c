@@ -63,9 +63,7 @@ int check_fprint(int task){
     if(fprint[0][task] != fprint[1][task]){
         test = 0;
     }
-    if(diagnosticLevel == 3){
-        bhmPrintf("task %d fprint %x and %x match\n",task,fprint[0][task],fprint[1][task]);
-    }
+
   
     for(i = 0; i < 2; i++){
         fprintsReady[i][task] = 0;
@@ -96,6 +94,9 @@ void do_comparison(void){
             mismatch_occurred(task);
             bhmPrintf("comparison failed!\n");
         } else {
+            if(diagnosticLevel == 3){
+                bhmPrintf("task %d fprint %x and %x match\n",task,fprint[0][task],fprint[1][task]);
+            }
             fprintsReady[0][task] = 0;
             fprintsReady[0][task] = 0;       
         }
@@ -116,6 +117,7 @@ void checkTaskComplete(int task){
             bhmPrintf("success task %d, successReg = %d!\n",task, successReg);
             ppmWriteNet(handles.COMP_IRQ, 1);
          } else {
+            bhmPrintf("COMPARATOR: task counter %d wrong (should be %d)!\n",taskCounter[task],successCounterReg[task]);
             mismatch_occurred(task);
         }
     }
@@ -142,8 +144,10 @@ PPM_REG_WRITE_CB(currentStateWrite) {
     unsigned taskID = fprintData->currentState.bits.taskID;
     switch(fprintData->currentState.bits.enable){        
     case 0:
-        checkin[coreID][taskID] = 1;
-        checkTaskComplete(taskID);
+        if(checkout[coreID][taskID]){
+            checkin[coreID][taskID] = 1;
+            checkTaskComplete(taskID);
+        }
         break;
     case 1:
         checkout[coreID][taskID] = 1;

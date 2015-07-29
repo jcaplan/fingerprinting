@@ -50,6 +50,7 @@ struct REPOS_task {
 	INT32U core[2];
 
 	void *dataAddressPhys;
+	void *dataAddressVirt;
 	void *dataAddressSP[2];
 	int dataSize;
 	void *stackAddressPhys[2];
@@ -111,6 +112,7 @@ extern void REPOSInit(void);
 void REPOS_sendDMA(INT32U message);
 void REPOSgetScratchpadPage(int coreID,REPOS_task *task);
 void REPOSTaskComplete(int taskID);
+void REPOSTaskReset(int taskID);
 
 #define BOTH_CORES_LOADED 				0
 #define CORE0_REQUIRES_TRANSFER 		1
@@ -122,4 +124,5 @@ int REPOSgetFreeFprintID(REPOS_task *task);
 int REPOSgetTaskID(int fprintIDMask);
 void REPOSBeginTask(REPOS_task *task);
 void REPOSCheckPreemption(int coreID, int newTask);
+
 #endif /* REPOS_H_ */

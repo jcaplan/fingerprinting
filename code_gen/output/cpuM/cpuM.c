@@ -128,10 +128,31 @@ CriticalFunctionData critFuncData[NUMCORES] __attribute__ ((section (".shared"))
 
 
 /*****************************************************************************
+ * Pointer relocation functions
+ *****************************************************************************/
+void AirbagModelUpdatePointers(INT32U baseAddress, RT_MODEL_AirbagModel_T *AirbagModel_M){
+	AirbagModel_M->ModelData.defaultParam = (P_AirbagModel_T *)(baseAddress + sizeof(AirbagModelStruct));
+	AirbagModel_M->ModelData.dwork = (DW_AirbagModel_T *)(baseAddress + sizeof(AirbagModelStruct) + sizeof(P_AirbagModel_T));
+}
+
+void CruiseControlSystemUpdatePointers(INT32U baseAddress, RT_MODEL_CruiseControlSystem_T *CruiseControlSystem_M){
+	CruiseControlSystem_M->ModelData.defaultParam = (P_CruiseControlSystem_T *)(baseAddress + sizeof(CruiseControlSystemStruct));
+	CruiseControlSystem_M->ModelData.dwork = (DW_CruiseControlSystem_T *)(baseAddress + sizeof(CruiseControlSystemStruct) + sizeof(P_CruiseControlSystem_T));
+}
+
+void TractionControlUpdatePointers(INT32U baseAddress, RT_MODEL_TractionControl_T *TractionControl_M){
+	TractionControl_M->ModelData.defaultParam = (P_TractionControl_T *)(baseAddress + sizeof(TractionControlStruct));
+}
+
+
+
+
+
+
+/*****************************************************************************
  * Reset monitor interface
  *****************************************************************************/
 void resetCores(void) {
-	OSTaskDel(dma_PRIORITY);
 	int* cpu0_reset = (int*) PROCESSOR0_0_SW_RESET_0_BASE;
 	int* cpu1_reset = (int*) PROCESSOR1_0_SW_RESET_0_BASE;
 	*cpu0_reset = 1;
@@ -147,9 +168,6 @@ static void handleResetMonitor(void* context) {
 		taskFailed = false;
 
 		postDmaMessage(failedTaskID, true);
-
-		OSTaskCreateExt(dma_TASK, NULL, &dma_STACK[dma_STACKSIZE - 1], dma_PRIORITY,
-				dma_PRIORITY, dma_STACK, dma_STACKSIZE, NULL, OS_TASK_OPT_NONE);
 
 	}
 }
@@ -185,13 +203,13 @@ static void handleComp(void* context) {
 			if (status.failed_reg & (mask = 1 << i)) {
 				/* assume only one failure possible */
 				failedTaskID = REPOSgetTaskID(mask);
+				REPOSTaskReset(failedTaskID);				postDmaMessage(failedTaskID, true);
 				break;
 			}
 		}
-		resetCores();
-		REPOSInit(); /* ORDER MATTERS */
+		// resetCores();
+		// REPOSInit(); 
 	}
-
 	if ((result = status.successful_reg)) {
 
 		//figure out what task is complete
@@ -241,12 +259,12 @@ void initializeTaskTable(void) {
 	task = &REPOSTaskTable[AIRBAGMODEL_TABLE_INDEX];
 
 	task->dataAddressPhys = &AirbagModelPackageStruct;
-
+	task->dataAddressVirt = (void *)((int)&AirbagModelPackageStruct & 0x3FFFFF);
 	task->stackAddressPhys[0] = (void *) (0x4957d4);
 	task->stackAddressPhys[1] = (void *) (0x4637d4);
 
-	task->stackAddressVirt[0] = (void *) (0x4637d4);
-	task->stackAddressVirt[1] = (void *) (0x4637d4);
+	task->stackAddressVirt[0] = (void *) (0x637d4);
+	task->stackAddressVirt[1] = (void *) (0x637d4);
 
 	task->dataSize = sizeof(AirbagModelPackageStruct);
 	task->stackSize = (AirbagModel_STACKSIZE * 4);
@@ -254,12 +272,12 @@ void initializeTaskTable(void) {
 	task = &REPOSTaskTable[CRUISECONTROLSYSTEM_TABLE_INDEX];
 
 	task->dataAddressPhys = &CruiseControlSystemPackageStruct;
-
+	task->dataAddressVirt = (void *)((int)&CruiseControlSystemPackageStruct & 0x3FFFFF);
 	task->stackAddressPhys[0] = (void *) (0x495000);
 	task->stackAddressPhys[1] = (void *) (0x463000);
 
-	task->stackAddressVirt[0] = (void *) (0x463000);
-	task->stackAddressVirt[1] = (void *) (0x463000);
+	task->stackAddressVirt[0] = (void *) (0x63000);
+	task->stackAddressVirt[1] = (void *) (0x63000);
 
 	task->dataSize = sizeof(CruiseControlSystemPackageStruct);
 	task->stackSize = (CruiseControlSystem_STACKSIZE * 4);
@@ -267,12 +285,12 @@ void initializeTaskTable(void) {
 	task = &REPOSTaskTable[TRACTIONCONTROL_TABLE_INDEX];
 
 	task->dataAddressPhys = &TractionControlPackageStruct;
-
+	task->dataAddressVirt = (void *)((int)&TractionControlPackageStruct & 0x3FFFFF);
 	task->stackAddressPhys[0] = (void *) (0x494000);
 	task->stackAddressPhys[1] = (void *) (0x462000);
 
-	task->stackAddressVirt[0] = (void *) (0x462000);
-	task->stackAddressVirt[1] = (void *) (0x462000);
+	task->stackAddressVirt[0] = (void *) (0x62000);
+	task->stackAddressVirt[1] = (void *) (0x62000);
 
 	task->dataSize = sizeof(TractionControlPackageStruct);
 	task->stackSize = (TractionControl_STACKSIZE * 4);
@@ -389,11 +407,11 @@ int main(void) {
 
 	//Initialize the Function Table
 	//-----------------------------
-	functionTable[AIRBAGMODEL_TABLE_INDEX].args = &AirbagModelPackageStruct;
+	functionTable[AIRBAGMODEL_TABLE_INDEX].args =  (void *)((int)&AirbagModelPackageStruct & 0x3FFFFF);
 	functionTable[AIRBAGMODEL_TABLE_INDEX].blocksize = 0xfff;
-	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].args = &CruiseControlSystemPackageStruct;
+	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].args =  (void *)((int)&CruiseControlSystemPackageStruct & 0x3FFFFF);
 	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].blocksize = 0xfff;
-	functionTable[TRACTIONCONTROL_TABLE_INDEX].args = &TractionControlPackageStruct;
+	functionTable[TRACTIONCONTROL_TABLE_INDEX].args =  (void *)((int)&TractionControlPackageStruct & 0x3FFFFF);
 	functionTable[TRACTIONCONTROL_TABLE_INDEX].blocksize = 0xfff;
 	//Initialize the runtime interface
 	REPOSInit();
@@ -445,19 +463,17 @@ int main(void) {
 	Derivative_M->ModelData.defaultParam = &Derivative_P;
 	Derivative_M->ModelData.dwork = &Derivative_DW;
 	Derivative_initialize(Derivative_M, &Derivative_U, &Derivative_Y);
+
+
 	RT_MODEL_AirbagModel_T *AirbagModel_M =
 			&AirbagModelPackageStruct.AirbagModel_STRUCT.AirbagModel_M;
 	ExtU_AirbagModel_T *AirbagModel_U =
 			&AirbagModelPackageStruct.AirbagModel_STRUCT.AirbagModel_U;
 	ExtY_AirbagModel_T *AirbagModel_Y =
 			&AirbagModelPackageStruct.AirbagModel_STRUCT.AirbagModel_Y;
-	P_AirbagModel_T *AirbagModel_P =
-			&AirbagModelPackageStruct.AirbagModel_P;
-	DW_AirbagModel_T *AirbagModel_DW =
-			&AirbagModelPackageStruct.AirbagModel_DW;
-	AirbagModel_M->ModelData.defaultParam = AirbagModel_P;
-	AirbagModel_M->ModelData.dwork = AirbagModel_DW;
+	AirbagModelUpdatePointers((INT32U)&AirbagModelPackageStruct, AirbagModel_M);
 	AirbagModel_initialize(AirbagModel_M, AirbagModel_U, AirbagModel_Y);
+	AirbagModelUpdatePointers((INT32U)&AirbagModelPackageStruct & 0x3FFFFF, AirbagModel_M);
 
 	RT_MODEL_CruiseControlSystem_T *CruiseControlSystem_M =
 			&CruiseControlSystemPackageStruct.CruiseControlSystem_STRUCT.CruiseControlSystem_M;
@@ -465,15 +481,9 @@ int main(void) {
 			&CruiseControlSystemPackageStruct.CruiseControlSystem_STRUCT.CruiseControlSystem_U;
 	ExtY_CruiseControlSystem_T *CruiseControlSystem_Y =
 			&CruiseControlSystemPackageStruct.CruiseControlSystem_STRUCT.CruiseControlSystem_Y;
-	P_CruiseControlSystem_T *CruiseControlSystem_P =
-			&CruiseControlSystemPackageStruct.CruiseControlSystem_P;
-	DW_CruiseControlSystem_T *CruiseControlSystem_DW =
-			&CruiseControlSystemPackageStruct.CruiseControlSystem_DW;
-	CruiseControlSystem_M->ModelData.defaultParam = CruiseControlSystem_P;
-	CruiseControlSystem_M->ModelData.dwork = CruiseControlSystem_DW;
-	CruiseControlSystem_initialize(CruiseControlSystem_M, CruiseControlSystem_U,
-	    CruiseControlSystem_Y);
-
+	CruiseControlSystemUpdatePointers((INT32U)&CruiseControlSystemPackageStruct, CruiseControlSystem_M);
+	CruiseControlSystem_initialize(CruiseControlSystem_M, CruiseControlSystem_U, CruiseControlSystem_Y);
+	CruiseControlSystemUpdatePointers((INT32U)&CruiseControlSystemPackageStruct & 0x3FFFFF, CruiseControlSystem_M);
 
 	RT_MODEL_TractionControl_T *TractionControl_M =
 			&TractionControlPackageStruct.TractionControl_STRUCT.TractionControl_M;
@@ -481,12 +491,9 @@ int main(void) {
 			&TractionControlPackageStruct.TractionControl_STRUCT.TractionControl_U;
 	ExtY_TractionControl_T *TractionControl_Y =
 			&TractionControlPackageStruct.TractionControl_STRUCT.TractionControl_Y;
-	P_TractionControl_T *TractionControl_P =
-			&TractionControlPackageStruct.TractionControl_P;
-	TractionControl_M->ModelData.defaultParam = TractionControl_P;
-	TractionControl_initialize(TractionControl_M, TractionControl_U,
-	    TractionControl_Y);
-
+	TractionControlUpdatePointers((INT32U)&TractionControlPackageStruct, TractionControl_M);
+	TractionControl_initialize(TractionControl_M, TractionControl_U, TractionControl_Y);
+	TractionControlUpdatePointers((INT32U)&TractionControlPackageStruct & 0x3FFFFF, TractionControl_M);
 
 	//-------------------------------------------
 	INT8U perr;

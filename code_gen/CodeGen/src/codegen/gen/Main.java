@@ -100,13 +100,7 @@ public class Main {
 		Generator gen = new Generator(config);
 		gen.generateCores();
 		gen.printStackResults();
-		// ps.close();
-		// ps2.close();
 
-		/*
-		 * the next step is to parse the directories and find all the necessary
-		 * files, check types, existence of variables etc...
-		 */
 
 	}
 }

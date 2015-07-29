@@ -33,7 +33,10 @@ fprintStruct fprint[NUMCORES];
 	
 void enableFingerprinting(Uns32 coreID, Uns32 taskID){
 
+
 	fprintStruct *fp = &fprint[coreID];
+
+	fp->fprint[fp->pause_index] = 0; /* this is like the select signal */
 	fp->currentTask = taskID & 0xf;
 	fp->fprintEnabled = true;
 	Uns32 address = COMPARATOR_BASE_ADDRESS;
@@ -105,14 +108,14 @@ void fprintReset(Uns32 coreID){
 
 	fprintStruct *fp = &fprint[coreID];
 
-	vmiPrintf("Resetting Fprint %d!\n",coreID);
-	int i;
-	for(i = 0; i < 8; i++){
-		fp->fprint[i] = 0;
-		fp->currentState[i] = 0;
-	}
+	vmiPrintf("software Resetting Fprint %d!\n",coreID);
+	// int i;
+	// for(i = 0; i < 8; i++){
+	// 	fp->fprint[i] = 0;
+	// 	fp->currentState[i] = 0;
+	// }
 	fp->fprint_old = 0;
-	fp->pauseReg = 0;
+	// fp->pauseReg = 0;
 	fp->pause_index = 0;
 	fp->mode = 0;
 
@@ -125,20 +128,26 @@ void fprintReset(Uns32 coreID){
 void fprintPauseStrobe(int coreID) {
 	fprintStruct *fp = &fprint[coreID];
 	if(fp->fprintEnabled){
+		vmiPrintf("pause %d!\n",coreID);
 		fp->fprint[fp->pause_index] = fp->fprint_old;
 		fp->currentState[fp->pause_index] = fp->currentTask;
 		fp->pause_index++;
 		fp->fprint[fp->pause_index] = 0;
 		fp->currentTask = 0;
+		fp->fprintEnabled = false;
 	}
 }
 
 void fprintUnpauseStrobe(int coreID) {
 	fprintStruct *fp = &fprint[coreID];
 	//~pause_task_reg[paused_cs_tos]
+	vmiPrintf("unpause %d, index %d, pauseReg %d, currentState[pauseindex-1] %d!\n",
+		coreID,fp->pause_index,fp->pauseReg,fp->currentState[0]);	
 	if(fp->pause_index > 0 && !(fp->pauseReg & (1 << fp->currentState[fp->pause_index-1]))){
+
   		fp->pause_index--;
 		fp->currentTask = fp->currentState[fp->pause_index];	
+		fp->fprintEnabled = true;
     }
 }
 

@@ -72,8 +72,8 @@ public class Function implements Comparable<Function>{
 		if(! (o instanceof Function)){
 			return false;
 		}
-		Function f = (Function) o;
-		return f.name.equals(this.name);
+		Function name = (Function) o;
+		return name.name.equals(this.name);
 		
 	}
 
@@ -96,6 +96,7 @@ public class Function implements Comparable<Function>{
 			}
 			init += s + "\n";
 		}
+		init += "\n";
 		return init;
 		
 	}
@@ -109,26 +110,13 @@ public class Function implements Comparable<Function>{
 				"			&" + this + "PackageStruct." + this + "_STRUCT." + this + "_U;\n";
 		init += "	ExtY_" + this + "_T *" + this + "_Y =\n"+
 				"			&" + this + "PackageStruct." + this + "_STRUCT." + this + "_Y;\n";
-		init += "	P_" + this + "_T *" + this + "_P =\n"+
-				"			&" +  this + "PackageStruct." + this + "_P;\n";
-		for (String s : initialization){
-			if(s.contains("DW")){
-				init += "	DW_" + this + "_T *" + this + "_DW =\n"+
-						"			&" + this + "PackageStruct." + this + "_DW;\n";
-				break;
-			}
-		}
-		for(String s : initialization){
-			
-			
-			s = s.replaceAll("&", "");
-			
-			
-			for(int i = 0; i < tab; i++){
-				init += "\t";
-			}
-			init += s + "\n";
-		}
+
+		init += "	" + name + "UpdatePointers((INT32U)&" + name + "PackageStruct" + ", " + name + "_M);\n";
+		
+		init += "	" + name + "_initialize(" + name + "_M, " + name + "_U, " + name + "_Y);\n";
+
+		init += "	" + name + "UpdatePointers((INT32U)&" + name + "PackageStruct" + " & 0x3FFFFF, " + name + "_M);\n";
+		
 		init += "\n";
 		return init;
 	}

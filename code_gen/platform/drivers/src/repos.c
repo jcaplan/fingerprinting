@@ -186,3 +186,17 @@ void REPOSCheckPreemption(int coreID, int newTask) {
 		// 		coreID);
 	}
 }
+
+void REPOSTaskReset(int taskID){
+	REPOSTaskComplete(taskID);
+	int i, j;
+	for (i = 0; i < 2; i++){
+		REPOS_core *core = &REPOSCoreTable[i];
+		for(j = 0; j < 2; j++){
+			if(core->scratchpadValid[i][j]
+				&& core->scratchpadTask[i][j] == taskID){
+				core->scratchpadValid[i][j] = false;
+			}
+		}
+	}
+}

@@ -104,7 +104,7 @@ void dma_TASK(void* pdata) {
 				critFuncData[core].tableIndex = taskID;
 				critFuncData[core].tlbDataAddressPhys =
 						task->dataAddressSP[core];
-				critFuncData[core].tlbDataAddressVirt = task->dataAddressPhys;
+				critFuncData[core].tlbDataAddressVirt = task->dataAddressVirt;
 				critFuncData[core].tlbStackAddressPhys =
 						task->stackAddressSP[core];
 				/* both cores share the core 1 physical address */

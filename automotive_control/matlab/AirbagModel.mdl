@@ -16,7 +16,7 @@ Model {
       BusOutputAsStruct	      "off"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.11"
+    ComputedModelVersion    "1.12"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -49,7 +49,7 @@ Model {
       $ObjectID		      3
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [472.0, 51.0, 808.0, 527.0]
+      Location		      [47.0, 24.0, 1319.0, 744.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		4
@@ -73,9 +73,9 @@ Model {
 	IsActive		[1]
 	ViewObjType		"SimulinkTopLevel"
 	LoadSaveID		"0"
-	Extents			[768.0, 354.0]
+	Extents			[1283.0, 601.0]
 	ZoomFactor		[1.25]
-	Offset			[159.48541666666662, 78.066666666666691]
+	Offset			[159.48541666666671, 78.066666666666691]
       }
     }
   }
@@ -83,11 +83,11 @@ Model {
   Creator		  "gwilli10"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
-  LastModifiedBy	  "jonah.caplan"
+  LastModifiedBy	  "jonah"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon May 04 13:22:25 2015"
-  RTWModifiedTimeStamp	  352646542
-  ModelVersionFormat	  "1.%<AutoIncrement:11>"
+  LastModifiedDate	  "Tue Jul 28 10:33:48 2015"
+  RTWModifiedTimeStamp	  359944948
+  ModelVersionFormat	  "1.%<AutoIncrement:12>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -119,6 +119,13 @@ Model {
   SnapshotBufferSize	  10
   SnapshotInterval	  10
   NumberOfLastSnapshots	  0
+  RTW.FcnDefault {
+    $PropName		    "RTWFcnClass"
+    $ObjectID		    7
+    Name		    "Auto"
+    FunctionName	    "AirbagModel_step"
+    InitFunctionName	    "AirbagModel_initialize"
+  }
   LinearizationMsg	  "none"
   Profile		  off
   ParamWorkspaceSource	  "MATLABWorkspace"
@@ -128,7 +135,7 @@ Model {
   TryForcingSFcnDF	  off
   Object {
     $PropName		    "DataLoggingOverride"
-    $ObjectID		    7
+    $ObjectID		    8
     $ClassName		    "Simulink.SimulationData.ModelLoggingInfo"
     model_		    "AirbagModel_inprogress"
     overrideMode_	    [0.0]
@@ -193,13 +200,13 @@ Model {
     Type		    "Handle"
     Dimension		    1
     Simulink.ConfigSet {
-      $ObjectID		      8
+      $ObjectID		      9
       Version		      "1.15.0"
       Array {
 	Type			"Handle"
 	Dimension		9
 	Simulink.SolverCC {
-	  $ObjectID		  9
+	  $ObjectID		  10
 	  Version		  "1.15.0"
 	  StartTime		  "0.0"
 	  StopTime		  "10.0"
@@ -234,7 +241,7 @@ Model {
 	  InsertRTBMode		  "Whenever possible"
 	}
 	Simulink.DataIOCC {
-	  $ObjectID		  10
+	  $ObjectID		  11
 	  Version		  "1.15.0"
 	  Decimation		  "1"
 	  ExternalInput		  "[t, u]"
@@ -267,7 +274,7 @@ Model {
 	  Refine		  "1"
 	}
 	Simulink.OptimizationCC {
-	  $ObjectID		  11
+	  $ObjectID		  12
 	  Version		  "1.15.0"
 	  BlockReduction	  on
 	  BooleanDataType	  on
@@ -280,8 +287,8 @@ Model {
 	  InlineInvariantSignals  off
 	  OptimizeBlockIOStorage  on
 	  BufferReuse		  on
-	  EnhancedBackFolding	  off
-	  CachingGlobalReferences off
+	  EnhancedBackFolding	  on
+	  CachingGlobalReferences on
 	  GlobalBufferReuse	  on
 	  StrengthReduction	  off
 	  ExpressionFolding	  on
@@ -311,7 +318,7 @@ Model {
 	  AccelVerboseBuild	  off
 	}
 	Simulink.DebuggingCC {
-	  $ObjectID		  12
+	  $ObjectID		  13
 	  Version		  "1.15.0"
 	  RTPrefix		  "error"
 	  ConsistencyChecking	  "none"
@@ -400,7 +407,7 @@ Model {
 	  IntegerSaturationMsg	  "warning"
 	}
 	Simulink.HardwareCC {
-	  $ObjectID		  13
+	  $ObjectID		  14
 	  Version		  "1.15.0"
 	  ProdBitPerChar	  8
 	  ProdBitPerShort	  16
@@ -411,9 +418,9 @@ Model {
 	  ProdBitPerDouble	  64
 	  ProdBitPerPointer	  32
 	  ProdLargestAtomicInteger "Char"
-	  ProdLargestAtomicFloat  "None"
-	  ProdIntDivRoundTo	  "Floor"
-	  ProdEndianess		  "LittleEndian"
+	  ProdLargestAtomicFloat  "Float"
+	  ProdIntDivRoundTo	  "Undefined"
+	  ProdEndianess		  "Unspecified"
 	  ProdWordSize		  32
 	  ProdShiftRightIntArith  on
 	  ProdLongLongMode	  off
@@ -421,26 +428,26 @@ Model {
 	  TargetBitPerChar	  8
 	  TargetBitPerShort	  16
 	  TargetBitPerInt	  32
-	  TargetBitPerLong	  32
+	  TargetBitPerLong	  64
 	  TargetBitPerLongLong	  64
 	  TargetBitPerFloat	  32
 	  TargetBitPerDouble	  64
-	  TargetBitPerPointer	  32
+	  TargetBitPerPointer	  64
 	  TargetLargestAtomicInteger "Char"
-	  TargetLargestAtomicFloat "None"
+	  TargetLargestAtomicFloat "Float"
 	  TargetShiftRightIntArith on
-	  TargetLongLongMode	  off
-	  TargetIntDivRoundTo	  "Undefined"
+	  TargetLongLongMode	  on
+	  TargetIntDivRoundTo	  "Zero"
 	  TargetEndianess	  "LittleEndian"
-	  TargetWordSize	  32
+	  TargetWordSize	  64
 	  TargetPreprocMaxBitsSint 32
 	  TargetPreprocMaxBitsUint 32
-	  TargetHWDeviceType	  "Generic->32-bit Embedded Processor"
+	  TargetHWDeviceType	  "MATLAB Host"
 	  TargetUnknown		  off
-	  ProdEqTarget		  on
+	  ProdEqTarget		  off
 	}
 	Simulink.ModelReferenceCC {
-	  $ObjectID		  14
+	  $ObjectID		  15
 	  Version		  "1.15.0"
 	  UpdateModelReferenceTargets "IfOutOfDateOrStructuralChange"
 	  CheckModelReferenceTargetMessage "error"
@@ -455,7 +462,7 @@ Model {
 	  SupportModelReferenceSimTargetCustomCode off
 	}
 	Simulink.SFSimCC {
-	  $ObjectID		  15
+	  $ObjectID		  16
 	  Version		  "1.15.0"
 	  SFSimOverflowDetection  on
 	  SFSimEcho		  on
@@ -468,7 +475,7 @@ Model {
 	}
 	Simulink.RTWCC {
 	  $BackupClass		  "Simulink.RTWCC"
-	  $ObjectID		  16
+	  $ObjectID		  17
 	  Version		  "1.15.0"
 	  SystemTargetFile	  "ert.tlc"
 	  TLCOptions		  ""
@@ -520,6 +527,13 @@ Model {
 	  GenerateCodeReplacementReport	off
 	  GenerateMissedCodeReplacementReport off
 	  RTWCompilerOptimization "off"
+	  Array {
+	    Type		    "Cell"
+	    Dimension		    2
+	    Cell		    "MISRA-C:2004 guidelines"
+	    Cell		    "Safety precaution"
+	    PropName		    "ObjectivePriorities"
+	  }
 	  RTWCustomCompilerOptimizations ""
 	  CheckMdlBeforeBuild	  "Off"
 	  SharedConstantsCachingThreshold 1024
@@ -527,7 +541,7 @@ Model {
 	    Type		    "Handle"
 	    Dimension		    2
 	    Simulink.CodeAppCC {
-	      $ObjectID		      17
+	      $ObjectID		      18
 	      Version		      "1.15.0"
 	      ForceParamTrailComments off
 	      GenerateComments	      on
@@ -570,7 +584,7 @@ Model {
 	    }
 	    Simulink.ERTTargetCC {
 	      $BackupClass	      "Simulink.TargetCC"
-	      $ObjectID		      18
+	      $ObjectID		      19
 	      Version		      "1.15.0"
 	      TargetFcnLib	      "ansi_tfl_table_tmw.mat"
 	      TargetLibSuffix	      ""
@@ -643,14 +657,14 @@ Model {
 	      EnableDataOwnership     off
 	      SignalDisplayLevel      10
 	      ParamTuneLevel	      10
-	      GlobalDataDefinition    "InSeparateSourceFile"
+	      GlobalDataDefinition    "Auto"
 	      DataDefinitionFile      "global.c"
-	      GlobalDataReference     "InSeparateHeaderFile"
-	      ERTFilePackagingFormat  "CompactWithDataFile"
+	      GlobalDataReference     "Auto"
+	      ERTFilePackagingFormat  "Modular"
 	      DataReferenceFile	      "global.h"
 	      PreserveExpressionOrder off
 	      PreserveIfCondition     off
-	      ConvertIfToSwitch	      on
+	      ConvertIfToSwitch	      off
 	      PreserveExternInFcnDecls on
 	      SuppressUnreachableDefaultCases off
 	      EnableSignedLeftShifts  on
@@ -700,7 +714,7 @@ Model {
 	  }
 	}
 	hdlcoderui.hdlcc {
-	  $ObjectID		  19
+	  $ObjectID		  20
 	  Version		  "1.15.0"
 	  Description		  "HDL Coder custom configuration component"
 	  Name			  "HDL Coder"
@@ -717,17 +731,17 @@ Model {
       Name		      "Configuration"
       ExtraOptions	      "-aGenerateTraceInfo=0 -aIgnoreTestpoints=0 "
       CurrentDlgPage	      "Code Generation"
-      ConfigPrmDlgPosition     [ 0, 0, 1088, 700 ] 
+      ConfigPrmDlgPosition     [ 309, 79, 1239, 639 ] 
     }
     PropName		    "ConfigurationSets"
   }
   Simulink.ConfigSet {
     $PropName		    "ActiveConfigurationSet"
-    $ObjectID		    8
+    $ObjectID		    9
   }
   Object {
     $PropName		    "DataTransfer"
-    $ObjectID		    20
+    $ObjectID		    21
     $ClassName		    "Simulink.GlobalDataTransfer"
     DefaultTransitionBetweenSyncTasks "Ensure deterministic transfer (maximum delay)"
     DefaultTransitionBetweenAsyncTasks "Ensure data integrity only"
@@ -882,7 +896,7 @@ Model {
   }
   System {
     Name		    "AirbagModel"
-    Location		    [472, 51, 1280, 578]
+    Location		    [47, 24, 1366, 768]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -904,6 +918,7 @@ Model {
       Position		      [220, 183, 250, 197]
       ZOrder		      14
       IconDisplay	      "Port number"
+      OutDataTypeStr	      "single"
     }
     Block {
       BlockType		      Reference

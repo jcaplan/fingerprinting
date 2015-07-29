@@ -11,7 +11,7 @@ b handleCPU
 continue
 set itrace change
 diagnostics cpu0_fprint 3
-b _start
+b alt_exception
 continue
 
 

@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20150205.0
-//                          Thu Jul 23 17:45:01 2015
+//                          Wed Jul 29 15:23:47 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1315,15 +1315,6 @@ void platformConstructor(void) {
     icmConnectPSENet( handles.cpu0_fprint_p, handles.fprint_write_data_0_n, "FPRINT_WRITE_DATA", 0);
 
 ////////////////////////////////////////////////////////////////////////////////
-    handles.cpu0_reset1_n = icmNewNet("handles.cpu0_reset1_n" );
-
-    icmConnectProcessorNet( handles.cpu0_c, handles.cpu0_reset1_n, "reset_n", 0);
-
-    icmConnectPSENet( handles.sw_reset_p, handles.cpu0_reset1_n, "cpu0_reset", 0);
-
-    icmConnectPSENet( handles.cpu0_tlb_p, handles.cpu0_reset1_n, "TLB_RESET", 0);
-
-////////////////////////////////////////////////////////////////////////////////
     handles.cpu1_irq3_n = icmNewNet("handles.cpu1_irq3_n" );
 
     icmConnectProcessorNet( handles.cpu1_c, handles.cpu1_irq3_n, "d_irq3", 0);
@@ -1364,17 +1355,6 @@ void platformConstructor(void) {
     icmConnectProcessorNet( handles.cpu1_c, handles.fprint_write_data_1_n, "fprint_write_out_data", 0);
 
     icmConnectPSENet( handles.cpu1_fprint_p, handles.fprint_write_data_1_n, "FPRINT_WRITE_DATA", 0);
-
-////////////////////////////////////////////////////////////////////////////////
-    handles.cpu1_reset1_n = icmNewNet("handles.cpu1_reset1_n" );
-
-    icmConnectProcessorNet( handles.cpu1_c, handles.cpu1_reset1_n, "reset_n", 0);
-
-    icmConnectPSENet( handles.sw_reset_p, handles.cpu1_reset1_n, "cpu1_reset", 0);
-
-    icmConnectPSENet( handles.cpu1_tlb_p, handles.cpu1_reset1_n, "TLB_RESET", 0);
-
-    icmConnectPSENet( handles.cpu1_fprint_p, handles.cpu1_reset1_n, "FPRINT_RESET", 0);
 
 ////////////////////////////////////////////////////////////////////////////////
     handles.cpum_irq4_n = icmNewNet("handles.cpum_irq4_n" );
@@ -1424,4 +1404,18 @@ void platformConstructor(void) {
     icmConnectProcessorNet( handles.cpum_c, handles.cpum_notify1_n, "d_irq13", 0);
 
     icmConnectPSENet( handles.reset_monitor_p, handles.cpum_notify1_n, "cpum_notify", 0);
+
+////////////////////////////////////////////////////////////////////////////////
+    handles.cpu0_reset1_n = icmNewNet("handles.cpu0_reset1_n" );
+
+    icmConnectPSENet( handles.sw_reset_p, handles.cpu0_reset1_n, "cpu0_reset", 0);
+
+    icmConnectPSENet( handles.cpu0_fprint_p, handles.cpu0_reset1_n, "FPRINT_RESET", 0);
+
+////////////////////////////////////////////////////////////////////////////////
+    handles.cpu1_reset1_n = icmNewNet("handles.cpu1_reset1_n" );
+
+    icmConnectPSENet( handles.sw_reset_p, handles.cpu1_reset1_n, "cpu1_reset", 0);
+
+    icmConnectPSENet( handles.cpu1_fprint_p, handles.cpu1_reset1_n, "FPRINT_RESET", 0);
 }

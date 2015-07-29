@@ -1,9 +1,9 @@
-proc cpum
-b handleComp
 proc cpu0
 b *0x464340
 continue
 proc cpu0
-disable 2
+disable 1
 set extreg R3 0xffffe9
+proc comparator
+b checkTaskComplete
 continue
