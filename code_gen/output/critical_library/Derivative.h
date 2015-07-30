@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'Derivative'.
  *
- * Model version                  : 1.5
+ * Model version                  : 1.6
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:58:04 2015
+ * C/C++ source code generated on : Thu Jul 30 17:12:19 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -40,25 +40,25 @@ typedef struct tag_RTM_Derivative_T RT_MODEL_Derivative_T;
 
 /* Block states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T UD_DSTATE;                    /* '<S2>/UD' */
+  real32_T UD_DSTATE;                  /* '<S2>/UD' */
 } DW_Derivative_T;
 
 /* External inputs (root inport signals with auto storage) */
 typedef struct {
-  real_T In1;                          /* '<Root>/In1' */
+  real32_T In1;                        /* '<Root>/In1' */
 } ExtU_Derivative_T;
 
 /* External outputs (root outports fed by signals with auto storage) */
 typedef struct {
-  real_T Out1;                         /* '<Root>/Out1' */
+  real32_T Out1;                       /* '<Root>/Out1' */
 } ExtY_Derivative_T;
 
 /* Parameters (auto storage) */
 struct P_Derivative_T_ {
-  real_T DiscreteDerivative_ICPrevScaled;/* Mask Parameter: DiscreteDerivative_ICPrevScaled
-                                          * Referenced by: '<S2>/UD'
-                                          */
-  real_T TSamp_WtEt;                   /* Computed Parameter: TSamp_WtEt
+  real32_T DiscreteDerivative_ICPrevScaled;/* Mask Parameter: DiscreteDerivative_ICPrevScaled
+                                            * Referenced by: '<S2>/UD'
+                                            */
+  real32_T TSamp_WtEt;                 /* Computed Parameter: TSamp_WtEt
                                         * Referenced by: '<S2>/TSamp'
                                         */
 };

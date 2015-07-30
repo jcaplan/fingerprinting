@@ -6,12 +6,15 @@
 # b handleCPU
 # continue
 
-proc cpu0
+proc cpu1
 b handleCPU
 continue
+continue
+continue
 set itrace change
-diagnostics cpu0_fprint 3
-b alt_exception
+diagnostics cpu1_fprint 3
+proc cpum
+b handleComp
 continue
 
 

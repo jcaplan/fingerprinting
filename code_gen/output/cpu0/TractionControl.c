@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'TractionControl'.
  *
- * Model version                  : 1.8
+ * Model version                  : 1.11
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:55:05 2015
+ * C/C++ source code generated on : Thu Jul 30 17:13:16 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ASIC/FPGA->ASIC/FPGA
@@ -58,7 +58,7 @@ void TractionControl_step(RT_MODEL_TractionControl_T *const TractionControl_M,
 {
   P_TractionControl_T *TractionControl_P = ((P_TractionControl_T *)
     TractionControl_M->ModelData.defaultParam);
-  real_T rtb_Subtract;
+  real32_T rtb_Subtract;
 
   /* Sum: '<Root>/Subtract' incorporates:
    *  Inport: '<Root>/Current Speed(Powered Axle)'
@@ -72,7 +72,7 @@ void TractionControl_step(RT_MODEL_TractionControl_T *const TractionControl_M,
    *  Product: '<Root>/Product'
    *  RelationalOperator: '<S1>/Compare'
    */
-  TractionControl_Y->ControlFeedback = (real_T)(rtb_Subtract <=
+  TractionControl_Y->ControlFeedback = (real32_T)(rtb_Subtract <=
     TractionControl_P->CompareToConstant_const) * rtb_Subtract;
 }
 
@@ -88,7 +88,7 @@ void TractionControl_initialize(RT_MODEL_TractionControl_T *const
                 sizeof(ExtU_TractionControl_T));
 
   /* external outputs */
-  TractionControl_Y->ControlFeedback = 0.0;
+  TractionControl_Y->ControlFeedback = 0.0F;
   UNUSED_PARAMETER(TractionControl_M);
 }
 

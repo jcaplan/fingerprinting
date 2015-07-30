@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'CollisionAvoidance'.
  *
- * Model version                  : 1.6
+ * Model version                  : 1.8
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:02:04 2015
+ * C/C++ source code generated on : Thu Jul 30 17:10:13 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -26,19 +26,19 @@ static RT_MODEL_CollisionAvoidance_T CollisionAvoidance_M_;
 static RT_MODEL_CollisionAvoidance_T *const CollisionAvoidance_M =
   &CollisionAvoidance_M_;              /* Real-time model */
 static P_CollisionAvoidance_T CollisionAvoidance_P = {
-  0.0,                                 /* Mask Parameter: DiscreteDerivative_ICPrevScaled
+  0.0F,                                /* Mask Parameter: DiscreteDerivative_ICPrevScaled
                                         * Referenced by: '<S3>/UD'
                                         */
-  0.0,                                 /* Mask Parameter: DiscreteDerivative1_ICPrevScale
+  0.0F,                                /* Mask Parameter: DiscreteDerivative1_ICPrevScale
                                         * Referenced by: '<S4>/UD'
                                         */
-  5.0,                                 /* Computed Parameter: TSamp_WtEt
+  5.0F,                                /* Computed Parameter: TSamp_WtEt
                                         * Referenced by: '<S3>/TSamp'
                                         */
-  5.0,                                 /* Computed Parameter: TSamp_WtEt_m
+  5.0F,                                /* Computed Parameter: TSamp_WtEt_m
                                         * Referenced by: '<S4>/TSamp'
                                         */
-  0.0                                  /* Expression: 0
+  0.0F                                 /* Computed Parameter: Constant_Value
                                         * Referenced by: '<S2>/Constant'
                                         */
 };                                     /* Modifiable parameters */
@@ -67,7 +67,7 @@ void rt_OneStep(RT_MODEL_CollisionAvoidance_T *const CollisionAvoidance_M)
 
   /* Check for overrun */
   if (OverrunFlag) {
-    // rtmSetErrorStatus(CollisionAvoidance_M, "Overrun");
+    rtmSetErrorStatus(CollisionAvoidance_M, "Overrun");
     return;
   }
 
@@ -117,10 +117,10 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep(CollisionAvoidance_M);
    */
-  // printf("Warning: The simulation will run forever. "
-         // "Generated ERT main won't simulate model step behavior. "
-         // "To change this behavior select the 'MAT-file logging' option.\n");
-  // fflush((NULL));
+  printf("Warning: The simulation will run forever. "
+         "Generated ERT main won't simulate model step behavior. "
+         "To change this behavior select the 'MAT-file logging' option.\n");
+  fflush((NULL));
   while (rtmGetErrorStatus(CollisionAvoidance_M) == (NULL)) {
     /*  Perform other application tasks here */
   }

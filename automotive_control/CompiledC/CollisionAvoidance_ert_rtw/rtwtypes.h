@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'CollisionAvoidance'.
  *
- * Model version                  : 1.6
+ * Model version                  : 1.8
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:02:04 2015
+ * C/C++ source code generated on : Thu Jul 30 17:10:13 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor

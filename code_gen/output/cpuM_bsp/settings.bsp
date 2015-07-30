@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>20-Jul-2015 1:42:02 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1437414122180</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>30-Jul-2015 5:51:47 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1438293107626</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>/home/jonah/fingerprinting/code_gen/output/cpuM_bsp</BspGeneratedLocation>
         <BspSettingsFile>/home/jonah/fingerprinting/code_gen/output/cpuM_bsp/settings.bsp</BspSettingsFile>
         <SopcDesignFile>/home/jonah/fingerprinting/code_gen/platform/nios_fprint.sopcinfo</SopcDesignFile>

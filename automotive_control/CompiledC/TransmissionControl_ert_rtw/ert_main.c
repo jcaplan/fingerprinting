@@ -7,15 +7,17 @@
  *
  * Code generated for Simulink model 'TransmissionControl'.
  *
- * Model version                  : 1.5
+ * Model version                  : 1.8
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:55:47 2015
+ * C/C++ source code generated on : Thu Jul 30 17:01:34 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ASIC/FPGA->ASIC/FPGA
  * Emulation hardware selection:
  *    Differs from embedded hardware (Generic->32-bit Embedded Processor)
- * Code generation objectives: Unspecified
+ * Code generation objectives:
+ *    1. Safety precaution
+ *    2. MISRA-C:2004 guidelines
  * Validation result: Not run
  */
 
@@ -57,7 +59,7 @@ void rt_OneStep(RT_MODEL_TransmissionControl_T *const TransmissionControl_M)
 
   /* Check for overrun */
   if (OverrunFlag) {
-    // rtmSetErrorStatus(TransmissionControl_M, "Overrun");
+    rtmSetErrorStatus(TransmissionControl_M, "Overrun");
     return;
   }
 
@@ -106,10 +108,10 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep(TransmissionControl_M);
    */
-  // printf("Warning: The simulation will run forever. "
-  //        "Generated ERT main won't simulate model step behavior. "
-  //        "To change this behavior select the 'MAT-file logging' option.\n");
-  // fflush((NULL));
+  printf("Warning: The simulation will run forever. "
+         "Generated ERT main won't simulate model step behavior. "
+         "To change this behavior select the 'MAT-file logging' option.\n");
+  fflush((NULL));
   while (rtmGetErrorStatus(TransmissionControl_M) == (NULL)) {
     /*  Perform other application tasks here */
   }

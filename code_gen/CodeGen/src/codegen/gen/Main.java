@@ -97,7 +97,7 @@ public class Main {
 		config.parseConfigFile();
 
 		config.printConfiguration();
-		Generator gen = new Generator(config);
+		CodeGen gen = new CodeGen(config);
 		gen.generateCores();
 		gen.printStackResults();
 

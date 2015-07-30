@@ -7,13 +7,17 @@
  *
  * Code generated for Simulink model 'AirbagModel'.
  *
- * Model version                  : 1.11
+ * Model version                  : 1.13
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:22:36 2015
+ * C/C++ source code generated on : Thu Jul 30 17:09:53 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
- * Code generation objectives: Unspecified
+ * Emulation hardware selection:
+ *    Differs from embedded hardware (MATLAB Host)
+ * Code generation objectives:
+ *    1. MISRA-C:2004 guidelines
+ *    2. Safety precaution
  * Validation result: Not run
  */
 
@@ -26,6 +30,7 @@
 #endif                                 /* AirbagModel_COMMON_INCLUDES_ */
 
 #include "AirbagModel_types.h"
+#include "rt_defines.h"
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetErrorStatus
@@ -38,13 +43,13 @@
 
 /* Block states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T DiscreteTimeIntegrator1_DSTATE;/* '<Root>/Discrete-Time Integrator1' */
-  real_T DiscreteTimeIntegrator_DSTATE;/* '<Root>/Discrete-Time Integrator' */
+  real32_T DiscreteTimeIntegrator1_DSTATE;/* '<Root>/Discrete-Time Integrator1' */
+  real32_T DiscreteTimeIntegrator_DSTATE;/* '<Root>/Discrete-Time Integrator' */
 } DW_AirbagModel_T;
 
 /* External inputs (root inport signals with auto storage) */
 typedef struct {
-  real_T Force;                        /* '<Root>/Force' */
+  real32_T Force;                      /* '<Root>/Force' */
 } ExtU_AirbagModel_T;
 
 /* External outputs (root outports fed by signals with auto storage) */
@@ -54,25 +59,28 @@ typedef struct {
 
 /* Parameters (auto storage) */
 struct P_AirbagModel_T_ {
-  real_T CompareToConstant_const;      /* Mask Parameter: CompareToConstant_const
+  real32_T CompareToConstant_const;    /* Mask Parameter: CompareToConstant_const
                                         * Referenced by: '<S1>/Constant'
                                         */
-  real_T DiscreteTimeIntegrator1_gainval;/* Computed Parameter: DiscreteTimeIntegrator1_gainval
-                                          * Referenced by: '<Root>/Discrete-Time Integrator1'
-                                          */
-  real_T DiscreteTimeIntegrator1_IC;   /* Expression: 0
+  real32_T DiscreteTimeIntegrator1_gainval;/* Computed Parameter: DiscreteTimeIntegrator1_gainval
+                                            * Referenced by: '<Root>/Discrete-Time Integrator1'
+                                            */
+  real32_T DiscreteTimeIntegrator1_IC; /* Computed Parameter: DiscreteTimeIntegrator1_IC
                                         * Referenced by: '<Root>/Discrete-Time Integrator1'
                                         */
-  real_T DiscreteTimeIntegrator_gainval;/* Computed Parameter: DiscreteTimeIntegrator_gainval
-                                         * Referenced by: '<Root>/Discrete-Time Integrator'
-                                         */
-  real_T DiscreteTimeIntegrator_IC;    /* Expression: 0
+  real32_T DiscreteTimeIntegrator_gainval;/* Computed Parameter: DiscreteTimeIntegrator_gainval
+                                           * Referenced by: '<Root>/Discrete-Time Integrator'
+                                           */
+  real32_T DiscreteTimeIntegrator_IC;  /* Computed Parameter: DiscreteTimeIntegrator_IC
                                         * Referenced by: '<Root>/Discrete-Time Integrator'
                                         */
-  real_T Gain_Gain;                    /* Expression: 2.0
+  real32_T Gain_Gain;                  /* Computed Parameter: Gain_Gain
+                                        * Referenced by: '<S2>/Gain'
+                                        */
+  real32_T Gain_Gain_b;                /* Computed Parameter: Gain_Gain_b
                                         * Referenced by: '<Root>/Gain'
                                         */
-  real_T Dividemass_Gain;              /* Expression: -0.2
+  real32_T Dividemass_Gain;            /* Computed Parameter: Dividemass_Gain
                                         * Referenced by: '<Root>/Divide mass'
                                         */
 };
@@ -115,6 +123,7 @@ extern void AirbagModel_terminate(RT_MODEL_AirbagModel_T *const AirbagModel_M);
  *
  * '<Root>' : 'AirbagModel'
  * '<S1>'   : 'AirbagModel/Compare To Constant'
+ * '<S2>'   : 'AirbagModel/Gain1'
  */
 #endif                                 /* RTW_HEADER_AirbagModel_h_ */
 

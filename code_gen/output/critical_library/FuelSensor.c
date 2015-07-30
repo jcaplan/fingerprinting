@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FuelSensor'.
  *
- * Model version                  : 1.8
+ * Model version                  : 1.9
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:58:52 2015
+ * C/C++ source code generated on : Thu Jul 30 17:04:31 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor

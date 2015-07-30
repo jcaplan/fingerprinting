@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'TractionControl'.
  *
- * Model version                  : 1.8
+ * Model version                  : 1.11
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:55:05 2015
+ * C/C++ source code generated on : Thu Jul 30 17:13:16 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ASIC/FPGA->ASIC/FPGA

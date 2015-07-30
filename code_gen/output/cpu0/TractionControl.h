@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'TractionControl'.
  *
- * Model version                  : 1.8
+ * Model version                  : 1.11
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:55:05 2015
+ * C/C++ source code generated on : Thu Jul 30 17:13:16 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ASIC/FPGA->ASIC/FPGA
@@ -46,18 +46,18 @@ typedef struct tag_RTM_TractionControl_T RT_MODEL_TractionControl_T;
 
 /* External inputs (root inport signals with auto storage) */
 typedef struct {
-  real_T CurrentSpeedPoweredAxle;      /* '<Root>/Current Speed(Powered Axle)' */
-  real_T SpeedUnpoweredAxle;           /* '<Root>/Speed(Unpowered Axle)' */
+  real32_T CurrentSpeedPoweredAxle;    /* '<Root>/Current Speed(Powered Axle)' */
+  real32_T SpeedUnpoweredAxle;         /* '<Root>/Speed(Unpowered Axle)' */
 } ExtU_TractionControl_T;
 
 /* External outputs (root outports fed by signals with auto storage) */
 typedef struct {
-  real_T ControlFeedback;              /* '<Root>/Control Feedback' */
+  real32_T ControlFeedback;            /* '<Root>/Control Feedback' */
 } ExtY_TractionControl_T;
 
 /* Parameters (auto storage) */
 struct P_TractionControl_T_ {
-  real_T CompareToConstant_const;      /* Mask Parameter: CompareToConstant_const
+  real32_T CompareToConstant_const;    /* Mask Parameter: CompareToConstant_const
                                         * Referenced by: '<S1>/Constant'
                                         */
 };

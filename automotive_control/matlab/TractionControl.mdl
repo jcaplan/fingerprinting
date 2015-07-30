@@ -20,7 +20,7 @@ Model {
       BusOutputAsStruct	      "off"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.9"
+    ComputedModelVersion    "1.12"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -53,7 +53,7 @@ Model {
       $ObjectID		      3
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [309.0, 106.0, 808.0, 527.0]
+      Location		      [-2977.0, 181.0, 808.0, 527.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		4
@@ -77,7 +77,7 @@ Model {
 	IsActive		[1]
 	ViewObjType		"SimulinkTopLevel"
 	LoadSaveID		"0"
-	Extents			[573.0, 354.0]
+	Extents			[559.0, 341.0]
 	ZoomFactor		[1.0]
 	Offset			[0.0, 0.0]
       }
@@ -87,11 +87,11 @@ Model {
   Creator		  "gwilli10"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
-  LastModifiedBy	  "jonah.caplan"
+  LastModifiedBy	  "jonah"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon May 04 13:55:13 2015"
-  RTWModifiedTimeStamp	  352648501
-  ModelVersionFormat	  "1.%<AutoIncrement:9>"
+  LastModifiedDate	  "Thu Jul 30 17:13:46 2015"
+  RTWModifiedTimeStamp	  360177193
+  ModelVersionFormat	  "1.%<AutoIncrement:12>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -721,7 +721,7 @@ Model {
       Name		      "Configuration"
       ExtraOptions	      "-aGenerateTraceInfo=0 -aIgnoreTestpoints=0 "
       CurrentDlgPage	      "Code Generation"
-      ConfigPrmDlgPosition     [ 0, 0, 1084, 736 ] 
+      ConfigPrmDlgPosition     [ 32, 15, 1151, 778 ] 
     }
     PropName		    "ConfigurationSets"
   }
@@ -860,7 +860,7 @@ Model {
   }
   System {
     Name		    "TractionControl"
-    Location		    [309, 106, 1117, 633]
+    Location		    [-2977, 181, -2169, 708]
     Open		    on
     ModelBrowserVisibility  on
     ModelBrowserWidth	    200
@@ -882,6 +882,7 @@ Model {
       Position		      [120, 128, 150, 142]
       ZOrder		      7
       IconDisplay	      "Port number"
+      OutDataTypeStr	      "single"
     }
     Block {
       BlockType		      Inport
@@ -891,6 +892,7 @@ Model {
       ZOrder		      8
       Port		      "2"
       IconDisplay	      "Port number"
+      OutDataTypeStr	      "single"
     }
     Block {
       BlockType		      Reference
@@ -930,7 +932,7 @@ Model {
       ZOrder		      1
       Inputs		      "+-"
       InputSameDT	      off
-      OutDataTypeStr	      "double"
+      OutDataTypeStr	      "single"
       SaturateOnIntegerOverflow	off
     }
     Block {

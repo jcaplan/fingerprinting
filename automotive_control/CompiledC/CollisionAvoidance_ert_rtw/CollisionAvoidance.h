@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'CollisionAvoidance'.
  *
- * Model version                  : 1.6
+ * Model version                  : 1.8
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:02:04 2015
+ * C/C++ source code generated on : Thu Jul 30 17:10:13 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -40,14 +40,14 @@ typedef struct tag_RTM_CollisionAvoidance_T RT_MODEL_CollisionAvoidance_T;
 
 /* Block states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T UD_DSTATE;                    /* '<S3>/UD' */
-  real_T UD_DSTATE_g;                  /* '<S4>/UD' */
+  real32_T UD_DSTATE;                  /* '<S3>/UD' */
+  real32_T UD_DSTATE_g;                /* '<S4>/UD' */
 } DW_CollisionAvoidance_T;
 
 /* External inputs (root inport signals with auto storage) */
 typedef struct {
-  real_T In1;                          /* '<Root>/In1' */
-  real_T In2;                          /* '<Root>/In2' */
+  real32_T In1;                        /* '<Root>/In1' */
+  real32_T In2;                        /* '<Root>/In2' */
 } ExtU_CollisionAvoidance_T;
 
 /* External outputs (root outports fed by signals with auto storage) */
@@ -57,19 +57,19 @@ typedef struct {
 
 /* Parameters (auto storage) */
 struct P_CollisionAvoidance_T_ {
-  real_T DiscreteDerivative_ICPrevScaled;/* Mask Parameter: DiscreteDerivative_ICPrevScaled
-                                          * Referenced by: '<S3>/UD'
-                                          */
-  real_T DiscreteDerivative1_ICPrevScale;/* Mask Parameter: DiscreteDerivative1_ICPrevScale
-                                          * Referenced by: '<S4>/UD'
-                                          */
-  real_T TSamp_WtEt;                   /* Computed Parameter: TSamp_WtEt
+  real32_T DiscreteDerivative_ICPrevScaled;/* Mask Parameter: DiscreteDerivative_ICPrevScaled
+                                            * Referenced by: '<S3>/UD'
+                                            */
+  real32_T DiscreteDerivative1_ICPrevScale;/* Mask Parameter: DiscreteDerivative1_ICPrevScale
+                                            * Referenced by: '<S4>/UD'
+                                            */
+  real32_T TSamp_WtEt;                 /* Computed Parameter: TSamp_WtEt
                                         * Referenced by: '<S3>/TSamp'
                                         */
-  real_T TSamp_WtEt_m;                 /* Computed Parameter: TSamp_WtEt_m
+  real32_T TSamp_WtEt_m;               /* Computed Parameter: TSamp_WtEt_m
                                         * Referenced by: '<S4>/TSamp'
                                         */
-  real_T Constant_Value;               /* Expression: 0
+  real32_T Constant_Value;             /* Computed Parameter: Constant_Value
                                         * Referenced by: '<S2>/Constant'
                                         */
 };
