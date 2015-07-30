@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'Derivative'.
  *
- * Model version                  : 1.5
+ * Model version                  : 1.6
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:58:04 2015
+ * C/C++ source code generated on : Thu Jul 30 17:12:19 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -25,10 +25,10 @@
 static RT_MODEL_Derivative_T Derivative_M_;
 static RT_MODEL_Derivative_T *const Derivative_M = &Derivative_M_;/* Real-time model */
 static P_Derivative_T Derivative_P = {
-  0.0,                                 /* Mask Parameter: DiscreteDerivative_ICPrevScaled
+  0.0F,                                /* Mask Parameter: DiscreteDerivative_ICPrevScaled
                                         * Referenced by: '<S2>/UD'
                                         */
-  5.0                                  /* Computed Parameter: TSamp_WtEt
+  5.0F                                 /* Computed Parameter: TSamp_WtEt
                                         * Referenced by: '<S2>/TSamp'
                                         */
 };                                     /* Modifiable parameters */
@@ -57,7 +57,7 @@ void rt_OneStep(RT_MODEL_Derivative_T *const Derivative_M)
 
   /* Check for overrun */
   if (OverrunFlag) {
-    // rtmSetErrorStatus(Derivative_M, "Overrun");
+    rtmSetErrorStatus(Derivative_M, "Overrun");
     return;
   }
 
@@ -105,10 +105,10 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep(Derivative_M);
    */
-  // printf("Warning: The simulation will run forever. "
-  //        "Generated ERT main won't simulate model step behavior. "
-  //        "To change this behavior select the 'MAT-file logging' option.\n");
-  // fflush((NULL));
+  printf("Warning: The simulation will run forever. "
+         "Generated ERT main won't simulate model step behavior. "
+         "To change this behavior select the 'MAT-file logging' option.\n");
+  fflush((NULL));
   while (rtmGetErrorStatus(Derivative_M) == (NULL)) {
     /*  Perform other application tasks here */
   }

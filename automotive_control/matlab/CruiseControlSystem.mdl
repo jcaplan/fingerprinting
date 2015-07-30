@@ -20,7 +20,7 @@ Model {
       BusOutputAsStruct	      "off"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.11"
+    ComputedModelVersion    "1.12"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -53,7 +53,7 @@ Model {
       $ObjectID		      3
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [268.0, 55.0, 808.0, 527.0]
+      Location		      [268.0, 80.0, 808.0, 527.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		4
@@ -77,7 +77,7 @@ Model {
 	IsActive		[1]
 	ViewObjType		"SimulinkTopLevel"
 	LoadSaveID		"0"
-	Extents			[768.0, 354.0]
+	Extents			[754.0, 341.0]
 	ZoomFactor		[1.0]
 	Offset			[0.0, 0.0]
       }
@@ -87,11 +87,11 @@ Model {
   Creator		  "gwilli10"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
-  LastModifiedBy	  "jonah.caplan"
+  LastModifiedBy	  "jonah"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon May 04 13:54:02 2015"
-  RTWModifiedTimeStamp	  352648418
-  ModelVersionFormat	  "1.%<AutoIncrement:11>"
+  LastModifiedDate	  "Thu Jul 30 16:55:12 2015"
+  RTWModifiedTimeStamp	  360176108
+  ModelVersionFormat	  "1.%<AutoIncrement:12>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -918,7 +918,7 @@ Model {
   }
   System {
     Name		    "CruiseControlSystem"
-    Location		    [268, 55, 1076, 582]
+    Location		    [268, 80, 1076, 607]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -940,6 +940,7 @@ Model {
       Position		      [70, 163, 100, 177]
       ZOrder		      2
       IconDisplay	      "Port number"
+      OutDataTypeStr	      "single"
     }
     Block {
       BlockType		      Inport
@@ -949,6 +950,7 @@ Model {
       ZOrder		      4
       Port		      "2"
       IconDisplay	      "Port number"
+      OutDataTypeStr	      "single"
     }
     Block {
       BlockType		      SubSystem

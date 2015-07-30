@@ -7,13 +7,17 @@
  *
  * Code generated for Simulink model 'AirbagModel'.
  *
- * Model version                  : 1.11
+ * Model version                  : 1.13
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:22:36 2015
+ * C/C++ source code generated on : Thu Jul 30 17:09:53 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
- * Code generation objectives: Unspecified
+ * Emulation hardware selection:
+ *    Differs from embedded hardware (MATLAB Host)
+ * Code generation objectives:
+ *    1. MISRA-C:2004 guidelines
+ *    2. Safety precaution
  * Validation result: Not run
  */
 
@@ -25,25 +29,28 @@
 static RT_MODEL_AirbagModel_T AirbagModel_M_;
 static RT_MODEL_AirbagModel_T *const AirbagModel_M = &AirbagModel_M_;/* Real-time model */
 static P_AirbagModel_T AirbagModel_P = {
-  3.0,                                 /* Mask Parameter: CompareToConstant_const
+  3.0F,                                /* Mask Parameter: CompareToConstant_const
                                         * Referenced by: '<S1>/Constant'
                                         */
-  1.0,                                 /* Computed Parameter: DiscreteTimeIntegrator1_gainval
+  1.0F,                                /* Computed Parameter: DiscreteTimeIntegrator1_gainval
                                         * Referenced by: '<Root>/Discrete-Time Integrator1'
                                         */
-  0.0,                                 /* Expression: 0
+  0.0F,                                /* Computed Parameter: DiscreteTimeIntegrator1_IC
                                         * Referenced by: '<Root>/Discrete-Time Integrator1'
                                         */
-  1.0,                                 /* Computed Parameter: DiscreteTimeIntegrator_gainval
+  1.0F,                                /* Computed Parameter: DiscreteTimeIntegrator_gainval
                                         * Referenced by: '<Root>/Discrete-Time Integrator'
                                         */
-  0.0,                                 /* Expression: 0
+  0.0F,                                /* Computed Parameter: DiscreteTimeIntegrator_IC
                                         * Referenced by: '<Root>/Discrete-Time Integrator'
                                         */
-  2.0,                                 /* Expression: 2.0
+  1.0F,                                /* Computed Parameter: Gain_Gain
+                                        * Referenced by: '<S2>/Gain'
+                                        */
+  2.0F,                                /* Computed Parameter: Gain_Gain_b
                                         * Referenced by: '<Root>/Gain'
                                         */
-  -0.2                                 /* Expression: -0.2
+  -0.2F                                /* Computed Parameter: Dividemass_Gain
                                         * Referenced by: '<Root>/Divide mass'
                                         */
 };                                     /* Modifiable parameters */
@@ -72,7 +79,7 @@ void rt_OneStep(RT_MODEL_AirbagModel_T *const AirbagModel_M)
 
   /* Check for overrun */
   if (OverrunFlag) {
-    // rtmSetErrorStatus(dAirbagModel_M, "Overrun");
+    rtmSetErrorStatus(AirbagModel_M, "Overrun");
     return;
   }
 
@@ -120,10 +127,18 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep(AirbagModel_M);
    */
-  // printf("Warning: The simulation will run forever. "
-  //        "Generated ERT main won't simulate model step behavior. "
-  //        "To change this behavior select the 'MAT-file logging' option.\n");
+  printf("Warning: The simulation will run forever. "
+         "Generated ERT main won't simulate model step behavior. "
+         "To change this behavior select the 'MAT-file logging' option.\n");
+  fflush((NULL));
+  while (rtmGetErrorStatus(AirbagModel_M) == (NULL)) {
+    /*  Perform other application tasks here */
+  }
 
+  /* Disable rt_OneStep() here */
+
+  /* Terminate model */
+  AirbagModel_terminate(AirbagModel_M);
   return 0;
 }
 

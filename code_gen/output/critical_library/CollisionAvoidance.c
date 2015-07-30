@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'CollisionAvoidance'.
  *
- * Model version                  : 1.6
+ * Model version                  : 1.8
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:02:04 2015
+ * C/C++ source code generated on : Thu Jul 30 17:10:13 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -58,8 +58,8 @@ void CollisionAvoidance_step(RT_MODEL_CollisionAvoidance_T *const
     CollisionAvoidance_M->ModelData.defaultParam);
   DW_CollisionAvoidance_T *CollisionAvoidance_DW = ((DW_CollisionAvoidance_T *)
     CollisionAvoidance_M->ModelData.dwork);
-  real_T rtb_TSamp;
-  real_T rtb_TSamp_d;
+  real32_T rtb_TSamp;
+  real32_T rtb_TSamp_d;
 
   /* SampleTimeMath: '<S3>/TSamp' incorporates:
    *  Inport: '<Root>/In1'

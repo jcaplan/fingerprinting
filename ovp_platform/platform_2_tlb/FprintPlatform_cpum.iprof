@@ -2,72 +2,71 @@ PN:FprintPlatform
 SP:FprintPlatform/cpum
 SI:functionprofilesampleinterval 1000
 PSN:0_None
-FP:0 alt_exception No_Source_File 33 1
-FP:0 alt_irq_handler No_Source_File 34 1
+FP:0 alt_exception No_Source_File 30 1
+FP:0 alt_irq_handler No_Source_File 31 0
 FP:0 _start No_Source_File 0 8
-FP:0 REPOSInit No_Source_File 36 1
-FP:0 main No_Source_File 26 2
-FP:0 CruiseControlSystem_initialize No_Source_File 43 0
-FP:0 _puts_r No_Source_File 27 0
-FP:0 __sfvwrite_r No_Source_File 28 0
-FP:0 _write_r No_Source_File 29 0
+FP:0 CruiseControlSystemUpdatePointers No_Source_File 41 0
+FP:0 REPOSInit No_Source_File 34 1
+FP:0 main No_Source_File 23 2
+FP:0 _puts_r No_Source_File 24 0
+FP:0 __sfvwrite_r No_Source_File 25 0
+FP:0 _write_r No_Source_File 26 0
 FP:0 alt_load_section No_Source_File 2 24
 FP:0 alt_load No_Source_File 1 0
 FP:0 alt_main No_Source_File 3 0
-FP:0 write No_Source_File 30 0
+FP:0 write No_Source_File 27 0
 FP:0 OSInit No_Source_File 4 0
-FP:0 OS_EventWaitListInit No_Source_File 16 1
 FP:0 OS_InitEventList No_Source_File 7 1
 FP:0 OS_InitTaskIdle No_Source_File 11 0
 FP:0 OS_InitTaskStat No_Source_File 14 0
 FP:0 OS_InitTCBList No_Source_File 5 1
 FP:0 OS_MemClr No_Source_File 6 45
-FP:0 OS_TCBInit No_Source_File 44 2
-FP:0 OSFlagCreate No_Source_File 19 1
+FP:0 OS_TCBInit No_Source_File 42 1
 FP:0 OS_FlagInit No_Source_File 8 0
 FP:0 OS_MemInit No_Source_File 9 5
 FP:0 OS_QInit No_Source_File 10 1
-FP:0 OSSemCreate No_Source_File 15 0
-FP:0 OSSemPend No_Source_File 35 2
-FP:0 OSSemPost No_Source_File 24 1
-FP:0 OSTaskCreateExt No_Source_File 12 0
-FP:0 OS_TaskStkClr No_Source_File 13 12
-FP:0 alt_sys_init No_Source_File 17 0
-FP:0 altera_avalon_jtag_uart_write_fd No_Source_File 31 0
-FP:0 altera_avalon_jtag_uart_init No_Source_File 18 0
-FP:0 altera_avalon_jtag_uart_write No_Source_File 32 0
-FP:0 altera_avalon_mutex_lock No_Source_File 37 0
-FP:0 initDMA No_Source_File 40 0
-FP:0 comp_set_core_assignment No_Source_File 39 1
-FP:0 comp_set_core_assignment_table No_Source_File 38 3
-FP:0 alt_dma_rxchan_open No_Source_File 41 0
-FP:0 alt_find_dev No_Source_File 42 1
-FP:0 alt_open_fd No_Source_File 21 0
-FP:0 alt_io_redirect No_Source_File 20 0
-FP:0 alt_file_locked No_Source_File 25 1
-FP:0 open No_Source_File 22 0
-FP:0 alt_get_fd No_Source_File 23 1
-FPC:1, 33, 34
+FP:0 OSSemCreate No_Source_File 15 2
+FP:0 OSSemPend No_Source_File 33 2
+FP:0 OSTaskCreateExt No_Source_File 12 2
+FP:0 OS_TaskStkClr No_Source_File 13 11
+FP:0 alt_sys_init No_Source_File 16 0
+FP:0 altera_avalon_jtag_uart_write_fd No_Source_File 28 0
+FP:0 altera_avalon_jtag_uart_init No_Source_File 17 0
+FP:0 altera_avalon_jtag_uart_irq No_Source_File 32 1
+FP:0 altera_avalon_jtag_uart_write No_Source_File 29 0
+FP:0 altera_avalon_mutex_lock No_Source_File 35 0
+FP:0 initDMA No_Source_File 38 0
+FP:0 comp_set_core_assignment No_Source_File 37 1
+FP:0 comp_set_core_assignment_table No_Source_File 36 3
+FP:0 alt_dma_rxchan_open No_Source_File 39 0
+FP:0 alt_find_dev No_Source_File 40 1
+FP:0 alt_open_fd No_Source_File 19 0
+FP:0 alt_io_redirect No_Source_File 18 0
+FP:0 alt_file_locked No_Source_File 22 1
+FP:0 open No_Source_File 20 1
+FP:0 alt_get_fd No_Source_File 21 1
+FPC:1, 30, 31
+FPC:1, 31, 32
 FPC:24, 0, 1
 FPC:84, 0, 3
+FPC:1, 41, 30
+FPC:2, 23, 24
+FPC:1, 23, 34
+FPC:1, 23, 35
+FPC:4, 23, 36
+FPC:1, 23, 38
+FPC:1, 23, 41
+FPC:2, 23, 12
+FPC:2, 24, 25
+FPC:2, 25, 26
 FPC:2, 26, 27
-FPC:1, 26, 36
-FPC:1, 26, 37
-FPC:4, 26, 38
-FPC:1, 26, 40
-FPC:1, 26, 43
-FPC:2, 26, 12
-FPC:1, 43, 33
-FPC:2, 27, 28
-FPC:2, 28, 29
-FPC:2, 29, 30
 FPC:24, 1, 2
 FPC:65, 3, 4
 FPC:1, 3, 15
-FPC:1, 3, 17
-FPC:3, 3, 20
-FPC:14, 3, 26
-FPC:2, 30, 31
+FPC:1, 3, 16
+FPC:3, 3, 18
+FPC:14, 3, 23
+FPC:2, 27, 28
 FPC:12, 4, 5
 FPC:11, 4, 7
 FPC:4, 4, 8
@@ -82,150 +81,144 @@ FPC:11, 5, 6
 FPC:4, 8, 6
 FPC:15, 9, 6
 FPC:5, 10, 6
-FPC:1, 15, 16
-FPC:12, 12, 13
-FPC:2, 12, 44
-FPC:1, 17, 18
-FPC:2, 31, 32
-FPC:1, 18, 19
-FPC:1, 32, 33
-FPC:1, 32, 35
-FPC:1, 37, 35
-FPC:1, 40, 41
+FPC:11, 12, 13
+FPC:1, 12, 42
+FPC:1, 16, 17
+FPC:2, 28, 29
+FPC:1, 17, 15
+FPC:1, 29, 30
+FPC:1, 29, 33
+FPC:1, 35, 33
 FPC:1, 38, 39
-FPC:1, 41, 42
-FPC:3, 21, 22
-FPC:3, 20, 21
-FPC:2, 22, 23
-FPC:1, 22, 25
-FPC:1, 23, 24
+FPC:1, 36, 37
+FPC:1, 39, 40
+FPC:3, 19, 20
+FPC:3, 18, 19
+FPC:1, 20, 21
+FPC:1, 20, 22
 PSN:4_dma
-FP:0 alt_exception No_Source_File 16 7
-FP:0 alt_irq_handler No_Source_File 17 9
-FP:0 handleComp No_Source_File 27 2
-FP:0 __sfvwrite_r No_Source_File 23 5
-FP:0 memcpy No_Source_File 32 4
-FP:0 memmove No_Source_File 24 4
-FP:0 _fflush_r No_Source_File 10 1
-FP:0 __swrite No_Source_File 11 1
-FP:0 _write_r No_Source_File 12 1
-FP:0 write No_Source_File 13 0
-FP:0 OSIntExit No_Source_File 31 3
-FP:0 OS_EventTaskWait No_Source_File 37 2
-FP:0 OSFlagPend No_Source_File 7 4
-FP:0 OSFlagPost No_Source_File 19 61
-FP:0 OSQPend No_Source_File 36 4
-FP:0 OSSemPend No_Source_File 33 2
-FP:0 OSSemPost No_Source_File 35 1
-FP:0 alt_avalon_dma_launch_bidir No_Source_File 6 1
-FP:0 alt_avalon_dma_prepare No_Source_File 5 1
-FP:0 alt_avalon_dma_send No_Source_File 30 8
-FP:0 alt_avalon_dma_irq No_Source_File 20 7
-FP:0 altera_avalon_jtag_uart_write_fd No_Source_File 14 0
-FP:0 altera_avalon_jtag_uart_irq No_Source_File 18 29
-FP:0 altera_avalon_jtag_uart_write No_Source_File 15 3
-FP:0 alt_dma_txchan_send No_Source_File 26 2
-FP:0 alt_dma_rxchan_prepare No_Source_File 4 0
-FP:0 dma_TASK No_Source_File 1 10
-FP:0 handleDMA No_Source_File 21 2
-FP:0 sendDMA No_Source_File 3 0
-FP:0 REPOSgetScratchpadPage No_Source_File 25 2
-FP:0 REPOSAlreadyInScratchpad No_Source_File 2 7
-FP:0 REPOSTaskComplete No_Source_File 29 2
-FP:0 REPOSBeginTask No_Source_File 34 2
-FP:0 REPOSTaskReset No_Source_File 28 0
+FP:0 alt_exception No_Source_File 11 7
+FP:0 alt_irq_handler No_Source_File 12 12
+FP:0 handleComp No_Source_File 26 6
+FP:0 __sfvwrite_r No_Source_File 21 10
+FP:0 memcpy No_Source_File 32 8
+FP:0 memmove No_Source_File 22 6
+FP:0 _fflush_r No_Source_File 6 1
+FP:0 __swrite No_Source_File 30 1
+FP:0 _write_r No_Source_File 7 1
+FP:0 write No_Source_File 8 2
+FP:0 OSIntExit No_Source_File 31 7
+FP:0 OS_EventTaskWait No_Source_File 36 2
+FP:0 OSFlagPend No_Source_File 25 2
+FP:0 OSFlagPost No_Source_File 14 98
+FP:0 OSQPend No_Source_File 35 7
+FP:0 OSSemPend No_Source_File 33 3
+FP:0 alt_avalon_dma_launch_bidir No_Source_File 17 0
+FP:0 alt_avalon_dma_prepare No_Source_File 16 1
+FP:0 alt_avalon_dma_send No_Source_File 29 12
+FP:0 alt_avalon_dma_irq No_Source_File 18 11
+FP:0 altera_avalon_jtag_uart_write_fd No_Source_File 9 0
+FP:0 altera_avalon_jtag_uart_irq No_Source_File 13 50
+FP:0 altera_avalon_jtag_uart_write No_Source_File 10 7
+FP:0 alt_dma_txchan_send No_Source_File 24 2
+FP:0 alt_dma_rxchan_prepare No_Source_File 15 1
+FP:0 dma_TASK No_Source_File 1 16
+FP:0 handleDMA No_Source_File 19 3
+FP:0 sendDMA No_Source_File 3 2
+FP:0 REPOSgetScratchpadPage No_Source_File 23 1
+FP:0 REPOSAlreadyInScratchpad No_Source_File 2 10
+FP:0 REPOSTaskComplete No_Source_File 28 1
+FP:0 REPOSBeginTask No_Source_File 34 4
+FP:0 REPOSTaskReset No_Source_File 27 0
 FP:0 OSStartTsk No_Source_File 0 0
-FP:0 printf No_Source_File 8 0
-FP:0 __sprint_r No_Source_File 22 2
-FP:0 ___vfprintf_internal_r No_Source_File 9 19
-FPC:115, 16, 17
-FPC:87, 17, 18
-FPC:12, 17, 20
-FPC:4, 17, 27
-FPC:3, 17, 31
+FP:0 printf No_Source_File 4 2
+FP:0 __sprint_r No_Source_File 20 3
+FP:0 ___vfprintf_internal_r No_Source_File 5 31
+FPC:188, 11, 12
+FPC:142, 12, 13
+FPC:20, 12, 18
+FPC:7, 12, 26
+FPC:7, 12, 31
+FPC:1, 26, 27
+FPC:7, 21, 22
+FPC:2, 21, 11
+FPC:1, 22, 11
+FPC:177, 6, 7
+FPC:2, 6, 30
+FPC:2, 6, 11
+FPC:1, 30, 11
+FPC:176, 7, 8
+FPC:174, 8, 9
+FPC:1, 25, 11
+FPC:2, 35, 36
+FPC:28, 17, 11
+FPC:28, 16, 17
+FPC:9, 18, 19
+FPC:174, 9, 10
+FPC:92, 13, 14
+FPC:156, 10, 11
+FPC:8, 10, 32
+FPC:3, 10, 33
+FPC:12, 24, 29
+FPC:29, 15, 16
+FPC:10, 1, 2
+FPC:46, 1, 3
+FPC:241, 1, 4
+FPC:1, 1, 23
+FPC:3, 1, 25
+FPC:4, 1, 34
+FPC:9, 1, 35
+FPC:6, 19, 14
+FPC:30, 3, 15
+FPC:14, 3, 24
 FPC:1, 27, 28
-FPC:1, 27, 29
-FPC:5, 23, 24
-FPC:1, 23, 16
-FPC:1, 24, 16
-FPC:1, 10, 11
-FPC:110, 10, 12
-FPC:109, 12, 13
-FPC:109, 13, 14
-FPC:2, 36, 37
-FPC:18, 6, 16
-FPC:19, 5, 6
-FPC:5, 20, 21
-FPC:109, 14, 15
-FPC:58, 18, 19
-FPC:99, 15, 16
-FPC:4, 15, 32
-FPC:2, 15, 33
-FPC:1, 15, 35
-FPC:8, 26, 30
-FPC:20, 4, 5
-FPC:7, 1, 2
-FPC:30, 1, 3
-FPC:4, 1, 7
-FPC:146, 1, 8
-FPC:2, 1, 25
-FPC:1, 1, 16
-FPC:2, 1, 34
-FPC:6, 1, 36
-FPC:3, 21, 19
-FPC:20, 3, 4
-FPC:10, 3, 26
-FPC:1, 28, 29
-FPC:208, 0, 1
-FPC:146, 8, 9
-FPC:11, 22, 23
-FPC:112, 9, 10
-FPC:32, 9, 9
-FPC:13, 9, 22
-FPC:2, 9, 16
+FPC:330, 0, 1
+FPC:239, 4, 5
+FPC:19, 20, 21
+FPC:1, 20, 11
+FPC:182, 5, 6
+FPC:53, 5, 5
+FPC:23, 5, 20
+FPC:3, 5, 11
 PSN:5_Derivative
 FP:0 Derivative_TASK No_Source_File 1 0
-FP:0 __muldf3 No_Source_File 3 1
-FP:0 __muldi3 No_Source_File 4 3
-FP:0 __pack_d No_Source_File 8 2
-FP:0 OS_Sched No_Source_File 9 2
-FP:0 OSTimeDly No_Source_File 6 1
+FP:0 __muldi3 No_Source_File 5 4
 FP:0 OSTimeDlyHMSM No_Source_File 2 0
 FP:0 OSStartTsk No_Source_File 0 0
-FP:0 __divdf3 No_Source_File 5 3
-FP:0 __floatunsidf No_Source_File 7 0
+FP:0 __adddf3 No_Source_File 3 4
+FP:0 __muldf3 No_Source_File 4 0
+FP:0 __divdf3 No_Source_File 6 4
 FPC:12, 1, 2
-FPC:3, 3, 4
-FPC:2, 6, 9
 FPC:4, 2, 3
-FPC:3, 2, 5
-FPC:3, 2, 6
-FPC:2, 2, 7
+FPC:4, 2, 4
+FPC:4, 2, 6
 FPC:12, 0, 1
-FPC:2, 7, 8
+FPC:4, 4, 5
+PSN:6_uC/OS-II_Stat
+FP:0 OSIntCtxSw No_Source_File 0 1
 PSN:7_uC/OS-II_Idle
-FP:0 alt_exception No_Source_File 2 0
+FP:0 alt_exception No_Source_File 2 2
 FP:0 alt_irq_handler No_Source_File 3 0
-FP:0 handleComp No_Source_File 12 6
+FP:0 handleComp No_Source_File 12 7
 FP:0 startHook No_Source_File 9 0
-FP:0 OSTimeTick No_Source_File 6 33
-FP:0 OS_TaskIdle No_Source_File 1 12032
-FP:0 OSQPost No_Source_File 11 1
+FP:0 OSTimeTick No_Source_File 6 57
+FP:0 OS_TaskIdle No_Source_File 1 19301
+FP:0 OSQPost No_Source_File 11 2
 FP:0 alt_avalon_timer_sc_irq No_Source_File 4 0
-FP:0 postDmaMessage No_Source_File 10 0
-FP:0 REPOSUpdateTime No_Source_File 8 55
+FP:0 postDmaMessage No_Source_File 10 2
+FP:0 REPOSUpdateTime No_Source_File 8 82
 FP:0 alt_tick No_Source_File 5 0
 FP:0 OSStartTsk No_Source_File 0 0
-FP:0 OSTimeTickHook No_Source_File 7 9
-FPC:104, 2, 3
-FPC:98, 3, 4
-FPC:6, 3, 12
-FPC:1, 9, 10
-FPC:65, 6, 7
-FPC:104, 1, 2
-FPC:98, 4, 5
-FPC:1, 10, 11
-FPC:1, 8, 9
-FPC:98, 5, 6
-FPC:12136, 0, 1
-FPC:56, 7, 8
+FP:0 OSTimeTickHook No_Source_File 7 15
+FPC:165, 2, 3
+FPC:158, 3, 4
+FPC:7, 3, 12
+FPC:4, 9, 10
+FPC:101, 6, 7
+FPC:167, 1, 2
+FPC:158, 4, 5
+FPC:2, 10, 11
+FPC:4, 8, 9
+FPC:158, 5, 6
+FPC:19468, 0, 1
+FPC:86, 7, 8

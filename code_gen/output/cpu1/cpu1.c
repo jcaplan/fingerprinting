@@ -33,19 +33,19 @@
 /* CollisionAvoidance*/
 static RT_MODEL_CollisionAvoidance_T CollisionAvoidance_M_;
 static RT_MODEL_CollisionAvoidance_T *const CollisionAvoidance_M =  &CollisionAvoidance_M_;              /* Real-time model */
-static P_CollisionAvoidance_T CollisionAvoidance_P = {  0.0,                                 /* Mask Parameter: DiscreteDerivative_ICPrevScaled
+static P_CollisionAvoidance_T CollisionAvoidance_P = {  0.0F,                                /* Mask Parameter: DiscreteDerivative_ICPrevScaled
                                         * Referenced by: '<S3>/UD'
                                         */
-  0.0,                                 /* Mask Parameter: DiscreteDerivative1_ICPrevScale
+  0.0F,                                /* Mask Parameter: DiscreteDerivative1_ICPrevScale
                                         * Referenced by: '<S4>/UD'
                                         */
-  5.0,                                 /* Computed Parameter: TSamp_WtEt
+  5.0F,                                /* Computed Parameter: TSamp_WtEt
                                         * Referenced by: '<S3>/TSamp'
                                         */
-  5.0,                                 /* Computed Parameter: TSamp_WtEt_m
+  5.0F,                                /* Computed Parameter: TSamp_WtEt_m
                                         * Referenced by: '<S4>/TSamp'
                                         */
-  0.0                                  /* Expression: 0
+  0.0F                                 /* Computed Parameter: Constant_Value
                                         * Referenced by: '<S2>/Constant'
                                         */
 };                                     /* Modifiable parameters */
@@ -149,8 +149,6 @@ void AirbagModel_TASK(void* pdata) {
 		context_switch(registers);
 
 		//Do the derivative part
-		// Set default block size for fingerprinting
-		fprint_set_block_size(AirbagModel_blocksize);
 
 		int priority = critFuncData->priority;
 
@@ -197,8 +195,6 @@ void CruiseControlSystem_TASK(void* pdata) {
 		context_switch(registers);
 
 		//Do the derivative part
-		// Set default block size for fingerprinting
-		fprint_set_block_size(CruiseControlSystem_blocksize);
 
 		int priority = critFuncData->priority;
 
@@ -245,8 +241,6 @@ void TractionControl_TASK(void* pdata) {
 		context_switch(registers);
 
 		//Do the derivative part
-		// Set default block size for fingerprinting
-		fprint_set_block_size(TractionControl_blocksize);
 
 		int priority = critFuncData->priority;
 
@@ -348,7 +342,7 @@ alt_exception_result handleMPUException(alt_exception_cause cause,
 	//TODO: Notify monitor to reset core immediately!!
 	int *coreM_IRQ = (int *) PROCESSORM_0_CPU_IRQ_0_BASE;
 	if (FprintActive) {
-		disable_fprint_task(FprintTaskIDCurrent);
+		fprint_disable_task(FprintTaskIDCurrent);
 	}
 	*coreM_IRQ = 1;
 	while (1)
@@ -516,4 +510,9 @@ int main() {
 	OSStart();
 	return 0;
 }
+
+
+
+
+
 

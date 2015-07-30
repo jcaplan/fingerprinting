@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'TractionControl'.
  *
- * Model version                  : 1.8
+ * Model version                  : 1.11
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:55:05 2015
+ * C/C++ source code generated on : Thu Jul 30 17:13:16 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ASIC/FPGA->ASIC/FPGA
@@ -28,7 +28,7 @@
 static RT_MODEL_TractionControl_T TractionControl_M_;
 static RT_MODEL_TractionControl_T *const TractionControl_M = &TractionControl_M_;/* Real-time model */
 static P_TractionControl_T TractionControl_P = {
-  3.0                                  /* Mask Parameter: CompareToConstant_const
+  3.0F                                 /* Mask Parameter: CompareToConstant_const
                                         * Referenced by: '<S1>/Constant'
                                         */
 };                                     /* Modifiable parameters */
@@ -56,7 +56,7 @@ void rt_OneStep(RT_MODEL_TractionControl_T *const TractionControl_M)
 
   /* Check for overrun */
   if (OverrunFlag) {
-    // rtmSetErrorStatus(TractionControl_M, "Overrun");
+    rtmSetErrorStatus(TractionControl_M, "Overrun");
     return;
   }
 
@@ -104,10 +104,10 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep(TractionControl_M);
    */
-  // printf("Warning: The simulation will run forever. "
-  //        "Generated ERT main won't simulate model step behavior. "
-  //        "To change this behavior select the 'MAT-file logging' option.\n");
-  // fflush((NULL));
+  printf("Warning: The simulation will run forever. "
+         "Generated ERT main won't simulate model step behavior. "
+         "To change this behavior select the 'MAT-file logging' option.\n");
+  fflush((NULL));
   while (rtmGetErrorStatus(TractionControl_M) == (NULL)) {
     /*  Perform other application tasks here */
   }

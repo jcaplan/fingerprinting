@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'CruiseControlSystem'.
  *
- * Model version                  : 1.10
+ * Model version                  : 1.12
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:53:44 2015
+ * C/C++ source code generated on : Thu Jul 30 17:10:07 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -26,28 +26,28 @@ static RT_MODEL_CruiseControlSystem_T CruiseControlSystem_M_;
 static RT_MODEL_CruiseControlSystem_T *const CruiseControlSystem_M =
   &CruiseControlSystem_M_;             /* Real-time model */
 static P_CruiseControlSystem_T CruiseControlSystem_P = {
-  1.0,                                 /* Computed Parameter: DiscreteTimeIntegrator_gainval
+  1.0F,                                /* Computed Parameter: DiscreteTimeIntegrator_gainval
                                         * Referenced by: '<S2>/Discrete-Time Integrator'
                                         */
-  0.0,                                 /* Expression: 0
+  0.0F,                                /* Computed Parameter: DiscreteTimeIntegrator_IC
                                         * Referenced by: '<S2>/Discrete-Time Integrator'
                                         */
-  1.0,                                 /* Computed Parameter: DiscreteTimeIntegrator_gainva_l
+  1.0F,                                /* Computed Parameter: DiscreteTimeIntegrator_gainva_l
                                         * Referenced by: '<S1>/Discrete-Time Integrator'
                                         */
-  0.0,                                 /* Expression: 0
+  0.0F,                                /* Computed Parameter: DiscreteTimeIntegrator_IC_n
                                         * Referenced by: '<S1>/Discrete-Time Integrator'
                                         */
-  1.0,                                 /* Expression: 1.0
+  1.0F,                                /* Computed Parameter: Ki_Gain
                                         * Referenced by: '<S1>/Ki'
                                         */
-  1.0,                                 /* Expression: 1.0
+  1.0F,                                /* Computed Parameter: Kp_Gain
                                         * Referenced by: '<S1>/Kp'
                                         */
-  50.0,                                /* Expression: 50
+  50.0F,                               /* Computed Parameter: damping_Gain
                                         * Referenced by: '<S2>/damping'
                                         */
-  0.001                                /* Expression: 0.001
+  0.001F                               /* Computed Parameter: Inertia_Gain
                                         * Referenced by: '<S2>/Inertia '
                                         */
 };                                     /* Modifiable parameters */
@@ -76,7 +76,7 @@ void rt_OneStep(RT_MODEL_CruiseControlSystem_T *const CruiseControlSystem_M)
 
   /* Check for overrun */
   if (OverrunFlag) {
-    // rtmSetErrorStatus(CruiseControlSystem_M, "Overrun");
+    rtmSetErrorStatus(CruiseControlSystem_M, "Overrun");
     return;
   }
 
@@ -126,10 +126,10 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep(CruiseControlSystem_M);
    */
-  // printf("Warning: The simulation will run forever. "
-  //        "Generated ERT main won't simulate model step behavior. "
-  //        "To change this behavior select the 'MAT-file logging' option.\n");
-  // fflush((NULL));
+  printf("Warning: The simulation will run forever. "
+         "Generated ERT main won't simulate model step behavior. "
+         "To change this behavior select the 'MAT-file logging' option.\n");
+  fflush((NULL));
   while (rtmGetErrorStatus(CruiseControlSystem_M) == (NULL)) {
     /*  Perform other application tasks here */
   }

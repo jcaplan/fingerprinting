@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'CruiseControlSystem'.
  *
- * Model version                  : 1.10
+ * Model version                  : 1.12
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:53:44 2015
+ * C/C++ source code generated on : Thu Jul 30 17:10:07 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -58,7 +58,7 @@ void CruiseControlSystem_step(RT_MODEL_CruiseControlSystem_T *const
     CruiseControlSystem_M->ModelData.defaultParam);
   DW_CruiseControlSystem_T *CruiseControlSystem_DW = ((DW_CruiseControlSystem_T *)
     CruiseControlSystem_M->ModelData.dwork);
-  real_T rtb_Sum_n;
+  real32_T rtb_Sum_n;
 
   /* Outport: '<Root>/Out1' incorporates:
    *  DiscreteIntegrator: '<S2>/Discrete-Time Integrator'
@@ -119,7 +119,7 @@ void CruiseControlSystem_initialize(RT_MODEL_CruiseControlSystem_T *const
                 sizeof(ExtU_CruiseControlSystem_T));
 
   /* external outputs */
-  CruiseControlSystem_Y->Out1 = 0.0;
+  CruiseControlSystem_Y->Out1 = 0.0F;
 
   /* InitializeConditions for DiscreteIntegrator: '<S2>/Discrete-Time Integrator' */
   CruiseControlSystem_DW->DiscreteTimeIntegrator_DSTATE =

@@ -155,8 +155,6 @@ void AirbagModel_TASK(void* pdata) {
 		context_switch(registers);
 
 		//Do the derivative part
-		// Set default block size for fingerprinting
-		fprint_set_block_size(AirbagModel_blocksize);
 
 		int priority = critFuncData->priority;
 
@@ -203,8 +201,6 @@ void CruiseControlSystem_TASK(void* pdata) {
 		context_switch(registers);
 
 		//Do the derivative part
-		// Set default block size for fingerprinting
-		fprint_set_block_size(CruiseControlSystem_blocksize);
 
 		int priority = critFuncData->priority;
 
@@ -251,8 +247,6 @@ void TractionControl_TASK(void* pdata) {
 		context_switch(registers);
 
 		//Do the derivative part
-		// Set default block size for fingerprinting
-		fprint_set_block_size(TractionControl_blocksize);
 
 		int priority = critFuncData->priority;
 
@@ -365,7 +359,7 @@ alt_exception_result handleMPUException(alt_exception_cause cause,
 	//TODO: Notify monitor to reset core immediately!!
 	int *coreM_IRQ = (int *) PROCESSORM_0_CPU_IRQ_0_BASE;
 	if (FprintActive) {
-		disable_fprint_task(FprintTaskIDCurrent);
+		fprint_disable_task(FprintTaskIDCurrent);
 	}
 	*coreM_IRQ = 1;
 	while (1)
@@ -543,4 +537,9 @@ int main() {
 	OSStart();
 	return 0;
 }
+
+
+
+
+
 

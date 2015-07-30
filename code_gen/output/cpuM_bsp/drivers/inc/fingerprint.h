@@ -34,7 +34,7 @@
 #define FPRINT_BASE_ADDRESS						0x8100000 /* processing core to fprint interface */
 
  
-#define FPRINT_CURRENTSTATE_ENABLE_MASK 		0x20  /* *fprint_currentstate = FPRINT_CURRENTSTATE_ENABLE_MASK | key; */
+#define FPRINT_CURRENTSTATE_ENABLE_MASK 		0x10  /* *fprint_currentstate = FPRINT_CURRENTSTATE_ENABLE_MASK | key; */
 #define FPRINT_CURRENTSTATE_DISABLE_MASK 		0x00
 
 /* data = (coreID << CORE_SHIFT) | (taskID << TASK_SHIFT) | data */ 

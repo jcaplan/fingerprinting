@@ -16,7 +16,7 @@ Model {
       BusOutputAsStruct	      "off"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.12"
+    ComputedModelVersion    "1.13"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -49,7 +49,7 @@ Model {
       $ObjectID		      3
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [47.0, 24.0, 1319.0, 744.0]
+      Location		      [32.0, -13.0, 1343.0, 790.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		4
@@ -73,9 +73,9 @@ Model {
 	IsActive		[1]
 	ViewObjType		"SimulinkTopLevel"
 	LoadSaveID		"0"
-	Extents			[1283.0, 601.0]
+	Extents			[1289.0, 604.0]
 	ZoomFactor		[1.25]
-	Offset			[159.48541666666671, 78.066666666666691]
+	Offset			[159.48541666666665, 78.06666666666672]
       }
     }
   }
@@ -85,9 +85,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "jonah"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Tue Jul 28 10:33:48 2015"
-  RTWModifiedTimeStamp	  359944948
-  ModelVersionFormat	  "1.%<AutoIncrement:12>"
+  LastModifiedDate	  "Thu Jul 30 16:52:56 2015"
+  RTWModifiedTimeStamp	  360175975
+  ModelVersionFormat	  "1.%<AutoIncrement:13>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -878,6 +878,38 @@ Model {
       InitialOutput	      "[]"
     }
     Block {
+      BlockType		      SubSystem
+      ShowPortLabels	      "FromPortIcon"
+      Permissions	      "ReadWrite"
+      PermitHierarchicalResolution "All"
+      TreatAsAtomicUnit	      off
+      MinAlgLoopOccurrences   off
+      PropExecContextOutsideSubsystem off
+      CheckFcnCallInpInsideContextMsg off
+      SystemSampleTime	      "-1"
+      RTWSystemCode	      "Auto"
+      RTWFcnNameOpts	      "Auto"
+      RTWFileNameOpts	      "Auto"
+      FunctionInterfaceSpec   "void_void"
+      FunctionWithSeparateData off
+      RTWMemSecFuncInitTerm   "Inherit from model"
+      RTWMemSecFuncExecute    "Inherit from model"
+      RTWMemSecDataConstants  "Inherit from model"
+      RTWMemSecDataInternal   "Inherit from model"
+      RTWMemSecDataParameters "Inherit from model"
+      SimViewingDevice	      off
+      DataTypeOverride	      "UseLocalSettings"
+      DataTypeOverrideAppliesTo	"AllNumericTypes"
+      MinMaxOverflowLogging   "UseLocalSettings"
+      Opaque		      off
+      MaskHideContents	      off
+      SFBlockType	      "NONE"
+      Variant		      off
+      GeneratePreprocessorConditionals off
+      ContentPreviewEnabled   off
+      IsWebBlock	      off
+    }
+    Block {
       BlockType		      Sum
       IconShape		      "rectangular"
       Inputs		      "++"
@@ -896,7 +928,7 @@ Model {
   }
   System {
     Name		    "AirbagModel"
-    Location		    [47, 24, 1366, 768]
+    Location		    [32, -13, 1375, 777]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -910,12 +942,12 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "125"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "17"
+    SIDHighWatermark	    "23"
     Block {
       BlockType		      Inport
       Name		      "Force"
       SID		      "8"
-      Position		      [220, 183, 250, 197]
+      Position		      [280, 153, 310, 167]
       ZOrder		      14
       IconDisplay	      "Port number"
       OutDataTypeStr	      "single"
@@ -925,7 +957,7 @@ Model {
       Name		      "Compare\nTo Constant"
       SID		      "17"
       Ports		      [1, 1]
-      Position		      [560, 175, 590, 205]
+      Position		      [830, 145, 860, 175]
       ZOrder		      22
       LibraryVersion	      "1.356"
       SourceBlock	      "simulink/Logic and Bit\nOperations/Compare\nTo Constant"
@@ -941,7 +973,7 @@ Model {
       Name		      "Discrete-Time\nIntegrator"
       SID		      "15"
       Ports		      [1, 1]
-      Position		      [395, 172, 430, 208]
+      Position		      [665, 142, 700, 178]
       ZOrder		      20
     }
     Block {
@@ -949,14 +981,14 @@ Model {
       Name		      "Discrete-Time\nIntegrator1"
       SID		      "16"
       Ports		      [1, 1]
-      Position		      [460, 172, 495, 208]
+      Position		      [730, 142, 765, 178]
       ZOrder		      21
     }
     Block {
       BlockType		      Gain
       Name		      "Divide mass"
       SID		      "9"
-      Position		      [350, 175, 380, 205]
+      Position		      [620, 145, 650, 175]
       ZOrder		      19
       Gain		      "-0.2"
       ParamDataTypeStr	      "Inherit: Inherit via internal rule"
@@ -967,7 +999,7 @@ Model {
       BlockType		      Gain
       Name		      "Gain"
       SID		      "10"
-      Position		      [400, 245, 430, 275]
+      Position		      [670, 215, 700, 245]
       ZOrder		      17
       BlockMirror	      on
       Gain		      "2.0"
@@ -976,11 +1008,76 @@ Model {
       SaturateOnIntegerOverflow	off
     }
     Block {
+      BlockType		      SubSystem
+      Name		      "Gain1"
+      SID		      "19"
+      Ports		      [1, 1]
+      Position		      [395, 139, 495, 181]
+      ZOrder		      23
+      RequestExecContextInheritance off
+      System {
+	Name			"Gain1"
+	Location		[339, 361, 1147, 888]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"usletter"
+	PaperUnits		"inches"
+	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Inport
+	  Name			  "In1"
+	  SID			  "20"
+	  Position		  [110, 103, 140, 117]
+	  ZOrder		  -1
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain"
+	  SID			  "21"
+	  Position		  [230, 95, 260, 125]
+	  ZOrder		  1
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "Out1"
+	  SID			  "22"
+	  Position		  [360, 103, 390, 117]
+	  ZOrder		  -2
+	  IconDisplay		  "Port number"
+	}
+	Line {
+	  ZOrder		  1
+	  SrcBlock		  "In1"
+	  SrcPort		  1
+	  DstBlock		  "Gain"
+	  DstPort		  1
+	}
+	Line {
+	  ZOrder		  2
+	  SrcBlock		  "Gain"
+	  SrcPort		  1
+	  DstBlock		  "Out1"
+	  DstPort		  1
+	}
+      }
+    }
+    Block {
       BlockType		      Sum
       Name		      "Sum1"
       SID		      "13"
       Ports		      [2, 1]
-      Position		      [305, 180, 325, 200]
+      Position		      [575, 150, 595, 170]
       ZOrder		      18
       ShowName		      off
       IconShape		      "round"
@@ -993,7 +1090,7 @@ Model {
       BlockType		      Outport
       Name		      "Activate Airbag\n"
       SID		      "14"
-      Position		      [650, 183, 680, 197]
+      Position		      [920, 153, 950, 167]
       ZOrder		      13
       IconDisplay	      "Port number"
     }
@@ -1037,13 +1134,6 @@ Model {
       DstPort		      1
     }
     Line {
-      ZOrder		      33
-      SrcBlock		      "Force"
-      SrcPort		      1
-      DstBlock		      "Sum1"
-      DstPort		      1
-    }
-    Line {
       ZOrder		      40
       SrcBlock		      "Discrete-Time\nIntegrator"
       SrcPort		      1
@@ -1055,6 +1145,20 @@ Model {
       SrcBlock		      "Compare\nTo Constant"
       SrcPort		      1
       DstBlock		      "Activate Airbag\n"
+      DstPort		      1
+    }
+    Line {
+      ZOrder		      51
+      SrcBlock		      "Force"
+      SrcPort		      1
+      DstBlock		      "Gain1"
+      DstPort		      1
+    }
+    Line {
+      ZOrder		      52
+      SrcBlock		      "Gain1"
+      SrcPort		      1
+      DstBlock		      "Sum1"
       DstPort		      1
     }
   }

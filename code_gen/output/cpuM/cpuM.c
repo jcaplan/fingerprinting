@@ -26,10 +26,10 @@
 /* Derivative*/
 static RT_MODEL_Derivative_T Derivative_M_;
 static RT_MODEL_Derivative_T *const Derivative_M = &Derivative_M_;/* Real-time model */
-static P_Derivative_T Derivative_P = {  0.0,                                 /* Mask Parameter: DiscreteDerivative_ICPrevScaled
+static P_Derivative_T Derivative_P = {  0.0F,                                /* Mask Parameter: DiscreteDerivative_ICPrevScaled
                                         * Referenced by: '<S2>/UD'
                                         */
-  5.0                                  /* Computed Parameter: TSamp_WtEt
+  5.0F                                 /* Computed Parameter: TSamp_WtEt
                                         * Referenced by: '<S2>/TSamp'
                                         */
 };                                     /* Modifiable parameters */
@@ -531,4 +531,9 @@ int main(void) {
 	//--------------
 	return 0;
 }
+
+
+
+
+
 

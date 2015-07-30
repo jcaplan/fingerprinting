@@ -16,7 +16,7 @@ Model {
       BusOutputAsStruct	      "off"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.6"
+    ComputedModelVersion    "1.9"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -49,7 +49,7 @@ Model {
       $ObjectID		      3
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [96.0, 77.0, 808.0, 527.0]
+      Location		      [96.0, 127.0, 808.0, 527.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		4
@@ -73,7 +73,7 @@ Model {
 	IsActive		[1]
 	ViewObjType		"SimulinkTopLevel"
 	LoadSaveID		"0"
-	Extents			[768.0, 354.0]
+	Extents			[754.0, 341.0]
 	ZoomFactor		[1.25]
 	Offset			[70.666666666666, 19.200000000000472]
       }
@@ -83,11 +83,11 @@ Model {
   Creator		  "gwilli10"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
-  LastModifiedBy	  "jonah.caplan"
+  LastModifiedBy	  "jonah"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon May 04 13:56:05 2015"
-  RTWModifiedTimeStamp	  352648540
-  ModelVersionFormat	  "1.%<AutoIncrement:6>"
+  LastModifiedDate	  "Thu Jul 30 17:03:32 2015"
+  RTWModifiedTimeStamp	  360176437
+  ModelVersionFormat	  "1.%<AutoIncrement:9>"
   ConfigurationManager	  "none"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -472,7 +472,7 @@ Model {
 	  Version		  "1.15.0"
 	  SystemTargetFile	  "ert.tlc"
 	  TLCOptions		  ""
-	  GenCodeOnly		  off
+	  GenCodeOnly		  on
 	  MakeCommand		  "make_rtw"
 	  GenerateMakefile	  on
 	  PackageGeneratedCodeAndArtifacts off
@@ -520,6 +520,13 @@ Model {
 	  GenerateCodeReplacementReport	off
 	  GenerateMissedCodeReplacementReport off
 	  RTWCompilerOptimization "off"
+	  Array {
+	    Type		    "Cell"
+	    Dimension		    2
+	    Cell		    "Safety precaution"
+	    Cell		    "MISRA-C:2004 guidelines"
+	    PropName		    "ObjectivePriorities"
+	  }
 	  RTWCustomCompilerOptimizations ""
 	  CheckMdlBeforeBuild	  "Off"
 	  SharedConstantsCachingThreshold 1024
@@ -716,8 +723,8 @@ Model {
       }
       Name		      "Configuration"
       ExtraOptions	      "-aGenerateTraceInfo=0 -aIgnoreTestpoints=0 "
-      CurrentDlgPage	      "Code Generation/Interface"
-      ConfigPrmDlgPosition     [ 0, 0, 1084, 670 ] 
+      CurrentDlgPage	      "Code Generation"
+      ConfigPrmDlgPosition     [ 32, 15, 1151, 778 ] 
     }
     PropName		    "ConfigurationSets"
   }
@@ -825,7 +832,7 @@ Model {
   }
   System {
     Name		    "TransmissionControl"
-    Location		    [96, 77, 904, 604]
+    Location		    [96, 127, 904, 654]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -847,6 +854,7 @@ Model {
       Position		      [145, 63, 175, 77]
       ZOrder		      15
       IconDisplay	      "Port number"
+      OutDataTypeStr	      "single"
     }
     Block {
       BlockType		      Reference

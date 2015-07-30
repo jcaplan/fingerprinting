@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'Derivative'.
  *
- * Model version                  : 1.5
+ * Model version                  : 1.6
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:58:04 2015
+ * C/C++ source code generated on : Thu Jul 30 17:12:19 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
@@ -58,7 +58,7 @@ void Derivative_step(RT_MODEL_Derivative_T *const Derivative_M,
     Derivative_M->ModelData.defaultParam);
   DW_Derivative_T *Derivative_DW = ((DW_Derivative_T *)
     Derivative_M->ModelData.dwork);
-  real_T rtb_TSamp;
+  real32_T rtb_TSamp;
 
   /* SampleTimeMath: '<S2>/TSamp' incorporates:
    *  Inport: '<Root>/In1'
@@ -94,10 +94,10 @@ void Derivative_initialize(RT_MODEL_Derivative_T *const Derivative_M,
                 sizeof(DW_Derivative_T));
 
   /* external inputs */
-  Derivative_U->In1 = 0.0;
+  Derivative_U->In1 = 0.0F;
 
   /* external outputs */
-  Derivative_Y->Out1 = 0.0;
+  Derivative_Y->Out1 = 0.0F;
 
   /* InitializeConditions for UnitDelay: '<S2>/UD' */
   Derivative_DW->UD_DSTATE = Derivative_P->DiscreteDerivative_ICPrevScaled;

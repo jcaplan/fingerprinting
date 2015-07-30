@@ -45,11 +45,6 @@ public class Function implements Comparable<Function>{
 		
 	}
 	
-
-	
-	
-	
-	
 	@Override
 	public String toString(){
 		return name;
@@ -129,6 +124,8 @@ public class Function implements Comparable<Function>{
 	public int getStackStart(int core) {
 		return stackBin.getStackStart(this,core);
 	}
+
+
 
 
 }

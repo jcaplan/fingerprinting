@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'CruiseControlSystem'.
  *
- * Model version                  : 1.10
+ * Model version                  : 1.12
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Mon May  4 13:53:44 2015
+ * C/C++ source code generated on : Thu Jul 30 17:10:07 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Generic->32-bit Embedded Processor
