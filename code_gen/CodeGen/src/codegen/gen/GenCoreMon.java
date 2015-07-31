@@ -10,10 +10,20 @@ import org.apache.commons.io.FileUtils;
 
 import codegen.gen.Function.Type;
 
+/**
+ * GenCoreMon generates the code for the monitor core. The monitor core is quite different 
+ * from the others and requires special handling. This class extends GenCore because much of 
+ * the code overlaps. Some methods in GenCore are overridden. Generates cpuM.c and cpuM.h.
+ * @author jonah
+ *
+ */
 public class GenCoreMon extends GenCore{
 
 	ArrayList<Function> funcList;
 	
+	/**
+	 * Array of actions taken to generate file.
+	 */
 	private GenString[] genStrings = new GenString[] {
 			new GenString() { public String action(Core core) { return getIncludeStringString(core); } },
 			new GenString() { public String action(Core core) { return getVarDecStringString(core); } },
@@ -28,14 +38,25 @@ public class GenCoreMon extends GenCore{
 			new GenString() { public String action(Core core) { return getMainString(core); } },
 		};
 		
-	
+	/**
+	 * Constructor requires all of the CodeGen lists
+	 * @param config
+	 * @param fprintList
+	 * @param platform
+	 * @param funcList
+	 */
 	public GenCoreMon(Configuration config, ArrayList<Function> fprintList,
 			Platform platform, ArrayList<Function> funcList) {
 		super(config, fprintList, platform);
 		this.funcList = funcList;
 	}
 	
-	void generateCore(Core core) throws IOException {
+	/**
+	 * The method for generating a core.
+	 * Creates DMA function, then generates cpuM.c and cpuM.h
+	 */
+	@Override
+	protected void generateCore(Core core) throws IOException {
 
 		//first thing add DMA task
 		addDmaFunction(core);
@@ -61,7 +82,11 @@ public class GenCoreMon extends GenCore{
 		writer.close();
 	}
 	
-
+	/**
+	 * 
+	 * @param core
+	 * @return The string for initial configuration of REPOS tables
+	 */
 	private String getReposString(Core core) {
 		String s = "";
 		s += "/*****************************************************************************\n"+
@@ -158,7 +183,10 @@ public class GenCoreMon extends GenCore{
 		return s;
 	}
 	
-
+	/**
+	 * Creates function object for dma and adds it to the list
+	 * @param core
+	 */
 	private void addDmaFunction(Core core) {
 		Function dmaFunction = new Function();
 		dmaFunction.codeDirectory = null;
@@ -202,7 +230,11 @@ public class GenCoreMon extends GenCore{
 		core.funcList.add(dmaFunction);
 	}
 	
-	
+	/**
+	 * 
+	 * @param c
+	 * @return String for core interrupt pointer array, hardware mutex 
+	 */
 	private String getMiscDeclString(Core c) {
 		String s = "";
 		s += "/*****************************************************************************\n"+
@@ -221,7 +253,7 @@ public class GenCoreMon extends GenCore{
 		" * Task control flow conditions\n"+
 		" *****************************************************************************/\n"+
 		"\n"+
-		"#define NUM_CRITICAL_TASKS 						2\n"+
+		"#define NUM_CRITICAL_TASKS 						" + fprintList.size() + "\n"+
 		"\n"+
 		"bool coresReady = false;\n"+
 		"bool taskFailed = false;\n"+
@@ -232,6 +264,12 @@ public class GenCoreMon extends GenCore{
 		return s;
 	}
 	
+	/**
+	 * 
+	 * @param core
+	 * @return String for all functions related to reset monitor: handleResetMonitor, initResetMonitorIsr,
+	 * and resetCores.
+	 */
 	private String getResetMonitorString(Core core) {
 		String s = "";
 		
@@ -268,6 +306,11 @@ public class GenCoreMon extends GenCore{
 	}
 	
 
+	/**
+	 * 
+	 * @param core
+	 * @return Comparator interrupt handler
+	 */
 	private String getComparatorString(Core core) {
 		String s = "";
 		s += "\n"+
@@ -331,7 +374,13 @@ public class GenCoreMon extends GenCore{
 		return s;
 	}
 	
-	private String getMainString(Core core) {
+	/**
+	 * 
+	 * @param core
+	 * @return main function.
+	 */
+	@Override
+	protected String getMainString(Core core) {
 		String s = "";
 		
 		
@@ -459,7 +508,11 @@ public class GenCoreMon extends GenCore{
 		return s;
 	}
 
-
+	/**
+	 * 
+	 * @param core
+	 * @return Functions for updating the pointers in the Simulink model data structure
+	 */
 	private String getTaskRelocationString(Core core) {
 		String s = "/*****************************************************************************\n"+
 				" * Pointer relocation functions\n"+
@@ -482,6 +535,12 @@ public class GenCoreMon extends GenCore{
 	}
 
 	
+	/**
+	 * Functions for the stack declarations
+	 * @param core
+	 * @return Returns the stack declaration for the monitor.
+	 */
+	@Override
 	protected String getStackDeclarationString(Core core) {
 		String s = "";
 		s += 	"/*****************************************************************************\n"+
@@ -503,20 +562,30 @@ public class GenCoreMon extends GenCore{
 		return s;
 	}
 	
+	/**
+	 * 
+	 * @param core
+	 * @return Returns the shared memory declarations. Different for monitor.
+	 */
+	@Override
 	protected String getSharedMemoryDeclarationString(Core core) {
 		String s = "";
 		s += 	"/*****************************************************************************\n"+
 				" * Shared memory interface with other cores\n"+
 				" *****************************************************************************/\n"+
 				"SharedMemorySymbolTable shared_stab __attribute__ ((section (\".shared\")));\n"+
-				"FunctionTable functionTable[" + fprintList.size() + "] __attribute__ ((section (\".shared\")));\n"+
+				"FunctionTable functionTable[NUM_CRITICAL_TASKS] __attribute__ ((section (\".shared\")));\n"+
 				"CriticalFunctionData critFuncData[NUMCORES] __attribute__ ((section (\".shared\")));\n"+
 				"\n";
 		
 		return s;
 	}
 	
-	
+	/**
+	 * @param core
+	 * @return Returns the task functions for periodic functions. Different for monitor.
+	 */
+	@Override
 	protected String getTaskFunctionString(Core core) {
 		String s = "";
 			
@@ -538,6 +607,10 @@ public class GenCoreMon extends GenCore{
 		return s;
 	}
 	
+	/**
+	 * @param core
+	 * @return The stack size for functions headers
+	 */
 	protected String getStackSizes(Core core) {
 		String s = "";
 		s += super.getStackSizes(core);

@@ -8,6 +8,12 @@ import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
 
+/**
+ * GenCriticalLibrary contains all methods for copying the critical library files, the generate script,
+ * and the files critical.c and critical.h
+ * @author jonah
+ *
+ */
 public class GenCriticalLibrary {
 
 	
@@ -17,6 +23,12 @@ public class GenCriticalLibrary {
 	ArrayList<Function> funcList;
 	ArrayList<Function> fprintList;
 	
+	/**
+	 * Constructor. Should be called from CodeGen after functions have been analyzed.
+	 * @param config	Valid configuration
+	 * @param funcList	The list of all functions in the application
+	 * @param fprintList	The list of fingerprinted functions
+	 */
 	public GenCriticalLibrary(Configuration config, ArrayList<Function> funcList, ArrayList<Function> fprintList){
 		this.config = config;
 		this.platform = config.platform;
@@ -24,6 +36,11 @@ public class GenCriticalLibrary {
 		this.fprintList = fprintList;
 	}
 
+	/**
+	 * The main entry point for this class. Copies and generates all files:
+	 * fills critical_library/, generates critical.c and critical.h, generate_lib.sh
+	 * @throws FileNotFoundException
+	 */
 	public void generateCriticalLibrary() throws FileNotFoundException {
 		File critDir = new File(config.outputDir + "/critical_library");
 		if(!critDir.exists()){
@@ -51,7 +68,11 @@ public class GenCriticalLibrary {
 		config.niosSBT.generateCriticalLibrary(config.outputDir + "/critical_library", platform.getCore("cpum").bspDir);
 	}
 	
-	public String generateCriticalLibraryString() {
+	/**
+	 * 
+	 * @return	Returns the string for generate_lib.sh
+	 */
+	private String generateCriticalLibraryString() {
 		
 		
 		String cmd = "";
@@ -68,6 +89,10 @@ public class GenCriticalLibrary {
 		return cmd;
 	}
 	
+	/**
+	 * Copies files from source directory to critical_library/ and cpu0/.
+	 * In the future, cpu0/ should be replaced by logical core 0. 
+	 */
 	private void copyCriticalLibrary() {
 		for(Function f: funcList){
 			String outputDir = config.outputDir + "/critical_library";
@@ -84,6 +109,11 @@ public class GenCriticalLibrary {
 		
 	}
 	
+	/**
+	 * Copies source files (.c and .h only) from one directory to another
+	 * @param srcName	source directory
+	 * @param destName	destination directory
+	 */
 	private void copySourceFiles(String srcName, String destName) {
 
 		File[] src = new File(srcName).listFiles();
@@ -100,6 +130,10 @@ public class GenCriticalLibrary {
 
 	}
 	
+	/**
+	 * 
+	 * @return String contents of critical.h
+	 */
 	private String getCriticalIncludeString() {
 		String s = "";
 		s += "\n"+
@@ -136,7 +170,10 @@ public class GenCriticalLibrary {
 	}
 	
 
+	/**
 
+	 * @return 	 * String contents of critical.c
+	 */
 	private String getCriticalSourceString() {
 		String s = "";
 		s += "#include \"critical.h\"\n\n";
@@ -158,7 +195,10 @@ public class GenCriticalLibrary {
 		return s;
 	}
 	
-
+	/**
+	 * Removes file
+	 * @param name	File name
+	 */
 	private void deleteFile(String name) {
 
 		File file = new File(name);

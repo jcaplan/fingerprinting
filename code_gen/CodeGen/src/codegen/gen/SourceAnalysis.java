@@ -10,19 +10,35 @@ import org.apache.commons.io.FileUtils;
 
 import codegen.prof.Profiler;
 
+/**
+ * SourceAnalysis contains methods for parsing and retrieving information from Simulink files.
+ * @author jonah
+ *
+ */
 public class SourceAnalysis {
 
 	Platform platform;
 	ArrayList<Function> funcList;
 	Configuration config;
 
+	/**
+	 * Constructor
+	 * @param platform
+	 * @param funcList
+	 * @param config
+	 */
 	public SourceAnalysis(Platform platform, ArrayList<Function> funcList, Configuration config){
 		this.platform = platform;
 		this.funcList = funcList;
 		this.config = config;
 	}
 	
-	
+	/**
+	 * This method does the analysis.
+	 * First the header file includes are determined, then variable declarations and model
+	 * initialization is parsed from ert_main.c, then the max stack height is determined if necessary.
+	 * Finally the variable size is checked (not implemented yet).
+	 */
 	public void doAnalysis(){
 		//Parse source
 		initHeaders();
@@ -39,7 +55,10 @@ public class SourceAnalysis {
 	}
 	
 	
-
+	/**
+	 * Adds the header strings to the Core objects. 
+	 * Default list as well as extra headers for Simulink functions.
+	 */
 	private void initHeaders() {
 
 		Core c = platform.getCore("cpu0");
@@ -108,7 +127,10 @@ public class SourceAnalysis {
 	}
 	
 	
-	public void findFunctionHeaders() {
+	/**
+	 * Adds header files to function object.
+	 */
+	private void findFunctionHeaders() {
 		for (Function f : funcList) {
 			File file = new File(f.codeDirectory);
 			File[] fileList = file.listFiles();
@@ -120,7 +142,10 @@ public class SourceAnalysis {
 		}
 	}
 	
-
+	/**
+	 * Parses the ert_main.c file for variable declarations.
+	 * @throws IOException
+	 */
 	private void getVariableDeclarations() throws IOException {
 		for (Function f : funcList) {
 			FileReader fr = new FileReader(f.codeDirectory + "/ert_main.c");
@@ -155,6 +180,10 @@ public class SourceAnalysis {
 
 	}
 	
+	/**
+	 * Parses the ert_main.c file for function initialization.
+	 * @throws IOException
+	 */
 	private void getFunctionInitialization() throws IOException {
 		for (Function f : funcList) {
 			FileReader fr = new FileReader(f.codeDirectory + "/ert_main.c");
@@ -187,7 +216,13 @@ public class SourceAnalysis {
 		}
 
 	}
-
+	
+	/**
+	 * Uses codege.prof.Profiler to find maximum stack height for each function
+	 * (uses cpuM BSP by default. Should depend on which core function is running on
+	 * because of FPU).
+	 * @throws IOException
+	 */
 	private void getMaxStacks() throws IOException {
 		for (Function f : funcList) {
 			System.out.println("Starting profiling for " + f);
@@ -208,7 +243,10 @@ public class SourceAnalysis {
 
 	}
 
-
+	/**
+	 * Force delete an entire directory
+	 * @param name	Name of directory
+	 */
 	private void deleteDirectory(String name) {
 		File f = new File(name);
 		try {
@@ -219,6 +257,11 @@ public class SourceAnalysis {
 
 	}
 
+	/**
+	 * Copy between folders
+	 * @param srcName	Source folder name
+	 * @param destName	Destination folder name
+	 */
 	private void copySourceFiles(String srcName, String destName) {
 
 		File[] src = new File(srcName).listFiles();
@@ -235,6 +278,10 @@ public class SourceAnalysis {
 
 	}
 	
+	/**
+	 * Determines the size of the static variables for each function.
+	 * Not currently implemented.
+	 */
 	private void getVariableSizes() {
 		// figure out the size of the data variables -> size of global_data
 		// region (4 kB pages)

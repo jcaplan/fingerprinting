@@ -4,14 +4,28 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * GenScripts generates all the scripts (except for critical_library.sh which was much easier to put in GenCriticalLibrary).
+ * Generates the following scripts: create_app.sh, compile_app.sh, compile_bsp.sh, RUN.sh.
+ * Also doesn't generate update_bsps.sh
+ * @author jonah
+ *
+ */
 public class GenScripts {
 
 	Configuration config;
 	
+	/**
+	 * Constructor
+	 * @param config
+	 */
 	public GenScripts(Configuration config){
 		this.config = config;
 	}
 	
+	/**
+	 * The public method allows all the scripts to be generated.
+	 */
 	public void generateScripts(){
 		try {
 			generateAppScript();
@@ -23,6 +37,10 @@ public class GenScripts {
 		
 	}
 	
+	/**
+	 * This method generates create_app.sh and compile_app.sh
+	 * @throws IOException
+	 */
 	private void generateAppScript() throws IOException {
 		PrintWriter writer;
 		File output = new File(config.outputDir + "/create_app.sh");		
@@ -41,7 +59,10 @@ public class GenScripts {
 		
 	}
 
-	
+	/**
+	 * This method generates compile_bsp.sh
+	 * @throws IOException
+	 */
 	private void generateCompileBSPScript() throws IOException{
 		String s = "#!/bin/bash\n"+
 				"OUTPUT_DIR="+ config.outputDir + "\n"+
@@ -66,6 +87,10 @@ public class GenScripts {
 		output.setExecutable(true);
 	}
 	
+	/**
+	 * This method generates RUN.sh
+	 * @throws IOException
+	 */
 	private void generateRunScript() throws IOException {
 		PrintWriter writer;
 		File output = new File(config.outputDir + "/RUN.sh");
@@ -79,7 +104,10 @@ public class GenScripts {
 		output.setExecutable(true);
 	}
 	
-
+	/**
+	 * 
+	 * @return String for the create_app.sh script
+	 */
 	private String getAppScriptString() {
 		String s = "";
 		
@@ -116,6 +144,10 @@ public class GenScripts {
 		return s;
 	}
 	
+	/**
+	 * 
+	 * @return The string for the compile_app.sh script
+	 */
 	private String getCompileAppScript() {
 		String s = "";
 		s += "#!/bin/bash\n"+
@@ -133,7 +165,10 @@ public class GenScripts {
 		return s;
 	}
 	
-	
+	/**
+	 * 
+	 * @return	The string for the RUN.sh script
+	 */
 	private String getRunScriptString() {
 		String s = "";
 		s += "#!/bin/bash\n"+

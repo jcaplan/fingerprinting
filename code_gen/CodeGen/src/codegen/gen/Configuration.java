@@ -12,6 +12,11 @@ import org.jgap.gui.ConfigFrame.ConfigListSelectionListener;
 
 import codegen.gen.Function.Type;
 
+/**
+ * Configuration class parses the configuration file and holds the configuration details.
+ * @author jonah
+ *
+ */
 public class Configuration {
 
 	String configFilename;
@@ -24,6 +29,11 @@ public class Configuration {
 	String sopcinfoFilename;
 	String outputDir;
 
+	/**
+	 * 
+	 * @param configFilename	Full path name of the configuration file
+	 * @param outputDir			Directory where the generated files should be placed
+	 */
 	public Configuration(String configFilename, String outputDir) {
 		this.configFilename = configFilename;
 		this.outputDir = outputDir;
@@ -31,17 +41,33 @@ public class Configuration {
 		lineCount = 0;
 	}
 
+	/**
+	 * 
+	 * @param configFile		Full path name of the configuration file
+	 * @param outputDir			Directory where the generated files should be placed
+	 * @param sopcinfoFilename	Name of sopcinfo file from Quartus for generating BSPs
+	 */
 	public Configuration(String configFile, String outputDir,
 			String sopcinfoFilename) {
 		this(configFile,outputDir);
 		this.sopcinfoFilename = sopcinfoFilename;
 	}
 
-	public void throwConfigError(String message) throws ConfigurationException {
+	/**
+	 * Formats configuration error message
+	 * @param message	Message to be formatted
+	 * @throws ConfigurationException
+	 */
+	private void throwConfigError(String message) throws ConfigurationException {
 		throw new ConfigurationException(configFilename + ":" + lineCount
 				+ ": " + message);
 	}
 
+	/**
+	 * Parse the configuration file with this function
+	 * @throws IOException
+	 * @throws ConfigurationException
+	 */
 	public void parseConfigFile() throws IOException, ConfigurationException {
 		FileReader fr = new FileReader(configFilename);
 		reader = new BufferedReader(fr);
@@ -85,6 +111,11 @@ public class Configuration {
 		platform.addFunctionsToCores();
 	}
 
+	/**
+	 * Parses the stack profiling section
+	 * @throws IOException
+	 * @throws ConfigurationException
+	 */
 	private void parseStackProfiling() throws IOException, ConfigurationException {
 		String line = "";
 		while (!(line = reader.readLine()).equals("</STACK_PROFILE>")) {
@@ -105,6 +136,9 @@ public class Configuration {
 		
 	}
 
+	/**
+	 * Prints the configuration for each function
+	 */
 	void printConfiguration() {
 		for (Function f : funcList) {
 			System.out.println(f.codeDirectory);
@@ -125,6 +159,11 @@ public class Configuration {
 
 	}
 
+	/**
+	 * Parse the mapping section
+	 * @throws IOException
+	 * @throws ConfigurationException
+	 */
 	private void parseMapping() throws IOException, ConfigurationException {
 		String line = "";
 		while (!(line = reader.readLine()).equals("</MAPPING>")) {
@@ -170,6 +209,11 @@ public class Configuration {
 		lineCount++; /* final line */
 	}
 
+	/**
+	 * Parse the platform section
+	 * @throws IOException
+	 * @throws ConfigurationException
+	 */
 	private void parsePlatform() throws IOException, ConfigurationException {
 		String line = "";
 		platform = new Platform(this);
@@ -222,6 +266,11 @@ public class Configuration {
 
 	}
 
+	/**
+	 * Parse the function list section
+	 * @throws IOException
+	 * @throws ConfigurationException
+	 */
 	private void parseFunctionList() throws IOException, ConfigurationException {
 		String line = "";
 		String rootdir = "";
@@ -334,6 +383,11 @@ public class Configuration {
 
 	}
 
+	/**
+	 * Parse the dataflow section
+	 * @throws IOException
+	 * @throws ConfigurationException
+	 */
 	private void parseDataflow() throws IOException, ConfigurationException {
 		String line = "";
 		while (!(line = reader.readLine()).equals("</DATAFLOW>")) {
@@ -369,6 +423,11 @@ public class Configuration {
 
 	}
 
+	/**
+	 * Get a function from the funcList from its name
+	 * @param sourceFunction
+	 * @return the function object with the same name
+	 */
 	private Function getFunction(String sourceFunction) {
 		for (Function f : funcList) {
 			if (f.name.equals(sourceFunction)) {
@@ -378,6 +437,10 @@ public class Configuration {
 		return null;
 	}
 
+	/**
+	 * Print an array of strings
+	 * @param array
+	 */
 	private void printStringArray(String[] array) {
 		for (int i = 0; i < array.length - 1; i++) {
 			System.out.print(array[i] + ", ");
@@ -385,6 +448,10 @@ public class Configuration {
 		System.out.println(array[array.length - 1]);
 	}
 
+	/**
+	 * Pring an ArrayList<String>
+	 * @param array
+	 */
 	private void printStringArray(ArrayList<String> array) {
 		for (int i = 0; i < array.size() - 1; i++) {
 			System.out.print(array.get(i) + ", ");
@@ -392,6 +459,10 @@ public class Configuration {
 		System.out.println(array.get(array.size() - 1));
 	}
 
+	/**
+	 * Check if BSP generation is required 
+	 * @return	true when sopcinfo file included in command line arguments
+	 */
 	public boolean generateBSPRequired() {
 		return sopcinfoFilename != null;
 	}

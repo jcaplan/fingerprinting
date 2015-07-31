@@ -6,14 +6,27 @@ import java.io.PrintWriter;
 
 import org.apache.commons.io.FileUtils;
 
+/**
+ * GenBSP generates the BSPs, using the script update_bsps.sh
+ * @author jonah
+ *
+ */
 public class GenBSP {
 	
 	Configuration config;
 	
+	/**
+	 * Constructor
+	 * @param config
+	 */
 	public GenBSP(Configuration config){
 		this.config = config;
 	}
 
+	/**
+	 * Generates the update_bsps.sh script and then generates the BSPs if cpuM_bsp is not found.
+	 * @throws IOException
+	 */
 	public void generateBSPs() throws IOException {
 
 		File output;
