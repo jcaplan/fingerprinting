@@ -3,6 +3,12 @@ package codegen.gen;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Codegen is the main class through which the generation flow occurs.
+ * 
+ * @author jonah
+ *
+ */
 
 public class CodeGen {
 
@@ -11,14 +17,25 @@ public class CodeGen {
 	ArrayList<Function> funcList;
 	ArrayList<Function> fprintList;
 	ArrayList<StackBin> stackBins;
+	/**
+	 * The index of the monitor core
+	 */
 	public static final int MONITOR_INDEX = 2;
 
+	/**
+	 * Constructor for codegen object
+	 * @param config	CodeGen must be passed a valid configuration.
+	 */
 	public CodeGen(Configuration config) {
 		this.config = config;
 		this.funcList = config.funcList;
 		platform = config.platform;
 	}
 
+	/**
+	 * generates code for all cores.
+	 * @throws IOException
+	 */
 	public void generateCores() throws IOException {
 
 
@@ -56,7 +73,10 @@ public class CodeGen {
 
 
 
-
+	/**
+	 * Initializes the fprintList. Any function assigned to more than one core is 
+	 * considered fingerprinted.
+	 */
 	private void getFprintList() {
 		fprintList = new ArrayList<>();
 		for (Function f : funcList) {
@@ -66,7 +86,11 @@ public class CodeGen {
 		}
 	}
 
-
+	/**
+	 * Returns name of a core corresponding to integer index
+	 * @param core	index of core
+	 * @return		string for core name
+	 */
 	public String getCoreName(int core) {
 		String name = "";
 		if (core == 0) {
@@ -79,6 +103,9 @@ public class CodeGen {
 		return name;
 	}
 
+	/**
+	 * Shows results of stack analysis
+	 */
 	public void printStackResults(){
 		System.out.println("\nStack results (in bytes):");
 		System.out.println("<STACK_PROFILE>");

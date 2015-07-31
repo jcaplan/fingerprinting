@@ -6,6 +6,14 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Class for creating stack bin objects and generating scripts that update BSP.
+ * "StackBins" are chunks of main memory placed in separate region in order to ensure
+ * that stacks, when allocated to those regions, are page aligned with each other.
+ * Otherwise the stacks will never match on redundant tasks.
+ * @author jonah
+ *
+ */
 public class GenStackBin {
 
 
@@ -14,6 +22,13 @@ public class GenStackBin {
 	Platform platform;
 	Configuration config;
 	
+	/**
+	 * Constructor
+	 * @param stackBins	An empty array to place the stack bins passed from CodeGen
+	 * @param fprintList	The list of fingerprinted functions
+	 * @param platform	The platform
+	 * @param config	The configuration file
+	 */
 	public GenStackBin(ArrayList<StackBin> stackBins, ArrayList<Function> fprintList, Platform platform,
 			Configuration config){
 		this.fprintList = fprintList;
@@ -22,6 +37,10 @@ public class GenStackBin {
 		this.config = config;
 	}
 	
+	/**
+	 * This method is called to find the stack bins and create and run the scripts that update the
+	 * BSP.
+	 */
 	public void genStackBins() {
 		getStackBins();
 		setStackBinAddresses();
@@ -32,7 +51,9 @@ public class GenStackBin {
 		}
 	}
 
-
+	/**
+	 * This method creates the StackBin objects
+	 */
 	private void getStackBins() {
 		// MIN_OFFSET = 1256
 		// SAFETY = 80
@@ -87,7 +108,9 @@ public class GenStackBin {
 		}
 	}
 	
-
+	/**
+	 * This method calculates the start addresses for each stack bin for each core
+	 */
 	private void setStackBinAddresses() {
 		for(int i = 0; i < stackBins.size(); i++){
 			StackBin sb = stackBins.get(i);
@@ -100,7 +123,9 @@ public class GenStackBin {
 		updateMainMemorySize();
 	}
 	
-
+	/**
+	 * This method finds the new (reduced) main memory size
+	 */
 	private void updateMainMemorySize() {
 		Core c = platform.getCore("cpu0");
 		c.mainMemSize -= (stackBins.size() - 1) * StackBin.size;
@@ -110,7 +135,10 @@ public class GenStackBin {
 	}
 	
 
-
+	/**
+	 * This method creates and runs the script to update the stack regions in the BSP 
+	 * @throws IOException
+	 */
 	private void updateStackBinRegions() throws IOException {
 		int numBins = 0;
 		if((numBins = stackBins.size()) > 1) { /* default num of stack bins */
@@ -147,7 +175,17 @@ public class GenStackBin {
 			}
 		}
 	}
-
+	
+	/**
+	 * Generate the script for each stack bin on the core
+	 * Skips stack bin 0 because it's already there and shouldn't be changed.
+	 * Bins are numbered in reverse order (lower address -> higher x : stack_bin_x)
+	 * @param numBins	
+	 * @param core
+	 * @param coreID
+	 * @param sbList
+	 * @return String for the update command
+	 */
 	public String updateBspStackBins(int numBins, Core core, int coreID,
 			ArrayList<StackBin> sbList) {
 		// first shrink size of mainMemory
@@ -165,7 +203,13 @@ public class GenStackBin {
 	}
 
 
-
+	/**
+	 * This method adds the stack bin section and region.
+	 * @param coreID
+	 * @param binStartAddress
+	 * @param name
+	 * @return The string of the command to create the new region and section 
+	 */
 	private String addStackBins(String coreID, 
 			int binStartAddress, String name) {
 		String cmd ="${NIOS2COMMANDSHELL}" + " nios2-bsp-update-settings \\\n" +
@@ -179,6 +223,13 @@ public class GenStackBin {
 		return cmd;
 	}
 
+	/**
+	 * This method createst the command to update main memory size.
+	 * @param coreID
+	 * @param mainMemStartAddress
+	 * @param newSize
+	 * @return The string of the command to resize main memory
+	 */
 	private String ResizeMainMem(String coreID, int mainMemStartAddress,
 			int newSize) {
 		String cmd = "${NIOS2COMMANDSHELL}" + " nios2-bsp-update-settings \\\n"+

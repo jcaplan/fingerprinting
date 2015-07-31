@@ -11,6 +11,11 @@ import org.apache.commons.io.output.TeeOutputStream;
 
 public class Main {
 
+	/**
+	 * Main entry. Parse arguments, create Configuration and CodeGen objects. 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 
 		String configFile = "";

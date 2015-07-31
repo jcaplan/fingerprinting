@@ -3,6 +3,11 @@ package codegen.gen;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+/**
+ * Function contains all the necessary information about each function in the system.
+ * @author jonah
+ *
+ */
 public class Function implements Comparable<Function>{
 
 	String name;
@@ -19,6 +24,10 @@ public class Function implements Comparable<Function>{
 	ArrayList<String> initialization;
 	public int stackSize;
 	StackBin stackBin;
+	
+	/**
+	 * When doing work on stack analysis, it is convenient to arrange functions in order of maximum stack size.
+	 */
 	static Comparator<Function> stackCompareDecreasing = new Comparator<Function>() {
          @Override
          public int compare(Function f1, Function f2) {
@@ -27,6 +36,10 @@ public class Function implements Comparable<Function>{
      };
      
 	
+     /**
+      * All function properties are entered manually from higher level.
+      * Only empty function constructor available.
+      */
 	public Function(){
 		critical = false;
 		dataflowList = new ArrayList<>();
@@ -36,7 +49,12 @@ public class Function implements Comparable<Function>{
 		initialization = new ArrayList<>();
 	}
 
-
+	/**
+	 * Not currently implemented
+	 * @param dest
+	 * @param sourceVariable
+	 * @param destVariable
+	 */
 	public void addDataflow(Function dest, String sourceVariable,
 			String destVariable) {
 		//Type check the dataflow...
@@ -51,6 +69,9 @@ public class Function implements Comparable<Function>{
 	}
 
 
+	/**
+	 * Compare functions by default using priority. (0 is highest priority)
+	 */
 	@Override
 	public int compareTo(Function arg0) {
 		if(this.priority < arg0.priority){
@@ -62,6 +83,10 @@ public class Function implements Comparable<Function>{
 		}
 	}
 	
+	/**
+	 * Equality is simply if the names are equal.
+	 * Should not have two function objects with same name in system.
+	 */
 	@Override
 	public boolean equals(Object o){
 		if(! (o instanceof Function)){
@@ -72,7 +97,10 @@ public class Function implements Comparable<Function>{
 		
 	}
 
-
+	/**
+	 * @return	a formatted string of the static variable declarations parsed from
+	 * the source files.
+	 */
 	public String getVarDeclarationString() {
 		String s = "";
 		for(String dec : varDeclarations){
@@ -82,7 +110,11 @@ public class Function implements Comparable<Function>{
 		
 	}
 
-
+	/**
+	 * 
+	 * @param tab	Number of tabs for formatting output
+	 * @return	String for initializing variables parsed from source file (ert_main.c)
+	 */
 	public String printInitialization(int tab) {
 		String init = "";
 		for(String s : initialization){
@@ -96,7 +128,12 @@ public class Function implements Comparable<Function>{
 		
 	}
 
-
+	/**
+	 * Fingerprinted functions require a bit more work. The variables are located in structs so new
+	 * pointers are required.
+	 * @param tab	number of tabs for proper formatting
+	 * @return	Initialization code for fingerprinted tasks.
+	 */
 	public String printInitializationWithStruct(int tab) {
 		String init = "";
 		init += "	RT_MODEL_" + this + "_T *" + this + "_M =\n"+
@@ -116,11 +153,19 @@ public class Function implements Comparable<Function>{
 		return init;
 	}
 	
+	/**
+	 * @param core	Which core for the given function (in case there are two)
+	 * @return	the end address of the stack for this function on this core
+	 */
 	public int getStackEnd(int core) {
 		return stackBin.getStackEnd(this,core);
 	}
 
 
+	/**
+	 * @param core	Which core for the given function (in case there are two)
+	 * @return	the start address of the stack for this function on this core
+	 */
 	public int getStackStart(int core) {
 		return stackBin.getStackStart(this,core);
 	}

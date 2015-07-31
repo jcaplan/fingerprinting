@@ -7,16 +7,27 @@ import org.apache.commons.io.FileUtils;
 
 import codegen.gen.Function.Type;
 
+/**
+ * Class for generating the processing core code cpuX.c and cpuX.h
+ * @author jonah
+ *
+ */
 public class GenCore {
 
 	Configuration config;
 	ArrayList<Function> fprintList;
 	Platform platform;
 	
+	/**
+	 * Action interface for generation of different sections
+	 */
 	interface GenString {
 		String action(Core core);
 	}
 	
+	/**
+	 * Array of actions taken to generate file.
+	 */
 	private GenString[] genStrings = new GenString[] {
 		new GenString() { public String action(Core core) { return getIncludeStringString(core); } },
 		new GenString() { public String action(Core core) { return getVarDecStringString(core); } },
@@ -30,15 +41,24 @@ public class GenCore {
 		new GenString() { public String action(Core core) { return getMainString(core); } },
 	};
 	
-	
+	/**
+	 * Constructor
+	 * @param config
+	 * @param fprintList
+	 * @param platform
+	 */
 	public GenCore(Configuration config, ArrayList<Function> fprintList, Platform platform){
 		this.config = config;
 		this.fprintList = fprintList;
 		this.platform = platform;
 	}
 	
-
-	void generateCore(Core core) throws IOException {
+	/**
+	 * Generate the files cpuX.c and cpuX.h
+	 * @param core
+	 * @throws IOException
+	 */
+	protected void generateCore(Core core) throws IOException {
 		
 		File outputDir = new File(config.outputDir + "/" + core.name);
 		FileUtils.forceMkdir(outputDir);
@@ -65,7 +85,11 @@ public class GenCore {
 	
 	
 
-
+	/**
+	 * 
+	 * @param core
+	 * @return String for cpuX.h
+	 */
 	protected String getHeaderFileString(Core core) {
 		String s = "";
 		s += 	"#include \"shared_mem.h\"\n"+
@@ -124,6 +148,11 @@ public class GenCore {
 	}
 	
 
+	/**
+	 * 
+	 * @param core
+	 * @return The string for the stack size macros
+	 */
 	protected String getStackSizes(Core core) {
 		String s = "";
 		for (Function f : core.funcList){
@@ -136,15 +165,24 @@ public class GenCore {
 		return s;
 	}
 
-
-	String getIncludeStringString(Core core) {
+	/**
+	 * 
+	 * @param core
+	 * @return The string for the header file includes
+	 */
+	protected String getIncludeStringString(Core core) {
 		String s = "";
 		s += "/**********************************\n"+
 			 " * Includes\n" +
 			 " **********************************/\n";
-		return s + core.printIncludes();
+		return s + core.getIncludesString();
 	}
 	
+	/**
+	 * 
+	 * @param core
+	 * @return The string for the global variable declarations for the Simulink functions.
+	 */
 	protected String getVarDecStringString(Core core) {
 		String s = "";
 		s += "/**********************************\n"+
@@ -153,6 +191,11 @@ public class GenCore {
 		return s + core.printVarDeclarations();
 	}
 	
+	/**
+	 * 
+	 * @param core
+	 * @return String for the stack declarations for each task
+	 */
 	protected String getStackDeclarationString(Core core) {
 		String s = "";
 		s += 	"/*****************************************************************************\n"+
@@ -176,7 +219,11 @@ public class GenCore {
 		return s;
 	}
 	
-
+	/**
+	 * 
+	 * @param core
+	 * @return The string for the semaphore array for each critical task
+	 */
 	String getSemaphoreDeclarations(Core core) {
 		String s = "";
 		String s2 = "";
@@ -200,7 +247,10 @@ public class GenCore {
 		return s + s2;
 	}
 	
-
+	/**
+	 * @param core
+	 * @return Declaration of the shared memory pointers sent by the monitor.
+	 */
 	protected String getSharedMemoryDeclarationString(Core core) {
 		String s = "";
 		s += 	"/*****************************************************************************\n"+
@@ -212,7 +262,11 @@ public class GenCore {
 		return s;
 	}
 	
-
+	/**
+	 * 
+	 * @param core
+	 * @return The string for the interrupt handler for beginning critical tasks
+	 */
 	private String getCPUInterruptString(Core core) {
 		String s = "";
 
@@ -255,7 +309,11 @@ public class GenCore {
 	}
 
 	
-
+	/**
+	 * 
+	 * @param core
+	 * @return String for all function task wrappers. 
+	 */
 	protected String getTaskFunctionString(Core core) {
 		String s = "";
 			
@@ -332,7 +390,11 @@ public class GenCore {
 	}
 
 
-
+	/**
+	 * 
+	 * @param core
+	 * @return String for function to initialize memory manager.
+	 */
 	private String getMemoryManagerInitString(Core core) {
 		String s = "";
 		s += "/*****************************************************************************\n"+
@@ -377,7 +439,11 @@ public class GenCore {
 
 	
 
-
+	/**
+	 * 
+	 * @param core
+	 * @return String to initialize default values for MPU data and inst regions.
+	 */
 	private String getMPUInitString(Core core) {
 		String s = "";
 		s += "/*****************************************************************************\n"+
@@ -485,8 +551,12 @@ public class GenCore {
 	}
 	
 
-
-	private String getMainString(Core core) {
+	/**
+	 * 
+	 * @param core
+	 * @return Main function string
+	 */
+	protected String getMainString(Core core) {
 		String s = "";
 		s += "/*****************************************************************************\n"+
 			" * Main\n"+
@@ -587,6 +657,11 @@ public class GenCore {
 	 * HELPERS
 	 *************************************************************/
 	
+	/**
+	 * 
+	 * @param numLines
+	 * @return String with desired number of blank new lines
+	 */
 	public String getWhiteSpace(int numLines){
 		String s = "";
 		for(int i = 0; i < numLines; i++){
@@ -595,11 +670,22 @@ public class GenCore {
 		return s;
 	}
 
-	
+	/**
+	 * Get the start of the stack for a function on a core
+	 * @param f
+	 * @param coreID
+	 * @return address of start of function stack
+	 */
 	protected int getStackStart(Function f, int coreID) {
 		return platform.mainMemoryBase + f.stackBin.startAddress[coreID] +  f.getStackStart(coreID);
 	}
 
+	/**
+	 * Get the end of a stack for a function on a core
+	 * @param f
+	 * @param coreID
+	 * @return address of end of function stack.
+	 */
 	private int getStackEnd(Function f, int coreID) {
 		 return platform.mainMemoryBase + f.stackBin.startAddress[coreID] + f.getStackEnd(coreID);
 	}

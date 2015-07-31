@@ -1,5 +1,10 @@
 package codegen.gen;
 
+/**
+ * Store information about dataflow from configuration. Not used yet.
+ * @author jonah
+ *
+ */
 public class Dataflow {
 	Function source;
 	Function destination;
