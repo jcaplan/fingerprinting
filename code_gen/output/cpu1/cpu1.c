@@ -28,8 +28,6 @@
 
 /* CruiseControlSystem*/
 
-/* TractionControl*/
-
 /* CollisionAvoidance*/
 static RT_MODEL_CollisionAvoidance_T CollisionAvoidance_M_;
 static RT_MODEL_CollisionAvoidance_T *const CollisionAvoidance_M =  &CollisionAvoidance_M_;              /* Real-time model */
@@ -53,6 +51,8 @@ static DW_CollisionAvoidance_T CollisionAvoidance_DW;/* Observable states */
 static ExtU_CollisionAvoidance_T CollisionAvoidance_U;/* External inputs */
 static ExtY_CollisionAvoidance_T CollisionAvoidance_Y;/* External outputs */
 
+/* RadarTracker*/
+
 
 
 
@@ -61,10 +61,10 @@ static ExtY_CollisionAvoidance_T CollisionAvoidance_Y;/* External outputs */
 /*****************************************************************************
  * Stack Declarations
  *****************************************************************************/
-OS_STK CruiseControlSystem_STACK[CruiseControlSystem_STACKSIZE] __attribute__ ((section (".stack_bin_0")));
+OS_STK RadarTracker_STACK[RadarTracker_STACKSIZE] __attribute__ ((section (".stack_bin_0")));
+OS_STK AirbagModel_STACK[AirbagModel_STACKSIZE] __attribute__ ((section (".stack_bin_1")));
 OS_STK CollisionAvoidance_STACK[CollisionAvoidance_STACKSIZE];
-OS_STK AirbagModel_STACK[AirbagModel_STACKSIZE] __attribute__ ((section (".stack_bin_0")));
-OS_STK TractionControl_STACK[TractionControl_STACKSIZE] __attribute__ ((section (".stack_bin_1")));
+OS_STK CruiseControlSystem_STACK[CruiseControlSystem_STACKSIZE] __attribute__ ((section (".stack_bin_1")));
 
 
 
@@ -133,8 +133,6 @@ void waitForPartnerCore(int partnerCore) {
  *****************************************************************************/
 void AirbagModel_TASK(void* pdata) {
 	void *gp = stab->gp_address;
-	int AirbagModel_blocksize =
-			functionTable[AIRBAGMODEL_TABLE_INDEX].blocksize;
 	void (*AirbagModelFunc)(int,
 			AirbagModelStruct*) = functionTable[AIRBAGMODEL_TABLE_INDEX].address;
 	int partnerCore = 0; /* static variable */
@@ -179,8 +177,6 @@ void AirbagModel_TASK(void* pdata) {
  *****************************************************************************/
 void CruiseControlSystem_TASK(void* pdata) {
 	void *gp = stab->gp_address;
-	int CruiseControlSystem_blocksize =
-			functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].blocksize;
 	void (*CruiseControlSystemFunc)(int,
 			CruiseControlSystemStruct*) = functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].address;
 	int partnerCore = 0; /* static variable */
@@ -221,19 +217,28 @@ void CruiseControlSystem_TASK(void* pdata) {
 }
 
 /*****************************************************************************
- * TractionControlTask wrapper
+ * CollisionAvoidanceTask wrapper
  *****************************************************************************/
-void TractionControl_TASK(void* pdata) {
+void CollisionAvoidance_TASK(void* pdata) {
+	while (1) {
+		CollisionAvoidance_step(CollisionAvoidance_M, &CollisionAvoidance_U,
+			&CollisionAvoidance_Y);
+		OSTimeDlyHMSM(0, 0, 0, 100);
+	}
+}
+
+/*****************************************************************************
+ * RadarTrackerTask wrapper
+ *****************************************************************************/
+void RadarTracker_TASK(void* pdata) {
 	void *gp = stab->gp_address;
-	int TractionControl_blocksize =
-			functionTable[TRACTIONCONTROL_TABLE_INDEX].blocksize;
-	void (*TractionControlFunc)(int,
-			TractionControlStruct*) = functionTable[TRACTIONCONTROL_TABLE_INDEX].address;
+	void (*RadarTrackerFunc)(int,
+			RadarTrackerStruct*) = functionTable[RADARTRACKER_TABLE_INDEX].address;
 	int partnerCore = 0; /* static variable */
 
 	while (1) {
 		INT8U perr;
-		OSSemPend(critical_SEM[TRACTIONCONTROL_TABLE_INDEX], 0, &perr);
+		OSSemPend(critical_SEM[RADARTRACKER_TABLE_INDEX], 0, &perr);
 
 		waitForPartnerCore(partnerCore);
 		//Context switch is necessary to clear the callee saved registers
@@ -250,12 +255,12 @@ void TractionControl_TASK(void* pdata) {
 
 		//Retrieve the arguments before changing the GP
 
-		void *args = functionTable[TRACTIONCONTROL_TABLE_INDEX].args;
+		void *args = functionTable[RADARTRACKER_TABLE_INDEX].args;
 		//Set the global pointer in case of compilation issues related
 		//to global variables
 		set_gp(gp);
 
-		TractionControlFunc(priority, args);
+		RadarTrackerFunc(priority, args);
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();
@@ -263,17 +268,6 @@ void TractionControl_TASK(void* pdata) {
 		//set the flag for the OS context switch
 		FprintActive = 0;
 
-	}
-}
-
-/*****************************************************************************
- * CollisionAvoidanceTask wrapper
- *****************************************************************************/
-void CollisionAvoidance_TASK(void* pdata) {
-	while (1) {
-		CollisionAvoidance_step(CollisionAvoidance_M, &CollisionAvoidance_U,
-			&CollisionAvoidance_Y);
-		OSTimeDlyHMSM(0, 0, 0, 100);
 	}
 }
 
@@ -296,8 +290,8 @@ void mem_manager_init(void) {
 	entry->taskPriority = AirbagModel_PRIORITY;
 	entry->tlbDataLine = 0;
 	entry->tlbStackLine = 1;
-	entry->stackPhysicalAddress = (void*)0x463000;
-	entry->stackVirtualAddress = (void*)0x63000;
+	entry->stackPhysicalAddress = (void*)0x462000;
+	entry->stackVirtualAddress = (void*)0x62000;
 	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
 	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
 
@@ -309,21 +303,21 @@ void mem_manager_init(void) {
 	entry->taskPriority = CruiseControlSystem_PRIORITY;
 	entry->tlbDataLine = 2;
 	entry->tlbStackLine = 3;
-	entry->stackPhysicalAddress = (void*)0x463000;
-	entry->stackVirtualAddress = (void*)0x63000;
+	entry->stackPhysicalAddress = (void*)0x462000;
+	entry->stackVirtualAddress = (void*)0x62000;
 	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
 	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
 
 	managerEnableTask(entry);
-	// TractionControl
-	entry = &memoryManagerTable[TRACTIONCONTROL_TABLE_INDEX];
+	// RadarTracker
+	entry = &memoryManagerTable[RADARTRACKER_TABLE_INDEX];
 	entry->disablePending = false;
 	entry->disablePendSource = 0;
-	entry->taskPriority = TractionControl_PRIORITY;
+	entry->taskPriority = RadarTracker_PRIORITY;
 	entry->tlbDataLine = 4;
 	entry->tlbStackLine = 5;
-	entry->stackPhysicalAddress = (void*)0x462000;
-	entry->stackVirtualAddress = (void*)0x62000;
+	entry->stackPhysicalAddress = (void*)0x463000;
+	entry->stackVirtualAddress = (void*)0x63000;
 	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
 	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
 
@@ -388,7 +382,7 @@ void nios2_mpu_data_init() {
 	region[1].base = 0x464000/ 64;
 	region[1].mask = 0x496000/ 64;
 	region[1].c = 0;
-	region[1].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
+	region[1].perm = MPU_DATA_PERM_SUPER_RD_USER_RD;
 
 	//catch null pointers
 	region[2].index = 0x2;
@@ -452,8 +446,8 @@ int main() {
 	functionTable[AIRBAGMODEL_TABLE_INDEX].address = AirbagModel_CT;
 	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].stackAddress[CORE_ID] = &CruiseControlSystem_STACK;
 	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].address = CruiseControlSystem_CT;
-	functionTable[TRACTIONCONTROL_TABLE_INDEX].stackAddress[CORE_ID] = &TractionControl_STACK;
-	functionTable[TRACTIONCONTROL_TABLE_INDEX].address = TractionControl_CT;
+	functionTable[RADARTRACKER_TABLE_INDEX].stackAddress[CORE_ID] = &RadarTracker_STACK;
+	functionTable[RADARTRACKER_TABLE_INDEX].address = RadarTracker_CT;
 
 	CollisionAvoidance_M->ModelData.defaultParam = &CollisionAvoidance_P;
 	CollisionAvoidance_M->ModelData.dwork = &CollisionAvoidance_DW;
@@ -481,29 +475,29 @@ int main() {
 	// -------------------
 
 	INT8U perr;	OSTaskCreateExt(AirbagModel_TASK, NULL,
-			(OS_STK *)0x63f9c,
+			(OS_STK *)0x62764,
 			AirbagModel_PRIORITY, AirbagModel_PRIORITY,
-			(OS_STK *)0x637d4, AirbagModel_STACKSIZE, NULL,
+			(OS_STK *)0x62000, AirbagModel_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
 	OSTaskNameSet(AirbagModel_PRIORITY, (INT8U *)"AirbagModel", &perr);
 	OSTaskCreateExt(CruiseControlSystem_TASK, NULL,
-			(OS_STK *)0x637d0,
+			(OS_STK *)0x62ec4,
 			CruiseControlSystem_PRIORITY, CruiseControlSystem_PRIORITY,
-			(OS_STK *)0x63000, CruiseControlSystem_STACKSIZE, NULL,
+			(OS_STK *)0x62768, CruiseControlSystem_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
 	OSTaskNameSet(CruiseControlSystem_PRIORITY, (INT8U *)"CruiseControlSystem", &perr);
-	OSTaskCreateExt(TractionControl_TASK, NULL,
-			(OS_STK *)0x627bc,
-			TractionControl_PRIORITY, TractionControl_PRIORITY,
-			(OS_STK *)0x62000, TractionControl_STACKSIZE, NULL,
-			OS_TASK_OPT_STK_CLR);
-	OSTaskNameSet(TractionControl_PRIORITY, (INT8U *)"TractionControl", &perr);
 	OSTaskCreateExt(CollisionAvoidance_TASK, NULL,
 			&CollisionAvoidance_STACK[CollisionAvoidance_STACKSIZE - 1],
 			CollisionAvoidance_PRIORITY, CollisionAvoidance_PRIORITY,
 			CollisionAvoidance_STACK, CollisionAvoidance_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
 	OSTaskNameSet(CollisionAvoidance_PRIORITY, (INT8U *)"CollisionAvoidance", &perr);
+	OSTaskCreateExt(RadarTracker_TASK, NULL,
+			(OS_STK *)0x63c68,
+			RadarTracker_PRIORITY, RadarTracker_PRIORITY,
+			(OS_STK *)0x63000, RadarTracker_STACKSIZE, NULL,
+			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(RadarTracker_PRIORITY, (INT8U *)"RadarTracker", &perr);
 
 	resetMonitorCoreReg(CORE_ID);
 

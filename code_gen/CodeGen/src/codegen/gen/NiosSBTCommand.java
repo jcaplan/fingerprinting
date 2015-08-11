@@ -1,5 +1,6 @@
 package codegen.gen;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
@@ -42,10 +43,11 @@ public class NiosSBTCommand {
 	 * @param funcName	Name of function to be tested
 	 */
 	public void updateMakefile(String appDir, String funcName) {
-
+		
+		File[] src = new File(appDir).listFiles();
 		String[] cmd = new String[] { sbtLocation, "nios2-app-update-makefile",
-				"--app-dir", appDir, "--add-src-files",
-				appDir + "/" + funcName + ".c", appDir + "/" + "ert_main.c",
+				"--app-dir", appDir, "--add-src-dir",
+				appDir ,
 				"--set-user-flags", "-fomit-frame-pointer", "--set",
 				"OBJDUMP_INCLUDE_SOURCE", "0" };
 

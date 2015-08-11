@@ -17,9 +17,10 @@
 #include "reset_monitor.h"
 #include "AirbagModel.h"
 #include "CruiseControlSystem.h"
-#include "TractionControl.h"
 #include "FuelSensor.h"
 #include "TransmissionControl.h"
+#include "RadarTracker.h"
+#include "for_loop.h"
 
 
 
@@ -31,8 +32,6 @@
 /* AirbagModel*/
 
 /* CruiseControlSystem*/
-
-/* TractionControl*/
 
 /* FuelSensor*/
 static RT_MODEL_FuelSensor_T FuelSensor_M_;
@@ -58,6 +57,14 @@ static P_TransmissionControl_T TransmissionControl_P = {  3.0F                  
 static ExtU_TransmissionControl_T TransmissionControl_U;/* External inputs */
 static ExtY_TransmissionControl_T TransmissionControl_Y;/* External outputs */
 
+/* RadarTracker*/
+
+/* for_loop*/
+static RT_MODEL_for_loop_T for_loop_M_;
+static RT_MODEL_for_loop_T *const for_loop_M = &for_loop_M_;/* Real-time model */
+static ExtU_for_loop_T for_loop_U;     /* External inputs */
+static ExtY_for_loop_T for_loop_Y;     /* External outputs */
+
 
 
 
@@ -66,9 +73,10 @@ static ExtY_TransmissionControl_T TransmissionControl_Y;/* External outputs */
 /*****************************************************************************
  * Stack Declarations
  *****************************************************************************/
-OS_STK CruiseControlSystem_STACK[CruiseControlSystem_STACKSIZE] __attribute__ ((section (".stack_bin_0")));
-OS_STK AirbagModel_STACK[AirbagModel_STACKSIZE] __attribute__ ((section (".stack_bin_0")));
-OS_STK TractionControl_STACK[TractionControl_STACKSIZE] __attribute__ ((section (".stack_bin_1")));
+OS_STK RadarTracker_STACK[RadarTracker_STACKSIZE] __attribute__ ((section (".stack_bin_0")));
+OS_STK for_loop_STACK[for_loop_STACKSIZE];
+OS_STK AirbagModel_STACK[AirbagModel_STACKSIZE] __attribute__ ((section (".stack_bin_1")));
+OS_STK CruiseControlSystem_STACK[CruiseControlSystem_STACKSIZE] __attribute__ ((section (".stack_bin_1")));
 OS_STK FuelSensor_STACK[FuelSensor_STACKSIZE];
 OS_STK TransmissionControl_STACK[TransmissionControl_STACKSIZE];
 
@@ -139,8 +147,6 @@ void waitForPartnerCore(int partnerCore) {
  *****************************************************************************/
 void AirbagModel_TASK(void* pdata) {
 	void *gp = stab->gp_address;
-	int AirbagModel_blocksize =
-			functionTable[AIRBAGMODEL_TABLE_INDEX].blocksize;
 	void (*AirbagModelFunc)(int,
 			AirbagModelStruct*) = functionTable[AIRBAGMODEL_TABLE_INDEX].address;
 	int partnerCore = 1; /* static variable */
@@ -185,8 +191,6 @@ void AirbagModel_TASK(void* pdata) {
  *****************************************************************************/
 void CruiseControlSystem_TASK(void* pdata) {
 	void *gp = stab->gp_address;
-	int CruiseControlSystem_blocksize =
-			functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].blocksize;
 	void (*CruiseControlSystemFunc)(int,
 			CruiseControlSystemStruct*) = functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].address;
 	int partnerCore = 1; /* static variable */
@@ -227,52 +231,6 @@ void CruiseControlSystem_TASK(void* pdata) {
 }
 
 /*****************************************************************************
- * TractionControlTask wrapper
- *****************************************************************************/
-void TractionControl_TASK(void* pdata) {
-	void *gp = stab->gp_address;
-	int TractionControl_blocksize =
-			functionTable[TRACTIONCONTROL_TABLE_INDEX].blocksize;
-	void (*TractionControlFunc)(int,
-			TractionControlStruct*) = functionTable[TRACTIONCONTROL_TABLE_INDEX].address;
-	int partnerCore = 1; /* static variable */
-
-	while (1) {
-		INT8U perr;
-		OSSemPend(critical_SEM[TRACTIONCONTROL_TABLE_INDEX], 0, &perr);
-
-		waitForPartnerCore(partnerCore);
-		//Context switch is necessary to clear the callee saved registers
-		long registers[8];
-		context_switch(registers);
-
-		//Do the derivative part
-
-		int priority = critFuncData->priority;
-
-		//set the flag for the OS context switch
-		FprintActive = 1;
-		FprintTaskIDCurrent = priority;
-
-		//Retrieve the arguments before changing the GP
-
-		void *args = functionTable[TRACTIONCONTROL_TABLE_INDEX].args;
-		//Set the global pointer in case of compilation issues related
-		//to global variables
-		set_gp(gp);
-
-		TractionControlFunc(priority, args);
-		//call the critical task
-		//restore the original global pointer
-		restore_gp();
-
-		//set the flag for the OS context switch
-		FprintActive = 0;
-
-	}
-}
-
-/*****************************************************************************
  * FuelSensorTask wrapper
  *****************************************************************************/
 void FuelSensor_TASK(void* pdata) {
@@ -291,6 +249,61 @@ void TransmissionControl_TASK(void* pdata) {
 		TransmissionControl_step(TransmissionControl_M, &TransmissionControl_U,
 			&TransmissionControl_Y);
 		OSTimeDlyHMSM(0, 0, 0, 15);
+	}
+}
+
+/*****************************************************************************
+ * RadarTrackerTask wrapper
+ *****************************************************************************/
+void RadarTracker_TASK(void* pdata) {
+	void *gp = stab->gp_address;
+	void (*RadarTrackerFunc)(int,
+			RadarTrackerStruct*) = functionTable[RADARTRACKER_TABLE_INDEX].address;
+	int partnerCore = 1; /* static variable */
+
+	while (1) {
+		INT8U perr;
+		OSSemPend(critical_SEM[RADARTRACKER_TABLE_INDEX], 0, &perr);
+
+		waitForPartnerCore(partnerCore);
+		//Context switch is necessary to clear the callee saved registers
+		long registers[8];
+		context_switch(registers);
+
+		//Do the derivative part
+
+		int priority = critFuncData->priority;
+
+		//set the flag for the OS context switch
+		FprintActive = 1;
+		FprintTaskIDCurrent = priority;
+
+		//Retrieve the arguments before changing the GP
+
+		void *args = functionTable[RADARTRACKER_TABLE_INDEX].args;
+		//Set the global pointer in case of compilation issues related
+		//to global variables
+		set_gp(gp);
+
+		RadarTrackerFunc(priority, args);
+		//call the critical task
+		//restore the original global pointer
+		restore_gp();
+
+		//set the flag for the OS context switch
+		FprintActive = 0;
+
+	}
+}
+
+/*****************************************************************************
+ * for_loopTask wrapper
+ *****************************************************************************/
+void for_loop_TASK(void* pdata) {
+	while (1) {
+		for_loop_step(for_loop_M, &for_loop_U,
+			&for_loop_Y);
+		OSTimeDlyHMSM(0, 0, 0, 150);
 	}
 }
 
@@ -313,8 +326,8 @@ void mem_manager_init(void) {
 	entry->taskPriority = AirbagModel_PRIORITY;
 	entry->tlbDataLine = 0;
 	entry->tlbStackLine = 1;
-	entry->stackPhysicalAddress = (void*)0x495000;
-	entry->stackVirtualAddress = (void*)0x63000;
+	entry->stackPhysicalAddress = (void*)0x494000;
+	entry->stackVirtualAddress = (void*)0x62000;
 	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
 	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
 
@@ -326,21 +339,21 @@ void mem_manager_init(void) {
 	entry->taskPriority = CruiseControlSystem_PRIORITY;
 	entry->tlbDataLine = 2;
 	entry->tlbStackLine = 3;
-	entry->stackPhysicalAddress = (void*)0x495000;
-	entry->stackVirtualAddress = (void*)0x63000;
+	entry->stackPhysicalAddress = (void*)0x494000;
+	entry->stackVirtualAddress = (void*)0x62000;
 	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
 	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
 
 	managerEnableTask(entry);
-	// TractionControl
-	entry = &memoryManagerTable[TRACTIONCONTROL_TABLE_INDEX];
+	// RadarTracker
+	entry = &memoryManagerTable[RADARTRACKER_TABLE_INDEX];
 	entry->disablePending = false;
 	entry->disablePendSource = 0;
-	entry->taskPriority = TractionControl_PRIORITY;
+	entry->taskPriority = RadarTracker_PRIORITY;
 	entry->tlbDataLine = 4;
 	entry->tlbStackLine = 5;
-	entry->stackPhysicalAddress = (void*)0x494000;
-	entry->stackVirtualAddress = (void*)0x62000;
+	entry->stackPhysicalAddress = (void*)0x495000;
+	entry->stackVirtualAddress = (void*)0x63000;
 	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
 	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
 
@@ -405,7 +418,7 @@ void nios2_mpu_data_init() {
 	region[1].base = 0x432000/ 64;
 	region[1].mask = 0x464000/ 64;
 	region[1].c = 0;
-	region[1].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
+	region[1].perm = MPU_DATA_PERM_SUPER_RD_USER_RD;
 
 	//catch null pointers
 	region[2].index = 0x2;
@@ -469,8 +482,8 @@ int main() {
 	functionTable[AIRBAGMODEL_TABLE_INDEX].address = AirbagModel_CT;
 	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].stackAddress[CORE_ID] = &CruiseControlSystem_STACK;
 	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].address = CruiseControlSystem_CT;
-	functionTable[TRACTIONCONTROL_TABLE_INDEX].stackAddress[CORE_ID] = &TractionControl_STACK;
-	functionTable[TRACTIONCONTROL_TABLE_INDEX].address = TractionControl_CT;
+	functionTable[RADARTRACKER_TABLE_INDEX].stackAddress[CORE_ID] = &RadarTracker_STACK;
+	functionTable[RADARTRACKER_TABLE_INDEX].address = RadarTracker_CT;
 
 	FuelSensor_M->ModelData.defaultParam = &FuelSensor_P;
 	FuelSensor_M->ModelData.dwork = &FuelSensor_DW;
@@ -481,6 +494,9 @@ int main() {
 	TransmissionControl_initialize(TransmissionControl_M, &TransmissionControl_U,
 	    &TransmissionControl_Y);
 
+
+
+	for_loop_initialize(for_loop_M, &for_loop_U, &for_loop_Y);
 
 
 	critical_SEM[0] = OSSemCreate(0);
@@ -502,23 +518,17 @@ int main() {
 	// -------------------
 
 	INT8U perr;	OSTaskCreateExt(AirbagModel_TASK, NULL,
-			(OS_STK *)0x63f9c,
+			(OS_STK *)0x62764,
 			AirbagModel_PRIORITY, AirbagModel_PRIORITY,
-			(OS_STK *)0x637d4, AirbagModel_STACKSIZE, NULL,
+			(OS_STK *)0x62000, AirbagModel_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
 	OSTaskNameSet(AirbagModel_PRIORITY, (INT8U *)"AirbagModel", &perr);
 	OSTaskCreateExt(CruiseControlSystem_TASK, NULL,
-			(OS_STK *)0x637d0,
+			(OS_STK *)0x62ec4,
 			CruiseControlSystem_PRIORITY, CruiseControlSystem_PRIORITY,
-			(OS_STK *)0x63000, CruiseControlSystem_STACKSIZE, NULL,
+			(OS_STK *)0x62768, CruiseControlSystem_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
 	OSTaskNameSet(CruiseControlSystem_PRIORITY, (INT8U *)"CruiseControlSystem", &perr);
-	OSTaskCreateExt(TractionControl_TASK, NULL,
-			(OS_STK *)0x627bc,
-			TractionControl_PRIORITY, TractionControl_PRIORITY,
-			(OS_STK *)0x62000, TractionControl_STACKSIZE, NULL,
-			OS_TASK_OPT_STK_CLR);
-	OSTaskNameSet(TractionControl_PRIORITY, (INT8U *)"TractionControl", &perr);
 	OSTaskCreateExt(FuelSensor_TASK, NULL,
 			&FuelSensor_STACK[FuelSensor_STACKSIZE - 1],
 			FuelSensor_PRIORITY, FuelSensor_PRIORITY,
@@ -531,6 +541,18 @@ int main() {
 			TransmissionControl_STACK, TransmissionControl_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
 	OSTaskNameSet(TransmissionControl_PRIORITY, (INT8U *)"TransmissionControl", &perr);
+	OSTaskCreateExt(RadarTracker_TASK, NULL,
+			(OS_STK *)0x63c68,
+			RadarTracker_PRIORITY, RadarTracker_PRIORITY,
+			(OS_STK *)0x63000, RadarTracker_STACKSIZE, NULL,
+			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(RadarTracker_PRIORITY, (INT8U *)"RadarTracker", &perr);
+	OSTaskCreateExt(for_loop_TASK, NULL,
+			&for_loop_STACK[for_loop_STACKSIZE - 1],
+			for_loop_PRIORITY, for_loop_PRIORITY,
+			for_loop_STACK, for_loop_STACKSIZE, NULL,
+			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(for_loop_PRIORITY, (INT8U *)"for_loop", &perr);
 
 	resetMonitorCoreReg(CORE_ID);
 

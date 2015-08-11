@@ -74,7 +74,7 @@ public class GenStackBin {
 		@SuppressWarnings("unchecked")
 		ArrayList<Function> fprintListCopy = (ArrayList<Function>) fprintList.clone();
 		Collections.sort(fprintListCopy, Function.stackCompareDecreasing);
-		if (fprintListCopy.get(0).stackSize > 2760) {
+		if (fprintListCopy.get(0).stackSize > StackBin.size - (StackBin.STACKSIZE_MARGINERROR + StackBin.STACKSIZE_MINOFFSET)) {
 			// TODO error
 		}
 		stackBins = new ArrayList<>();
@@ -83,7 +83,7 @@ public class GenStackBin {
 		int currentBinIndex = 0;
 		for (Function f : fprintListCopy) {
 			Function[] bin = null;
-			if (currentBinIndex == 1 && (f.stackSize + currentBinSize < 1424)) {
+			if (currentBinIndex == 1 && (f.stackSize + currentBinSize < StackBin.size  - 2*((StackBin.STACKSIZE_MARGINERROR + StackBin.STACKSIZE_MINOFFSET)))) {
 				bin = stackBins.get(binIndex).getBin();
 				bin[1] = f;
 				f.stackBin = stackBins.get(binIndex);

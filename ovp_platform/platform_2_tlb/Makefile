@@ -45,16 +45,16 @@ debug:
       --extlib FprintPlatform/cpu0=uCOSIIOsHelper \
       --extlib FprintPlatform/cpu1=nios_iiCpuHelper \
       --extlib FprintPlatform/cpu1=vapHelper \
-      --extlib FprintPlatform/cpu1=vapTools \
       --extlib FprintPlatform/cpu1=uCOSIIOsHelper \
+      --extlib FprintPlatform/cpu1=vapTools \
       --extlib FprintPlatform/cpum=nios_iiCpuHelper \
       --extlib FprintPlatform/cpum=vapHelper \
       --extlib FprintPlatform/cpum=vapTools \
       --extlib FprintPlatform/cpum=uCOSIIOsHelper \
-      --callcommand "FprintPlatform/cpu0/vapTools_0/schedulertrace -on" \
-      --callcommand "FprintPlatform/cpu1/vapTools_0/schedulertrace -on" \
-      --callcommand "FprintPlatform/cpum/vapTools_0/schedulertrace -on" \
-      --callcommand "FprintPlatform/cpum/vapTools_0/functionprofile -on -dotfile cpum.dot" \
+      --callcommand "FprintPlatform/cpu0/vapTools_0/schedulertrace -on -filename output/cpu0.ivcd" \
+      --callcommand "FprintPlatform/cpu1/vapTools_0/schedulertrace -on -filename output/cpu1.ivcd" \
+      --callcommand "FprintPlatform/cpum/vapTools_0/schedulertrace -on -filename output/cpum.ivcd" 
+      # --callcommand "FprintPlatform/cpum/vapTools_0/functionprofile -on -dotfile cpum.dot" \
 
 
       # --callcommand "FprintPlatform/cpum/vapTools_0/vcdtrace -address 0x2500058" 

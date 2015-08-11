@@ -18,6 +18,8 @@
 #define PROCESSOR0_0_SW_RESET 0x3000000
 #define PROCESSOR1_0_SW_RESET 0x3000400
 
+extern int diagnosticLevel;
+
 void enableFingerprinting(Uns32 coreID, Uns32 taskID);
 void disableFingerprinting(Uns32 coreID, Uns32 taskID);
 bool getFprintEnabled(Uns32 coreID);

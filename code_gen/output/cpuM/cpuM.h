@@ -18,25 +18,27 @@
  *****************************************************************************/
 #define STACKSIZE_MINOFFSET                       316
 #define STACKSIZE_MARGINERROR                     150
-#define Derivative_STACKSIZE                      (  31 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define dma_STACKSIZE                             (2048 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define AirbagModel_STACKSIZE                     (  33 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define CruiseControlSystem_STACKSIZE             (  35 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define TractionControl_STACKSIZE                 (  30 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define Derivative_STACKSIZE                      (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define TractionControl_STACKSIZE                 (  19 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define dma_STACKSIZE                             (1024 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define AirbagModel_STACKSIZE                     (   8 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define CruiseControlSystem_STACKSIZE             (   6 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define RadarTracker_STACKSIZE                    ( 329 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 /*****************************************************************************
  * Task Priorities
  *****************************************************************************/
 #define Derivative_PRIORITY                       3
+#define TractionControl_PRIORITY                  4
 #define dma_PRIORITY                              0
 /*****************************************************************************
  * Task Table indices
  *****************************************************************************/
 #define AIRBAGMODEL_TABLE_INDEX                   0
 #define CRUISECONTROLSYSTEM_TABLE_INDEX           1
-#define TRACTIONCONTROL_TABLE_INDEX               2
+#define RADARTRACKER_TABLE_INDEX                  2
 /*****************************************************************************
  * Task Periods
  *****************************************************************************/
 #define AIRBAGMODEL_PERIOD                        50
 #define CRUISECONTROLSYSTEM_PERIOD                20
-#define TRACTIONCONTROL_PERIOD                    30
+#define RADARTRACKER_PERIOD                       200

@@ -25,14 +25,14 @@ void CruiseControlSystem_CT(int priority, CruiseControlSystemStruct *CruiseContr
 }
 
 /****************************************************************************
- * This function is a wrapper for the critical task TractionControl_step()
+ * This function is a wrapper for the critical task RadarTracker_step()
  ****************************************************************************/
-void TractionControl_CT(int priority, TractionControlStruct *TractionControl_struct){
-	RT_MODEL_TractionControl_T *const TractionControl_M = &TractionControl_struct->TractionControl_M;
-	ExtU_TractionControl_T *TractionControl_U = &TractionControl_struct->TractionControl_U;
-	ExtY_TractionControl_T *TractionControl_Y = &TractionControl_struct->TractionControl_Y;
+void RadarTracker_CT(int priority, RadarTrackerStruct *RadarTracker_struct){
+	RT_MODEL_RadarTracker_T *const RadarTracker_M = &RadarTracker_struct->RadarTracker_M;
+	ExtU_RadarTracker_T *RadarTracker_U = &RadarTracker_struct->RadarTracker_U;
+	ExtY_RadarTracker_T *RadarTracker_Y = &RadarTracker_struct->RadarTracker_Y;
 	fprint_enable_task(priority);
-	TractionControl_step(TractionControl_M, TractionControl_U, TractionControl_Y);
+	RadarTracker_step(RadarTracker_M, RadarTracker_U, RadarTracker_Y);
 	fprint_disable_task(priority);
 }
 

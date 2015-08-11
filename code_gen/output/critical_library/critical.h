@@ -5,7 +5,7 @@
 #include "fingerprint.h"
 #include "AirbagModel.h"
 #include "CruiseControlSystem.h"
-#include "TractionControl.h"
+#include "RadarTracker.h"
 
 typedef struct {
 	RT_MODEL_AirbagModel_T AirbagModel_M;
@@ -20,10 +20,10 @@ typedef struct {
 } CruiseControlSystemStruct;
 
 typedef struct {
-	RT_MODEL_TractionControl_T TractionControl_M;
-	ExtU_TractionControl_T TractionControl_U;
-	ExtY_TractionControl_T TractionControl_Y;
-} TractionControlStruct;
+	RT_MODEL_RadarTracker_T RadarTracker_M;
+	ExtU_RadarTracker_T RadarTracker_U;
+	ExtY_RadarTracker_T RadarTracker_Y;
+} RadarTrackerStruct;
 
 /****************************************************************************
  * This function is a wrapper for the critical task AirbagModel_step()
@@ -36,5 +36,5 @@ void CruiseControlSystem_CT(int priority, CruiseControlSystemStruct *CruiseContr
 /****************************************************************************
  * This function is a wrapper for the critical task AirbagModel_step()
  ****************************************************************************/
-void TractionControl_CT(int priority, TractionControlStruct *TractionControl_struct);
+void RadarTracker_CT(int priority, RadarTrackerStruct *RadarTracker_struct);
 #endif

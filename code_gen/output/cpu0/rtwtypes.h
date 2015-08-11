@@ -5,18 +5,18 @@
  *
  * File: rtwtypes.h
  *
- * Code generated for Simulink model 'TractionControl'.
+ * Code generated for Simulink model 'RadarTracker'.
  *
- * Model version                  : 1.11
+ * Model version                  : 1.106
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Thu Jul 30 17:13:16 2015
+ * C/C++ source code generated on : Wed Aug  5 10:20:43 2015
  *
  * Target selection: ert.tlc
- * Embedded hardware selection: ASIC/FPGA->ASIC/FPGA
- * Emulation hardware selection:
- *    Differs from embedded hardware (Generic->32-bit Embedded Processor)
- * Code generation objectives: Unspecified
- * Validation result: Not run
+ * Embedded hardware selection: Specified
+ * Code generation objectives:
+ *    1. MISRA-C:2004 guidelines
+ *    2. Safety precaution
+ * Validation result: All passed
  */
 
 #ifndef __RTWTYPES_H__
@@ -35,12 +35,12 @@
 
 /*=======================================================================*
  * Target hardware information
- *   Device type: Generic->32-bit Embedded Processor
+ *   Device type: Specified
  *   Number of bits:     char:   8    short:   16    int:  32
  *                       long:  32
  *                       native word size:  32
  *   Byte ordering: LittleEndian
- *   Signed integer division rounds to: Floor
+ *   Signed integer division rounds to: Zero
  *   Shift right on a signed integer as arithmetic shift: on
  *=======================================================================*/
 

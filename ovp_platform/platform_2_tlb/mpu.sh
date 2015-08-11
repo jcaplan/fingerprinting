@@ -13,8 +13,7 @@ continue
 continue
 set itrace change
 diagnostics cpu1_fprint 3
-proc cpum
-b handleComp
+b alt_exception
 continue
 
 

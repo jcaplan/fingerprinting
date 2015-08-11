@@ -92,9 +92,10 @@ void do_store(Uns32 coreID, vmiProcessorP processor, Uns32 address, Uns32 data){
 
 	fp->fprint_old = fp->fprint[fp->pause_index];
 	fp->fprint[fp->pause_index] = crcFast(address,data,fp->fprint[fp->pause_index]);
-	vmiPrintf("INTERCEPT: old fingerprint: %x,  intermediate fingerprint: %x, pause_index: %d\n",
-		fp->fprint_old,fp->fprint[fp->pause_index],fp->pause_index);
-	
+	if (diagnosticLevel > 0){
+		vmiPrintf("INTERCEPT: old fingerprint: %x,  intermediate fingerprint: %x, pause_index: %d\n",
+			fp->fprint_old,fp->fprint[fp->pause_index],fp->pause_index);
+	}
 }
 
 void setMaxCount(Uns32 coreID, Uns32 writeData) {
@@ -128,7 +129,9 @@ void fprintReset(Uns32 coreID){
 void fprintPauseStrobe(int coreID) {
 	fprintStruct *fp = &fprint[coreID];
 	if(fp->fprintEnabled){
-		vmiPrintf("pause %d!\n",coreID);
+		if(diagnosticLevel > 1){
+			vmiPrintf("pause %d!\n",coreID);
+		}
 		fp->fprint[fp->pause_index] = fp->fprint_old;
 		fp->currentState[fp->pause_index] = fp->currentTask;
 		fp->pause_index++;
@@ -141,8 +144,10 @@ void fprintPauseStrobe(int coreID) {
 void fprintUnpauseStrobe(int coreID) {
 	fprintStruct *fp = &fprint[coreID];
 	//~pause_task_reg[paused_cs_tos]
-	vmiPrintf("unpause %d, index %d, pauseReg %d, currentState[pauseindex-1] %d!\n",
-		coreID,fp->pause_index,fp->pauseReg,fp->currentState[0]);	
+	if(diagnosticLevel > 1){
+		vmiPrintf("unpause %d, index %d, pauseReg %d, currentState[pauseindex-1] %d!\n",
+			coreID,fp->pause_index,fp->pauseReg,fp->currentState[0]);	
+	}
 	if(fp->pause_index > 0 && !(fp->pauseReg & (1 << fp->currentState[fp->pause_index-1]))){
 
   		fp->pause_index--;
