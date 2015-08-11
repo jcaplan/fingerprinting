@@ -327,8 +327,6 @@ public class GenCore {
 					String upperCaseName = f.toString().toUpperCase();
 					s += "void " + f + "_TASK(void* pdata) {\n"+
 							"	void *gp = stab->gp_address;\n"+
-							"	int " + f + "_blocksize =\n"+
-							"			functionTable[" + upperCaseName + "_TABLE_INDEX].blocksize;\n"+
 							"	void (*"+ f + "Func)(int,\n"+
 							"			" + f + "Struct*) = functionTable[" + upperCaseName + "_TABLE_INDEX].address;\n";
 					int partner = 0;			
@@ -514,7 +512,7 @@ public class GenCore {
 //						"	region[1].mask = 0x" + Integer.toHexString(platform.mainMemoryBase + lastStackBin.startAddress[otherCoreIndex]) + "/ 64;\n"+
 						"	region[1].mask = 0x" + Integer.toHexString(platform.mainMemoryBase + 0x32000 + otherCore.mainMemStartAddressOffset & 0xFFFFF000) + "/ 64;\n"+
 						"	region[1].c = 0;\n"+
-						"	region[1].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;\n";
+						"	region[1].perm = MPU_DATA_PERM_SUPER_RD_USER_RD;\n";
 				
 				
 				

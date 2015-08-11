@@ -199,15 +199,17 @@ public class GenCoreMon extends GenCore{
 	
 		for(Function f : fprintList){
 			String s = "typedef struct {\n";
-			s += "\t" + f + "Struct " + f + "_STRUCT;\n" +
-					"	P_" + f  + "_T " + f + "_P;\n";
 			
-			for(String dec : f.varDeclarations){
-				if(dec.contains("DW")){
-					s += "	DW_" + f + "_T " + f + "_DW;\n"; 
-					break;
-				}
+			s += "\t" + f + "Struct " + f + "_STRUCT;\n";
+			
+			if(f.hasDefaultParameters){
+				s += "	P_" + f  + "_T " + f + "_P;\n";	
 			}
+			if(f.hasState){
+				s += "	DW_" + f + "_T " + f + "_DW;\n"; 
+			}
+			
+		
 			
 			s += "} DMA_" + f + "PackageStruct;\n"+
 					"\n"+
@@ -226,7 +228,7 @@ public class GenCoreMon extends GenCore{
 				"INT32U dmaQMem[DMA_Q_SIZE];\n";
 		dmaFunction.varDeclarations.add(s);
 		
-		dmaFunction.stackSize = 0x2000;
+		dmaFunction.stackSize = 0x1000;
 		core.funcList.add(dmaFunction);
 	}
 	
@@ -519,14 +521,18 @@ public class GenCoreMon extends GenCore{
 				" *****************************************************************************/\n";
 		
 		for(Function f : fprintList){
-			s += 	"void " + f + "UpdatePointers" + "(INT32U baseAddress, RT_MODEL_" + f + "_T *" + f + "_M){\n"+
-					"	" + f + "_M->ModelData.defaultParam = (P_" + f + "_T *)(baseAddress + sizeof(" + f  + "Struct));\n";
-			for(String dec : f.varDeclarations){
-				if(dec.contains("DW")){
-					s += "	" + f + "_M->ModelData.dwork = (DW_" + f + "_T *)(baseAddress + sizeof(" + f + "Struct) + sizeof(P_" + f + "_T));\n";
-					break;
-				}
+			s += 	"void " + f + "UpdatePointers" + "(INT32U baseAddress, RT_MODEL_" + f + "_T *" + f + "_M){\n";
+			if(f.hasDefaultParameters){
+				s += "	" + f + "_M->ModelData.defaultParam = (P_" + f + "_T *)(baseAddress + sizeof(" + f  + "Struct));\n";
 			}
+			if(f.hasState){
+				s += "	" + f + "_M->ModelData.dwork = (DW_" + f + "_T *)(baseAddress + sizeof(" + f + "Struct)";
+				if(f.hasDefaultParameters){
+					s += " + sizeof(P_" + f + "_T)";
+				}
+				s += ");\n";
+			}
+
 		
 		s += "}\n\n";
 		}

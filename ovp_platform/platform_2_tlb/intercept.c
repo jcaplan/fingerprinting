@@ -30,7 +30,7 @@
 #include <stdbool.h>
 
 //This one is for the trace 2.mtrace
-
+int diagnosticLevel = 0;
 //
 // Structure type containing local data for this plugin
 //
@@ -81,8 +81,9 @@ static VMI_MEM_WATCH_FN(writeCB) {
             break;
         }
         if(getFprintEnabled(coreID)){
-            vmiPrintf("INTERCEPT: fingerprinting address: %x, data %x\n",(Uns32 )address,*(Uns32 *)value);
-
+            if(diagnosticLevel > 0){
+                vmiPrintf("INTERCEPT: fingerprinting address: %x, data %x\n",(Uns32 )address,*(Uns32 *)value);
+            }
             do_store(coreID,processor,(Uns32)address, *(Uns32 *)value);
 
         }

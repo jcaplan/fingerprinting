@@ -172,6 +172,12 @@ public class SourceAnalysis {
 						}
 						f.varDeclarations.add(dec);
 					}
+					
+					if(name.endsWith("_P")){
+						f.hasDefaultParameters = true;
+					} else if(name.matches(".*_DW;.*")){
+						f.hasState = true;
+					}
 				}
 			}
 
@@ -228,8 +234,14 @@ public class SourceAnalysis {
 			System.out.println("Starting profiling for " + f);
 			String outputDir = config.outputDir + "/prof";
 			copySourceFiles(f.codeDirectory, outputDir);
-			Core cpum = platform.getCore("cpum");
-			config.niosSBT.generateMakefile(outputDir, cpum.bspDir, "ucos.elf");
+			Core core;
+			if(f.cores.contains("cpum")){
+				core = platform.getCore("cpum");
+			} else {
+				core = platform.getCore("cpu0");
+			}
+			config.niosSBT.generateMakefile(outputDir, core.bspDir, "ucos.elf");
+			
 			config.niosSBT.updateMakefile(outputDir, f.name);
 			config.niosSBT.makeProject(outputDir);
 			

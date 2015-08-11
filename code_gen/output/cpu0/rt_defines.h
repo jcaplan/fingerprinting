@@ -5,20 +5,18 @@
  *
  * File: rt_defines.h
  *
- * Code generated for Simulink model 'AirbagModel'.
+ * Code generated for Simulink model 'RadarTracker'.
  *
- * Model version                  : 1.13
+ * Model version                  : 1.106
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Thu Jul 30 17:09:53 2015
+ * C/C++ source code generated on : Wed Aug  5 10:20:43 2015
  *
  * Target selection: ert.tlc
- * Embedded hardware selection: Generic->32-bit Embedded Processor
- * Emulation hardware selection:
- *    Differs from embedded hardware (MATLAB Host)
+ * Embedded hardware selection: Specified
  * Code generation objectives:
  *    1. MISRA-C:2004 guidelines
  *    2. Safety precaution
- * Validation result: Not run
+ * Validation result: All passed
  */
 
 #ifndef RTW_HEADER_rt_defines_h_

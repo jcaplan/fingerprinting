@@ -137,9 +137,11 @@ SDIR_C_SRCS += $(SRC_DIR_01)/CollisionAvoidance.c
 SDIR_C_SRCS += $(SRC_DIR_01)/CruiseControlSystem.c
 SDIR_C_SRCS += $(SRC_DIR_01)/Derivative.c
 SDIR_C_SRCS += $(SRC_DIR_01)/FuelSensor.c
+SDIR_C_SRCS += $(SRC_DIR_01)/RadarTracker.c
 SDIR_C_SRCS += $(SRC_DIR_01)/TractionControl.c
 SDIR_C_SRCS += $(SRC_DIR_01)/TransmissionControl.c
 SDIR_C_SRCS += $(SRC_DIR_01)/critical.c
+SDIR_C_SRCS += $(SRC_DIR_01)/for_loop.c
 SDIR_CXX_SRCS :=
 SDIR_ASM_SRCS :=
 

@@ -14,7 +14,7 @@ def main(argv):
 	i = 0
 	coreNames = ["cpu0","cpu1","cpum"]
 	for name in coreNames:
-		f = open("FprintPlatform_" + name + ".ivcd", 'r')
+		f = open("output/" + name + ".ivcd", 'r')
 		lines = f.readlines()
 
 		version.append(getVersion(lines))

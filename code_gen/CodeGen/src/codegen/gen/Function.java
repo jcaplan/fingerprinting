@@ -25,6 +25,8 @@ public class Function implements Comparable<Function>{
 	public int stackSize;
 	StackBin stackBin;
 	
+	boolean hasState;
+	boolean hasDefaultParameters;
 	/**
 	 * When doing work on stack analysis, it is convenient to arrange functions in order of maximum stack size.
 	 */
@@ -47,6 +49,9 @@ public class Function implements Comparable<Function>{
 		includeFiles = new ArrayList<>();
 		varDeclarations = new ArrayList<>();
 		initialization = new ArrayList<>();
+		
+		hasState = false;
+		hasDefaultParameters = false;
 	}
 
 	/**

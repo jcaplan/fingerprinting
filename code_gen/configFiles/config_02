@@ -1,0 +1,55 @@
+#periodic tasks, some are critical, all independent (no dataflow between tasks)
+
+
+#function list must come first!!
+
+#Comments start with #
+# -c for critical task
+# -T for task period in ms
+# -E for event driven, runs when all the inputs are available
+# -S for stacksize, if S is not present then assume profiler was used
+# 	if profiler was used: should have a profile.log file in the function folders
+<FUNCTIONLIST>
+-rootdir /home/jonah/fingerprinting/automotive_control/CompiledC
+-name AirbagModel          -subdir AirbagModel_ert_rtw         -T  50 -c -Priority 1
+-name CollisionAvoidance   -subdir CollisionAvoidance_ert_rtw  -T 100    -Priority 5
+-name CruiseControlSystem  -subdir CruiseControlSystem_ert_rtw -T  20 -c -Priority 2
+-name Derivative           -subdir Derivative_ert_rtw          -T  40 -c -Priority 3
+-name FuelSensor           -subdir FuelSensor_ert_rtw          -T  75    -Priority 6
+-name TractionControl      -subdir TractionControl_ert_rtw     -T  30 -c -Priority 4
+-name TransmissionControl  -subdir TransmissionControl_ert_rtw -T  15    -Priority 7
+-name RadarTracker         -subdir RadarTracker_ert_rtw        -T 200 -c -Priority 8
+</FUNCTIONLIST>
+
+<DATAFLOW>
+</DATAFLOW>
+
+
+<PLATFORM>
+-usedefault
+</PLATFORM>
+
+<MAPPING>
+AirbagModel cpu0 cpu1
+CollisionAvoidance cpu1
+CruiseControlSystem cpu0 cpu1
+Derivative cpum
+FuelSensor cpu0
+TractionControl cpu0 cpu1
+TransmissionControl cpu0
+RadarTracker cpum
+</MAPPING>
+
+
+#if this section is omitted then the program will automatically attempt to determine the max stack heigh
+#for each function
+<STACK_PROFILE>
+AirbagModel 92
+CruiseControlSystem 88
+Derivative 80
+TractionControl 76
+CollisionAvoidance 88
+FuelSensor 28
+TransmissionControl 24
+RadarTracker 1072
+</STACK_PROFILE>

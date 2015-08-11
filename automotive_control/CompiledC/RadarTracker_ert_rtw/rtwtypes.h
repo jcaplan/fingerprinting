@@ -9,14 +9,14 @@
  *
  * Model version                  : 1.106
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Fri Jul 31 11:31:30 2015
+ * C/C++ source code generated on : Wed Aug  5 10:20:43 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Specified
  * Code generation objectives:
  *    1. MISRA-C:2004 guidelines
  *    2. Safety precaution
- * Validation result: Not run
+ * Validation result: All passed
  */
 
 #ifndef __RTWTYPES_H__

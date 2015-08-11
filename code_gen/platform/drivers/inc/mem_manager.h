@@ -38,6 +38,7 @@ void updateMemoryManagerTable(int taskPriority,CriticalFunctionData *data);
 void managerDisableCurrentTask(INT8U OSPrioCur);
 void managerEnableNextTask(INT8U OSPrioHighRdy);
 void  managerCheckPendingDisabled(int OSPrioCur);
+void managerEnableTask(MemoryManagerStruct *entry);
 
 #endif
 
