@@ -15,10 +15,16 @@ void REPOSUpdateTime(void) {
 	for(i = 0; i < OS_MAX_TASKS; i++){
 		REPOS_task *task = &REPOSTaskTable[i];
 		if(task->kind == PERIODIC_K){
-			if(task->data.periodic.countdown-- == 0){
+			INT32U countdown = task->data.periodic.countdown;
+			if(task->taskRunning && (countdown == task->data.periodic.deadline)){
+				printf("deadline not met for task %d\n",task->taskID);
+			}
+			else if(countdown == task->data.periodic.period){
 				//reset the timer
-				task->data.periodic.countdown = task->data.periodic.period-1;
+				task->data.periodic.countdown = 1;
 				task->startHook(task->startHookArgs);
+			} else {
+				task->data.periodic.countdown++;
 			}
 		}
 	}
@@ -130,6 +136,8 @@ void REPOSTaskComplete(int taskID){
 		}
 	}
 	fprintIDFreeList |= task->fprintIDMask;
+	task->fprintIDMask = 0;
+	task->taskRunning = false;
 }
 
 int REPOSgetFreeFprintID(REPOS_task *task) {
@@ -166,6 +174,7 @@ void REPOSBeginTask(REPOS_task *task){
 		core->currentScratchpad = task->currentSP;
 		core->scratchpadActive[core->currentScratchpad][task->currentSPbin] = true;
 	}
+	task->taskRunning = true;
 }
 
 void REPOSCheckPreemption(int coreID, int newTask) {

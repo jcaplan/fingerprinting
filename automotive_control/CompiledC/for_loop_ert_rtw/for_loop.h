@@ -7,21 +7,22 @@
  *
  * Code generated for Simulink model 'for_loop'.
  *
- * Model version                  : 1.45
+ * Model version                  : 1.85
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Wed Aug  5 18:02:50 2015
+ * C/C++ source code generated on : Tue Aug 11 14:08:16 2015
  *
  * Target selection: ert.tlc
- * Embedded hardware selection: 32-bit Generic
+ * Embedded hardware selection: Generic->32-bit Embedded Processor
  * Code generation objectives:
  *    1. Safety precaution
  *    2. MISRA-C:2004 guidelines
+ *    3. RAM efficiency
+ *    4. ROM efficiency
  * Validation result: Not run
  */
 
 #ifndef RTW_HEADER_for_loop_h_
 #define RTW_HEADER_for_loop_h_
-#include <stddef.h>
 #ifndef for_loop_COMMON_INCLUDES_
 # define for_loop_COMMON_INCLUDES_
 #include "rtwtypes.h"
@@ -31,14 +32,11 @@
 #include "rt_defines.h"
 
 /* Macros for accessing real-time model data structure */
-#ifndef rtmGetErrorStatus
-# define rtmGetErrorStatus(rtm)        ((rtm)->errorStatus)
-#endif
 
-#ifndef rtmSetErrorStatus
-# define rtmSetErrorStatus(rtm, val)   ((rtm)->errorStatus = (val))
-#endif
+/* Exported data define */
 
+/* Definition for custom storage class: Define */
+#define LOOP_LIMIT                     1000.0
 /* External inputs (root inport signals with auto storage) */
 typedef struct {
   real32_T In1;                        /* '<Root>/In1' */
@@ -51,15 +49,13 @@ typedef struct {
 
 /* Real-time Model Data Structure */
 struct tag_RTM_for_loop_T {
-  const char_T * volatile errorStatus;
+  boolean_T *dummy;
 };
 
 /* Model entry point functions */
-extern void for_loop_initialize(RT_MODEL_for_loop_T *const for_loop_M,
-  ExtU_for_loop_T *for_loop_U, ExtY_for_loop_T *for_loop_Y);
+extern void for_loop_initialize(RT_MODEL_for_loop_T *const for_loop_M);
 extern void for_loop_step(RT_MODEL_for_loop_T *const for_loop_M, ExtU_for_loop_T
   *for_loop_U, ExtY_for_loop_T *for_loop_Y);
-extern void for_loop_terminate(RT_MODEL_for_loop_T *const for_loop_M);
 
 /*-
  * The generated code includes comments that allow you to trace directly

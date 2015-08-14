@@ -5,17 +5,19 @@
  *
  * File: multiword_types.h
  *
- * Code generated for Simulink model 'TractionControl'.
+ * Code generated for Simulink model 'TransmissionControl'.
  *
- * Model version                  : 1.11
+ * Model version                  : 1.8
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Thu Jul 30 17:13:16 2015
+ * C/C++ source code generated on : Thu Jul 30 17:01:34 2015
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ASIC/FPGA->ASIC/FPGA
  * Emulation hardware selection:
  *    Differs from embedded hardware (Generic->32-bit Embedded Processor)
- * Code generation objectives: Unspecified
+ * Code generation objectives:
+ *    1. Safety precaution
+ *    2. MISRA-C:2004 guidelines
  * Validation result: Not run
  */
 

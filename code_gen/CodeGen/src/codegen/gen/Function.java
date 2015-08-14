@@ -1,5 +1,8 @@
 package codegen.gen;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -13,6 +16,7 @@ public class Function implements Comparable<Function>{
 	String name;
 	String codeDirectory;
 	int period;
+	int deadline;
 	boolean critical;
 	ArrayList<Dataflow> dataflowList;
 	ArrayList<String> cores;
@@ -25,8 +29,11 @@ public class Function implements Comparable<Function>{
 	public int stackSize;
 	StackBin stackBin;
 	
+	boolean printRuntimes;
 	boolean hasState;
 	boolean hasDefaultParameters;
+	String preambleFileName;
+	
 	/**
 	 * When doing work on stack analysis, it is convenient to arrange functions in order of maximum stack size.
 	 */
@@ -52,6 +59,8 @@ public class Function implements Comparable<Function>{
 		
 		hasState = false;
 		hasDefaultParameters = false;
+		printRuntimes = false;
+		
 	}
 
 	/**
@@ -175,7 +184,49 @@ public class Function implements Comparable<Function>{
 		return stackBin.getStackStart(this,core);
 	}
 
+	public String getPreambleString() {
+		FileReader fr;
+		String s = "";
+		try {
+			fr = new FileReader(codeDirectory + "/" + preambleFileName);
+			BufferedReader reader = new BufferedReader(fr);
+			String line = "";
+			while ((line = reader.readLine()) != null) {
+				s += line;
+			}
+			fr.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return s;
+	}
+	
+	public String getUpperCaseName(){
+		return name.toUpperCase();
+	}
 
 
+	public String getPeriodString(){
+		return getUpperCaseName() + "_PERIOD";
+	}
 
+	public String getDeadlineString(){
+		return getUpperCaseName() + "_DEADLINE";
+	}
+	public String getRuntimeIndexString(){
+		return getUpperCaseName() + "_RT_PRIO";
+	}
+
+	public String getPriorityString() {
+		return getUpperCaseName() + "_PRIORITY";
+	}
+
+	public String getStackSizeString() {
+		return getUpperCaseName() + "_STACKSIZE";
+	}
+	
+	public String getTableIndexString() {
+		return getUpperCaseName() + "_TABLE_INDEX";
+	}
 }

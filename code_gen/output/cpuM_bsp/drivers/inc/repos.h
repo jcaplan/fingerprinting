@@ -30,13 +30,6 @@ typedef struct REPOS_core REPOS_core;
 //List of all the pages
 INT32U pageTable[2][4];
 
-typedef enum task_status {
-	PENDING,
-	RUNNING,
-	FAILED,
-	SUCCEEDED
-} task_status;
-
 typedef enum task_kind {
 	null,
 	PERIODIC_K,
@@ -45,7 +38,7 @@ typedef enum task_kind {
 
 
 struct REPOS_task {
-	task_status status;
+	bool taskRunning;
 	task_kind kind;
 	INT32U core[2];
 
@@ -61,7 +54,6 @@ struct REPOS_task {
 	int funcTableFirstIndex;
 	int funcCompleteCount;
 	INT32U runtime;
-	INT32U deadline;
 	INT32U taskID;
 	INT32U fprintIDMask;
 	INT32U fprintID;
@@ -73,6 +65,7 @@ struct REPOS_task {
 		struct{
 			INT32U period;
 			INT32U countdown;
+			INT32U deadline;
 		}periodic;
 		struct{
 			INT32U flag;

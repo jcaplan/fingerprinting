@@ -18,7 +18,7 @@
 -name FuelSensor           -subdir FuelSensor_ert_rtw          -T  75    -Priority 6
 -name TractionControl      -subdir TractionControl_ert_rtw     -T  30 -c -Priority 4
 -name TransmissionControl  -subdir TransmissionControl_ert_rtw -T  15    -Priority 7
--name RadarTracker         -subdir RadarTracker_ert_rtw        -T  200 -c -Priority 8
+-name RadarTracker         -subdir RadarTracker_ert_rtw        -T  300 -c -Priority 8
 -name for_loop             -subdir for_loop_ert_rtw 		   -T  150 -Priority 10
 </FUNCTIONLIST>
 
@@ -34,9 +34,9 @@
 AirbagModel cpu0 cpu1
 CollisionAvoidance cpu1
 CruiseControlSystem cpu0 cpu1
-Derivative cpum
+Derivative cpuM
 FuelSensor cpu0
-TractionControl cpum
+TractionControl cpuM
 TransmissionControl cpu0
 RadarTracker cpu0 cpu1
 for_loop cpu0

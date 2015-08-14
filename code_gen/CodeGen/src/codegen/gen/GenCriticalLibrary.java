@@ -42,72 +42,60 @@ public class GenCriticalLibrary {
 	 * @throws FileNotFoundException
 	 */
 	public void generateCriticalLibrary() throws FileNotFoundException {
-		File critDir = new File(config.outputDir + "/critical_library");
-		if(!critDir.exists()){
-			copyCriticalLibrary();
+		
+		// Copy the source files into the folder for the first core in the list
+		// --------------------------------------------------------------------
+		
+		for(Core core : platform.coreList){
+			for(Function f : core.funcList){	
+				String outputDir = config.outputDir + "/" + core.name;
+				copySourceFiles(f.codeDirectory,outputDir);
+				deleteFile(outputDir + "/ert_main.c");
+			}
+			
+			if(core.isMonitor){
+				for(Function f : fprintList){	
+					String outputDir = config.outputDir + "/" + core.name;
+					copySourceFiles(f.codeDirectory,outputDir);
+					deleteFile(outputDir + "/ert_main.c");
+				}	
+			}
 		}
 		
-		File criticalSrcOutput = new File(config.outputDir + "/critical_library/critical.c");
-		File criticalIncOutput = new File(config.outputDir + "/critical_library/critical.h");
-		
 
 		
-		PrintWriter writer = new PrintWriter(criticalIncOutput);
-		writer.print(getCriticalIncludeString());
-		writer.close();
 		
-		writer = new PrintWriter(criticalSrcOutput);
-		writer.print(getCriticalSourceString());
-		writer.close();
-		
-		File scriptOutput = new File(config.outputDir + "/generate_lib.sh");
-		writer = new PrintWriter(scriptOutput);
-		writer.print(generateCriticalLibraryString());
-		writer.close();
-		
-		config.niosSBT.generateCriticalLibrary(config.outputDir + "/critical_library", platform.getCore("cpum").bspDir);
-	}
-	
-	/**
-	 * 
-	 * @return	Returns the string for generate_lib.sh
-	 */
-	private String generateCriticalLibraryString() {
-		
-		
-		String cmd = "";
-		cmd += "#!/bin/bash\n"+
-				"\n"+
-				"OUTPUT_DIR=" + config.outputDir + "\n"+
-				"NIOS2COMMANDSHELL=" + config.niosSBT.sbtLocation + "\n" +
-				"LIBDIR=${OUTPUT_DIR}/critical_library\n"+
-				"\n"+
-				"${NIOS2COMMANDSHELL} nios2-lib-generate-makefile --lib-dir ${LIBDIR} \n"+
-				"--lib-name \"critical_library\" --bps-dir ${OUTPUT_DIR}/cpuM_bsp --src-dir $ {LIBDIR}\n";
-
+		for(Core core : platform.coreList){
+			ArrayList<Function> critList = new ArrayList<>();
+			
+			if(core.isMonitor){
+				critList = fprintList;
+			} else {
+				for(Function f : core.funcList){
+					if(f.critical){
+						critList.add(f);
+					}
+				}
+			}
+			if(!critList.isEmpty()){
+				core.requiresCriticalHeader = true;
+				String outputDir = config.outputDir + "/" + core.name;
+				File criticalSrcOutput = new File(outputDir + "/critical.c");
+				File criticalIncOutput = new File(outputDir + "/critical.h");
+						
+				PrintWriter writer = new PrintWriter(criticalIncOutput);
+				writer.print(getCriticalIncludeString(critList));
+				writer.close();
 				
-		return cmd;
-	}
-	
-	/**
-	 * Copies files from source directory to critical_library/ and cpu0/.
-	 * In the future, cpu0/ should be replaced by logical core 0. 
-	 */
-	private void copyCriticalLibrary() {
-		for(Function f: funcList){
-			String outputDir = config.outputDir + "/critical_library";
-			copySourceFiles(f.codeDirectory, outputDir);
-			deleteFile(outputDir + "/ert_main.c");
+				writer = new PrintWriter(criticalSrcOutput);
+				writer.print(getCriticalSourceString(critList));
+				writer.close();
+			}
 			
 		}
 		
-		for (Function f : fprintList){
-			String outputDir = config.outputDir + "/cpu0";
-			copySourceFiles(f.codeDirectory, outputDir);
-			deleteFile(outputDir + "/ert_main.c");
-		}
-		
 	}
+	
 	
 	/**
 	 * Copies source files (.c and .h only) from one directory to another
@@ -132,9 +120,10 @@ public class GenCriticalLibrary {
 	
 	/**
 	 * 
+	 * @param critList 
 	 * @return String contents of critical.h
 	 */
-	private String getCriticalIncludeString() {
+	private String getCriticalIncludeString(ArrayList<Function> critList) {
 		String s = "";
 		s += "\n"+
 				"#ifndef CRITICAL_H_\n"+
@@ -142,12 +131,12 @@ public class GenCriticalLibrary {
 				"\n"+
 				"#include \"fingerprint.h\"\n";
 		
-		for(Function f : fprintList){
+		for(Function f : critList){
 			s += "#include \"" + f + ".h\"\n";
 		}
 			s +=	"\n";
 			
-		for(Function f : fprintList){
+		for(Function f : critList){
 			s += "typedef struct {\n"+
 					"	RT_MODEL_" + f + "_T " + f + "_M;\n"+
 					"	ExtU_" + f + "_T " + f + "_U;\n"+
@@ -156,7 +145,7 @@ public class GenCriticalLibrary {
 					"\n";
 		}
 		
-		for (Function f : fprintList){
+		for (Function f : critList){
 			s += "/****************************************************************************\n"+
 					" * This function is a wrapper for the critical task AirbagModel_step()\n"+
 					" ****************************************************************************/\n";
@@ -172,13 +161,14 @@ public class GenCriticalLibrary {
 
 	/**
 
+	 * @param critList 
 	 * @return 	 * String contents of critical.c
 	 */
-	private String getCriticalSourceString() {
+	private String getCriticalSourceString(ArrayList<Function> critList) {
 		String s = "";
 		s += "#include \"critical.h\"\n\n";
 		
-		for(Function f : fprintList){
+		for(Function f : critList){
 			s += "/****************************************************************************\n"+
 			" * This function is a wrapper for the critical task " + f + "_step()\n"+
 			" ****************************************************************************/\n"+

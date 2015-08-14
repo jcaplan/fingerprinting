@@ -10,12 +10,16 @@
 #include "shared_mem.h"
 #include "fingerprint.h"
 #include "gp.h"
-#include "critical.h"
 #include "cpuM.h"
 #include "reset_monitor.h"
+#include "runtimeMonitor.h"
 #include "repos.h"
+#include "critical.h"
 #include "Derivative.h"
 #include "TractionControl.h"
+#include "AirbagModel.h"
+#include "CruiseControlSystem.h"
+#include "RadarTracker.h"
 
 
 
@@ -92,9 +96,9 @@ INT32U dmaQMem[DMA_Q_SIZE];
 /*****************************************************************************
  * Stack Declarations
  *****************************************************************************/
-OS_STK dma_STACK[dma_STACKSIZE] __attribute__ ((section (".critical")));
-OS_STK Derivative_STACK[Derivative_STACKSIZE] __attribute__ ((section (".critical")));
-OS_STK TractionControl_STACK[TractionControl_STACKSIZE] __attribute__ ((section (".critical")));
+OS_STK dma_STACK[DMA_STACKSIZE] __attribute__ ((section (".critical")));
+OS_STK Derivative_STACK[DERIVATIVE_STACKSIZE] __attribute__ ((section (".critical")));
+OS_STK TractionControl_STACK[TRACTIONCONTROL_STACKSIZE] __attribute__ ((section (".critical")));
 
 
 
@@ -279,7 +283,7 @@ void initializeTaskTable(void) {
 	task->stackAddressVirt[1] = (void *) (0x62000);
 
 	task->dataSize = sizeof(AirbagModelPackageStruct);
-	task->stackSize = (AirbagModel_STACKSIZE * 4);
+	task->stackSize = (AIRBAGMODEL_STACKSIZE * 4);
 
 	task = &REPOSTaskTable[CRUISECONTROLSYSTEM_TABLE_INDEX];
 
@@ -292,7 +296,7 @@ void initializeTaskTable(void) {
 	task->stackAddressVirt[1] = (void *) (0x62768);
 
 	task->dataSize = sizeof(CruiseControlSystemPackageStruct);
-	task->stackSize = (CruiseControlSystem_STACKSIZE * 4);
+	task->stackSize = (CRUISECONTROLSYSTEM_STACKSIZE * 4);
 
 	task = &REPOSTaskTable[RADARTRACKER_TABLE_INDEX];
 
@@ -305,7 +309,7 @@ void initializeTaskTable(void) {
 	task->stackAddressVirt[1] = (void *) (0x63000);
 
 	task->dataSize = sizeof(RadarTrackerPackageStruct);
-	task->stackSize = (RadarTracker_STACKSIZE * 4);
+	task->stackSize = (RADARTRACKER_STACKSIZE * 4);
 
 }
 
@@ -316,9 +320,11 @@ void REPOSInit(void) {
 
 	REPOS_task *task;
 	task = &REPOSTaskTable[AIRBAGMODEL_TABLE_INDEX];
-	task->status = PENDING;
+	task->taskRunning = false;
 	task->kind = PERIODIC_K;
 	task->data.periodic.period = AIRBAGMODEL_PERIOD;
+	task->data.periodic.countdown = AIRBAGMODEL_PERIOD;
+	task->data.periodic.deadline = AIRBAGMODEL_PERIOD; /* Deadline not specified, assume deadline = period */
 	task->core[0] = 0;
 	task->core[1] = 1;
 	task->numFuncs = 1;
@@ -328,9 +334,11 @@ void REPOSInit(void) {
 	task->startHookArgs = (void*)AIRBAGMODEL_TABLE_INDEX;
 
 	task = &REPOSTaskTable[CRUISECONTROLSYSTEM_TABLE_INDEX];
-	task->status = PENDING;
+	task->taskRunning = false;
 	task->kind = PERIODIC_K;
 	task->data.periodic.period = CRUISECONTROLSYSTEM_PERIOD;
+	task->data.periodic.countdown = CRUISECONTROLSYSTEM_PERIOD;
+	task->data.periodic.deadline = CRUISECONTROLSYSTEM_PERIOD; /* Deadline not specified, assume deadline = period */
 	task->core[0] = 0;
 	task->core[1] = 1;
 	task->numFuncs = 1;
@@ -340,9 +348,11 @@ void REPOSInit(void) {
 	task->startHookArgs = (void*)CRUISECONTROLSYSTEM_TABLE_INDEX;
 
 	task = &REPOSTaskTable[RADARTRACKER_TABLE_INDEX];
-	task->status = PENDING;
+	task->taskRunning = false;
 	task->kind = PERIODIC_K;
 	task->data.periodic.period = RADARTRACKER_PERIOD;
+	task->data.periodic.countdown = RADARTRACKER_PERIOD;
+	task->data.periodic.deadline = RADARTRACKER_PERIOD; /* Deadline not specified, assume deadline = period */
 	task->core[0] = 0;
 	task->core[1] = 1;
 	task->numFuncs = 1;
@@ -392,7 +402,7 @@ void Derivative_TASK(void* pdata) {
 	while (1) {
 		Derivative_step(Derivative_M, &Derivative_U,
 			&Derivative_Y);
-		OSTimeDlyHMSM(0, 0, 0, 40);
+		OSTimeDlyHMSM(0, 0, 0, DERIVATIVE_PERIOD);
 	}
 }
 
@@ -403,7 +413,7 @@ void TractionControl_TASK(void* pdata) {
 	while (1) {
 		TractionControl_step(TractionControl_M, &TractionControl_U,
 			&TractionControl_Y);
-		OSTimeDlyHMSM(0, 0, 0, 30);
+		OSTimeDlyHMSM(0, 0, 0, TRACTIONCONTROL_PERIOD);
 	}
 }
 
@@ -533,23 +543,23 @@ int main(void) {
 	//Declare the OS tasks
 	//-------------------
 	OSTaskCreateExt(Derivative_TASK, NULL,
-			&Derivative_STACK[Derivative_STACKSIZE - 1],
-			Derivative_PRIORITY, Derivative_PRIORITY,
-			Derivative_STACK, Derivative_STACKSIZE, NULL,
+			&Derivative_STACK[DERIVATIVE_STACKSIZE - 1],
+			DERIVATIVE_PRIORITY, DERIVATIVE_PRIORITY,
+			Derivative_STACK, DERIVATIVE_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
-	OSTaskNameSet(Derivative_PRIORITY, (INT8U *)"Derivative", &perr);
+	OSTaskNameSet(DERIVATIVE_PRIORITY, (INT8U *)"Derivative", &perr);
 	OSTaskCreateExt(TractionControl_TASK, NULL,
-			&TractionControl_STACK[TractionControl_STACKSIZE - 1],
-			TractionControl_PRIORITY, TractionControl_PRIORITY,
-			TractionControl_STACK, TractionControl_STACKSIZE, NULL,
+			&TractionControl_STACK[TRACTIONCONTROL_STACKSIZE - 1],
+			TRACTIONCONTROL_PRIORITY, TRACTIONCONTROL_PRIORITY,
+			TractionControl_STACK, TRACTIONCONTROL_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
-	OSTaskNameSet(TractionControl_PRIORITY, (INT8U *)"TractionControl", &perr);
+	OSTaskNameSet(TRACTIONCONTROL_PRIORITY, (INT8U *)"TractionControl", &perr);
 	OSTaskCreateExt(dma_TASK, NULL,
-			&dma_STACK[dma_STACKSIZE - 1],
-			dma_PRIORITY, dma_PRIORITY,
-			dma_STACK, dma_STACKSIZE, NULL,
+			&dma_STACK[DMA_STACKSIZE - 1],
+			DMA_PRIORITY, DMA_PRIORITY,
+			dma_STACK, DMA_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
-	OSTaskNameSet(dma_PRIORITY, (INT8U *)"dma", &perr);
+	OSTaskNameSet(DMA_PRIORITY, (INT8U *)"dma", &perr);
 
 
 	//Wait for confirmation that other cores have completed their startup routines

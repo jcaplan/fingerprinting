@@ -18,17 +18,17 @@
  *****************************************************************************/
 #define STACKSIZE_MINOFFSET                       316
 #define STACKSIZE_MARGINERROR                     150
-#define AirbagModel_STACKSIZE                     (   8 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define CruiseControlSystem_STACKSIZE             (   6 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define CollisionAvoidance_STACKSIZE              (   7 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define RadarTracker_STACKSIZE                    ( 329 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define AIRBAGMODEL_STACKSIZE                     (   8 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define CRUISECONTROLSYSTEM_STACKSIZE             (   6 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define COLLISIONAVOIDANCE_STACKSIZE              (   7 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define RADARTRACKER_STACKSIZE                    ( 329 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 /*****************************************************************************
  * Task Priorities
  *****************************************************************************/
-#define AirbagModel_PRIORITY                      1
-#define CruiseControlSystem_PRIORITY              2
-#define CollisionAvoidance_PRIORITY               5
-#define RadarTracker_PRIORITY                     8
+#define AIRBAGMODEL_PRIORITY                      1
+#define CRUISECONTROLSYSTEM_PRIORITY              2
+#define COLLISIONAVOIDANCE_PRIORITY               5
+#define RADARTRACKER_PRIORITY                     8
 /*****************************************************************************
  * Task Table indices
  *****************************************************************************/
@@ -38,6 +38,15 @@
 /*****************************************************************************
  * Task Periods
  *****************************************************************************/
+#define NUM_TASKS                                 4
 #define AIRBAGMODEL_PERIOD                        50
 #define CRUISECONTROLSYSTEM_PERIOD                20
-#define RADARTRACKER_PERIOD                       200
+#define COLLISIONAVOIDANCE_PERIOD                 100
+#define RADARTRACKER_PERIOD                       300
+/*****************************************************************************
+ * Runtime monitor table index
+ *****************************************************************************/
+#define AIRBAGMODEL_RT_PRIO                       0
+#define CRUISECONTROLSYSTEM_RT_PRIO               1
+#define COLLISIONAVOIDANCE_RT_PRIO                2
+#define RADARTRACKER_RT_PRIO                      3

@@ -102,13 +102,12 @@ public class GenCoreMon extends GenCore{
 				s += "	REPOS_task *task;\n"+
 				"\n";
 		for(Function f : fprintList){
-			String funcIndex = f.toString().toUpperCase() + "_TABLE_INDEX";
 			//TODO hard coded!!!
 			String core0PhysSP = Integer.toHexString(getStackStart(f,0));
 			String core1PhysSP = Integer.toHexString(getStackStart(f,1));
 			String core0VirtSp = Integer.toHexString(getStackStart(f,1) & 0x3FFFFF);
 			String core1VirtSP = Integer.toHexString(getStackStart(f,1) & 0x3FFFFF);
-			s+= "	task = &REPOSTaskTable[" + funcIndex + "];\n"+
+			s+= "	task = &REPOSTaskTable[" + f.getTableIndexString() + "];\n"+
 					"\n"+
 					"	task->dataAddressPhys = &" + f + "PackageStruct;\n"+
 					"	task->dataAddressVirt = (void *)((int)&" + f + "PackageStruct & 0x3FFFFF);"+
@@ -120,7 +119,7 @@ public class GenCoreMon extends GenCore{
 					"	task->stackAddressVirt[1] = (void *) (0x" + core1VirtSP + ");\n"+
 					"\n"+
 					"	task->dataSize = sizeof(" + f + "PackageStruct" + ");\n"+
-					"	task->stackSize = (" + f + "_STACKSIZE" + " * 4);\n"+
+					"	task->stackSize = (" + f.getStackSizeString() + "" + " * 4);\n"+
 					"\n";
 		}
 		s += 	"}\n"+
@@ -134,20 +133,29 @@ public class GenCoreMon extends GenCore{
 		
 		s += "	REPOS_task *task;\n";
 		for(Function f : fprintList){
-			String funcIndex = f.toString().toUpperCase() + "_TABLE_INDEX";
-			s += 	"	task = &REPOSTaskTable[" + funcIndex +"];\n"+
-					"	task->status = PENDING;\n";
+			s += 	"	task = &REPOSTaskTable[" + f.getTableIndexString() +"];\n"+
+					"	task->taskRunning = false;\n";
 					//TODO hard coded!
 			s += 	"	task->kind = PERIODIC_K;\n"+
-					"	task->data.periodic.period = " + f.toString().toUpperCase() + "_PERIOD" + ";\n"+
-			"	task->core[0] = 0;\n"+
+			"	task->data.periodic.period = " + f.getPeriodString() + ";\n"+
+			"	task->data.periodic.countdown = " + f.getPeriodString() + ";\n";
+			if(f.deadline == 0){
+				s += "	task->data.periodic.deadline = " + f.getPeriodString() + 
+						"; /* Deadline not specified, assume deadline = period */\n";
+			} else {
+				s += "	task->data.periodic.deadline = " + f.getDeadlineString() + ";\n";
+			}
+			
+			s += "	task->core[0] = 0;\n"+
 			"	task->core[1] = 1;\n"+
 			"	task->numFuncs = 1;\n"+
 			"	task->funcTableFirstIndex = 0;\n"+
-			"	task->taskID = " + funcIndex + ";\n"+
+			"	task->taskID = " + f.getTableIndexString() + ";\n"+
 			"	task->startHook = startHook;\n"+
-			"	task->startHookArgs = (void*)" + funcIndex + ";\n"+
-			"\n";
+			"	task->startHookArgs = (void*)" + f.getTableIndexString() + ";\n";
+			
+			
+			s += "\n";
 
 		}
 		s += 	"\n"+
@@ -191,7 +199,7 @@ public class GenCoreMon extends GenCore{
 		Function dmaFunction = new Function();
 		dmaFunction.codeDirectory = null;
 		dmaFunction.critical = false; /* evade special treatment */
-		dmaFunction.cores.add("cpum");
+		dmaFunction.cores.add("cpuM");
 		dmaFunction.name = "dma";
 		dmaFunction.type = Type.eventDriven;
 		
@@ -406,9 +414,8 @@ public class GenCoreMon extends GenCore{
 				"	//-----------------------------\n";
 		for(Function f : fprintList){
 
-			String funcIndex = f.toString().toUpperCase() + "_TABLE_INDEX";
-			s += "	functionTable[" + funcIndex + "].args =  (void *)((int)&" + f + "PackageStruct & 0x3FFFFF);\n"+
-					"	functionTable[" + funcIndex + "].blocksize = 0xfff;\n";			 
+			s += "	functionTable[" + f.getTableIndexString() + "].args =  (void *)((int)&" + f + "PackageStruct & 0x3FFFFF);\n"+
+					"	functionTable[" + f.getTableIndexString() + "].blocksize = 0xfff;\n";			 
 		}
 		
 		s += "	//Initialize the runtime interface\n"+
@@ -482,11 +489,11 @@ public class GenCoreMon extends GenCore{
 		
 		for(Function f : core.funcList){
 			s += "	OSTaskCreateExt(" + f + "_TASK, NULL,\n"+
-					"			&" + f + "_STACK[" + f + "_STACKSIZE - 1],\n"+
-					"			" + f + "_PRIORITY, " + f + "_PRIORITY,\n"+
-					"			" + f + "_STACK, " + f + "_STACKSIZE, NULL,\n"+
+					"			&" + f + "_STACK[" + f.getStackSizeString() + " - 1],\n"+
+					"			" + f.getPriorityString() + ", " + f.getPriorityString() + ",\n"+
+					"			" + f + "_STACK, " + f.getStackSizeString() + ", NULL,\n"+
 					"			OS_TASK_OPT_STK_CLR);\n";
-			s += "	OSTaskNameSet(" + f + "_PRIORITY, (INT8U *)\"" + f + "\", &perr);\n";
+			s += "	OSTaskNameSet(" + f.getPriorityString() + ", (INT8U *)\"" + f + "\", &perr);\n";
 
 		}
 		
@@ -558,7 +565,7 @@ public class GenCoreMon extends GenCore{
 		Collections.sort(stackList, Function.stackCompareDecreasing);
 		
 		for (Function f : stackList){
-			s += "OS_STK " + f + "_STACK[" + f + "_STACKSIZE]";
+			s += "OS_STK " + f + "_STACK[" + f.getStackSizeString() + "]";
 			
 		
 			s += " __attribute__ ((section (\".critical\")))";
@@ -605,7 +612,7 @@ public class GenCoreMon extends GenCore{
 					"\twhile (1) {\n";
 				s += String.format("\t\t%s_step(%s_M, &%s_U,"
 						+ "\n\t\t\t&%s_Y);\n", f,f,f,f);
-				s+= "\t\tOSTimeDlyHMSM(0, 0, 0, " + f.period + ");\n"; 
+				s+= "\t\tOSTimeDlyHMSM(0, 0, 0, " + f.getPeriodString() + ");\n"; 
 				s += "\t}\n}\n";
 			}
 			s += "\n";
@@ -621,8 +628,8 @@ public class GenCoreMon extends GenCore{
 		String s = "";
 		s += super.getStackSizes(core);
 		for(Function f : fprintList){
-			s += String.format("%-50s%s","#define " + f 
-					+ "_STACKSIZE",String.format("(%4d%s )\n",f.stackSize/4, 
+			s += String.format("%-50s%s","#define " + f.getStackSizeString(),
+					String.format("(%4d%s )\n",f.stackSize/4, 
 					" + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR")); 
 		
 		}
