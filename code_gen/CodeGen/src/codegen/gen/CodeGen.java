@@ -49,7 +49,7 @@ public class CodeGen {
 		
 		new GenCriticalLibrary(config, funcList, fprintList).generateCriticalLibrary();
 		new GenScripts(config).generateScripts();
-		new SourceAnalysis(platform, funcList, config).doAnalysis();
+		new SourceAnalysis(platform, funcList, config,fprintList).doAnalysis();
 		new GenStackBin(stackBins,fprintList,platform,config).genStackBins(); 
 	
 		
@@ -98,7 +98,7 @@ public class CodeGen {
 		} else if (core == 1) {
 			name = "cpu1";
 		} else if (core == 2) {
-			name = "cpum";
+			name = "cpuM";
 		}
 		return name;
 	}

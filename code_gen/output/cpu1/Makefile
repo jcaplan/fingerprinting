@@ -142,7 +142,12 @@ ACDS_VERSION := 13.1
 ELF := cpu1.elf
 
 # Paths to C, C++, and assembly source files.
+C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/AirbagModel.c
+C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/CollisionAvoidance.c
+C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/CruiseControlSystem.c
+C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/RadarTracker.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/cpu1.c
+C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/critical.c
 CXX_SRCS :=
 ASM_SRCS :=
 
@@ -182,12 +187,8 @@ SYS_LIB :=
 # Define path to the root of the BSP.
 BSP_ROOT_DIR := /home/jonah/fingerprinting/code_gen/output/cpu1_bsp
 
-ALT_LIBRARY_ROOT_DIR := /home/jonah/fingerprinting/code_gen/output/critical_library
-include /home/jonah/fingerprinting/code_gen/output/critical_library/public.mk
-
 # List of application specific include directories, library directories and library names
-APP_INCLUDE_DIRS := /home/jonah/fingerprinting/code_gen/output/critical_library
-
+APP_INCLUDE_DIRS :=
 APP_LIBRARY_DIRS :=
 APP_LIBRARY_NAMES :=
 

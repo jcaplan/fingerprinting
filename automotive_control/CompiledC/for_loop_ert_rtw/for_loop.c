@@ -7,72 +7,62 @@
  *
  * Code generated for Simulink model 'for_loop'.
  *
- * Model version                  : 1.45
+ * Model version                  : 1.85
  * Simulink Coder version         : 8.8 (R2015a) 09-Feb-2015
- * C/C++ source code generated on : Wed Aug  5 18:02:50 2015
+ * C/C++ source code generated on : Tue Aug 11 14:08:16 2015
  *
  * Target selection: ert.tlc
- * Embedded hardware selection: 32-bit Generic
+ * Embedded hardware selection: Generic->32-bit Embedded Processor
  * Code generation objectives:
  *    1. Safety precaution
  *    2. MISRA-C:2004 guidelines
+ *    3. RAM efficiency
+ *    4. ROM efficiency
  * Validation result: Not run
  */
 
 #include "for_loop.h"
 #include "for_loop_private.h"
+#include <math.h>
+#include <stdlib.h>
+
+
 
 /* Model step function */
 void for_loop_step(RT_MODEL_for_loop_T *const for_loop_M, ExtU_for_loop_T
                    *for_loop_U, ExtY_for_loop_T *for_loop_Y)
 {
-  real32_T rtb_y;
+  real32_T y;
   int32_T i;
 
   /* MATLAB Function: '<Root>/ForLoop' incorporates:
+   *  Constant: '<Root>/Constant'
    *  Inport: '<Root>/In1'
    */
   /* MATLAB Function 'ForLoop': '<S1>:1' */
   /* '<S1>:1:2' */
-  rtb_y = for_loop_U->In1;
+  y = for_loop_U->In1;
 
   /* '<S1>:1:3' */
-  for (i = 0; i < 1000000; i++) {
+  for (i = 0; i < ((int32_T)(LOOP_LIMIT + 1)); i++) {
     /* '<S1>:1:3' */
     /* '<S1>:1:4' */
-    rtb_y = (((real32_T)i) * 2.0F) + (((real32_T)i) * ((real32_T)i));
+    y = (((real32_T)i) * 2.0F) + (((real32_T)i) * ((real32_T)i));
 
     /* '<S1>:1:3' */
   }
 
-  /* End of MATLAB Function: '<Root>/ForLoop' */
-
-  /* Outport: '<Root>/Out1' */
-  for_loop_Y->Out1 = rtb_y;
+  /* Outport: '<Root>/Out1' incorporates:
+   *  MATLAB Function: '<Root>/ForLoop'
+   */
+  for_loop_Y->Out1 = y;
   UNUSED_PARAMETER(for_loop_M);
 }
 
 /* Model initialize function */
-void for_loop_initialize(RT_MODEL_for_loop_T *const for_loop_M, ExtU_for_loop_T *
-  for_loop_U, ExtY_for_loop_T *for_loop_Y)
+void for_loop_initialize(RT_MODEL_for_loop_T *const for_loop_M)
 {
-  /* Registration code */
-
-  /* initialize error status */
-  rtmSetErrorStatus(for_loop_M, (NULL));
-
-  /* external inputs */
-  for_loop_U->In1 = 0.0F;
-
-  /* external outputs */
-  for_loop_Y->Out1 = 0.0F;
-  UNUSED_PARAMETER(for_loop_M);
-}
-
-/* Model terminate function */
-void for_loop_terminate(RT_MODEL_for_loop_T *const for_loop_M)
-{
-  /* (no terminate code required) */
+  /* (no initialization code required) */
   UNUSED_PARAMETER(for_loop_M);
 }
 

@@ -33,11 +33,11 @@
 AirbagModel cpu0 cpu1
 CollisionAvoidance cpu1
 CruiseControlSystem cpu0 cpu1
-Derivative cpum
+Derivative cpuM
 FuelSensor cpu0
 TractionControl cpu0 cpu1
 TransmissionControl cpu0
-RadarTracker cpum
+RadarTracker cpuM
 </MAPPING>
 
 

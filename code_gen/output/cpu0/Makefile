@@ -144,9 +144,12 @@ ELF := cpu0.elf
 # Paths to C, C++, and assembly source files.
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/AirbagModel.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/CruiseControlSystem.c
+C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/FuelSensor.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/RadarTracker.c
-C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/TractionControl.c
+C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/TransmissionControl.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/cpu0.c
+C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/critical.c
+C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/for_loop.c
 CXX_SRCS :=
 ASM_SRCS :=
 
@@ -186,12 +189,8 @@ SYS_LIB :=
 # Define path to the root of the BSP.
 BSP_ROOT_DIR := /home/jonah/fingerprinting/code_gen/output/cpu0_bsp
 
-ALT_LIBRARY_ROOT_DIR := /home/jonah/fingerprinting/code_gen/output/critical_library
-include /home/jonah/fingerprinting/code_gen/output/critical_library/public.mk
-
 # List of application specific include directories, library directories and library names
-APP_INCLUDE_DIRS := /home/jonah/fingerprinting/code_gen/output/critical_library
-
+APP_INCLUDE_DIRS :=
 APP_LIBRARY_DIRS :=
 APP_LIBRARY_NAMES :=
 

@@ -161,6 +161,7 @@ public class GenBSP {
 				"--cmd enable_sw_package mpu_utils \\\n"+
 				"--cmd enable_sw_package fingerprint \\\n"+
 				"--cmd enable_sw_package reset_monitor \\\n"+
+				"--cmd enable_sw_package runtime_monitor \\\n"+
 				"--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer\n"+
 				"\n"+
 				"# cpu1\n"+
@@ -178,9 +179,10 @@ public class GenBSP {
 				"--cmd enable_sw_package mpu_utils \\\n"+
 				"--cmd enable_sw_package fingerprint \\\n"+
 				"--cmd enable_sw_package reset_monitor \\\n"+
+				"--cmd enable_sw_package runtime_monitor \\\n"+
 				"--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer\n"+
 				"\n"+
-				"# cpum\n"+
+				"# cpuM\n"+
 				"${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpuM_bsp/settings.bsp \\\n"+
 				"--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x20 0x30fe0 \\\n"+
 				"--cmd add_memory_region global_data memory_0_onchip_memoryMain 0x31000 0x1000 \\\n"+
@@ -191,6 +193,7 @@ public class GenBSP {
 				"--cmd enable_sw_package mpu_utils \\\n"+
 				"--cmd enable_sw_package fingerprint \\\n"+
 				"--cmd enable_sw_package reset_monitor \\\n"+
+				"--cmd enable_sw_package runtime_monitor \\\n"+
 				"--cmd enable_sw_package dma \\\n"+
 				"--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer\n"+
 				"\n"+

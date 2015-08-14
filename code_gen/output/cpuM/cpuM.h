@@ -18,18 +18,18 @@
  *****************************************************************************/
 #define STACKSIZE_MINOFFSET                       316
 #define STACKSIZE_MARGINERROR                     150
-#define Derivative_STACKSIZE                      (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define TractionControl_STACKSIZE                 (  19 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define dma_STACKSIZE                             (1024 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define AirbagModel_STACKSIZE                     (   8 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define CruiseControlSystem_STACKSIZE             (   6 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define RadarTracker_STACKSIZE                    ( 329 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define DERIVATIVE_STACKSIZE                      (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define TRACTIONCONTROL_STACKSIZE                 (  19 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define DMA_STACKSIZE                             (1024 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define AIRBAGMODEL_STACKSIZE                     (   8 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define CRUISECONTROLSYSTEM_STACKSIZE             (   6 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define RADARTRACKER_STACKSIZE                    ( 329 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 /*****************************************************************************
  * Task Priorities
  *****************************************************************************/
-#define Derivative_PRIORITY                       3
-#define TractionControl_PRIORITY                  4
-#define dma_PRIORITY                              0
+#define DERIVATIVE_PRIORITY                       3
+#define TRACTIONCONTROL_PRIORITY                  4
+#define DMA_PRIORITY                              0
 /*****************************************************************************
  * Task Table indices
  *****************************************************************************/
@@ -39,6 +39,19 @@
 /*****************************************************************************
  * Task Periods
  *****************************************************************************/
+#define NUM_TASKS                                 6
+#define DERIVATIVE_PERIOD                         40
+#define TRACTIONCONTROL_PERIOD                    30
+#define DMA_PERIOD                                0
 #define AIRBAGMODEL_PERIOD                        50
 #define CRUISECONTROLSYSTEM_PERIOD                20
-#define RADARTRACKER_PERIOD                       200
+#define RADARTRACKER_PERIOD                       300
+/*****************************************************************************
+ * Runtime monitor table index
+ *****************************************************************************/
+#define DERIVATIVE_RT_PRIO                        0
+#define TRACTIONCONTROL_RT_PRIO                   1
+#define DMA_RT_PRIO                               2
+#define AIRBAGMODEL_RT_PRIO                       3
+#define CRUISECONTROLSYSTEM_RT_PRIO               4
+#define RADARTRACKER_RT_PRIO                      5

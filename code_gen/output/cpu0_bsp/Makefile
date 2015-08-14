@@ -380,6 +380,13 @@ reset_monitor_SRCS_ROOT := drivers
 reset_monitor_C_LIB_SRCS := \
 	$(reset_monitor_SRCS_ROOT)/src/reset_monitor.c
 
+# runtime_monitor sources root 
+runtime_monitor_SRCS_ROOT := drivers
+
+# runtime_monitor sources 
+runtime_monitor_C_LIB_SRCS := \
+	$(runtime_monitor_SRCS_ROOT)/src/runtimeMonitor.c
+
 # ucosii sources root 
 ucosii_SRCS_ROOT := UCOSII
 
@@ -412,6 +419,7 @@ COMPONENT_C_LIB_SRCS += \
 	$(mem_manager_C_LIB_SRCS) \
 	$(mpu_utils_C_LIB_SRCS) \
 	$(reset_monitor_C_LIB_SRCS) \
+	$(runtime_monitor_C_LIB_SRCS) \
 	$(ucosii_C_LIB_SRCS)
 
 # Assemble all component assembly source files 

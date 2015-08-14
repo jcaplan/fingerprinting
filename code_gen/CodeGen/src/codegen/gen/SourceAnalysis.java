@@ -20,6 +20,7 @@ public class SourceAnalysis {
 	Platform platform;
 	ArrayList<Function> funcList;
 	Configuration config;
+	private ArrayList<Function> fprintList;
 
 	/**
 	 * Constructor
@@ -27,10 +28,11 @@ public class SourceAnalysis {
 	 * @param funcList
 	 * @param config
 	 */
-	public SourceAnalysis(Platform platform, ArrayList<Function> funcList, Configuration config){
+	public SourceAnalysis(Platform platform, ArrayList<Function> funcList, Configuration config, ArrayList<Function> fprintList){
 		this.platform = platform;
 		this.funcList = funcList;
 		this.config = config;
+		this.fprintList = fprintList;
 	}
 	
 	/**
@@ -71,13 +73,16 @@ public class SourceAnalysis {
 		c.addHeader("gp.h");
 		c.addHeader("context_switch.h");
 		c.addHeader("tlb.h");
-		c.addHeader("critical.h");
 		c.addHeader("mpu_utils.h");
 		c.addHeader("priv/alt_exception_handler_registry.h");
 		c.addHeader("mem_manager.h");
 		c.addHeader("cpu0.h");
 		c.addHeader("reset_monitor.h");
-
+		c.addHeader("runtimeMonitor.h");
+		if(c.requiresCriticalHeader){
+			c.addHeader("critical.h");
+		}
+		
 		c = platform.getCore("cpu1");
 		c.addHeader("<stdio.h>");
 		c.addHeader("<stddef.h>");
@@ -87,14 +92,17 @@ public class SourceAnalysis {
 		c.addHeader("gp.h");
 		c.addHeader("context_switch.h");
 		c.addHeader("tlb.h");
-		c.addHeader("critical.h");
 		c.addHeader("mpu_utils.h");
 		c.addHeader("priv/alt_exception_handler_registry.h");
 		c.addHeader("mem_manager.h");
 		c.addHeader("cpu1.h");
 		c.addHeader("reset_monitor.h");
-
-		c = platform.getCore("cpum");
+		c.addHeader("runtimeMonitor.h");
+		if(c.requiresCriticalHeader){
+			c.addHeader("critical.h");
+		}
+		
+		c = platform.getCore("cpuM");
 		c.addHeader("<stdio.h>");
 		c.addHeader("<stddef.h>");
 		c.addHeader("<stdbool.h>");
@@ -104,24 +112,23 @@ public class SourceAnalysis {
 		c.addHeader("shared_mem.h");
 		c.addHeader("fingerprint.h");
 		c.addHeader("gp.h");
-		c.addHeader("critical.h");
 		c.addHeader("cpuM.h");
 		c.addHeader("reset_monitor.h");
+		c.addHeader("runtimeMonitor.h");
 		c.addHeader("repos.h");
-		
+		if(c.requiresCriticalHeader){
+			c.addHeader("critical.h");
+		}
 
 		findFunctionHeaders();
 
 		for (Function f : funcList) {
-			if (f.critical) {
-				if(f.cores.contains("cpu0")){
-					c = platform.getCore("cpu0");
-				} else {
-					c = platform.getCore("cpum");
-				}
-			} else {
-				c = platform.getCore(f.cores.get(0));
-			}
+			c = platform.getCore(f.cores.get(0));
+			c.addHeader(f + ".h");
+		}
+		
+		c = platform.getCore("cpuM");
+		for (Function f : fprintList){
 			c.addHeader(f + ".h");
 		}
 	}
@@ -235,8 +242,8 @@ public class SourceAnalysis {
 			String outputDir = config.outputDir + "/prof";
 			copySourceFiles(f.codeDirectory, outputDir);
 			Core core;
-			if(f.cores.contains("cpum")){
-				core = platform.getCore("cpum");
+			if(f.cores.contains("cpuM")){
+				core = platform.getCore("cpuM");
 			} else {
 				core = platform.getCore("cpu0");
 			}
@@ -299,12 +306,12 @@ public class SourceAnalysis {
 		// region (4 kB pages)
 
 		// ////////////////////////////////////////////////
-		for (Function f : funcList) {
-			for (String dec : f.varDeclarations) {
-				// TODO: parse files to get size of each struct
-
-			}
-		}
+//		for (Function f : funcList) {
+//			for (String dec : f.varDeclarations) {
+//				// TODO: parse files to get size of each struct
+//
+//			}
+//		}
 
 		// TODO: check that the sum of all functions is less than 4kB.
 

@@ -1,14 +1,7 @@
 package codegen.gen;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-
-import javax.management.RuntimeErrorException;
-
-import org.jgap.gui.ConfigFrame.ConfigListSelectionListener;
+import java.io.*;
+import java.util.*;
 
 import codegen.gen.Function.Type;
 
@@ -186,7 +179,7 @@ public class Configuration {
 									+ funcName);
 						}
 					} else if (tokens.length == 2) {
-						if (!tokens[1].equals("cpum")) {
+						if (!tokens[1].equals("cpuM")) {
 							throwConfigError("invalid mapping for task "
 									+ funcName);
 						}
@@ -367,6 +360,20 @@ public class Configuration {
 						f.stackSize = Integer.parseInt(arg);
 						i++;
 						break;
+					case "-printRuntime":
+						f.printRuntimes = true;
+						break;
+					case "-addPreamble":
+						if (i == tokens.length - 1) {
+							throwConfigError("-T expects value");
+						}
+						arg = tokens[i + 1];
+						if (arg.startsWith("-")) {
+							throwConfigError("-T expects value");
+						}
+						f.preambleFileName = arg;
+						i++;
+						break;
 					default:
 						throwConfigError("Unrecognized argument in FUNCTIONLIST: "
 								+ token);
@@ -437,16 +444,6 @@ public class Configuration {
 		return null;
 	}
 
-	/**
-	 * Print an array of strings
-	 * @param array
-	 */
-	private void printStringArray(String[] array) {
-		for (int i = 0; i < array.length - 1; i++) {
-			System.out.print(array[i] + ", ");
-		}
-		System.out.println(array[array.length - 1]);
-	}
 
 	/**
 	 * Pring an ArrayList<String>

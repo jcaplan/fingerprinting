@@ -18,21 +18,21 @@
  *****************************************************************************/
 #define STACKSIZE_MINOFFSET                       316
 #define STACKSIZE_MARGINERROR                     150
-#define AirbagModel_STACKSIZE                     (   8 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define CruiseControlSystem_STACKSIZE             (   6 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define FuelSensor_STACKSIZE                      (   5 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define TransmissionControl_STACKSIZE             (   4 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define RadarTracker_STACKSIZE                    ( 329 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define for_loop_STACKSIZE                        (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define AIRBAGMODEL_STACKSIZE                     (   8 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define CRUISECONTROLSYSTEM_STACKSIZE             (   6 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define FUELSENSOR_STACKSIZE                      (   5 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define TRANSMISSIONCONTROL_STACKSIZE             (   4 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define RADARTRACKER_STACKSIZE                    ( 329 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define FOR_LOOP_STACKSIZE                        (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 /*****************************************************************************
  * Task Priorities
  *****************************************************************************/
-#define AirbagModel_PRIORITY                      1
-#define CruiseControlSystem_PRIORITY              2
-#define FuelSensor_PRIORITY                       6
-#define TransmissionControl_PRIORITY              7
-#define RadarTracker_PRIORITY                     8
-#define for_loop_PRIORITY                         10
+#define AIRBAGMODEL_PRIORITY                      1
+#define CRUISECONTROLSYSTEM_PRIORITY              2
+#define FUELSENSOR_PRIORITY                       6
+#define TRANSMISSIONCONTROL_PRIORITY              7
+#define RADARTRACKER_PRIORITY                     8
+#define FOR_LOOP_PRIORITY                         10
 /*****************************************************************************
  * Task Table indices
  *****************************************************************************/
@@ -42,6 +42,19 @@
 /*****************************************************************************
  * Task Periods
  *****************************************************************************/
+#define NUM_TASKS                                 6
 #define AIRBAGMODEL_PERIOD                        50
 #define CRUISECONTROLSYSTEM_PERIOD                20
-#define RADARTRACKER_PERIOD                       200
+#define FUELSENSOR_PERIOD                         75
+#define TRANSMISSIONCONTROL_PERIOD                15
+#define RADARTRACKER_PERIOD                       300
+#define FOR_LOOP_PERIOD                           13
+/*****************************************************************************
+ * Runtime monitor table index
+ *****************************************************************************/
+#define AIRBAGMODEL_RT_PRIO                       0
+#define CRUISECONTROLSYSTEM_RT_PRIO               1
+#define FUELSENSOR_RT_PRIO                        2
+#define TRANSMISSIONCONTROL_RT_PRIO               3
+#define RADARTRACKER_RT_PRIO                      4
+#define FOR_LOOP_RT_PRIO                          5

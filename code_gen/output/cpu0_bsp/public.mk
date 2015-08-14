@@ -369,9 +369,6 @@ ALT_CFLAGS += -mcustom-floatis=250
 ALT_CFLAGS += -mcustom-fmuls=252
 ALT_CFLAGS += -mcustom-fnegs=225
 ALT_CFLAGS += -mcustom-fsubs=254
-ALT_CFLAGS += -mcustom-fsqrts=251
-ALT_CFLAGS += -funsafe-math-optimizations
-
 
 #END MANAGED
 

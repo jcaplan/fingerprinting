@@ -32,6 +32,7 @@ public class GenCore {
 		new GenString() { public String action(Core core) { return getIncludeStringString(core); } },
 		new GenString() { public String action(Core core) { return getVarDecStringString(core); } },
 		new GenString() { public String action(Core core) { return getStackDeclarationString(core); } },
+		new GenString() { public String action(Core core) { return getRuntimeMonitorTableString(core); } },
 		new GenString() { public String action(Core core) { return getSemaphoreDeclarations(core); } },
 		new GenString() { public String action(Core core) { return getSharedMemoryDeclarationString(core); } },
 		new GenString() { public String action(Core core) { return getCPUInterruptString(core); } },
@@ -121,8 +122,7 @@ public class GenCore {
 			 " *****************************************************************************/\n";
 		
 		for (Function f : core.funcList){
-			s += String.format("%-50s%d\n","#define " + f 
-					+ "_PRIORITY",f.priority); 
+			s += String.format("%-50s%d\n","#define " + f.getPriorityString(),f.priority); 
 		}
 		
 		s += "/*****************************************************************************\n" +
@@ -131,22 +131,43 @@ public class GenCore {
 			
 			for (int i = 0; i < fprintList.size(); i++){
 				Function f = fprintList.get(i);
-				String upperCaseName = f.toString().toUpperCase();
-				s += String.format("%-50s%d\n","#define " + upperCaseName 
-						+ "_TABLE_INDEX",i); 
+				s += String.format("%-50s%d\n","#define " + f.getTableIndexString(),i); 
 			}
 			
 			s += "/*****************************************************************************\n" +
 					 " * Task Periods\n" + 
 					 " *****************************************************************************/\n";
-			for (Function f : fprintList){
-
-				String upperCaseName = f.toString().toUpperCase();
-				s += String.format("%-50s%d\n","#define " + upperCaseName + "_PERIOD", f.period); 
+			ArrayList<Function> mergeList = getMergedFuncFprintList(core);
+			
+			s += String.format("%-50s%d\n","#define NUM_TASKS", mergeList.size()); 			
+			for (Function f : mergeList){
+				s += String.format("%-50s%d\n","#define " + f.getPeriodString(), f.period); 
 			}
+			s += "/*****************************************************************************\n" +
+					 " * Runtime monitor table index\n" + 
+					 " *****************************************************************************/\n";
+		
+			for (int i = 0; i < mergeList.size(); i++){
+				Function f = mergeList.get(i);
+				s += String.format("%-50s%d\n","#define " + f.getRuntimeIndexString(), i); 
+			}
+			
 		return s;
 	}
 	
+
+	private ArrayList<Function> getMergedFuncFprintList(Core core) {
+
+		@SuppressWarnings("unchecked")
+		ArrayList<Function> mergeList = (ArrayList<Function>) core.funcList.clone();
+		for (Function f : fprintList){
+			if (!mergeList.contains(f)){
+				mergeList.add(f);
+			}
+		}
+		
+		return mergeList;
+	}
 
 	/**
 	 * 
@@ -157,8 +178,8 @@ public class GenCore {
 		String s = "";
 		for (Function f : core.funcList){
 			/* divide by 4: profile measures in bytes, c code in words */
-			s += String.format("%-50s%s","#define " + f 
-					+ "_STACKSIZE",String.format("(%4d%s )\n",f.stackSize/4, 
+			s += String.format("%-50s%s","#define " + f.getStackSizeString(),
+					String.format("(%4d%s )\n",f.stackSize/4, 
 					" + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR")); 
 		}
 		
@@ -207,7 +228,7 @@ public class GenCore {
 		Collections.sort(stackList, Function.stackCompareDecreasing);
 		
 		for (Function f : stackList){
-			s += "OS_STK " + f + "_STACK[" + f + "_STACKSIZE]";
+			s += "OS_STK " + f + "_STACK[" + f.getStackSizeString() + "]";
 			
 			if( f.critical){
 				s += " __attribute__ ((section (\"." + f.stackBin.name + "\")))";
@@ -218,6 +239,29 @@ public class GenCore {
 		
 		return s;
 	}
+	
+	
+
+
+	private String getRuntimeMonitorTableString(Core core) {
+		String s = "";
+		s += "/*****************************************************************************\n" + 
+				" * Execution time monitoring table\n" + 
+				" *****************************************************************************/\n" + 
+				"rtMonitor_task rtMonTaskTable[NUM_TASKS] = {\n";
+		
+		
+		for(Function f : getMergedFuncFprintList(core)){
+			s += "	{ " + f.getPriorityString() + ", 0, " + f.getPeriodString() + ", false, " +
+						(f.critical ? "true" : "false") + ", \"" + f.name + "\" },\n";  
+		}
+		
+		s = s.substring(0, s.length() - 2); /* remove last comma and new line */
+		
+		s += "\n};\n";
+		
+		return s;	
+	} 
 	
 	/**
 	 * 
@@ -324,11 +368,10 @@ public class GenCore {
 						" *****************************************************************************/\n";
 				
 				if(f.critical){
-					String upperCaseName = f.toString().toUpperCase();
 					s += "void " + f + "_TASK(void* pdata) {\n"+
 							"	void *gp = stab->gp_address;\n"+
 							"	void (*"+ f + "Func)(int,\n"+
-							"			" + f + "Struct*) = functionTable[" + upperCaseName + "_TABLE_INDEX].address;\n";
+							"			" + f + "Struct*) = functionTable[" + f.getTableIndexString() + "].address;\n";
 					int partner = 0;			
 					if(core.index == 0){
 						partner = 1;
@@ -338,7 +381,9 @@ public class GenCore {
 					
 					s += "	while (1) {\n"+
 							"		INT8U perr;\n"+
-							"		OSSemPend(critical_SEM[" + upperCaseName + "_TABLE_INDEX], 0, &perr);\n"+
+							"		OSSemPend(critical_SEM[" + f.getTableIndexString() + "], 0, &perr);\n"+
+							"\n"+
+							"		rtMonitorStartTask(" + f.getRuntimeIndexString() + ");\n"+
 							"\n"+
 							"		waitForPartnerCore(partnerCore);\n"+
 							"		//Context switch is necessary to clear the callee saved registers\n"+
@@ -355,7 +400,7 @@ public class GenCore {
 							"\n"+
 							"		//Retrieve the arguments before changing the GP\n"+
 							"\n"+
-							"		void *args = functionTable[" + upperCaseName + "_TABLE_INDEX].args;\n"+
+							"		void *args = functionTable[" + f.getTableIndexString() + "].args;\n"+
 							"		//Set the global pointer in case of compilation issues related\n"+
 							"		//to global variables\n"+
 							"		set_gp(gp);\n"+
@@ -368,16 +413,44 @@ public class GenCore {
 							"		//set the flag for the OS context switch\n"+
 							"		FprintActive = 0;\n"+
 							"\n"+
+							"\n"+
+							"		rtMonitorEndTask(" + f.getRuntimeIndexString() + ");\n"+
 							"	}\n" +
 							"}\n";
 					
 					
 				} else {			
-						s += "void " + f + "_TASK(void* pdata) {\n" +
-							"\twhile (1) {\n";
+						s += "void " + f + "_TASK(void* pdata) {\n";
+						
+						if(f.preambleFileName != null){
+							s += f.getPreambleString();
+						}
+						s += "\n";
+						
+						s +=	"\twhile (1) {\n";
+						
+
+						s+= "		rtMonitorStartTask(" + f.getRuntimeIndexString() + ");\n";
+						
+						if(f.printRuntimes){
+							s += "		INT32U time = OSTimeGet();\n"; 
+									
+						}
+						
 						s += String.format("\t\t%s_step(%s_M, &%s_U,"
 								+ "\n\t\t\t&%s_Y);\n", f,f,f,f);
-						s+= "\t\tOSTimeDlyHMSM(0, 0, 0, " + f.period + ");\n"; 
+						
+						if(f.printRuntimes){
+							s += 
+								"		time = OSTimeGet() - time;\n" + 
+								"		printf(\"runtime task %s: %u\\n\",rtMonitorGetTaskName(" + f.getRuntimeIndexString() +  "),time);\n";
+						}
+						
+
+						s+= "		rtMonitorEndTask(" + f.getRuntimeIndexString() + ");\n";
+						
+						
+						s+= "\t\tOSTimeDlyHMSM(0, 0, 0, " + f.getPeriodString() + ");\n"; 
 						s += "\t}\n}\n";
 					
 				}
@@ -406,12 +479,11 @@ public class GenCore {
 		int tlbStackLine = 1;
 		for(Function f : core.funcList){
 			if(f.critical){
-			String upperCaseName = f.toString().toUpperCase();
 			s += "	// " + f + "\n" +
-			"	entry = &memoryManagerTable[" + upperCaseName + "_TABLE_INDEX];\n"+
+			"	entry = &memoryManagerTable[" + f.getTableIndexString() + "];\n"+
 			"	entry->disablePending = false;\n"+
 			"	entry->disablePendSource = 0;\n"+
-			"	entry->taskPriority = " + f + "_PRIORITY;\n"+
+			"	entry->taskPriority = " + f.getPriorityString() +";\n"+
 			"	entry->tlbDataLine = " + tlbDataLine + ";\n"+
 			"	entry->tlbStackLine = " + tlbStackLine + ";\n"+
 			"	entry->stackPhysicalAddress = (void*)0x" +
@@ -561,7 +633,7 @@ public class GenCore {
 			" *****************************************************************************/\n"+
 			"\n"+
 			"int main() {\n"+
-			"	printf(\"starting core %d\", CORE_ID);\n"+
+			"	printf(\"starting core %d\\n\", CORE_ID);\n"+
 			"\n"+
 			"	//Initialize interrupts\n"+
 			"	//---------------------\n"+
@@ -588,13 +660,14 @@ public class GenCore {
 		for(Function f : core.funcList){
 			if(f.critical){
 
-				String upperCaseName = f.toString().toUpperCase();
-				s += "	functionTable[" + upperCaseName + 
-						"_TABLE_INDEX].stackAddress[CORE_ID] = &" +
-						f + "_STACK;\n" + 
-						"	functionTable[" + upperCaseName + 
-						"_TABLE_INDEX].address = " + f + "_CT;\n";
+				s += "	functionTable[" + f.getTableIndexString() + 
+						"].stackAddress[CORE_ID] = &" +
+						f + "_STACK;\n";
+				if(f.cores.get(0).equals(core.name)){
+					s += "	functionTable[" + f.getTableIndexString() + 
+						"].address = " + f + "_CT;\n";
 						;
+				}
 			}
 		}
 		s += "\n";
@@ -616,28 +689,35 @@ public class GenCore {
 				"	nios2_mpu_enable();\n"+
 				"\n"+
 				"	//Start up the software memory manager\n"+
-				"	mem_manager_init();\n";
+				"	mem_manager_init();\n\n";
+		
+		s += 	"	// Initialize executime time monitor\n" + 
+				"	// ---------------------------------\n" + 
+				"	rtMonitorInit(&rtMonTaskTable[0],NUM_TASKS);\n\n";
 		
 		s += 	"	// Declare the OS tasks\n"+
 				"	// -------------------\n\n"+
 				"	INT8U perr;";
 		
 		for(Function f : core.funcList){
-			if(!f.critical){
-				s += "	OSTaskCreateExt(" + f + "_TASK, NULL,\n"+
-						"			&" + f + "_STACK[" + f + "_STACKSIZE - 1],\n"+
-						"			" + f + "_PRIORITY, " + f + "_PRIORITY,\n"+
-						"			" + f + "_STACK, " + f + "_STACKSIZE, NULL,\n"+
-						"			OS_TASK_OPT_STK_CLR);\n";
-			} else { /* critical tasks on core 0 */
+			if(f.critical){
+				/* task stacks are given virtual pointers with the MSB set to 0 (432000 -> 32000) */
 				s += "	OSTaskCreateExt(" + f + "_TASK, NULL,\n"+
 						"			(OS_STK *)0x"+ Integer.toHexString(getStackEnd(f,1) & 0x3FFFFF) +",\n"+
-						"			" + f + "_PRIORITY, " + f + "_PRIORITY,\n"+
-						"			(OS_STK *)0x" + Integer.toHexString(getStackStart(f,1) & 0x3FFFFF) +", " + f + "_STACKSIZE, NULL,\n"+
+						"			" + f.getPriorityString() + ", " + f.getPriorityString() + ",\n"+
+						"			(OS_STK *)0x" + Integer.toHexString(getStackStart(f,1) & 0x3FFFFF) +", " 
+						+ f.getStackSizeString() + ", NULL,\n"+
+						"			OS_TASK_OPT_STK_CLR);\n";
+				
+			} else { 
+				s += "	OSTaskCreateExt(" + f + "_TASK, NULL,\n"+
+						"			&" + f + "_STACK[" + f.getStackSizeString() + " - 1],\n"+
+						"			" + f.getPriorityString() + ", " + f.getPriorityString() + ",\n"+
+						"			" + f + "_STACK, " + f.getStackSizeString() + ", NULL,\n"+
 						"			OS_TASK_OPT_STK_CLR);\n";
 			}
 			
-			s += "	OSTaskNameSet(" + f + "_PRIORITY, (INT8U *)\"" + f + "\", &perr);\n";
+			s += "	OSTaskNameSet(" + f.getPriorityString() + ", (INT8U *)\"" + f + "\", &perr);\n";
 		}
 		
 		s += "\n";

@@ -29,16 +29,16 @@
 -usedefault
 # -name cpu0 -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucos0_bsp
 # -name cpu1 -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucos1_bsp
-# -name cpum -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucosM_bsp
+# -name cpuM -bsp-dir /home/jonah/fingerprinting/code_gen/output/ucosM_bsp
 </PLATFORM>
 
 <MAPPING>
 AirbagModel cpu0 cpu1
 CollisionAvoidance cpu0
-CruiseControlSystem cpum
+CruiseControlSystem cpuM
 Derivative cpu0 cpu1
 FuelSensor cpu1
-TractionControl cpum
+TractionControl cpuM
 TransmissionControl cpu0
 </MAPPING>
 

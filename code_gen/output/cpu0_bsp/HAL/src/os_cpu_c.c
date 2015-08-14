@@ -25,6 +25,8 @@ extern void OSStartTsk;                 /* The entry point for all tasks. */
 static  INT16U  OSTmrCtr;
 #endif
 
+#include "runtimeMonitor.h"
+
 /***********************************************************************************************
  *                                        INITIALIZE A TASK'S STACK
  *
@@ -192,6 +194,9 @@ void cticks_hook(void);
 
 void OSTimeTickHook (void)
 {
+
+  rtMonitorUpdateTime();
+
 #if OS_TMR_EN > 0
     OSTmrCtr++;
     if (OSTmrCtr >= (OS_TICKS_PER_SEC / OS_TMR_CFG_TICKS_PER_SEC)) {

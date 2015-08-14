@@ -16,6 +16,7 @@ public class Core {
 	int mainMemStartAddressOffset;
 	int mainMemSize;
 	int index;
+	boolean requiresCriticalHeader = false;
 	
 	/**
 	 * Constructor

@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * GenScripts generates all the scripts (except for critical_library.sh which was much easier to put in GenCriticalLibrary).
+ * GenScripts generates all the scripts.
  * Generates the following scripts: create_app.sh, compile_app.sh, compile_bsp.sh, RUN.sh.
- * Also doesn't generate update_bsps.sh
+ * Doesn't generate update_bsps.sh
  * @author jonah
  *
  */
@@ -128,9 +128,7 @@ public class GenScripts {
 				"	${NIOS2COMMANDSHELL} nios2-app-generate-makefile --app-dir ${APPDIR} \\\n"+
 				"	--bsp-dir ${BSPDIR} --elf-name cpu${i}.elf --src-files \\\n"+
 				" 	$SRCLIST --set APP_CFLAGS_USER_FLAGS -fomit-frame-pointer --set OBJDUMP_INCLUDE_SOURCE 0 \\\n"+
-				" 	--use-lib-dir ${OUTPUT_DIR}/critical_library\\\n"+
-				"	--set APP_CFLAGS_DEBUG_LEVEL \"-g -gdwarf-2\" \\\n"+
-				"	--set APP_INCLUDE_DIRS ${OUTPUT_DIR}/critical_library\n"+
+				"	--set APP_CFLAGS_DEBUG_LEVEL \"-g -gdwarf-2\" \\\n" +
 
 				"\n"+
 				"	if [ \"$?\" !=  \"0\" ]\n"+

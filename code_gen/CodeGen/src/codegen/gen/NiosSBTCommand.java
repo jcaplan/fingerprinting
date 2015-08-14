@@ -1,6 +1,5 @@
 package codegen.gen;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
@@ -44,7 +43,6 @@ public class NiosSBTCommand {
 	 */
 	public void updateMakefile(String appDir, String funcName) {
 		
-		File[] src = new File(appDir).listFiles();
 		String[] cmd = new String[] { sbtLocation, "nios2-app-update-makefile",
 				"--app-dir", appDir, "--add-src-dir",
 				appDir ,
@@ -195,10 +193,10 @@ public class NiosSBTCommand {
 	 * @param libDir
 	 * @param bspDir
 	 */
-	public void generateCriticalLibrary(String libDir, String bspDir) {
+	public void generateCriticalLibrary(String libDir) {
 		String[] cmd = new String[] { sbtLocation,
-				"nios2-lib-generate-makefile", "--lib-dir", libDir, "--lib-name", "critical_library", "--bsp-dir",
-				bspDir, "--src-dir",libDir};
+				"nios2-lib-generate-makefile", "--lib-dir", libDir, "--lib-name", "critical_library",
+				"--src-dir",libDir};
 		runCommand(cmd);
 		
 	}
