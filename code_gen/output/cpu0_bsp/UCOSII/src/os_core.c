@@ -26,6 +26,8 @@
 #include <ucos_ii.h>
 #endif
 
+#include "runtimeMonitor.h"
+
 /*
 *********************************************************************************************************
 *                                       PRIORITY RESOLUTION TABLE
@@ -691,13 +693,13 @@ void  OSIntExit (void)
                             FprintPausedTaskIndex++;
                             INT32U x = *fprint_pause_reg;
                             *fprint_pause_reg = x | (1 << FprintTaskIDCurrent);
-
+ 
                     }
 
                     managerDisableCurrentTask(OSPrioCur);
                     managerEnableNextTask(OSPrioHighRdy);
 
-
+                    rtMonitorPauseTask(OSPrioCur);
 
 
 #if OS_TASK_PROFILE_EN > 0u
@@ -706,9 +708,10 @@ void  OSIntExit (void)
                     OSCtxSwCtr++;                          /* Keep track of the number of ctx switches */
                     OSIntCtxSw();                          /* Perform interrupt level ctx switch       */
 
-
+                    
                     managerCheckPendingDisabled(OSPrioCur);
 
+                    rtMonitorUnpauseTask(OSPrioCur);
                     if(FprintPausedTaskIndex > 0 && OSPrioCur == FprintPausedTaskPriority[FprintPausedTaskIndex - 1]){
                         FprintActive = 1;
                         FprintPausedTaskIndex--;

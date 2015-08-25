@@ -19,7 +19,8 @@
 -name TractionControl      -subdir TractionControl_ert_rtw     -T  30 -c  -Priority 4
 -name TransmissionControl  -subdir TransmissionControl_ert_rtw -T  15     -Priority 7  
 -name RadarTracker         -subdir RadarTracker_ert_rtw        -T  300 -c -Priority 8
--name for_loop             -subdir for_loop_50000_50000		   -T  13     -Priority 10 -printRuntime -addPreamble preamble.txt
+-rootdir /home/jonah/fingerprinting/automotive_control/CompiledC/for_loops
+-name for_loop_50000_50000 -subdir for_loop_50000_50000		   -T  13     -Priority 10 -printRuntime -addPreamble preamble.txt
 </FUNCTIONLIST>
 
 #preamble -> in subdir folder, contains code to go before while loop in task, used for threadsafe newlib config, should not have extension .c or .h
@@ -42,7 +43,7 @@ FuelSensor cpu0
 TractionControl cpuM
 TransmissionControl cpu0
 RadarTracker cpu0 cpu1
-for_loop cpu0
+for_loop_50000_50000 cpu0
 </MAPPING>
 
 
@@ -55,5 +56,5 @@ CollisionAvoidance 28
 FuelSensor 20
 TransmissionControl 16
 RadarTracker 1316
-for_loop 80
+for_loop_50000_50000 80
 </STACK_PROFILE>

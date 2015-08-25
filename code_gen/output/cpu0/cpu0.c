@@ -21,7 +21,7 @@
 #include "FuelSensor.h"
 #include "TransmissionControl.h"
 #include "RadarTracker.h"
-#include "for_loop.h"
+#include "for_loop_50000_50000.h"
 
 
 
@@ -60,11 +60,11 @@ static ExtY_TransmissionControl_T TransmissionControl_Y;/* External outputs */
 
 /* RadarTracker*/
 
-/* for_loop*/
-static RT_MODEL_for_loop_T for_loop_M_;
-static RT_MODEL_for_loop_T *const for_loop_M = &for_loop_M_;/* Real-time model */
-static ExtU_for_loop_T for_loop_U;     /* External inputs */
-static ExtY_for_loop_T for_loop_Y;     /* External outputs */
+/* for_loop_50000_50000*/
+static RT_MODEL_for_loop_50000_50000_T for_loop_50000_50000_M_;
+static RT_MODEL_for_loop_50000_50000_T *const for_loop_50000_50000_M = &for_loop_50000_50000_M_;/* Real-time model */
+static ExtU_for_loop_50000_50000_T for_loop_50000_50000_U;     /* External inputs */
+static ExtY_for_loop_50000_50000_T for_loop_50000_50000_Y;     /* External outputs */
 
 
 
@@ -75,7 +75,7 @@ static ExtY_for_loop_T for_loop_Y;     /* External outputs */
  * Stack Declarations
  *****************************************************************************/
 OS_STK RadarTracker_STACK[RADARTRACKER_STACKSIZE] __attribute__ ((section (".stack_bin_0")));
-OS_STK for_loop_STACK[FOR_LOOP_STACKSIZE];
+OS_STK for_loop_50000_50000_STACK[FOR_LOOP_50000_50000_STACKSIZE];
 OS_STK AirbagModel_STACK[AIRBAGMODEL_STACKSIZE] __attribute__ ((section (".stack_bin_1")));
 OS_STK CruiseControlSystem_STACK[CRUISECONTROLSYSTEM_STACKSIZE] __attribute__ ((section (".stack_bin_1")));
 OS_STK FuelSensor_STACK[FUELSENSOR_STACKSIZE];
@@ -94,7 +94,7 @@ rtMonitor_task rtMonTaskTable[NUM_TASKS] = {
 	{ FUELSENSOR_PRIORITY, 0, FUELSENSOR_PERIOD, false, false, "FuelSensor" },
 	{ TRANSMISSIONCONTROL_PRIORITY, 0, TRANSMISSIONCONTROL_PERIOD, false, false, "TransmissionControl" },
 	{ RADARTRACKER_PRIORITY, 0, RADARTRACKER_PERIOD, false, true, "RadarTracker" },
-	{ FOR_LOOP_PRIORITY, 0, FOR_LOOP_PERIOD, false, false, "for_loop" }
+	{ FOR_LOOP_50000_50000_PRIORITY, 0, FOR_LOOP_50000_50000_PERIOD, false, false, "for_loop_50000_50000" }
 };
 
 
@@ -332,19 +332,19 @@ void RadarTracker_TASK(void* pdata) {
 }
 
 /*****************************************************************************
- * for_loopTask wrapper
+ * for_loop_50000_50000Task wrapper
  *****************************************************************************/
-void for_loop_TASK(void* pdata) {
+void for_loop_50000_50000_TASK(void* pdata) {
     srand(RANDOM_SEED);
 	while (1) {
-		rtMonitorStartTask(FOR_LOOP_RT_PRIO);
+		rtMonitorStartTask(FOR_LOOP_50000_50000_RT_PRIO);
 		INT32U time = OSTimeGet();
-		for_loop_step(for_loop_M, &for_loop_U,
-			&for_loop_Y);
+		for_loop_50000_50000_step(for_loop_50000_50000_M, &for_loop_50000_50000_U,
+			&for_loop_50000_50000_Y);
 		time = OSTimeGet() - time;
-		printf("runtime task %s: %u\n",rtMonitorGetTaskName(FOR_LOOP_RT_PRIO),time);
-		rtMonitorEndTask(FOR_LOOP_RT_PRIO);
-		OSTimeDlyHMSM(0, 0, 0, FOR_LOOP_PERIOD);
+		printf("runtime task %s: %u\n",rtMonitorGetTaskName(FOR_LOOP_50000_50000_RT_PRIO),time);
+		rtMonitorEndTask(FOR_LOOP_50000_50000_RT_PRIO);
+		OSTimeDlyHMSM(0, 0, 0, FOR_LOOP_50000_50000_PERIOD);
 	}
 }
 
@@ -537,7 +537,7 @@ int main() {
 
 
 
-	for_loop_initialize(for_loop_M);
+	for_loop_50000_50000_initialize(for_loop_50000_50000_M);
 
 
 	critical_SEM[0] = OSSemCreate(0);
@@ -593,12 +593,12 @@ int main() {
 			(OS_STK *)0x63000, RADARTRACKER_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
 	OSTaskNameSet(RADARTRACKER_PRIORITY, (INT8U *)"RadarTracker", &perr);
-	OSTaskCreateExt(for_loop_TASK, NULL,
-			&for_loop_STACK[FOR_LOOP_STACKSIZE - 1],
-			FOR_LOOP_PRIORITY, FOR_LOOP_PRIORITY,
-			for_loop_STACK, FOR_LOOP_STACKSIZE, NULL,
+	OSTaskCreateExt(for_loop_50000_50000_TASK, NULL,
+			&for_loop_50000_50000_STACK[FOR_LOOP_50000_50000_STACKSIZE - 1],
+			FOR_LOOP_50000_50000_PRIORITY, FOR_LOOP_50000_50000_PRIORITY,
+			for_loop_50000_50000_STACK, FOR_LOOP_50000_50000_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
-	OSTaskNameSet(FOR_LOOP_PRIORITY, (INT8U *)"for_loop", &perr);
+	OSTaskNameSet(FOR_LOOP_50000_50000_PRIORITY, (INT8U *)"for_loop_50000_50000", &perr);
 
 	resetMonitorCoreReg(CORE_ID);
 

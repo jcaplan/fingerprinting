@@ -166,7 +166,7 @@ public class Configuration {
 				String funcName = tokens[0];
 				Function func;
 				if ((func = getFunction(funcName)) == null) {
-					throwConfigError("Function name not found");
+					throwConfigError("##MAPPING ERROR: Function name " + funcName + " not found");
 				}
 
 				if (func.critical) {

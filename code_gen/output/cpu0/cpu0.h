@@ -23,7 +23,7 @@
 #define FUELSENSOR_STACKSIZE                      (   5 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 #define TRANSMISSIONCONTROL_STACKSIZE             (   4 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 #define RADARTRACKER_STACKSIZE                    ( 329 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define FOR_LOOP_STACKSIZE                        (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define FOR_LOOP_50000_50000_STACKSIZE            (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 /*****************************************************************************
  * Task Priorities
  *****************************************************************************/
@@ -32,7 +32,7 @@
 #define FUELSENSOR_PRIORITY                       6
 #define TRANSMISSIONCONTROL_PRIORITY              7
 #define RADARTRACKER_PRIORITY                     8
-#define FOR_LOOP_PRIORITY                         10
+#define FOR_LOOP_50000_50000_PRIORITY             10
 /*****************************************************************************
  * Task Table indices
  *****************************************************************************/
@@ -48,7 +48,7 @@
 #define FUELSENSOR_PERIOD                         75
 #define TRANSMISSIONCONTROL_PERIOD                15
 #define RADARTRACKER_PERIOD                       300
-#define FOR_LOOP_PERIOD                           13
+#define FOR_LOOP_50000_50000_PERIOD               13
 /*****************************************************************************
  * Runtime monitor table index
  *****************************************************************************/
@@ -57,4 +57,4 @@
 #define FUELSENSOR_RT_PRIO                        2
 #define TRANSMISSIONCONTROL_RT_PRIO               3
 #define RADARTRACKER_RT_PRIO                      4
-#define FOR_LOOP_RT_PRIO                          5
+#define FOR_LOOP_50000_50000_RT_PRIO              5

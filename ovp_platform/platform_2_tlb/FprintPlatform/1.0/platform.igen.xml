@@ -325,12 +325,12 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
         <netportconnection connection="cpu0_irq0"
             name="irq"/>
     </peripheralinstance>
-    <peripheralinstance diagnosticlevel="0"
+    <peripheralinstance diagnosticlevel="3"
         name="cpu0_timestamp">
-        <vlnvreference name="IntervalTimer32Core"
+        <vlnvreference name="IntervalTimer64Core"
             vendor="mcgill.ca"/>
         <busslaveportconnection connection="cpu0_iobus"
-            hiaddress="0x17"
+            hiaddress="0x27"
             loaddress="0x0"
             name="sp1"/>
         <attribute content="50000000"
@@ -593,10 +593,10 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
     </peripheralinstance>
     <peripheralinstance diagnosticlevel="0"
         name="cpu1_timestamp">
-        <vlnvreference name="IntervalTimer32Core"
+        <vlnvreference name="IntervalTimer64Core"
             vendor="mcgill.ca"/>
         <busslaveportconnection connection="cpu1_iobus"
-            hiaddress="0x17"
+            hiaddress="0x27"
             loaddress="0x0"
             name="sp1"/>
         <attribute content="50000000"
@@ -823,10 +823,10 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
     </peripheralinstance>
     <peripheralinstance diagnosticlevel="0"
         name="cpum_timestamp">
-        <vlnvreference name="IntervalTimer32Core"
+        <vlnvreference name="IntervalTimer64Core"
             vendor="mcgill.ca"/>
         <busslaveportconnection connection="cpum_iobus"
-            hiaddress="0x17"
+            hiaddress="0x27"
             loaddress="0x0"
             name="sp1"/>
         <attribute content="50000000"

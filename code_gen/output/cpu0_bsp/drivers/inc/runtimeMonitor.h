@@ -10,7 +10,7 @@ typedef struct rtMonitor_task rtMonitor_task;
 
 struct rtMonitor_task {
 	INT8U priority;
-	INT32U counter;
+	alt_u64 counter; 
 	INT32U deadline;
 	bool running;
 	bool critical;
@@ -18,10 +18,16 @@ struct rtMonitor_task {
 };
 
 
-void rtMonitorUpdateTime(void);
+void rtMonitorUpdateTime(void); 
 void rtMonitorInit(rtMonitor_task *rtMonTaskTableP, INT32U numberTasks);
 void rtMonitorStartTask(int taskID);
 void rtMonitorEndTask(int taskID);
+
+void rtMonitorPauseTask(int priority);
+void rtMonitorUnpauseTask(int priority);
+rtMonitor_task *rtMonitorGetTask(int priority);
+
+
 const char *rtMonitorGetTaskName(int taskID);
 void rtMonitorDropLowTasks(void);
 

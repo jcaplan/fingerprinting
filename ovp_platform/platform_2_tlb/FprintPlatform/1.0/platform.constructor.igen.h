@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20150205.0
-//                          Wed Jul 29 15:23:47 2015
+//                          Tue Aug 25 14:22:21 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -535,7 +535,7 @@ void platformConstructor(void) {
         0                   ,    // path (0 if from the product directory)
         "mcgill.ca"         ,    // vendor
         0                   ,    // library
-        "IntervalTimer32Core",    // name
+        "IntervalTimer64Core",    // name
         0                   ,    // version
         "pse"                    // model
     );
@@ -552,7 +552,9 @@ void platformConstructor(void) {
         0        // unused
     );
 
-    icmConnectPSEBus( handles.cpu0_timestamp_p, handles.cpu0_iobus_b, "sp1", 0, 0x0, 0x17);
+    icmConnectPSEBus( handles.cpu0_timestamp_p, handles.cpu0_iobus_b, "sp1", 0, 0x0, 0x27);
+    icmSetPSEdiagnosticLevel(handles.cpu0_timestamp_p, 3);
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //                               PSE cpu0_fprint
@@ -686,7 +688,7 @@ void platformConstructor(void) {
         0                   ,    // path (0 if from the product directory)
         "mcgill.ca"         ,    // vendor
         0                   ,    // library
-        "IntervalTimer32Core",    // name
+        "IntervalTimer64Core",    // name
         0                   ,    // version
         "pse"                    // model
     );
@@ -703,7 +705,7 @@ void platformConstructor(void) {
         0        // unused
     );
 
-    icmConnectPSEBus( handles.cpu1_timestamp_p, handles.cpu1_iobus_b, "sp1", 0, 0x0, 0x17);
+    icmConnectPSEBus( handles.cpu1_timestamp_p, handles.cpu1_iobus_b, "sp1", 0, 0x0, 0x27);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                               PSE cpu1_fprint
@@ -803,7 +805,7 @@ void platformConstructor(void) {
         0                   ,    // path (0 if from the product directory)
         "mcgill.ca"         ,    // vendor
         0                   ,    // library
-        "IntervalTimer32Core",    // name
+        "IntervalTimer64Core",    // name
         0                   ,    // version
         "pse"                    // model
     );
@@ -820,7 +822,7 @@ void platformConstructor(void) {
         0        // unused
     );
 
-    icmConnectPSEBus( handles.cpum_timestamp_p, handles.cpum_iobus_b, "sp1", 0, 0x0, 0x17);
+    icmConnectPSEBus( handles.cpum_timestamp_p, handles.cpum_iobus_b, "sp1", 0, 0x0, 0x27);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                PSE cpu0_dma

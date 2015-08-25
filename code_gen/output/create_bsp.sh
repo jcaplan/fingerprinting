@@ -45,7 +45,8 @@ ${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpu0_bs
 --cmd enable_sw_package fingerprint \
 --cmd enable_sw_package reset_monitor \
 --cmd enable_sw_package runtime_monitor \
---cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer
+--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer \
+--cmd set_setting hal.timestamp_timer processor0_0_timestamp
 
 # cpu1
 ${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpu1_bsp/settings.bsp \
@@ -63,7 +64,8 @@ ${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpu1_bs
 --cmd enable_sw_package fingerprint \
 --cmd enable_sw_package reset_monitor \
 --cmd enable_sw_package runtime_monitor \
---cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer
+--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer \
+--cmd set_setting hal.timestamp_timer processor1_0_timestamp
 
 # cpuM
 ${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpuM_bsp/settings.bsp \
@@ -78,8 +80,8 @@ ${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpuM_bs
 --cmd enable_sw_package reset_monitor \
 --cmd enable_sw_package runtime_monitor \
 --cmd enable_sw_package dma \
---cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer
-
+--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer \
+--cmd set_setting hal.timestamp_timer processorM_0_timestamp
 
 for i in {0..1} M
 do

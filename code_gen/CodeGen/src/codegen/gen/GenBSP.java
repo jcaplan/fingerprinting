@@ -153,49 +153,52 @@ public class GenBSP {
 				"# # <span>                  String with the span of the memory region in bytes.\n"+
 				"\n"+
 				"# cpu0\n"+
-				"${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpu0_bsp/settings.bsp \\\n"+
-				"--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x64020 0x30fe0 \\\n"+
-				"--cmd add_memory_region stack_bin_0 memory_0_onchip_memoryMain 0x95000 0x1000 \\\n"+
-				"--cmd add_section_mapping .stack_bin_0 stack_bin_0 \\\n"+
-				"--cmd enable_sw_package mem_manager \\\n"+
-				"--cmd enable_sw_package mpu_utils \\\n"+
-				"--cmd enable_sw_package fingerprint \\\n"+
-				"--cmd enable_sw_package reset_monitor \\\n"+
-				"--cmd enable_sw_package runtime_monitor \\\n"+
-				"--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer\n"+
-				"\n"+
-				"# cpu1\n"+
-				"${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpu1_bsp/settings.bsp \\\n"+
-				"--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x32020 0x30fe0 \\\n"+
-				"--cmd add_memory_region stack_bin_0 memory_0_onchip_memoryMain 0x63000 0x1000 \\\n"+
-				"--cmd add_section_mapping .stack_bin_0 stack_bin_0 \\\n"+
-				"--cmd update_section_mapping .bss memory_0_onchip_memoryMain \\\n"+
-				"--cmd update_section_mapping .text memory_0_onchip_memoryMain \\\n"+
-				"--cmd update_section_mapping .stack memory_0_onchip_memoryMain \\\n"+
-				"--cmd update_section_mapping .heap memory_0_onchip_memoryMain \\\n"+
-				"--cmd update_section_mapping .rodata memory_0_onchip_memoryMain \\\n"+
-				"--cmd update_section_mapping .rwdata memory_0_onchip_memoryMain \\\n"+
-				"--cmd enable_sw_package mem_manager \\\n"+
-				"--cmd enable_sw_package mpu_utils \\\n"+
-				"--cmd enable_sw_package fingerprint \\\n"+
-				"--cmd enable_sw_package reset_monitor \\\n"+
-				"--cmd enable_sw_package runtime_monitor \\\n"+
-				"--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer\n"+
-				"\n"+
-				"# cpuM\n"+
-				"${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpuM_bsp/settings.bsp \\\n"+
-				"--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x20 0x30fe0 \\\n"+
-				"--cmd add_memory_region global_data memory_0_onchip_memoryMain 0x31000 0x1000 \\\n"+
-				"--cmd add_section_mapping .global_data global_data \\\n"+
-				"--cmd add_section_mapping .critical processorM_0_scratchpad \\\n"+
-				"--cmd add_section_mapping .shared shared_memory \\\n"+
-				"--cmd enable_sw_package repos  \\\n"+
-				"--cmd enable_sw_package mpu_utils \\\n"+
-				"--cmd enable_sw_package fingerprint \\\n"+
-				"--cmd enable_sw_package reset_monitor \\\n"+
-				"--cmd enable_sw_package runtime_monitor \\\n"+
-				"--cmd enable_sw_package dma \\\n"+
-				"--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer\n"+
+				"${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpu0_bsp/settings.bsp \\\n" + 
+				"--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x64020 0x30fe0 \\\n" + 
+				"--cmd add_memory_region stack_bin_0 memory_0_onchip_memoryMain 0x95000 0x1000 \\\n" + 
+				"--cmd add_section_mapping .stack_bin_0 stack_bin_0 \\\n" + 
+				"--cmd enable_sw_package mem_manager \\\n" + 
+				"--cmd enable_sw_package mpu_utils \\\n" + 
+				"--cmd enable_sw_package fingerprint \\\n" + 
+				"--cmd enable_sw_package reset_monitor \\\n" + 
+				"--cmd enable_sw_package runtime_monitor \\\n" + 
+				"--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer \\\n" + 
+				"--cmd set_setting hal.timestamp_timer processor0_0_timestamp\n" + 
+				"\n" + 
+				"# cpu1\n" + 
+				"${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpu1_bsp/settings.bsp \\\n" + 
+				"--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x32020 0x30fe0 \\\n" + 
+				"--cmd add_memory_region stack_bin_0 memory_0_onchip_memoryMain 0x63000 0x1000 \\\n" + 
+				"--cmd add_section_mapping .stack_bin_0 stack_bin_0 \\\n" + 
+				"--cmd update_section_mapping .bss memory_0_onchip_memoryMain \\\n" + 
+				"--cmd update_section_mapping .text memory_0_onchip_memoryMain \\\n" + 
+				"--cmd update_section_mapping .stack memory_0_onchip_memoryMain \\\n" + 
+				"--cmd update_section_mapping .heap memory_0_onchip_memoryMain \\\n" + 
+				"--cmd update_section_mapping .rodata memory_0_onchip_memoryMain \\\n" + 
+				"--cmd update_section_mapping .rwdata memory_0_onchip_memoryMain \\\n" + 
+				"--cmd enable_sw_package mem_manager \\\n" + 
+				"--cmd enable_sw_package mpu_utils \\\n" + 
+				"--cmd enable_sw_package fingerprint \\\n" + 
+				"--cmd enable_sw_package reset_monitor \\\n" + 
+				"--cmd enable_sw_package runtime_monitor \\\n" + 
+				"--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer \\\n" + 
+				"--cmd set_setting hal.timestamp_timer processor1_0_timestamp\n" + 
+				"\n" + 
+				"# cpuM\n" + 
+				"${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpuM_bsp/settings.bsp \\\n" + 
+				"--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x20 0x30fe0 \\\n" + 
+				"--cmd add_memory_region global_data memory_0_onchip_memoryMain 0x31000 0x1000 \\\n" + 
+				"--cmd add_section_mapping .global_data global_data \\\n" + 
+				"--cmd add_section_mapping .critical processorM_0_scratchpad \\\n" + 
+				"--cmd add_section_mapping .shared shared_memory \\\n" + 
+				"--cmd enable_sw_package repos  \\\n" + 
+				"--cmd enable_sw_package mpu_utils \\\n" + 
+				"--cmd enable_sw_package fingerprint \\\n" + 
+				"--cmd enable_sw_package reset_monitor \\\n" + 
+				"--cmd enable_sw_package runtime_monitor \\\n" + 
+				"--cmd enable_sw_package dma \\\n" + 
+				"--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer \\\n" + 
+				"--cmd set_setting hal.timestamp_timer processorM_0_timestamp"+
 				"\n"+
 				"\n"+
 				"for i in {0..1} M\n"+

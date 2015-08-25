@@ -16,10 +16,12 @@
 # b alt_exception
 # continue
 
-proc cpu0
-b for_loop.c:47
+proc cpu0 
+b runtimeMonitor.c:14
+proc cpu0_timestamp
+b clocksRemaining
+b timerStart
 continue
-print range
 # proc cpu0
 # b handleCPU
 # continue
