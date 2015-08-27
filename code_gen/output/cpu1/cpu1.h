@@ -18,35 +18,25 @@
  *****************************************************************************/
 #define STACKSIZE_MINOFFSET                       316
 #define STACKSIZE_MARGINERROR                     150
-#define AIRBAGMODEL_STACKSIZE                     (   8 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define CRUISECONTROLSYSTEM_STACKSIZE             (   6 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define COLLISIONAVOIDANCE_STACKSIZE              (   7 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define RADARTRACKER_STACKSIZE                    ( 329 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define FOR_LOOP_100000_0_STACKSIZE               (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 /*****************************************************************************
  * Task Priorities
  *****************************************************************************/
-#define AIRBAGMODEL_PRIORITY                      1
-#define CRUISECONTROLSYSTEM_PRIORITY              2
-#define COLLISIONAVOIDANCE_PRIORITY               5
-#define RADARTRACKER_PRIORITY                     8
+#define FOR_LOOP_100000_0_PRIORITY                2
 /*****************************************************************************
  * Task Table indices
  *****************************************************************************/
-#define AIRBAGMODEL_TABLE_INDEX                   0
-#define CRUISECONTROLSYSTEM_TABLE_INDEX           1
-#define RADARTRACKER_TABLE_INDEX                  2
+#define FOR_LOOP_100000_0_TABLE_INDEX             0
 /*****************************************************************************
  * Task Periods
  *****************************************************************************/
-#define NUM_TASKS                                 4
-#define AIRBAGMODEL_PERIOD                        50
-#define CRUISECONTROLSYSTEM_PERIOD                20
-#define COLLISIONAVOIDANCE_PERIOD                 100
-#define RADARTRACKER_PERIOD                       300
+#define NUM_TASKS                                 1
+#define FOR_LOOP_100000_0_PERIOD                  30
 /*****************************************************************************
  * Runtime monitor table index
  *****************************************************************************/
-#define AIRBAGMODEL_RT_PRIO                       0
-#define CRUISECONTROLSYSTEM_RT_PRIO               1
-#define COLLISIONAVOIDANCE_RT_PRIO                2
-#define RADARTRACKER_RT_PRIO                      3
+#define FOR_LOOP_100000_0_RT_PRIO                 0
+/*****************************************************************************
+ * Execution time lower bounds
+ *****************************************************************************/
+#define FOR_LOOP_100000_0_WCET_LOWERBOUND         15

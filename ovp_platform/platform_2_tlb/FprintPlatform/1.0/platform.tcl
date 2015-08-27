@@ -228,7 +228,7 @@ ihwconnect       -instancename cpu0_timer_10ms -netport irq     -net cpu0_irq0
 ihwconnect       -instancename cpu0            -netport d_irq0 -net cpu0_irq0
 
 # 0x00400000 - 0x00400017 timestamp
-ihwaddperipheral -instancename cpu0_timestamp -vendor mcgill.ca -type IntervalTimer64Core -diagnosticlevel 3
+ihwaddperipheral -instancename cpu0_timestamp -vendor mcgill.ca -type IntervalTimer64Core -diagnosticlevel 0
 ihwconnect       -instancename cpu0_timestamp -bus cpu0_iobus -busslaveport sp1 -loaddress 0x00000000 -hiaddress 0x00000027
 isetattribute    -handle       cpu0_timestamp -name timerFrequency  -value 50000000
 isetattribute    -handle       cpu0_timestamp -name timeoutPeriod   -value 50000

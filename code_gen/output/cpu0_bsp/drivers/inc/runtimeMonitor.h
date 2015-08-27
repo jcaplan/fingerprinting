@@ -11,7 +11,7 @@ typedef struct rtMonitor_task rtMonitor_task;
 struct rtMonitor_task {
 	INT8U priority;
 	alt_u64 counter; 
-	INT32U deadline;
+	INT32U wcetLowerBound;
 	bool running;
 	bool critical;
 	const char *name;

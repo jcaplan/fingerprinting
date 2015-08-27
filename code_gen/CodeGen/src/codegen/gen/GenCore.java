@@ -152,6 +152,15 @@ public class GenCore {
 				s += String.format("%-50s%d\n","#define " + f.getRuntimeIndexString(), i); 
 			}
 			
+			s += "/*****************************************************************************\n" +
+					 " * Execution time lower bounds\n" + 
+					 " *****************************************************************************/\n";
+		
+			for (int i = 0; i < mergeList.size(); i++){
+				Function f = mergeList.get(i);
+				s += String.format("%-50s%d\n","#define " + f.getWcetLowerBoundString(), f.wcetLowerBound); 
+			}
+			
 		return s;
 	}
 	
@@ -252,7 +261,7 @@ public class GenCore {
 		
 		
 		for(Function f : getMergedFuncFprintList(core)){
-			s += "	{ " + f.getPriorityString() + ", 0, " + f.getPeriodString() + ", false, " +
+			s += "	{ " + f.getPriorityString() + ", 0, " + f.getWcetLowerBoundString() + ", false, " +
 						(f.critical ? "true" : "false") + ", \"" + f.name + "\" },\n";  
 		}
 		

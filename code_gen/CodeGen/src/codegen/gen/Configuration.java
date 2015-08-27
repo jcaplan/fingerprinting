@@ -289,22 +289,22 @@ public class Configuration {
 						break;
 					case "-rootdir":
 						if (i == tokens.length - 1) {
-							throwConfigError(": " + "-dir expects value");
+							throwConfigError(": " + "-rootdir expects value");
 						}
 						arg = tokens[i + 1];
 						if (arg.startsWith("-")) {
-							throwConfigError("-dir expects value");
+							throwConfigError("-rootdir expects value");
 						}
 						rootdir = arg;
 						i++;
 						break;
 					case "-subdir":
 						if (i == tokens.length - 1) {
-							throwConfigError(": " + "-dir expects value");
+							throwConfigError(": " + "-subdir expects value");
 						}
 						arg = tokens[i + 1];
 						if (arg.startsWith("-")) {
-							throwConfigError("-dir expects value");
+							throwConfigError("-subdir expects value");
 						}
 						f.codeDirectory = rootdir + "/" + arg;
 						i++;
@@ -340,22 +340,22 @@ public class Configuration {
 						break;
 					case "-Priority":
 						if (i == tokens.length - 1) {
-							throwConfigError("-T expects value");
+							throwConfigError("-Priority expects value");
 						}
 						arg = tokens[i + 1];
 						if (arg.startsWith("-")) {
-							throwConfigError("-T expects value");
+							throwConfigError("-Priority expects value");
 						}
 						f.priority = Integer.parseInt(arg);
 						i++;
 						break;
 					case "-S":
 						if (i == tokens.length - 1) {
-							throwConfigError("-T expects value");
+							throwConfigError("-S expects value");
 						}
 						arg = tokens[i + 1];
 						if (arg.startsWith("-")) {
-							throwConfigError("-T expects value");
+							throwConfigError("-S expects value");
 						}
 						f.stackSize = Integer.parseInt(arg);
 						i++;
@@ -374,14 +374,41 @@ public class Configuration {
 						f.preambleFileName = arg;
 						i++;
 						break;
+					case "-clo":
+						if (i == tokens.length - 1) {
+							throwConfigError("-clo expects value");
+						}
+						arg = tokens[i + 1];
+						if (arg.startsWith("-")) {
+							throwConfigError("-clo expects value");
+						}
+						f.wcetLowerBound = Integer.parseInt(arg);
+						i++;
+						break;
+					case "-chi":
+						if (i == tokens.length - 1) {
+							throwConfigError("-chi expects value");
+						}
+						arg = tokens[i + 1];
+						if (arg.startsWith("-")) {
+							throwConfigError("-chi expects value");
+						}
+						f.wcetUpperBound = Integer.parseInt(arg);
+						i++;
+						break;
 					default:
 						throwConfigError("Unrecognized argument in FUNCTIONLIST: "
 								+ token);
-
 					}
-
 				}
 				if (f.name != null) {
+					/* make sure upper and lower bounds are not 0) */
+					if(f.wcetLowerBound == 0){
+						f.wcetLowerBound = f.period;
+					}
+					if(f.wcetUpperBound == 0){
+						f.wcetUpperBound = f.wcetLowerBound;
+					}
 					funcList.add(f);
 				}
 			}

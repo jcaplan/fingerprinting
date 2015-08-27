@@ -16,7 +16,6 @@
 #include "reset_monitor.h"
 #include "runtimeMonitor.h"
 #include "critical.h"
-#include "CollisionAvoidance.h"
 
 
 
@@ -25,34 +24,7 @@
 /**********************************
  * Global variable declarations
  **********************************/
-/* AirbagModel*/
-
-/* CruiseControlSystem*/
-
-/* CollisionAvoidance*/
-static RT_MODEL_CollisionAvoidance_T CollisionAvoidance_M_;
-static RT_MODEL_CollisionAvoidance_T *const CollisionAvoidance_M =  &CollisionAvoidance_M_;              /* Real-time model */
-static P_CollisionAvoidance_T CollisionAvoidance_P = {  0.0F,                                /* Mask Parameter: DiscreteDerivative_ICPrevScaled
-                                        * Referenced by: '<S3>/UD'
-                                        */
-  0.0F,                                /* Mask Parameter: DiscreteDerivative1_ICPrevScale
-                                        * Referenced by: '<S4>/UD'
-                                        */
-  5.0F,                                /* Computed Parameter: TSamp_WtEt
-                                        * Referenced by: '<S3>/TSamp'
-                                        */
-  5.0F,                                /* Computed Parameter: TSamp_WtEt_m
-                                        * Referenced by: '<S4>/TSamp'
-                                        */
-  0.0F                                 /* Computed Parameter: Constant_Value
-                                        * Referenced by: '<S2>/Constant'
-                                        */
-};                                     /* Modifiable parameters */
-static DW_CollisionAvoidance_T CollisionAvoidance_DW;/* Observable states */
-static ExtU_CollisionAvoidance_T CollisionAvoidance_U;/* External inputs */
-static ExtY_CollisionAvoidance_T CollisionAvoidance_Y;/* External outputs */
-
-/* RadarTracker*/
+/* for_loop_100000_0*/
 
 
 
@@ -62,10 +34,7 @@ static ExtY_CollisionAvoidance_T CollisionAvoidance_Y;/* External outputs */
 /*****************************************************************************
  * Stack Declarations
  *****************************************************************************/
-OS_STK RadarTracker_STACK[RADARTRACKER_STACKSIZE] __attribute__ ((section (".stack_bin_0")));
-OS_STK AirbagModel_STACK[AIRBAGMODEL_STACKSIZE] __attribute__ ((section (".stack_bin_1")));
-OS_STK CollisionAvoidance_STACK[COLLISIONAVOIDANCE_STACKSIZE];
-OS_STK CruiseControlSystem_STACK[CRUISECONTROLSYSTEM_STACKSIZE] __attribute__ ((section (".stack_bin_1")));
+OS_STK for_loop_100000_0_STACK[FOR_LOOP_100000_0_STACKSIZE] __attribute__ ((section (".stack_bin_0")));
 
 
 
@@ -75,10 +44,7 @@ OS_STK CruiseControlSystem_STACK[CRUISECONTROLSYSTEM_STACKSIZE] __attribute__ ((
  * Execution time monitoring table
  *****************************************************************************/
 rtMonitor_task rtMonTaskTable[NUM_TASKS] = {
-	{ AIRBAGMODEL_PRIORITY, 0, AIRBAGMODEL_PERIOD, false, true, "AirbagModel" },
-	{ CRUISECONTROLSYSTEM_PRIORITY, 0, CRUISECONTROLSYSTEM_PERIOD, false, true, "CruiseControlSystem" },
-	{ COLLISIONAVOIDANCE_PRIORITY, 0, COLLISIONAVOIDANCE_PERIOD, false, false, "CollisionAvoidance" },
-	{ RADARTRACKER_PRIORITY, 0, RADARTRACKER_PERIOD, false, true, "RadarTracker" }
+	{ FOR_LOOP_100000_0_PRIORITY, 0, FOR_LOOP_100000_0_WCET_LOWERBOUND, false, true, "for_loop_100000_0" }
 };
 
 
@@ -88,7 +54,7 @@ rtMonitor_task rtMonTaskTable[NUM_TASKS] = {
 /*****************************************************************************
  * Control Flow declarations
  *****************************************************************************/
-OS_EVENT *critical_SEM[3];
+OS_EVENT *critical_SEM[1];
 
 
 
@@ -144,19 +110,19 @@ void waitForPartnerCore(int partnerCore) {
 
 
 /*****************************************************************************
- * AirbagModelTask wrapper
+ * for_loop_100000_0Task wrapper
  *****************************************************************************/
-void AirbagModel_TASK(void* pdata) {
+void for_loop_100000_0_TASK(void* pdata) {
 	void *gp = stab->gp_address;
-	void (*AirbagModelFunc)(int,
-			AirbagModelStruct*) = functionTable[AIRBAGMODEL_TABLE_INDEX].address;
+	void (*for_loop_100000_0Func)(int,
+			for_loop_100000_0Struct*) = functionTable[FOR_LOOP_100000_0_TABLE_INDEX].address;
 	int partnerCore = 0; /* static variable */
 
 	while (1) {
 		INT8U perr;
-		OSSemPend(critical_SEM[AIRBAGMODEL_TABLE_INDEX], 0, &perr);
+		OSSemPend(critical_SEM[FOR_LOOP_100000_0_TABLE_INDEX], 0, &perr);
 
-		rtMonitorStartTask(AIRBAGMODEL_RT_PRIO);
+		rtMonitorStartTask(FOR_LOOP_100000_0_RT_PRIO);
 
 		waitForPartnerCore(partnerCore);
 		//Context switch is necessary to clear the callee saved registers
@@ -173,12 +139,12 @@ void AirbagModel_TASK(void* pdata) {
 
 		//Retrieve the arguments before changing the GP
 
-		void *args = functionTable[AIRBAGMODEL_TABLE_INDEX].args;
+		void *args = functionTable[FOR_LOOP_100000_0_TABLE_INDEX].args;
 		//Set the global pointer in case of compilation issues related
 		//to global variables
 		set_gp(gp);
 
-		AirbagModelFunc(priority, args);
+		for_loop_100000_0Func(priority, args);
 		//call the critical task
 		//restore the original global pointer
 		restore_gp();
@@ -187,117 +153,7 @@ void AirbagModel_TASK(void* pdata) {
 		FprintActive = 0;
 
 
-		rtMonitorEndTask(AIRBAGMODEL_RT_PRIO);
-	}
-}
-
-/*****************************************************************************
- * CruiseControlSystemTask wrapper
- *****************************************************************************/
-void CruiseControlSystem_TASK(void* pdata) {
-	void *gp = stab->gp_address;
-	void (*CruiseControlSystemFunc)(int,
-			CruiseControlSystemStruct*) = functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].address;
-	int partnerCore = 0; /* static variable */
-
-	while (1) {
-		INT8U perr;
-		OSSemPend(critical_SEM[CRUISECONTROLSYSTEM_TABLE_INDEX], 0, &perr);
-
-		rtMonitorStartTask(CRUISECONTROLSYSTEM_RT_PRIO);
-
-		waitForPartnerCore(partnerCore);
-		//Context switch is necessary to clear the callee saved registers
-		long registers[8];
-		context_switch(registers);
-
-		//Do the derivative part
-
-		int priority = critFuncData->priority;
-
-		//set the flag for the OS context switch
-		FprintActive = 1;
-		FprintTaskIDCurrent = priority;
-
-		//Retrieve the arguments before changing the GP
-
-		void *args = functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].args;
-		//Set the global pointer in case of compilation issues related
-		//to global variables
-		set_gp(gp);
-
-		CruiseControlSystemFunc(priority, args);
-		//call the critical task
-		//restore the original global pointer
-		restore_gp();
-
-		//set the flag for the OS context switch
-		FprintActive = 0;
-
-
-		rtMonitorEndTask(CRUISECONTROLSYSTEM_RT_PRIO);
-	}
-}
-
-/*****************************************************************************
- * CollisionAvoidanceTask wrapper
- *****************************************************************************/
-void CollisionAvoidance_TASK(void* pdata) {
-
-	while (1) {
-		rtMonitorStartTask(COLLISIONAVOIDANCE_RT_PRIO);
-		CollisionAvoidance_step(CollisionAvoidance_M, &CollisionAvoidance_U,
-			&CollisionAvoidance_Y);
-		rtMonitorEndTask(COLLISIONAVOIDANCE_RT_PRIO);
-		OSTimeDlyHMSM(0, 0, 0, COLLISIONAVOIDANCE_PERIOD);
-	}
-}
-
-/*****************************************************************************
- * RadarTrackerTask wrapper
- *****************************************************************************/
-void RadarTracker_TASK(void* pdata) {
-	void *gp = stab->gp_address;
-	void (*RadarTrackerFunc)(int,
-			RadarTrackerStruct*) = functionTable[RADARTRACKER_TABLE_INDEX].address;
-	int partnerCore = 0; /* static variable */
-
-	while (1) {
-		INT8U perr;
-		OSSemPend(critical_SEM[RADARTRACKER_TABLE_INDEX], 0, &perr);
-
-		rtMonitorStartTask(RADARTRACKER_RT_PRIO);
-
-		waitForPartnerCore(partnerCore);
-		//Context switch is necessary to clear the callee saved registers
-		long registers[8];
-		context_switch(registers);
-
-		//Do the derivative part
-
-		int priority = critFuncData->priority;
-
-		//set the flag for the OS context switch
-		FprintActive = 1;
-		FprintTaskIDCurrent = priority;
-
-		//Retrieve the arguments before changing the GP
-
-		void *args = functionTable[RADARTRACKER_TABLE_INDEX].args;
-		//Set the global pointer in case of compilation issues related
-		//to global variables
-		set_gp(gp);
-
-		RadarTrackerFunc(priority, args);
-		//call the critical task
-		//restore the original global pointer
-		restore_gp();
-
-		//set the flag for the OS context switch
-		FprintActive = 0;
-
-
-		rtMonitorEndTask(RADARTRACKER_RT_PRIO);
+		rtMonitorEndTask(FOR_LOOP_100000_0_RT_PRIO);
 	}
 }
 
@@ -313,39 +169,13 @@ void mem_manager_init(void) {
 // For each critical task set up a position in the table
 	MemoryManagerStruct *entry;
 
-	// AirbagModel
-	entry = &memoryManagerTable[AIRBAGMODEL_TABLE_INDEX];
+	// for_loop_100000_0
+	entry = &memoryManagerTable[FOR_LOOP_100000_0_TABLE_INDEX];
 	entry->disablePending = false;
 	entry->disablePendSource = 0;
-	entry->taskPriority = AIRBAGMODEL_PRIORITY;
+	entry->taskPriority = FOR_LOOP_100000_0_PRIORITY;
 	entry->tlbDataLine = 0;
 	entry->tlbStackLine = 1;
-	entry->stackPhysicalAddress = (void*)0x462000;
-	entry->stackVirtualAddress = (void*)0x62000;
-	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
-	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
-
-	managerEnableTask(entry);
-	// CruiseControlSystem
-	entry = &memoryManagerTable[CRUISECONTROLSYSTEM_TABLE_INDEX];
-	entry->disablePending = false;
-	entry->disablePendSource = 0;
-	entry->taskPriority = CRUISECONTROLSYSTEM_PRIORITY;
-	entry->tlbDataLine = 2;
-	entry->tlbStackLine = 3;
-	entry->stackPhysicalAddress = (void*)0x462000;
-	entry->stackVirtualAddress = (void*)0x62000;
-	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
-	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
-
-	managerEnableTask(entry);
-	// RadarTracker
-	entry = &memoryManagerTable[RADARTRACKER_TABLE_INDEX];
-	entry->disablePending = false;
-	entry->disablePendSource = 0;
-	entry->taskPriority = RADARTRACKER_PRIORITY;
-	entry->tlbDataLine = 4;
-	entry->tlbStackLine = 5;
 	entry->stackPhysicalAddress = (void*)0x463000;
 	entry->stackVirtualAddress = (void*)0x63000;
 	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
@@ -472,20 +302,9 @@ int main() {
 
 	//Put the location of the stack for the task in shared memory
 	//-----------------------------------------------------------
-	functionTable[AIRBAGMODEL_TABLE_INDEX].stackAddress[CORE_ID] = &AirbagModel_STACK;
-	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].stackAddress[CORE_ID] = &CruiseControlSystem_STACK;
-	functionTable[RADARTRACKER_TABLE_INDEX].stackAddress[CORE_ID] = &RadarTracker_STACK;
-
-	CollisionAvoidance_M->ModelData.defaultParam = &CollisionAvoidance_P;
-	CollisionAvoidance_M->ModelData.dwork = &CollisionAvoidance_DW;
-	CollisionAvoidance_initialize(CollisionAvoidance_M, &CollisionAvoidance_U,
-	    &CollisionAvoidance_Y);
-
-
+	functionTable[FOR_LOOP_100000_0_TABLE_INDEX].stackAddress[CORE_ID] = &for_loop_100000_0_STACK;
 
 	critical_SEM[0] = OSSemCreate(0);
-	critical_SEM[1] = OSSemCreate(0);
-	critical_SEM[2] = OSSemCreate(0);
 	//Start up the MPU
 	//----------------
 
@@ -506,30 +325,12 @@ int main() {
 	// Declare the OS tasks
 	// -------------------
 
-	INT8U perr;	OSTaskCreateExt(AirbagModel_TASK, NULL,
-			(OS_STK *)0x62764,
-			AIRBAGMODEL_PRIORITY, AIRBAGMODEL_PRIORITY,
-			(OS_STK *)0x62000, AIRBAGMODEL_STACKSIZE, NULL,
+	INT8U perr;	OSTaskCreateExt(for_loop_100000_0_TASK, NULL,
+			(OS_STK *)0x63794,
+			FOR_LOOP_100000_0_PRIORITY, FOR_LOOP_100000_0_PRIORITY,
+			(OS_STK *)0x63000, FOR_LOOP_100000_0_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
-	OSTaskNameSet(AIRBAGMODEL_PRIORITY, (INT8U *)"AirbagModel", &perr);
-	OSTaskCreateExt(CruiseControlSystem_TASK, NULL,
-			(OS_STK *)0x62ec4,
-			CRUISECONTROLSYSTEM_PRIORITY, CRUISECONTROLSYSTEM_PRIORITY,
-			(OS_STK *)0x62768, CRUISECONTROLSYSTEM_STACKSIZE, NULL,
-			OS_TASK_OPT_STK_CLR);
-	OSTaskNameSet(CRUISECONTROLSYSTEM_PRIORITY, (INT8U *)"CruiseControlSystem", &perr);
-	OSTaskCreateExt(CollisionAvoidance_TASK, NULL,
-			&CollisionAvoidance_STACK[COLLISIONAVOIDANCE_STACKSIZE - 1],
-			COLLISIONAVOIDANCE_PRIORITY, COLLISIONAVOIDANCE_PRIORITY,
-			CollisionAvoidance_STACK, COLLISIONAVOIDANCE_STACKSIZE, NULL,
-			OS_TASK_OPT_STK_CLR);
-	OSTaskNameSet(COLLISIONAVOIDANCE_PRIORITY, (INT8U *)"CollisionAvoidance", &perr);
-	OSTaskCreateExt(RadarTracker_TASK, NULL,
-			(OS_STK *)0x63c68,
-			RADARTRACKER_PRIORITY, RADARTRACKER_PRIORITY,
-			(OS_STK *)0x63000, RADARTRACKER_STACKSIZE, NULL,
-			OS_TASK_OPT_STK_CLR);
-	OSTaskNameSet(RADARTRACKER_PRIORITY, (INT8U *)"RadarTracker", &perr);
+	OSTaskNameSet(FOR_LOOP_100000_0_PRIORITY, (INT8U *)"for_loop_100000_0", &perr);
 
 	resetMonitorCoreReg(CORE_ID);
 

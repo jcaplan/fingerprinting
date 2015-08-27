@@ -13,7 +13,7 @@ void rtMonitorUpdateTime(void){
   		if(task->running){
   			task->counter += alt_timestamp();
   			alt_timestamp_start();
-  			if ((INT32U)((task->counter * OS_TICKS_PER_SEC / ALT_CPU_CPU_FREQ)  + 1) == task->deadline){
+  			if ((INT32U)((task->counter * OS_TICKS_PER_SEC / ALT_CPU_CPU_FREQ)  + 1) == task->wcetLowerBound){
 				printf("time to drop low criticality task because of overrun: %s\n",task->name); 
 				rtMonitorDropLowTasks();
 			} else {

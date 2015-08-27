@@ -325,7 +325,7 @@ The processor is an Altera Nios_II procesor, Nios_II_F."/>
         <netportconnection connection="cpu0_irq0"
             name="irq"/>
     </peripheralinstance>
-    <peripheralinstance diagnosticlevel="3"
+    <peripheralinstance diagnosticlevel="0"
         name="cpu0_timestamp">
         <vlnvreference name="IntervalTimer64Core"
             vendor="mcgill.ca"/>

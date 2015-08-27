@@ -4,7 +4,7 @@
 //                W R I T T E N   B Y   I M P E R A S   I G E N
 //
 //                             Version 20150205.0
-//                          Tue Aug 25 14:22:21 2015
+//                          Tue Aug 25 17:00:19 2015
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -553,8 +553,6 @@ void platformConstructor(void) {
     );
 
     icmConnectPSEBus( handles.cpu0_timestamp_p, handles.cpu0_iobus_b, "sp1", 0, 0x0, 0x27);
-    icmSetPSEdiagnosticLevel(handles.cpu0_timestamp_p, 3);
-
 
 ////////////////////////////////////////////////////////////////////////////////
 //                               PSE cpu0_fprint

@@ -33,6 +33,8 @@ public class Function implements Comparable<Function>{
 	boolean hasState;
 	boolean hasDefaultParameters;
 	String preambleFileName;
+	public int wcetLowerBound;
+	public int wcetUpperBound;
 	
 	/**
 	 * When doing work on stack analysis, it is convenient to arrange functions in order of maximum stack size.
@@ -159,7 +161,11 @@ public class Function implements Comparable<Function>{
 
 		init += "	" + name + "UpdatePointers((INT32U)&" + name + "PackageStruct" + ", " + name + "_M);\n";
 		
-		init += "	" + name + "_initialize(" + name + "_M, " + name + "_U, " + name + "_Y);\n";
+//		init += "	" + name + "_initialize(" + name + "_M, " + name + "_U, " + name + "_Y);\n";
+		init += "	" + initialization.get(initialization.size()-1);
+		if(!init.endsWith("\n")){
+			init += "\n";
+		}
 
 		init += "	" + name + "UpdatePointers((INT32U)&" + name + "PackageStruct" + " & 0x3FFFFF, " + name + "_M);\n";
 		
@@ -229,4 +235,9 @@ public class Function implements Comparable<Function>{
 	public String getTableIndexString() {
 		return getUpperCaseName() + "_TABLE_INDEX";
 	}
+	
+	public String getWcetLowerBoundString() {
+		return getUpperCaseName() + "_WCET_LOWERBOUND";
+	}
+	
 }

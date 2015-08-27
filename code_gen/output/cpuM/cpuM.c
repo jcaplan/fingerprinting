@@ -15,11 +15,7 @@
 #include "runtimeMonitor.h"
 #include "repos.h"
 #include "critical.h"
-#include "Derivative.h"
-#include "TractionControl.h"
-#include "AirbagModel.h"
-#include "CruiseControlSystem.h"
-#include "RadarTracker.h"
+#include "for_loop_100000_0.h"
 
 
 
@@ -28,57 +24,12 @@
 /**********************************
  * Global variable declarations
  **********************************/
-/* Derivative*/
-static RT_MODEL_Derivative_T Derivative_M_;
-static RT_MODEL_Derivative_T *const Derivative_M = &Derivative_M_;/* Real-time model */
-static P_Derivative_T Derivative_P = {  0.0F,                                /* Mask Parameter: DiscreteDerivative_ICPrevScaled
-                                        * Referenced by: '<S2>/UD'
-                                        */
-  5.0F                                 /* Computed Parameter: TSamp_WtEt
-                                        * Referenced by: '<S2>/TSamp'
-                                        */
-};                                     /* Modifiable parameters */
-static DW_Derivative_T Derivative_DW;  /* Observable states */
-static ExtU_Derivative_T Derivative_U; /* External inputs */
-static ExtY_Derivative_T Derivative_Y; /* External outputs */
-
-/* TractionControl*/
-static RT_MODEL_TractionControl_T TractionControl_M_;
-static RT_MODEL_TractionControl_T *const TractionControl_M = &TractionControl_M_;/* Real-time model */
-static P_TractionControl_T TractionControl_P = {  3.0F                                 /* Mask Parameter: CompareToConstant_const
-                                        * Referenced by: '<S1>/Constant'
-                                        */
-};                                     /* Modifiable parameters */
-static ExtU_TractionControl_T TractionControl_U;/* External inputs */
-static ExtY_TractionControl_T TractionControl_Y;/* External outputs */
-
 /* dma*/
 typedef struct {
-	AirbagModelStruct AirbagModel_STRUCT;
-	P_AirbagModel_T AirbagModel_P;
-	DW_AirbagModel_T AirbagModel_DW;
-} DMA_AirbagModelPackageStruct;
+	for_loop_100000_0Struct for_loop_100000_0_STRUCT;
+} DMA_for_loop_100000_0PackageStruct;
 
-DMA_AirbagModelPackageStruct AirbagModelPackageStruct __attribute__ ((section (".global_data")));
-
-
-
-typedef struct {
-	CruiseControlSystemStruct CruiseControlSystem_STRUCT;
-	P_CruiseControlSystem_T CruiseControlSystem_P;
-	DW_CruiseControlSystem_T CruiseControlSystem_DW;
-} DMA_CruiseControlSystemPackageStruct;
-
-DMA_CruiseControlSystemPackageStruct CruiseControlSystemPackageStruct __attribute__ ((section (".global_data")));
-
-
-
-typedef struct {
-	RadarTrackerStruct RadarTracker_STRUCT;
-	DW_RadarTracker_T RadarTracker_DW;
-} DMA_RadarTrackerPackageStruct;
-
-DMA_RadarTrackerPackageStruct RadarTrackerPackageStruct __attribute__ ((section (".global_data")));
+DMA_for_loop_100000_0PackageStruct for_loop_100000_0PackageStruct __attribute__ ((section (".global_data")));
 
 
 
@@ -97,8 +48,6 @@ INT32U dmaQMem[DMA_Q_SIZE];
  * Stack Declarations
  *****************************************************************************/
 OS_STK dma_STACK[DMA_STACKSIZE] __attribute__ ((section (".critical")));
-OS_STK Derivative_STACK[DERIVATIVE_STACKSIZE] __attribute__ ((section (".critical")));
-OS_STK TractionControl_STACK[TRACTIONCONTROL_STACKSIZE] __attribute__ ((section (".critical")));
 
 
 
@@ -120,7 +69,7 @@ alt_mutex_dev* mutex;
  * Task control flow conditions
  *****************************************************************************/
 
-#define NUM_CRITICAL_TASKS 						3
+#define NUM_CRITICAL_TASKS 						1
 
 bool coresReady = false;
 bool taskFailed = false;
@@ -146,18 +95,7 @@ CriticalFunctionData critFuncData[NUMCORES] __attribute__ ((section (".shared"))
 /*****************************************************************************
  * Pointer relocation functions
  *****************************************************************************/
-void AirbagModelUpdatePointers(INT32U baseAddress, RT_MODEL_AirbagModel_T *AirbagModel_M){
-	AirbagModel_M->ModelData.defaultParam = (P_AirbagModel_T *)(baseAddress + sizeof(AirbagModelStruct));
-	AirbagModel_M->ModelData.dwork = (DW_AirbagModel_T *)(baseAddress + sizeof(AirbagModelStruct) + sizeof(P_AirbagModel_T));
-}
-
-void CruiseControlSystemUpdatePointers(INT32U baseAddress, RT_MODEL_CruiseControlSystem_T *CruiseControlSystem_M){
-	CruiseControlSystem_M->ModelData.defaultParam = (P_CruiseControlSystem_T *)(baseAddress + sizeof(CruiseControlSystemStruct));
-	CruiseControlSystem_M->ModelData.dwork = (DW_CruiseControlSystem_T *)(baseAddress + sizeof(CruiseControlSystemStruct) + sizeof(P_CruiseControlSystem_T));
-}
-
-void RadarTrackerUpdatePointers(INT32U baseAddress, RT_MODEL_RadarTracker_T *RadarTracker_M){
-	RadarTracker_M->ModelData.dwork = (DW_RadarTracker_T *)(baseAddress + sizeof(RadarTrackerStruct));
+void for_loop_100000_0UpdatePointers(INT32U baseAddress, RT_MODEL_for_loop_100000_0_T *for_loop_100000_0_M){
 }
 
 
@@ -272,44 +210,18 @@ static void initCompIsr(void) {
 void initializeTaskTable(void) {
 	REPOS_task *task;
 
-	task = &REPOSTaskTable[AIRBAGMODEL_TABLE_INDEX];
+	task = &REPOSTaskTable[FOR_LOOP_100000_0_TABLE_INDEX];
 
-	task->dataAddressPhys = &AirbagModelPackageStruct;
-	task->dataAddressVirt = (void *)((int)&AirbagModelPackageStruct & 0x3FFFFF);
-	task->stackAddressPhys[0] = (void *) (0x494000);
-	task->stackAddressPhys[1] = (void *) (0x462000);
-
-	task->stackAddressVirt[0] = (void *) (0x62000);
-	task->stackAddressVirt[1] = (void *) (0x62000);
-
-	task->dataSize = sizeof(AirbagModelPackageStruct);
-	task->stackSize = (AIRBAGMODEL_STACKSIZE * 4);
-
-	task = &REPOSTaskTable[CRUISECONTROLSYSTEM_TABLE_INDEX];
-
-	task->dataAddressPhys = &CruiseControlSystemPackageStruct;
-	task->dataAddressVirt = (void *)((int)&CruiseControlSystemPackageStruct & 0x3FFFFF);
-	task->stackAddressPhys[0] = (void *) (0x494768);
-	task->stackAddressPhys[1] = (void *) (0x462768);
-
-	task->stackAddressVirt[0] = (void *) (0x62768);
-	task->stackAddressVirt[1] = (void *) (0x62768);
-
-	task->dataSize = sizeof(CruiseControlSystemPackageStruct);
-	task->stackSize = (CRUISECONTROLSYSTEM_STACKSIZE * 4);
-
-	task = &REPOSTaskTable[RADARTRACKER_TABLE_INDEX];
-
-	task->dataAddressPhys = &RadarTrackerPackageStruct;
-	task->dataAddressVirt = (void *)((int)&RadarTrackerPackageStruct & 0x3FFFFF);
+	task->dataAddressPhys = &for_loop_100000_0PackageStruct;
+	task->dataAddressVirt = (void *)((int)&for_loop_100000_0PackageStruct & 0x3FFFFF);
 	task->stackAddressPhys[0] = (void *) (0x495000);
 	task->stackAddressPhys[1] = (void *) (0x463000);
 
 	task->stackAddressVirt[0] = (void *) (0x63000);
 	task->stackAddressVirt[1] = (void *) (0x63000);
 
-	task->dataSize = sizeof(RadarTrackerPackageStruct);
-	task->stackSize = (RADARTRACKER_STACKSIZE * 4);
+	task->dataSize = sizeof(for_loop_100000_0PackageStruct);
+	task->stackSize = (FOR_LOOP_100000_0_STACKSIZE * 4);
 
 }
 
@@ -319,47 +231,19 @@ void REPOSInit(void) {
 	memset(REPOSTaskTable, 0, OS_MAX_TASKS * sizeof(REPOS_task));
 
 	REPOS_task *task;
-	task = &REPOSTaskTable[AIRBAGMODEL_TABLE_INDEX];
+	task = &REPOSTaskTable[FOR_LOOP_100000_0_TABLE_INDEX];
 	task->taskRunning = false;
 	task->kind = PERIODIC_K;
-	task->data.periodic.period = AIRBAGMODEL_PERIOD;
-	task->data.periodic.countdown = AIRBAGMODEL_PERIOD;
-	task->data.periodic.deadline = AIRBAGMODEL_PERIOD; /* Deadline not specified, assume deadline = period */
+	task->data.periodic.period = FOR_LOOP_100000_0_PERIOD;
+	task->data.periodic.countdown = FOR_LOOP_100000_0_PERIOD;
+	task->data.periodic.deadline = FOR_LOOP_100000_0_PERIOD; /* Deadline not specified, assume deadline = period */
 	task->core[0] = 0;
 	task->core[1] = 1;
 	task->numFuncs = 1;
 	task->funcTableFirstIndex = 0;
-	task->taskID = AIRBAGMODEL_TABLE_INDEX;
+	task->taskID = FOR_LOOP_100000_0_TABLE_INDEX;
 	task->startHook = startHook;
-	task->startHookArgs = (void*)AIRBAGMODEL_TABLE_INDEX;
-
-	task = &REPOSTaskTable[CRUISECONTROLSYSTEM_TABLE_INDEX];
-	task->taskRunning = false;
-	task->kind = PERIODIC_K;
-	task->data.periodic.period = CRUISECONTROLSYSTEM_PERIOD;
-	task->data.periodic.countdown = CRUISECONTROLSYSTEM_PERIOD;
-	task->data.periodic.deadline = CRUISECONTROLSYSTEM_PERIOD; /* Deadline not specified, assume deadline = period */
-	task->core[0] = 0;
-	task->core[1] = 1;
-	task->numFuncs = 1;
-	task->funcTableFirstIndex = 0;
-	task->taskID = CRUISECONTROLSYSTEM_TABLE_INDEX;
-	task->startHook = startHook;
-	task->startHookArgs = (void*)CRUISECONTROLSYSTEM_TABLE_INDEX;
-
-	task = &REPOSTaskTable[RADARTRACKER_TABLE_INDEX];
-	task->taskRunning = false;
-	task->kind = PERIODIC_K;
-	task->data.periodic.period = RADARTRACKER_PERIOD;
-	task->data.periodic.countdown = RADARTRACKER_PERIOD;
-	task->data.periodic.deadline = RADARTRACKER_PERIOD; /* Deadline not specified, assume deadline = period */
-	task->core[0] = 0;
-	task->core[1] = 1;
-	task->numFuncs = 1;
-	task->funcTableFirstIndex = 0;
-	task->taskID = RADARTRACKER_TABLE_INDEX;
-	task->startHook = startHook;
-	task->startHookArgs = (void*)RADARTRACKER_TABLE_INDEX;
+	task->startHookArgs = (void*)FOR_LOOP_100000_0_TABLE_INDEX;
 
 
 	fprintIDFreeList = 0xFFFF;
@@ -395,28 +279,6 @@ void REPOSInit(void) {
 
 
 
-/*****************************************************************************
- * DerivativeTask wrapper
- *****************************************************************************/
-void Derivative_TASK(void* pdata) {
-	while (1) {
-		Derivative_step(Derivative_M, &Derivative_U,
-			&Derivative_Y);
-		OSTimeDlyHMSM(0, 0, 0, DERIVATIVE_PERIOD);
-	}
-}
-
-/*****************************************************************************
- * TractionControlTask wrapper
- *****************************************************************************/
-void TractionControl_TASK(void* pdata) {
-	while (1) {
-		TractionControl_step(TractionControl_M, &TractionControl_U,
-			&TractionControl_Y);
-		OSTimeDlyHMSM(0, 0, 0, TRACTIONCONTROL_PERIOD);
-	}
-}
-
 
 
 
@@ -440,12 +302,8 @@ int main(void) {
 
 	//Initialize the Function Table
 	//-----------------------------
-	functionTable[AIRBAGMODEL_TABLE_INDEX].args =  (void *)((int)&AirbagModelPackageStruct & 0x3FFFFF);
-	functionTable[AIRBAGMODEL_TABLE_INDEX].blocksize = 0xfff;
-	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].args =  (void *)((int)&CruiseControlSystemPackageStruct & 0x3FFFFF);
-	functionTable[CRUISECONTROLSYSTEM_TABLE_INDEX].blocksize = 0xfff;
-	functionTable[RADARTRACKER_TABLE_INDEX].args =  (void *)((int)&RadarTrackerPackageStruct & 0x3FFFFF);
-	functionTable[RADARTRACKER_TABLE_INDEX].blocksize = 0xfff;
+	functionTable[FOR_LOOP_100000_0_TABLE_INDEX].args =  (void *)((int)&for_loop_100000_0PackageStruct & 0x3FFFFF);
+	functionTable[FOR_LOOP_100000_0_TABLE_INDEX].blocksize = 0xfff;
 	//Initialize the runtime interface
 	REPOSInit();
 
@@ -493,45 +351,16 @@ int main(void) {
 	//---------------------------
 	initDMA();
 
-	Derivative_M->ModelData.defaultParam = &Derivative_P;
-	Derivative_M->ModelData.dwork = &Derivative_DW;
-	Derivative_initialize(Derivative_M, &Derivative_U, &Derivative_Y);
 
-	TractionControl_M->ModelData.defaultParam = &TractionControl_P;
-	TractionControl_initialize(TractionControl_M, &TractionControl_U,
-	    &TractionControl_Y);
-
-
-
-	RT_MODEL_AirbagModel_T *AirbagModel_M =
-			&AirbagModelPackageStruct.AirbagModel_STRUCT.AirbagModel_M;
-	ExtU_AirbagModel_T *AirbagModel_U =
-			&AirbagModelPackageStruct.AirbagModel_STRUCT.AirbagModel_U;
-	ExtY_AirbagModel_T *AirbagModel_Y =
-			&AirbagModelPackageStruct.AirbagModel_STRUCT.AirbagModel_Y;
-	AirbagModelUpdatePointers((INT32U)&AirbagModelPackageStruct, AirbagModel_M);
-	AirbagModel_initialize(AirbagModel_M, AirbagModel_U, AirbagModel_Y);
-	AirbagModelUpdatePointers((INT32U)&AirbagModelPackageStruct & 0x3FFFFF, AirbagModel_M);
-
-	RT_MODEL_CruiseControlSystem_T *CruiseControlSystem_M =
-			&CruiseControlSystemPackageStruct.CruiseControlSystem_STRUCT.CruiseControlSystem_M;
-	ExtU_CruiseControlSystem_T *CruiseControlSystem_U =
-			&CruiseControlSystemPackageStruct.CruiseControlSystem_STRUCT.CruiseControlSystem_U;
-	ExtY_CruiseControlSystem_T *CruiseControlSystem_Y =
-			&CruiseControlSystemPackageStruct.CruiseControlSystem_STRUCT.CruiseControlSystem_Y;
-	CruiseControlSystemUpdatePointers((INT32U)&CruiseControlSystemPackageStruct, CruiseControlSystem_M);
-	CruiseControlSystem_initialize(CruiseControlSystem_M, CruiseControlSystem_U, CruiseControlSystem_Y);
-	CruiseControlSystemUpdatePointers((INT32U)&CruiseControlSystemPackageStruct & 0x3FFFFF, CruiseControlSystem_M);
-
-	RT_MODEL_RadarTracker_T *RadarTracker_M =
-			&RadarTrackerPackageStruct.RadarTracker_STRUCT.RadarTracker_M;
-	ExtU_RadarTracker_T *RadarTracker_U =
-			&RadarTrackerPackageStruct.RadarTracker_STRUCT.RadarTracker_U;
-	ExtY_RadarTracker_T *RadarTracker_Y =
-			&RadarTrackerPackageStruct.RadarTracker_STRUCT.RadarTracker_Y;
-	RadarTrackerUpdatePointers((INT32U)&RadarTrackerPackageStruct, RadarTracker_M);
-	RadarTracker_initialize(RadarTracker_M, RadarTracker_U, RadarTracker_Y);
-	RadarTrackerUpdatePointers((INT32U)&RadarTrackerPackageStruct & 0x3FFFFF, RadarTracker_M);
+	RT_MODEL_for_loop_100000_0_T *for_loop_100000_0_M =
+			&for_loop_100000_0PackageStruct.for_loop_100000_0_STRUCT.for_loop_100000_0_M;
+	ExtU_for_loop_100000_0_T *for_loop_100000_0_U =
+			&for_loop_100000_0PackageStruct.for_loop_100000_0_STRUCT.for_loop_100000_0_U;
+	ExtY_for_loop_100000_0_T *for_loop_100000_0_Y =
+			&for_loop_100000_0PackageStruct.for_loop_100000_0_STRUCT.for_loop_100000_0_Y;
+	for_loop_100000_0UpdatePointers((INT32U)&for_loop_100000_0PackageStruct, for_loop_100000_0_M);
+	for_loop_100000_0_initialize(for_loop_100000_0_M);
+	for_loop_100000_0UpdatePointers((INT32U)&for_loop_100000_0PackageStruct & 0x3FFFFF, for_loop_100000_0_M);
 
 	//-------------------------------------------
 	INT8U perr;
@@ -542,18 +371,6 @@ int main(void) {
 
 	//Declare the OS tasks
 	//-------------------
-	OSTaskCreateExt(Derivative_TASK, NULL,
-			&Derivative_STACK[DERIVATIVE_STACKSIZE - 1],
-			DERIVATIVE_PRIORITY, DERIVATIVE_PRIORITY,
-			Derivative_STACK, DERIVATIVE_STACKSIZE, NULL,
-			OS_TASK_OPT_STK_CLR);
-	OSTaskNameSet(DERIVATIVE_PRIORITY, (INT8U *)"Derivative", &perr);
-	OSTaskCreateExt(TractionControl_TASK, NULL,
-			&TractionControl_STACK[TRACTIONCONTROL_STACKSIZE - 1],
-			TRACTIONCONTROL_PRIORITY, TRACTIONCONTROL_PRIORITY,
-			TractionControl_STACK, TRACTIONCONTROL_STACKSIZE, NULL,
-			OS_TASK_OPT_STK_CLR);
-	OSTaskNameSet(TRACTIONCONTROL_PRIORITY, (INT8U *)"TractionControl", &perr);
 	OSTaskCreateExt(dma_TASK, NULL,
 			&dma_STACK[DMA_STACKSIZE - 1],
 			DMA_PRIORITY, DMA_PRIORITY,

@@ -18,40 +18,29 @@
  *****************************************************************************/
 #define STACKSIZE_MINOFFSET                       316
 #define STACKSIZE_MARGINERROR                     150
-#define DERIVATIVE_STACKSIZE                      (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define TRACTIONCONTROL_STACKSIZE                 (  19 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 #define DMA_STACKSIZE                             (1024 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define AIRBAGMODEL_STACKSIZE                     (   8 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define CRUISECONTROLSYSTEM_STACKSIZE             (   6 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define RADARTRACKER_STACKSIZE                    ( 329 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define FOR_LOOP_100000_0_STACKSIZE               (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 /*****************************************************************************
  * Task Priorities
  *****************************************************************************/
-#define DERIVATIVE_PRIORITY                       3
-#define TRACTIONCONTROL_PRIORITY                  4
 #define DMA_PRIORITY                              0
 /*****************************************************************************
  * Task Table indices
  *****************************************************************************/
-#define AIRBAGMODEL_TABLE_INDEX                   0
-#define CRUISECONTROLSYSTEM_TABLE_INDEX           1
-#define RADARTRACKER_TABLE_INDEX                  2
+#define FOR_LOOP_100000_0_TABLE_INDEX             0
 /*****************************************************************************
  * Task Periods
  *****************************************************************************/
-#define NUM_TASKS                                 6
-#define DERIVATIVE_PERIOD                         40
-#define TRACTIONCONTROL_PERIOD                    30
+#define NUM_TASKS                                 2
 #define DMA_PERIOD                                0
-#define AIRBAGMODEL_PERIOD                        50
-#define CRUISECONTROLSYSTEM_PERIOD                20
-#define RADARTRACKER_PERIOD                       300
+#define FOR_LOOP_100000_0_PERIOD                  30
 /*****************************************************************************
  * Runtime monitor table index
  *****************************************************************************/
-#define DERIVATIVE_RT_PRIO                        0
-#define TRACTIONCONTROL_RT_PRIO                   1
-#define DMA_RT_PRIO                               2
-#define AIRBAGMODEL_RT_PRIO                       3
-#define CRUISECONTROLSYSTEM_RT_PRIO               4
-#define RADARTRACKER_RT_PRIO                      5
+#define DMA_RT_PRIO                               0
+#define FOR_LOOP_100000_0_RT_PRIO                 1
+/*****************************************************************************
+ * Execution time lower bounds
+ *****************************************************************************/
+#define DMA_WCET_LOWERBOUND                       0
+#define FOR_LOOP_100000_0_WCET_LOWERBOUND         15
