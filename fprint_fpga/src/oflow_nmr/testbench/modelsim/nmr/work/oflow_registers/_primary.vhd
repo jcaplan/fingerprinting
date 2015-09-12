@@ -1,0 +1,62 @@
+library verilog;
+use verilog.vl_types.all;
+entity oflow_registers is
+    generic(
+        idle            : integer := 0;
+        st_count_inc    : integer := 1;
+        st_count_dec    : integer := 2;
+        st_fprint_regs_set: integer := 3;
+        st_comparator_regs_set: integer := 4;
+        st_fifo_oflow_write: integer := 5;
+        st_fifo_uflow_write: integer := 6;
+        st_oflow_status_set: integer := 7;
+        st_oflow_status_reset: integer := 8;
+        st_oflow_count_inc_ack: integer := 9;
+        st_oflow_count_dec_ack: integer := 10;
+        st_reset_task   : integer := 11;
+        st_oflow_reset_task_ack: integer := 12;
+        st_fifo_rd_en   : integer := 1;
+        st_output_ready : integer := 2
+    );
+    port(
+        clk             : in     vl_logic;
+        reset           : in     vl_logic;
+        oflow_write     : out    vl_logic;
+        oflow_writedata : out    vl_logic_vector(31 downto 0);
+        oflow_address   : out    vl_logic_vector(26 downto 0);
+        oflow_waitrequest: in     vl_logic;
+        oflow_task_id   : out    vl_logic_vector(3 downto 0);
+        oflow_logical_core_id: out    vl_logic_vector(1 downto 0);
+        oflow_physical_core_id: in     vl_logic_vector(3 downto 0);
+        csr_fprint_maxcount: in     vl_logic_vector(9 downto 0);
+        oflow_nmr       : in     vl_logic;
+        fprint_task_id  : in     vl_logic_vector(3 downto 0);
+        fprint_logical_core_id: in     vl_logic_vector(1 downto 0);
+        fprint_count_inc: in     vl_logic;
+        oflow_count_inc_ack: out    vl_logic;
+        comparator_task_id: in     vl_logic_vector(3 downto 0);
+        comparator_count_dec: in     vl_logic;
+        oflow_count_dec_ack: out    vl_logic;
+        oflow_fprints_ready: out    vl_logic_vector(15 downto 0);
+        oflow_fprints_remaining: out    vl_logic_vector(15 downto 0);
+        oflow_fprints_remaining_logical_core_id: out    vl_logic_vector(1 downto 0);
+        oflow_reset_task: in     vl_logic;
+        oflow_reset_task_ack: out    vl_logic
+    );
+    attribute mti_svvh_generic_type : integer;
+    attribute mti_svvh_generic_type of idle : constant is 1;
+    attribute mti_svvh_generic_type of st_count_inc : constant is 1;
+    attribute mti_svvh_generic_type of st_count_dec : constant is 1;
+    attribute mti_svvh_generic_type of st_fprint_regs_set : constant is 1;
+    attribute mti_svvh_generic_type of st_comparator_regs_set : constant is 1;
+    attribute mti_svvh_generic_type of st_fifo_oflow_write : constant is 1;
+    attribute mti_svvh_generic_type of st_fifo_uflow_write : constant is 1;
+    attribute mti_svvh_generic_type of st_oflow_status_set : constant is 1;
+    attribute mti_svvh_generic_type of st_oflow_status_reset : constant is 1;
+    attribute mti_svvh_generic_type of st_oflow_count_inc_ack : constant is 1;
+    attribute mti_svvh_generic_type of st_oflow_count_dec_ack : constant is 1;
+    attribute mti_svvh_generic_type of st_reset_task : constant is 1;
+    attribute mti_svvh_generic_type of st_oflow_reset_task_ack : constant is 1;
+    attribute mti_svvh_generic_type of st_fifo_rd_en : constant is 1;
+    attribute mti_svvh_generic_type of st_output_ready : constant is 1;
+end oflow_registers;

@@ -1,0 +1,60 @@
+library verilog;
+use verilog.vl_types.all;
+entity comparator is
+    generic(
+        idle            : integer := 0;
+        st_set_task     : integer := 1;
+        st_load_pointer : integer := 2;
+        st_load_fprint  : integer := 3;
+        st_check_task_status: integer := 4;
+        st_compare_fprints: integer := 6;
+        st_comparator_inc_tail_pointer: integer := 7;
+        st_comparator_count_dec: integer := 8;
+        st_comparator_mismatch_detected: integer := 9;
+        st_fprint_reset_task: integer := 10;
+        st_comp_reset_task: integer := 11;
+        st_oflow_reset_task: integer := 12;
+        st_comparator_status_write: integer := 13
+    );
+    port(
+        clk             : in     vl_logic;
+        reset           : in     vl_logic;
+        comparator_task_id: out    vl_logic_vector(3 downto 0);
+        comparator_logical_core_id: out    vl_logic_vector(1 downto 0);
+        comparator_status_write: out    vl_logic;
+        comparator_mismatch_detected: out    vl_logic;
+        csr_status_ack  : in     vl_logic;
+        comparator_nmr  : in     vl_logic;
+        fprint_0        : in     vl_logic_vector(31 downto 0);
+        fprint_1        : in     vl_logic_vector(31 downto 0);
+        fprint_2        : in     vl_logic_vector(31 downto 0);
+        fprint_checkin  : in     vl_logic_vector(15 downto 0);
+        fprint_reset_task: out    vl_logic;
+        fprint_reset_task_ack: in     vl_logic;
+        oflow_fprints_ready: in     vl_logic_vector(15 downto 0);
+        oflow_fprints_remaining: in     vl_logic_vector(15 downto 0);
+        oflow_fprints_remaining_logical_core_id: in     vl_logic_vector(1 downto 0);
+        comparator_count_dec: out    vl_logic;
+        oflow_count_dec_ack: in     vl_logic;
+        oflow_reset_task: out    vl_logic;
+        oflow_reset_task_ack: in     vl_logic;
+        comparator_inc_tail_pointer: out    vl_logic;
+        comp_inc_tail_pointer_ack: in     vl_logic;
+        comp_reset_task : out    vl_logic;
+        comp_reset_task_ack: in     vl_logic
+    );
+    attribute mti_svvh_generic_type : integer;
+    attribute mti_svvh_generic_type of idle : constant is 1;
+    attribute mti_svvh_generic_type of st_set_task : constant is 1;
+    attribute mti_svvh_generic_type of st_load_pointer : constant is 1;
+    attribute mti_svvh_generic_type of st_load_fprint : constant is 1;
+    attribute mti_svvh_generic_type of st_check_task_status : constant is 1;
+    attribute mti_svvh_generic_type of st_compare_fprints : constant is 1;
+    attribute mti_svvh_generic_type of st_comparator_inc_tail_pointer : constant is 1;
+    attribute mti_svvh_generic_type of st_comparator_count_dec : constant is 1;
+    attribute mti_svvh_generic_type of st_comparator_mismatch_detected : constant is 1;
+    attribute mti_svvh_generic_type of st_fprint_reset_task : constant is 1;
+    attribute mti_svvh_generic_type of st_comp_reset_task : constant is 1;
+    attribute mti_svvh_generic_type of st_oflow_reset_task : constant is 1;
+    attribute mti_svvh_generic_type of st_comparator_status_write : constant is 1;
+end comparator;

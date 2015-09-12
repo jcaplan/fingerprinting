@@ -44,30 +44,6 @@
          type = "String";
       }
    }
-   element processor0_0.cpu_irq_0_s0
-   {
-      datum baseAddress
-      {
-         value = "67108864";
-         type = "String";
-      }
-   }
-   element processorM_0.cpu_irq_0_s0
-   {
-      datum baseAddress
-      {
-         value = "67110912";
-         type = "String";
-      }
-   }
-   element cfpu_0.csr
-   {
-      datum baseAddress
-      {
-         value = "83886080";
-         type = "String";
-      }
-   }
    element processor0_0.dma_0_control_port_slave
    {
       datum baseAddress
