@@ -48,6 +48,8 @@ public class SourceAnalysis {
 			getVariableDeclarations();
 			getFunctionInitialization();
 			if(config.stackProfilingRequired){
+				//TODO here is where you should
+				//put the anlaysis for loop iterations and wcet
 				getMaxStacks();
 			}
 		} catch (IOException e) {

@@ -25,7 +25,7 @@
 #include "for_loop_50000_20000_private.h"
 #include <math.h>
 #include <stdlib.h>
-
+#include "annot.h"
 
 /* Model step function */
 void for_loop_50000_20000_step(RT_MODEL_for_loop_50000_20000_T *const for_loop_50000_20000_M, ExtU_for_loop_50000_20000_T
@@ -45,6 +45,7 @@ void for_loop_50000_20000_step(RT_MODEL_for_loop_50000_20000_T *const for_loop_5
   /* '<S1>:1:3' */
   int32_T range = ((int32_T)(LOOP_LIMIT + rand()%RANDOM_RANGE));
   for (i = 0; i < range; i++) {
+		ANNOT_MAXITER(70000);
     /* '<S1>:1:3' */
     /* '<S1>:1:4' */
     y = (((real32_T)i) * 2.0F) + (((real32_T)i) * ((real32_T)i));

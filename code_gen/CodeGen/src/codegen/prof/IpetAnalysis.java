@@ -97,6 +97,7 @@ public class IpetAnalysis {
 			// Certain library functions have limits on their loops known in
 			// advance for double precision floating poitnt
 			// -------------------------------------------------------------
+			//TODO check if function has a loop bound after configuration 
 			double loopBound = 0;
 			switch (f.label) {
 			case "__muldf3":

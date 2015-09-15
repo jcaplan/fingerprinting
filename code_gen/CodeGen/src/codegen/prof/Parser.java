@@ -67,7 +67,11 @@ public class Parser {
 //		System.out.println(getCfg());
 		getCfg().build(topName);
 //		getCfg().printFunctions();
-
+		//TODO HERE is where you check for the annot.obj file 
+		// and add loop bounds to functions based on whether or not it exists
+		// and what you find there
+		
+		
 //		System.out.println(cfg);
 //		cfg.printFunctionBounds();
 //		getCfg().printLoops();

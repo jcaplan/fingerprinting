@@ -58,6 +58,8 @@ def main(argv):
 					newline = line.replace('for_loop',outputFile['name'])
 				if outputFile['randomRange'] == 0 and ' + rand()%RANDOM_RANGE' in line:
 					newline = line.replace(' + rand()%RANDOM_RANGE','')
+				if 'ANNOT_MAXITER(LOOP_LIMIT + RANDOM_RANGE);' in line:
+					newline = '\t\tANNOT_MAXITER(' + str(outputFile['randomRange'] + outputFile['loopLimit']) + ');\n'
 				outputFile['file'].write(newline)
 
 		for f in fileList:
