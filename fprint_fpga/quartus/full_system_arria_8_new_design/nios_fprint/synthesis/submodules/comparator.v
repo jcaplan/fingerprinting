@@ -76,15 +76,14 @@ reg[3:0] state;
 
 parameter idle								= 0;
 parameter st_set_task 						= 1;
-parameter st_load_pointer  					= 2;
-parameter st_load_fprint   					= 3;
-parameter st_compare_fprints				= 4;
-parameter st_comparator_checkpoint			= 5;
-parameter st_task_count_inc					= 6;
-parameter st_comparator_mismatch_detected	= 7;
-parameter st_fprint_reset_task				= 8;
-parameter st_task_count_reset				= 9;
-parameter st_comparator_status_write		= 10;
+parameter st_load_fprint   					= 2;
+parameter st_compare_fprints				= 3;
+parameter st_comparator_checkpoint			= 4;
+parameter st_task_count_inc					= 5;
+parameter st_comparator_mismatch_detected	= 6;
+parameter st_fprint_reset_task				= 7;
+parameter st_task_count_reset				= 8;
+parameter st_comparator_status_write		= 9;
 
 
 always @ (posedge clk or posedge reset)
@@ -98,9 +97,6 @@ begin
 					state = st_set_task;
 					
 			st_set_task:
-				state = st_load_pointer;
-			
-			st_load_pointer:
 				state = st_load_fprint;
 			
 			st_load_fprint:

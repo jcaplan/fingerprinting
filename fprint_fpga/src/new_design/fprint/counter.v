@@ -40,7 +40,7 @@ reg[`COUNTER_WIDTH - 1 : 0 ] count_limit;
 
 assign max_min_one = (q == count_limit - 1);
 assign max = (q == count_limit);
-assign carry = mode ? max_min_one : max;
+assign carry = 0;//mode ? max_min_one : max;
 always @ (posedge clk or posedge count_reset)
 begin
 	if (count_reset)begin

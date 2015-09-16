@@ -4,7 +4,7 @@
  * Machine generated for CPU 'processor6_0_cpu6' in SOPC Builder design 'nios_fprint'
  * SOPC Builder design path: ../../nios_fprint.sopcinfo
  *
- * Generated: Tue Jun 16 16:54:20 EDT 2015
+ * Generated: Tue Sep 15 22:07:32 EDT 2015
  */
 
 /*
@@ -275,7 +275,7 @@
 #define PROCESSOR6_0_FINGERPRINT_0_IRQ -1
 #define PROCESSOR6_0_FINGERPRINT_0_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define PROCESSOR6_0_FINGERPRINT_0_NAME "/dev/processor6_0_Fingerprint_0"
-#define PROCESSOR6_0_FINGERPRINT_0_SPAN 256
+#define PROCESSOR6_0_FINGERPRINT_0_SPAN 1024
 #define PROCESSOR6_0_FINGERPRINT_0_TYPE "Fingerprint"
 
 
@@ -488,7 +488,7 @@
 #define SYS_ID_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define SYS_ID_NAME "/dev/sys_id"
 #define SYS_ID_SPAN 8
-#define SYS_ID_TIMESTAMP 1434486224
+#define SYS_ID_TIMESTAMP 1442006897
 #define SYS_ID_TYPE "altera_avalon_sysid_qsys"
 
 
