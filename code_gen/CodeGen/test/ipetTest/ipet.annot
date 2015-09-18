@@ -1,0 +1,6 @@
+
+a.out:     file format elf32-littlenios2
+
+Contents of section .wcet_annot:
+ 0000 bc100000 01000000 02000000 0c110000  ................
+ 0010 01000000 05000000                    ........        

@@ -12,6 +12,11 @@ import codegen.prof.BasicBlock.bbType;
 public class CFG {
 
 	ArrayList<Function> fList = new ArrayList<>();
+	ArrayList<Annotation> annotations;
+	
+	public CFG(ArrayList<Annotation> annotations) {
+		this.annotations = annotations;
+	}
 
 	public void addFunction(Function f) {
 		fList.add(f);
@@ -103,7 +108,10 @@ public class CFG {
 		//Identify loops
 		for(Function f : fList){
 			f.findLoops();
+			f.setMaxLoopIterations(annotations);
 		}
+		
+		
 		
 	}
 

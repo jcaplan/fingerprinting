@@ -16,7 +16,7 @@ public class IpetAnalysis {
 	private static final double defaultMaxLoop = 15;
 	Function rootFunc;
 	HashMap<Function, Integer> calledFunctions;
-	
+	ArrayList<Annotation> annotations;
 	
 	CFG cfg;
 	private final int LE = 1;
@@ -97,35 +97,14 @@ public class IpetAnalysis {
 			// Certain library functions have limits on their loops known in
 			// advance for double precision floating poitnt
 			// -------------------------------------------------------------
-			//TODO check if function has a loop bound after configuration 
-			double loopBound = 0;
-			switch (f.label) {
-			case "__muldf3":
-				loopBound = 4;
-				break;
-			case "__mulsi3":
-				loopBound = 32;
-				break;
-			case "__unpack_d":
-				loopBound = 1;
-				break;
-			case "_fpadd_parts":
-				loopBound = 1;
-				break;
-			case "__divdf3":
-				loopBound = 61;
-				break;
-			default:
-				loopBound = defaultMaxLoop;
-				break;
-			}
+
 
 			for (int i = 0; i < f.loops.size(); i++) {
 				Loop l = f.loops.get(i);
 				// Deal with single Block loops afterwards if they exist
 				if (l.head.equals(l.tail)) {
 					singleBlockLoops.add(l);
-					singleBlockLoopBound = loopBound;
+					singleBlockLoopBound = l.maxIterations;
 				} else {
 					
 					// sum(all edges in) - sum(loopbound* nonbackwardeges) <= 0
@@ -136,7 +115,7 @@ public class IpetAnalysis {
 						constraint[e.index] = 1;
 						
 						if(!l.body.contains(e.startBlock)){ // then it is a backwards edge
-							constraint[e.index] -= loopBound;
+							constraint[e.index] -= l.maxIterations;
 						}
 					}
 					problem.addConstraint(constraint, LE, 0);
@@ -289,7 +268,8 @@ public class IpetAnalysis {
 		calledFunctions.put(func, 1);
 		
 		//Doesn't take into account loops!!
-		//TODO
+		//Values of hash table not needed.. deprecated!
+
 		for (Function f : calledFunctions.keySet()) {
 			for (BasicBlock bb : f.bbList) {
 				if (bb.type == bbType.CALL) {

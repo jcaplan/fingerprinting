@@ -70,6 +70,9 @@ public class Function {
 				bbList.add(new BasicBlock());
 				break;
 			case OTHER:
+			case STORE:
+			case LOAD:
+			case CUSTOM:
 				break;
 			}
 		}
@@ -320,6 +323,49 @@ public class Function {
 
 	public Edge getEntryEdge() {
 		return bbList.get(0).predEdges.get(0);
+	}
+	
+	public boolean containsAddress(int address){
+		//TODO
+		return false;
+	}
+
+	public void setMaxLoopIterations(ArrayList<Annotation> annotations) {
+		for(Loop loop : loops){
+			
+			//Some library functions are given statically determined values
+			
+			switch (this.label) {
+			case "__muldf3":
+				loop.maxIterations = 4;
+				break;
+			case "__mulsi3":
+				loop.maxIterations = 32;
+				break;
+			case "__unpack_d":
+				loop.maxIterations = 1;
+				break;
+			case "_fpadd_parts":
+				loop.maxIterations = 1;
+				break;
+			case "__divdf3":
+				loop.maxIterations = 61;
+				break;
+			default:
+				for(Annotation annot : annotations){
+					if (loop.containsAddress(annot.address)){
+						loop.maxIterations = annot.value;
+					}
+				}
+				break;
+			}
+			
+			if(loop.maxIterations == 0){
+				loop.maxIterations = Loop.defaultMaxIterations;
+			}
+			
+		}
+		
 	}
 
 }

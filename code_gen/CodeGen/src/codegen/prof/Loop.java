@@ -2,12 +2,16 @@ package codegen.prof;
 
 import java.util.ArrayList;
 
+import lpsolve.BbListener;
+
 class Loop {
 
 	BasicBlock head;
 	BasicBlock tail;
 	ArrayList<BasicBlock> body;
-
+	int maxIterations = 0;
+	public static final int defaultMaxIterations = 10;
+	
 	public Loop(BasicBlock head, BasicBlock tail) {
 		this.head = head;
 		this.tail = tail;
@@ -70,6 +74,15 @@ class Loop {
 			s = s.substring(0, s.length() - 1);
 		}
 		return s;
+	}
+
+	public boolean containsAddress(int address) {
+		for(BasicBlock bb : body){
+			if(bb.containsCode(address)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import javax.management.RuntimeErrorException;
 
-
 import codegen.prof.BasicBlock.bbType;
 import lpsolve.*;
 
@@ -14,14 +13,21 @@ public class Profiler {
 
 	
 	CFG cfg;
+	ArrayList<Annotation> annotations;
 	Parser parser;
-	public Profiler(String filename){
-		parser = new Parser(filename);
+	String fileDir;
+	String rootName;
+	
+	public Profiler(String fileDir, String rootName){
+		this.fileDir = fileDir;
+		this.rootName = rootName;
+		parser = new Parser(fileDir,rootName);
 	}
 	
 	public void parseFile(String topName){
 		try {
-			cfg = parser.parse(topName);
+			annotations = parser.parseAnnotations();
+			cfg = parser.parseCFG(topName,annotations);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -101,16 +107,28 @@ public class Profiler {
 
 
 	public static void main(String[] args) throws IOException{
-		if(args.length != 2){
-			throw new RuntimeErrorException(new Error("Usage java -jar Codegen.jar file entry_function"));
+		if(args.length != 3){
+			throw new RuntimeErrorException(new Error("Usage java -jar Codegen.jar directory rootName entryFunction"));
 			
 		}
 		
-		String filename=args[0];
-		String entryPoint = args[1];
+		
+		
+		/*
+		 * Three arguments are required:
+		 * 1. The directory where the files to be parsed are located
+		 * 2. The file root name. The two files should be called rootName.objdump
+		 *    and rootName.annot
+		 * 3. The entry function for the analysis.
+		 * 
+		 * 
+		 */
+		String fileDir=args[0];
+		String rootName = args[1];
+		String entryPoint = args[2];
 		System.out.println("*******************************************************************");
-		System.out.println("results for " + filename + " from function " + entryPoint + "\n");
-		Profiler prof = new Profiler(filename);
+		System.out.println("results for " + rootName + " from function " + entryPoint + "\n");
+		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
 //		System.out.println("Max stack height of " + entryPoint + ": " + prof.getMaxStackSize(entryPoint) + " bytes");
 		System.out.println("WCET of " + entryPoint + ": " + prof.getWCET(entryPoint,true) + " clock cycles");

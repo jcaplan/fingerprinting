@@ -1,17 +1,21 @@
 package codegen.prof;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parser {
 
-	String filename;
+	String objdump;
+	String annot;
 	private CFG cfg;
-	public Parser(String filename) {
-		this.filename = filename;
+	public Parser(String fileDir, String rootName) {
+		this.objdump = fileDir + "/" + rootName + ".objdump";
+		this.annot = fileDir + "/" + rootName + ".annot";
 	}
 
 	void parseFunctions(String filename) throws IOException {
@@ -57,12 +61,13 @@ public class Parser {
 		}
 		reader.close();
 	}
-	public CFG parse(String topName) throws IOException {
 	
-		setCfg(new CFG());
+	public CFG parseCFG(String topName, ArrayList<Annotation> annotations) throws IOException {
+	
+		setCfg(new CFG(annotations));
 
 		//Get functions and associated assembly code
-		parseFunctions(filename);
+		parseFunctions(objdump);
 //
 //		System.out.println(getCfg());
 		getCfg().build(topName);
@@ -75,7 +80,7 @@ public class Parser {
 //		System.out.println(cfg);
 //		cfg.printFunctionBounds();
 //		getCfg().printLoops();
-		getCfg().printDotCFG(filename);
+		getCfg().printDotCFG(objdump);
 		return cfg;
 	}
 
@@ -90,6 +95,73 @@ public class Parser {
 
 	public void setCfg(CFG cfg) {
 		this.cfg = cfg;
+	}
+
+	public ArrayList<Annotation> parseAnnotations() throws IOException {
+		ArrayList<Annotation> annotList = new ArrayList<>();
+		
+		FileReader fr = new FileReader(annot);
+		BufferedReader reader = new BufferedReader(fr);
+		reader = new BufferedReader(fr);
+		
+		ArrayList<Integer> tokens = new ArrayList<>();
+		
+		String line = "";
+		
+		/*
+		 * skip the front matter
+		 */
+		while(!reader.readLine().contains("Contents of section .wcet_annot:"))
+			;
+		
+		
+		while ((line = reader.readLine()) != null){
+			line = line.trim();
+			String[] tkns = line.split("[\\s]+");
+			
+			
+			System.out.println(line);
+			/*
+			 * Always ignore first and last token (address and random text)
+			 */
+			for(int i = 1; i < tkns.length - 1; i++){
+				String value = reverseEndian(tkns[i]);
+				tokens.add(Integer.parseInt(value, 16));
+			}
+		}
+		
+		reader.close();
+		
+		/*
+		 * Now there is a parsed list of integers, each 3 tuple represents an annotation
+		 */
+		
+		while(tokens.size() > 0) {
+			int address = tokens.get(0);
+			int type = tokens.get(1);
+			int value = tokens.get(2);
+			
+			tokens.remove(2);
+			tokens.remove(1);
+			tokens.remove(0);
+			
+			annotList.add(new Annotation(address, value,type));
+			
+		}
+		
+		
+		return annotList;
+	}
+
+	private String reverseEndian(String string) {
+		String newString = "";
+		newString += string.substring(6, 8);
+		newString += string.substring(4, 6);
+		newString += string.substring(2, 4);
+		newString += string.substring(0, 2);
+		
+		return newString;
+		
 	}
 	
 //	public static void main(String[] args) throws IOException {
