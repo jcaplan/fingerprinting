@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+import codegen.prof.IpetAnalysis;
+
 /**
  * Function contains all the necessary information about each function in the system.
  * @author jonah
@@ -238,6 +240,13 @@ public class Function implements Comparable<Function>{
 	
 	public String getWcetLowerBoundString() {
 		return getUpperCaseName() + "_WCET_LOWERBOUND";
+	}
+
+	public void setWCET(int wcetLowerBound) {
+		this.wcetLowerBound = wcetLowerBound;
+		if(critical){
+			wcetUpperBound = (int)(IpetAnalysis.WCET_RATIO * wcetLowerBound);
+		}
 	}
 	
 }

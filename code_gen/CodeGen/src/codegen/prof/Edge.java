@@ -2,10 +2,11 @@ package codegen.prof;
 
 public class Edge {
 
+	public static final int RESET_VALUE = 1;
 	BasicBlock startBlock;
 	BasicBlock endBlock;
 	int index;
-	static int EdgeCount = 1;
+	static int EdgeCount = RESET_VALUE;
 	
 	public Edge(BasicBlock start, BasicBlock end){
 		startBlock = start;

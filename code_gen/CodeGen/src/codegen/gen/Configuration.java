@@ -21,6 +21,7 @@ public class Configuration {
 	public NiosSBTCommand niosSBT;
 	String sopcinfoFilename;
 	String outputDir;
+	public boolean wcetProfilingRequired = true;
 
 	/**
 	 * 
@@ -88,6 +89,10 @@ public class Configuration {
 				stackProfilingRequired = false;
 				parseStackProfiling();
 				break;
+			case "<WCET_PROFILE>":
+				wcetProfilingRequired = false;
+				parseWcetProfiling();
+				break;
 			default:
 				if (!(line.matches("#.*|") || line.isEmpty())) { /*
 																 * allow
@@ -102,6 +107,38 @@ public class Configuration {
 
 		Collections.sort(funcList);
 		platform.addFunctionsToCores();
+	}
+
+	private void parseWcetProfiling() throws IOException, ConfigurationException {
+		String line = "";
+		while (!(line = reader.readLine()).equals("</WCET_PROFILE>")) {
+			lineCount++;
+			if (!(line.startsWith("#") || line.isEmpty())) {
+				String[] tokens = line.split("[\\s]+");
+				String funcName = tokens[0];
+				Function func;
+				if ((func = getFunction(funcName)) == null) {
+					throwConfigError("Function name not found");
+				}
+
+				func.wcetLowerBound = Integer.parseInt(tokens[1]);
+				
+				if(func.critical){
+					if(tokens.length < 3){
+						throwConfigError("HI crit. tasks require both C_lo and C_hi");
+					} else {
+						func.wcetUpperBound = Integer.parseInt(tokens[2]);		
+					}
+				} else {
+					if(tokens.length > 2){
+						throwConfigError("LO crit. tasks require only C_lo");
+					}
+				}
+				
+
+			}
+		}
+		lineCount++; /* final line */
 	}
 
 	/**
@@ -125,8 +162,7 @@ public class Configuration {
 
 			}
 		}
-		lineCount++; /* final line */
-		
+		lineCount++; /* final line */		
 	}
 
 	/**
@@ -374,28 +410,31 @@ public class Configuration {
 						f.preambleFileName = arg;
 						i++;
 						break;
-					case "-clo":
-						if (i == tokens.length - 1) {
-							throwConfigError("-clo expects value");
-						}
-						arg = tokens[i + 1];
-						if (arg.startsWith("-")) {
-							throwConfigError("-clo expects value");
-						}
-						f.wcetLowerBound = Integer.parseInt(arg);
-						i++;
-						break;
-					case "-chi":
-						if (i == tokens.length - 1) {
-							throwConfigError("-chi expects value");
-						}
-						arg = tokens[i + 1];
-						if (arg.startsWith("-")) {
-							throwConfigError("-chi expects value");
-						}
-						f.wcetUpperBound = Integer.parseInt(arg);
-						i++;
-						break;
+						/*
+						 * changed to explicit wcet_profile section
+						 */
+//					case "-clo":
+//						if (i == tokens.length - 1) {
+//							throwConfigError("-clo expects value");
+//						}
+//						arg = tokens[i + 1];
+//						if (arg.startsWith("-")) {
+//							throwConfigError("-clo expects value");
+//						}
+//						f.wcetLowerBound = Integer.parseInt(arg);
+//						i++;
+//						break;
+//					case "-chi":
+//						if (i == tokens.length - 1) {
+//							throwConfigError("-chi expects value");
+//						}
+//						arg = tokens[i + 1];
+//						if (arg.startsWith("-")) {
+//							throwConfigError("-chi expects value");
+//						}
+//						f.wcetUpperBound = Integer.parseInt(arg);
+//						i++;
+//						break;
 					default:
 						throwConfigError("Unrecognized argument in FUNCTIONLIST: "
 								+ token);

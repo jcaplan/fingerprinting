@@ -43,4 +43,4 @@
  * Execution time lower bounds
  *****************************************************************************/
 #define DMA_WCET_LOWERBOUND                       0
-#define FOR_LOOP_100000_0_WCET_LOWERBOUND         15
+#define FOR_LOOP_100000_0_WCET_LOWERBOUND         1600004

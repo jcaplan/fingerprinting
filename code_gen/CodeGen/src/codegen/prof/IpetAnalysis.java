@@ -13,10 +13,12 @@ import lpsolve.LpSolveException;
 import codegen.prof.BasicBlock.bbType;
 
 public class IpetAnalysis {
-	private static final double defaultMaxLoop = 15;
+	public static final double defaultMaxLoop = 15;
 	Function rootFunc;
 	HashMap<Function, Integer> calledFunctions;
 	ArrayList<Annotation> annotations;
+	
+	public static final double WCET_RATIO = 1.5;
 	
 	CFG cfg;
 	private final int LE = 1;

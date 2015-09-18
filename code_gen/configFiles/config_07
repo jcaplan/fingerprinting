@@ -1,0 +1,43 @@
+#periodic tasks, some are critical, all independent (no dataflow between tasks)
+
+
+#function list must come first!!
+
+#Comments start with #
+# -c for critical task
+# -T for task period in ms
+# -E for event driven, runs when all the inputs are available
+# -S for stacksize, if S is not present then assume profiler was used
+# 	if profiler was used: should have a profile.log file in the function folders
+<FUNCTIONLIST>
+-rootdir /home/jonah/fingerprinting/automotive_control/CompiledC/for_loops
+-name for_loop_100000_0    -subdir for_loop_100000_0           -T  30   -c  -Priority 2	
+-name for_loop_50000_50000 -subdir for_loop_50000_50000		   -T  30       -Priority 1 -printRuntime -addPreamble preamble.txt
+</FUNCTIONLIST>
+
+#preamble -> in subdir folder, contains code to go before while loop in task, used for threadsafe newlib config, should not have extension .c or .h
+#printRuntime adds diagnostic printf run time for the given task
+
+<DATAFLOW>
+</DATAFLOW>
+
+
+<PLATFORM>
+-usedefault
+</PLATFORM>
+
+<MAPPING>
+for_loop_100000_0 cpu0 cpu1
+for_loop_50000_50000 cpu0
+</MAPPING>
+
+
+<STACK_PROFILE>
+for_loop_100000_0 80
+for_loop_50000_50000 80
+</STACK_PROFILE>
+
+<WCET_PROFILE>
+for_loop_50000_50000 1600035
+for_loop_100000_0 1600004 2400006
+</WCET_PROFILE>

@@ -11,7 +11,9 @@ import org.apache.commons.io.FileUtils;
 import codegen.prof.Profiler;
 
 /**
- * SourceAnalysis contains methods for parsing and retrieving information from Simulink files.
+ * SourceAnalysis contains methods for parsing and retrieving information from
+ * Simulink files.
+ * 
  * @author jonah
  *
  */
@@ -24,44 +26,81 @@ public class SourceAnalysis {
 
 	/**
 	 * Constructor
+	 * 
 	 * @param platform
 	 * @param funcList
 	 * @param config
 	 */
-	public SourceAnalysis(Platform platform, ArrayList<Function> funcList, Configuration config, ArrayList<Function> fprintList){
+	public SourceAnalysis(Platform platform, ArrayList<Function> funcList,
+			Configuration config, ArrayList<Function> fprintList) {
 		this.platform = platform;
 		this.funcList = funcList;
 		this.config = config;
 		this.fprintList = fprintList;
 	}
-	
+
 	/**
-	 * This method does the analysis.
-	 * First the header file includes are determined, then variable declarations and model
-	 * initialization is parsed from ert_main.c, then the max stack height is determined if necessary.
+	 * This method does the analysis. First the header file includes are
+	 * determined, then variable declarations and model initialization is parsed
+	 * from ert_main.c, then the max stack height is determined if necessary.
 	 * Finally the variable size is checked (not implemented yet).
 	 */
-	public void doAnalysis(){
-		//Parse source
+	public void doAnalysis() {
+		// Parse source
 		initHeaders();
 		try {
 			getVariableDeclarations();
 			getFunctionInitialization();
-			if(config.stackProfilingRequired){
-				//TODO here is where you should
-				//put the anlaysis for loop iterations and wcet
-				getMaxStacks();
+
+			/*
+			 * The following analysis require a temporary app to be built
+			 */
+
+			if (config.stackProfilingRequired || config.wcetProfilingRequired) {
+				for (Function f : funcList) {
+					// System.out.println("Starting profiling for " + f);
+					String outputDir = config.outputDir + "/prof";
+					copySourceFiles(f.codeDirectory, outputDir);
+					Core core;
+					if (f.cores.contains("cpuM")) {
+						core = platform.getCore("cpuM");
+					} else {
+						core = platform.getCore("cpu0");
+					}
+					config.niosSBT.generateMakefile(outputDir, core.bspDir,
+							"ucos.elf");
+
+					config.niosSBT.updateMakefile(outputDir, f.name);
+					config.niosSBT.makeProject(outputDir);
+					config.niosSBT.generateAnnotations(outputDir, "ucos");
+
+					Profiler prof = new Profiler(outputDir, "ucos");
+					String funcStep = f.name + "_step";
+					prof.parseFile(funcStep);
+					
+					if (config.stackProfilingRequired) {
+						f.stackSize = getMaxStacks(funcStep,prof);
+					}
+					if (config.wcetProfilingRequired) {
+						f.setWCET(getWCET(funcStep,prof));
+						
+					}
+
+					deleteDirectory(outputDir);
+				}
+
 			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		getVariableSizes();
 	}
-	
-	
+
+
 	/**
-	 * Adds the header strings to the Core objects. 
-	 * Default list as well as extra headers for Simulink functions.
+	 * Adds the header strings to the Core objects. Default list as well as
+	 * extra headers for Simulink functions.
 	 */
 	private void initHeaders() {
 
@@ -81,10 +120,10 @@ public class SourceAnalysis {
 		c.addHeader("cpu0.h");
 		c.addHeader("reset_monitor.h");
 		c.addHeader("runtimeMonitor.h");
-		if(c.requiresCriticalHeader){
+		if (c.requiresCriticalHeader) {
 			c.addHeader("critical.h");
 		}
-		
+
 		c = platform.getCore("cpu1");
 		c.addHeader("<stdio.h>");
 		c.addHeader("<stddef.h>");
@@ -100,10 +139,10 @@ public class SourceAnalysis {
 		c.addHeader("cpu1.h");
 		c.addHeader("reset_monitor.h");
 		c.addHeader("runtimeMonitor.h");
-		if(c.requiresCriticalHeader){
+		if (c.requiresCriticalHeader) {
 			c.addHeader("critical.h");
 		}
-		
+
 		c = platform.getCore("cpuM");
 		c.addHeader("<stdio.h>");
 		c.addHeader("<stddef.h>");
@@ -118,7 +157,7 @@ public class SourceAnalysis {
 		c.addHeader("reset_monitor.h");
 		c.addHeader("runtimeMonitor.h");
 		c.addHeader("repos.h");
-		if(c.requiresCriticalHeader){
+		if (c.requiresCriticalHeader) {
 			c.addHeader("critical.h");
 		}
 
@@ -128,14 +167,13 @@ public class SourceAnalysis {
 			c = platform.getCore(f.cores.get(0));
 			c.addHeader(f + ".h");
 		}
-		
+
 		c = platform.getCore("cpuM");
-		for (Function f : fprintList){
+		for (Function f : fprintList) {
 			c.addHeader(f + ".h");
 		}
 	}
-	
-	
+
 	/**
 	 * Adds header files to function object.
 	 */
@@ -150,9 +188,10 @@ public class SourceAnalysis {
 			}
 		}
 	}
-	
+
 	/**
 	 * Parses the ert_main.c file for variable declarations.
+	 * 
 	 * @throws IOException
 	 */
 	private void getVariableDeclarations() throws IOException {
@@ -181,10 +220,10 @@ public class SourceAnalysis {
 						}
 						f.varDeclarations.add(dec);
 					}
-					
-					if(name.endsWith("_P")){
+
+					if (name.endsWith("_P")) {
 						f.hasDefaultParameters = true;
-					} else if(name.matches(".*_DW;.*")){
+					} else if (name.matches(".*_DW;.*")) {
 						f.hasState = true;
 					}
 				}
@@ -194,9 +233,10 @@ public class SourceAnalysis {
 		}
 
 	}
-	
+
 	/**
 	 * Parses the ert_main.c file for function initialization.
+	 * 
 	 * @throws IOException
 	 */
 	private void getFunctionInitialization() throws IOException {
@@ -215,11 +255,11 @@ public class SourceAnalysis {
 					&& !line.contains("return")) {
 				line = line.trim();
 				if (line.startsWith(f.name)) {
-					
+
 					if (!line.contains(";")) {
 						String newLine = "\n";
 						while (!(newLine = reader.readLine()).contains(";")) {
-							line += "\n	"+ newLine;
+							line += "\n	" + newLine;
 						}
 						line += "\n	" + newLine + "\n";
 					}
@@ -231,42 +271,35 @@ public class SourceAnalysis {
 		}
 
 	}
-	
+
 	/**
 	 * Uses codege.prof.Profiler to find maximum stack height for each function
-	 * (uses cpuM BSP by default. Should depend on which core function is running on
-	 * because of FPU).
+	 * (uses cpuM BSP by default. Should depend on which core function is
+	 * running on because of FPU).
+	 * 
 	 * @throws IOException
 	 */
-	private void getMaxStacks() throws IOException {
-		for (Function f : funcList) {
-			System.out.println("Starting profiling for " + f);
-			String outputDir = config.outputDir + "/prof";
-			copySourceFiles(f.codeDirectory, outputDir);
-			Core core;
-			if(f.cores.contains("cpuM")){
-				core = platform.getCore("cpuM");
-			} else {
-				core = platform.getCore("cpu0");
-			}
-			config.niosSBT.generateMakefile(outputDir, core.bspDir, "ucos.elf");
-			
-			config.niosSBT.updateMakefile(outputDir, f.name);
-			config.niosSBT.makeProject(outputDir);
-			
-			Profiler prof = new Profiler(outputDir + "/ucos.objdump");
-			String funcStep = f.name + "_step";
-			prof.parseFile(funcStep);
-			int maxStack = prof.getMaxStackSize(funcStep);
-			f.stackSize = maxStack;
-			deleteDirectory(outputDir);
-		}
+	private int getMaxStacks(String funcName,Profiler prof) throws IOException {
+		int maxStack = prof.getMaxStackSize(funcName);
+		return maxStack;
 
 	}
 
+	private int getWCET(String funcName,Profiler prof) {
+		/*
+		 * Not cycle accurate, only interested in instructions right now
+		 */
+		int wcet = prof.getWCET(funcName, false);
+		return wcet;
+		
+	}
+
+	
 	/**
 	 * Force delete an entire directory
-	 * @param name	Name of directory
+	 * 
+	 * @param name
+	 *            Name of directory
 	 */
 	private void deleteDirectory(String name) {
 		File f = new File(name);
@@ -280,8 +313,11 @@ public class SourceAnalysis {
 
 	/**
 	 * Copy between folders
-	 * @param srcName	Source folder name
-	 * @param destName	Destination folder name
+	 * 
+	 * @param srcName
+	 *            Source folder name
+	 * @param destName
+	 *            Destination folder name
 	 */
 	private void copySourceFiles(String srcName, String destName) {
 
@@ -298,28 +334,25 @@ public class SourceAnalysis {
 		}
 
 	}
-	
+
 	/**
-	 * Determines the size of the static variables for each function.
-	 * Not currently implemented.
+	 * Determines the size of the static variables for each function. Not
+	 * currently implemented.
 	 */
 	private void getVariableSizes() {
 		// figure out the size of the data variables -> size of global_data
 		// region (4 kB pages)
 
 		// ////////////////////////////////////////////////
-//		for (Function f : funcList) {
-//			for (String dec : f.varDeclarations) {
-//				// TODO: parse files to get size of each struct
-//
-//			}
-//		}
+		// for (Function f : funcList) {
+		// for (String dec : f.varDeclarations) {
+		// // TODO: parse files to get size of each struct
+		//
+		// }
+		// }
 
 		// TODO: check that the sum of all functions is less than 4kB.
 
 	}
 
-
-	
-	
 }

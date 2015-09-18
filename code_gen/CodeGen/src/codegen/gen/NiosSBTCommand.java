@@ -1,5 +1,6 @@
 package codegen.gen;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
@@ -155,14 +156,19 @@ public class NiosSBTCommand {
 	 * Runs a command in a process and waits for completion. 
 	 * @param cmd	String array for command to be executed.
 	 */
-	public void runCommand(String[] cmd) {
+	
+	public void runCommand(String[] cmd){
+		runCommand(cmd, Redirect.INHERIT);
+	}
+	
+	public void runCommand(String[] cmd, ProcessBuilder.Redirect dest) {
 				
 		ProcessBuilder builder = null;
 		Process p = null;
 		try {
 			builder = new ProcessBuilder(cmd);
 			builder.redirectErrorStream(true);
-			builder.redirectOutput(Redirect.INHERIT);
+			builder.redirectOutput(dest);
 		    
 			p = builder.start();
 		} catch (IOException e2) {
@@ -199,6 +205,14 @@ public class NiosSBTCommand {
 				"--src-dir",libDir};
 		runCommand(cmd);
 		
+	}
+
+	public void generateAnnotations(String outputDir, String rootName) {
+		String[] cmd = new String[] { sbtLocation,
+				"nios2-elf-objdump", outputDir + "/" + rootName + ".elf", "-s", 
+				"-z", "--section=.wcet_annot"
+				};
+		runCommand(cmd,Redirect.to(new File(outputDir + "/" + rootName + ".annot")));
 	}
 
 }

@@ -22,6 +22,7 @@ public class Profiler {
 		this.fileDir = fileDir;
 		this.rootName = rootName;
 		parser = new Parser(fileDir,rootName);
+		Edge.EdgeCount = Edge.RESET_VALUE;
 	}
 	
 	public void parseFile(String topName){
@@ -36,7 +37,7 @@ public class Profiler {
 	
 
 
-	private int getWCET(String funcName, boolean cycleAccurate) {
+	public int getWCET(String funcName, boolean cycleAccurate) {
 		
 		IpetAnalysis ipet = new IpetAnalysis(funcName,cfg);
 		int wcet = 0;

@@ -114,6 +114,22 @@ public class CodeGen {
 		}
 		System.out.println("</STACK_PROFILE>");
 	}
+
+	public void printWcetResults() {
+		System.out.println("\nWCET results (in clockcycles):");
+		System.out.println("<WCET_PROFILE>");
+		for (Function f : funcList) {
+			System.out.print(f.name + " " + f.wcetLowerBound);
+			
+			if(f.critical){
+				System.out.println(" " + f.wcetUpperBound); 
+			} else {
+				System.out.println();
+			}
+		}
+		System.out.println("</WCET_PROFILE>");
+		
+	}
 	
 
 

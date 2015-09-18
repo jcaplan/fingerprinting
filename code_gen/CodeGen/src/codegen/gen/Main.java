@@ -105,6 +105,7 @@ public class Main {
 		CodeGen gen = new CodeGen(config);
 		gen.generateCores();
 		gen.printStackResults();
+		gen.printWcetResults();
 
 
 	}
