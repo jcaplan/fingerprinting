@@ -7,6 +7,7 @@ public class Schedule {
 	private class Binding {
 		Processor processor;
 		int priority;
+		double[] responseTime = new double[SchedAnalysis.numModes];
 		
 		
 		public Binding(Processor processor){
@@ -47,6 +48,10 @@ public class Schedule {
 	public void setPriority(Task t, int i) {
 		bindings.get(t).setPriority(i);
 		
+	}
+	
+	public void setResponseTime(Task t, int mode, double rt){
+		bindings.get(t).responseTime[mode] = rt;
 	}
 
 }

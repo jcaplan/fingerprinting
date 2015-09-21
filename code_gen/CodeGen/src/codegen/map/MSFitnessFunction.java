@@ -50,12 +50,14 @@ public class MSFitnessFunction extends FitnessFunction{
 		
 		SchedAnalysis analysis = new SchedAnalysis(taskList, schedule,procList);
 		double fitness;
-		if(!analysis.schedAnalysis()){
+		boolean schedResult;
+		if(!(schedResult = analysis.schedAnalysis())){
 			fitness = 0;
 		} else {
 			fitness = analysis.qosAnalysis();
 		}
-		
+
+		System.out.println("result of schedulability analysis: " + schedResult);
 		return fitness;
 	}
 	
