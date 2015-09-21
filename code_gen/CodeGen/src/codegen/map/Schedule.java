@@ -1,63 +1,52 @@
 package codegen.map;
 
-import java.io.FileNotFoundException;
+import java.util.*;
 
-import java.io.UnsupportedEncodingException;
-import codegen.sw.*;
-
-/**
- * The schedule class is a static collection that is used to keep track of the best
- * schedule produced by the GA and also printing the schedule along with the PrintSchedule class.
- * @author jonah
- *
- */
 public class Schedule {
-	static int numCores;
-	static int[] coreAssignment;
-	static int[] startTimes; 
-	static int[] executionTimes;
-	static String[] taskLabels;
-	static Application app;
-	static int fitnessValue;
-	public static String fileName;
-	
-	static boolean submitSchedule(int numCores,int[] coreAssignment,int[] startTimes,Application app,int fitnessValue){
-		if(fitnessValue > Schedule.fitnessValue){
-			Schedule.fitnessValue = fitnessValue;
-//			System.out.println("Time" + System.currentTimeMillis()/1000 + ": " + fitnessValue);
-			Schedule.numCores = numCores;
-			int numTasks = coreAssignment.length;
-			Schedule.coreAssignment = new int[numTasks];
-			Schedule.startTimes = new int[numTasks];
-			Schedule.app = app;
-			executionTimes = new int[numTasks];
-			taskLabels = new String[numTasks];
-			for(int i = 0; i < numTasks; i++){
-				Schedule.coreAssignment[i] = coreAssignment[i];
-				Schedule.startTimes[i] = startTimes[i];
-				executionTimes[i] = app.getTaskList().get(i).executionTime;
-				taskLabels[i] = app.getTaskList().get(i).label;
-			}
-			try {
-				app.printDotFile(fileName + "T");
-			} catch (FileNotFoundException | UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			printSchedule();
-			return true;
-		}
-		return false;
-	}
-	
-	static void printSchedule(){
-		PrintSchedule p = new PrintSchedule();
-		p.print(numCores, coreAssignment, startTimes, app, executionTimes, taskLabels, fileName);
-		
 
+	private class Binding {
+		Processor processor;
+		int priority;
+		
+		
+		public Binding(Processor processor){
+
+			this.processor = processor;
+			this.priority = Integer.MAX_VALUE;
+		}
+		
+		public void setPriority(int prio){
+			priority = prio;
+		}
 	}
 	
-	static void initSchedule(){
-		fitnessValue = 0;
+	Map<Task,Binding> bindings = new HashMap<>();
+	
+	
+	public void allocate(Task t, Processor p) {
+		bindings.put(t,new Binding(p));		
 	}
+
+
+	public boolean checkConstraints(ArrayList<MapConstraint> constraints) {
+		for(MapConstraint c : constraints){
+			Processor p1 = bindings.get(c.t1).processor;
+			Processor p2 = bindings.get(c.t2).processor;
+			if(p1 == p2){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public Processor getProcessor(Task t){
+		return bindings.get(t).processor;
+	}
+
+
+	public void setPriority(Task t, int i) {
+		bindings.get(t).setPriority(i);
+		
+	}
+
 }

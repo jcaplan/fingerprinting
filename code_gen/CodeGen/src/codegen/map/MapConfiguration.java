@@ -31,11 +31,12 @@ import org.jgap.event.*;
  * modified 2015
  */
 @SuppressWarnings("serial")
-public class MSConfiguration
+public class MapConfiguration
     extends Configuration implements ICloneable {
 
-  public MSConfiguration() {
-    this("","");
+  Application app;
+  public MapConfiguration(String name){
+	  this(name,"");
   }
 
   /**
@@ -51,7 +52,7 @@ public class MSConfiguration
    * @author Klaus Meffert
    * @since 1.0
    */
-  public MSConfiguration(String a_id, String a_name) {
+  public MapConfiguration(String a_id, String a_name) {
     super(a_id, a_name);
     try {
       setBreeder(new GABreeder());
@@ -67,8 +68,7 @@ public class MSConfiguration
       //----------
       addGeneticOperator(new CrossoverOperator(this,0.8d));
       addGeneticOperator(new MutationOperator(this,10));
-      TournamentSelector tournamentSelector = new TournamentSelector(this,10,0.8);
-      addNaturalSelector(tournamentSelector, false);
+      addNaturalSelector(new TournamentSelector(this,10,0.8), false);
     }
     catch (InvalidConfigurationException e) {
       throw new RuntimeException(
