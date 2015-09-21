@@ -19,6 +19,10 @@ public class Schedule {
 		public void setPriority(int prio){
 			priority = prio;
 		}
+		
+		public int getPriority(){
+			return priority;
+		}
 	}
 	
 	Map<Task,Binding> bindings = new HashMap<>();
@@ -45,8 +49,8 @@ public class Schedule {
 	}
 
 
-	public void setPriority(Task t, int i) {
-		bindings.get(t).setPriority(i);
+	public void setPriority(Task t, int prio) {
+		bindings.get(t).setPriority(prio);
 		
 	}
 	
@@ -54,4 +58,7 @@ public class Schedule {
 		bindings.get(t).responseTime[mode] = rt;
 	}
 
+	public int getPriority(Task t){
+		return bindings.get(t).getPriority();
+	}
 }

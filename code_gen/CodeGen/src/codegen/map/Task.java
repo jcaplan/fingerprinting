@@ -46,7 +46,7 @@ public class Task implements Comparable<Task>{
 		} else {
 			s += "LO";
 		}
-		s +=  ", replica: " + type;;
+		s +=  ", replica: " + type;
 		return s;
 	}
 

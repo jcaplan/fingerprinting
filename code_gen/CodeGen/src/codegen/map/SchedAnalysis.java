@@ -10,9 +10,9 @@ public class SchedAnalysis {
 	public static final int modeTF = 1;
 	public static final int modeOV = 2;
 	public static final int modeHI = 3;
-	
+
 	public static final double recursionThreshold = 0.01;
-	
+
 	ArrayList<Task> taskList;
 	Schedule schedule;
 	ArrayList<Processor> procList;
@@ -26,8 +26,6 @@ public class SchedAnalysis {
 
 	@SuppressWarnings("unchecked")
 	public boolean schedAnalysis() {
-		// TODO
-
 		// First a priority must be assigned to each task
 		// The priority is assigned to the binding in the schedule
 		ArrayList<Task> priorityList = (ArrayList<Task>) taskList.clone();
@@ -48,42 +46,45 @@ public class SchedAnalysis {
 					procTaskList.add(t);
 				}
 			}
-			System.out.println("hi");
 
 			/*
 			 * each task can be assigned to: all 3 modes, a pair of modes, or a
 			 * single mode... (OV,TF,HI), (OV,TF), (OV,HI), (TF,HI) , (OV), (TF)
 			 */
 
-			//start by checking schedulability for the LO mode
-			
-			for(int i = 0; i < procTaskList.size(); i++){
+			// start by checking schedulability for the LO mode
+
+			for (int i = 0; i < procTaskList.size(); i++) {
 				Task t = procTaskList.get(i);
 				double responseTime = t.wcetLowerBound;
-				while(responseTime < t.period){
+				while (responseTime < t.period) {
 					double rSum = 0;
-					for(int j = i+1; j < procTaskList.size(); j++ ){
+					for (int j = i + 1; j < procTaskList.size(); j++) {
 						Task hpTask = procTaskList.get(j);
-						rSum += Math.ceil(responseTime/hpTask.period) * hpTask.wcetLowerBound;
+						rSum += Math.ceil(responseTime / hpTask.period)
+								* hpTask.wcetLowerBound;
 					}
 					rSum += t.wcetLowerBound;
-					if(Math.abs(rSum - responseTime) < recursionThreshold){
+					if (Math.abs(rSum - responseTime) < recursionThreshold) {
 						break;
 					} else {
 						responseTime = rSum;
 					}
 				}
-				if(responseTime > t.period){
+				if (responseTime > t.period) {
 					return false;
-				} 
-				
-				schedule.setResponseTime(t, modeLO,responseTime);
-				return true;
+				}
+
+				schedule.setResponseTime(t, modeLO, responseTime);
 			}
-			//then proceed to the other three modes
-			
-			//Make this a bit more general... same thing 4 times with some catches...
-			
+
+			// TODO get rid of this return statement!!!
+			return true;
+			// then proceed to the other three modes
+
+			// Make this a bit more general... same thing 4 times with some
+			// catches...
+
 		}
 
 		return false;
