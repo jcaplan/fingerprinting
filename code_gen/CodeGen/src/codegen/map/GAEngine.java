@@ -7,6 +7,8 @@ import org.jgap.Genotype;
 import org.jgap.IChromosome;
 import org.jgap.InvalidConfigurationException;
 
+import codegen.util.Logger;
+
 public class GAEngine {
 
 
@@ -58,7 +60,7 @@ public class GAEngine {
 			}
 
 			if (sameCount > 4) {
-				System.out.println("Seems to be converging. Quitting early.");
+				Logger.logMessage("Seems to be converging. Quitting early.");
 				break;
 			}
 		}

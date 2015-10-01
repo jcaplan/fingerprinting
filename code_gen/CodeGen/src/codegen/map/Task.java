@@ -66,15 +66,15 @@ public class Task implements Comparable<Task>{
 	public int compareTo(Task task) {
 		int result;
 		if(this.period > task.period){
-			result = 1;
+			result = -1;
 		} else if(this.period == task.period){
 			if(System.currentTimeMillis()%2 == 0){
-				result = 1;
-			} else {
 				result = -1;
+			} else {
+				result = 1;
 			}
 		} else {
-			result = -1;
+			result = 1;
 		}
 		return result;
 	}

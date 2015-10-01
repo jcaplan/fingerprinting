@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import org.jgap.*;
 import org.jgap.impl.IntegerGene;
 
+import codegen.util.Logger;
+
 public class Mapper {
 
 	Application app;
@@ -30,14 +32,14 @@ public class Mapper {
 	}
 	
 	public void printApp() {
-		System.out.println(app);
+		Logger.logMessage(app);
 		
 	}
 
 	public void printProcessors() {
 		for(Processor p : procList){
-			System.out.println(p);
-		}
+			Logger.logMessage(p);
+		} 
 		
 	}
 

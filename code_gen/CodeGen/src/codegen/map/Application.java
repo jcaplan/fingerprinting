@@ -2,6 +2,8 @@ package codegen.map;
 
 import java.util.ArrayList;
 
+import codegen.util.Logger;
+
 public class Application {
 	
 	ArrayList<Task> taskList;
@@ -29,7 +31,7 @@ public class Application {
 		String s = "";
 		int count = 0;
 		for(Task t : taskList){
-			System.out.println("Task " + count + ": " + t);
+			Logger.logMessage("Task " + count + ": " + t);
 			count++;
 		}
 		return s;

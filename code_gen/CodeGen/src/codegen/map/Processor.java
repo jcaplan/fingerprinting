@@ -23,4 +23,10 @@ public class Processor {
 		}
 		return s;
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		Processor p = (Processor) o;
+		return name.equals(p.name);
+	}
 }

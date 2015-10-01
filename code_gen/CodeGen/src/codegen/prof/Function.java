@@ -357,11 +357,10 @@ public class Function {
 						loop.maxIterations = annot.value;
 					}
 				}
+				if(loop.maxIterations == 0){
+					loop.maxIterations = Loop.defaultMaxIterations;
+				}
 				break;
-			}
-			
-			if(loop.maxIterations == 0){
-				loop.maxIterations = Loop.defaultMaxIterations;
 			}
 			
 		}

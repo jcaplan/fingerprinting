@@ -5,14 +5,14 @@ import java.util.*;
 public class Schedule {
 
 	private class Binding {
-		Processor processor;
+		Processor[] processor = new Processor[SchedAnalysis.numModes];
 		int priority;
 		double[] responseTime = new double[SchedAnalysis.numModes];
 		
 		
 		public Binding(Processor processor){
 
-			this.processor = processor;
+			this.processor[SchedAnalysis.modeLO] = processor;
 			this.priority = Integer.MAX_VALUE;
 		}
 		
@@ -22,6 +22,14 @@ public class Schedule {
 		
 		public int getPriority(){
 			return priority;
+		}
+		
+		public Processor getLoModeProcessor(){
+			return processor[SchedAnalysis.modeLO];
+		}
+
+		public double getResponseTime(int mode) {
+			return responseTime[mode];
 		}
 	}
 	
@@ -35,17 +43,18 @@ public class Schedule {
 
 	public boolean checkConstraints(ArrayList<MapConstraint> constraints) {
 		for(MapConstraint c : constraints){
-			Processor p1 = bindings.get(c.t1).processor;
-			Processor p2 = bindings.get(c.t2).processor;
-			if(p1 == p2){
+			Processor p1 = bindings.get(c.t1).getLoModeProcessor();
+			Processor p2 = bindings.get(c.t2).getLoModeProcessor();
+			
+			if(!MapConstraint.check(p1,p2)){
 				return false;
 			}
 		}
 		return true;
 	}
 	
-	public Processor getProcessor(Task t){
-		return bindings.get(t).processor;
+	public Processor getLoModeProcessor(Task t){
+		return bindings.get(t).getLoModeProcessor();
 	}
 
 
@@ -60,5 +69,10 @@ public class Schedule {
 
 	public int getPriority(Task t){
 		return bindings.get(t).getPriority();
+	}
+
+
+	public double getResponseTime(Task t, int mode) {
+		return bindings.get(t).getResponseTime(mode);
 	}
 }

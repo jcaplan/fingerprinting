@@ -103,26 +103,21 @@ public class IpetAnalysis {
 
 			for (int i = 0; i < f.loops.size(); i++) {
 				Loop l = f.loops.get(i);
-				// Deal with single Block loops afterwards if they exist
-				if (l.head.equals(l.tail)) {
-					singleBlockLoops.add(l);
-					singleBlockLoopBound = l.maxIterations;
-				} else {
+				// sum(all edges in) - sum(loopbound* nonbackwardeges) <= 0
+				
+				constraint = new double[constraintSize];
+				for (Edge e : l.head.predEdges) {
+					System.out.println(e);
+					constraint[e.index] = 1;
 					
-					// sum(all edges in) - sum(loopbound* nonbackwardeges) <= 0
-					
-					constraint = new double[constraintSize];
-					for (Edge e : l.head.predEdges) {
-						System.out.println(e);
-						constraint[e.index] = 1;
-						
-						if(!l.body.contains(e.startBlock)){ // then it is a backwards edge
-							constraint[e.index] -= l.maxIterations;
-						}
+					if(!l.body.contains(e.startBlock)){ 
+						// then it is not a backwards edge
+						constraint[e.index] -= l.maxIterations;
 					}
-					problem.addConstraint(constraint, LE, 0);
 				}
-			}
+				problem.addConstraint(constraint, LE, 0);
+				}
+			
 
 
 		}
@@ -171,86 +166,17 @@ public class IpetAnalysis {
 		problem.setMaxim();
 		problem.setObjFn(constraint);
 
-		if (!singleBlockLoops.isEmpty()) { // Single block loops were found
-			int numConstraints = problem.getNrows();
-			constraint = new double[constraintSize];
-			// If more than one self loop, throw an error for now
-			if (singleBlockLoops.size() > 1) {
-				throw new RuntimeErrorException(new Error(
-						"Multiple single block loops not supported yet"));
-			}
+		
+		problem.printLp();
+		problem.solve();
 
-			// For each loop, need to consider the two cases:
-			// 1. loop > 0 and other entries > 0
-			
-			
-			
-			Edge selfEdge = new Edge();
-			Loop loop = singleBlockLoops.get(0);
-			for (Edge e : loop.head.predEdges) {
-				if (e.isSingleBBLoop()) {
-					selfEdge = e;
-				} else {
-					constraint[e.index] = 1;
-				}
+		problem.printObjective();
+		problem.printSolution(1);
 
-			}
-
-			int maxBranch;
-
-			// All non loop entries together must be greater than 1
-			// ----------------------------------------------------
-			problem.addConstraint(constraint, GE, 1);
-			
-			// The loop must be <= LoopBound *(all the other entry points)
-			// -----------------------------------------------------------
-			for(int i = 0; i < constraint.length; i++){
-				if(constraint[i] > 0){
-					constraint[i] -= singleBlockLoopBound;
-				}
-			}
-			constraint[selfEdge.index] = 1;
-			problem.addConstraint(constraint, LE, 0);
-
-			problem.solve();
-			maxBranch = (int) problem.getObjective();
-
-			problem.printObjective();
-			problem.printSolution(1);
-			// 2. all = 0
-
-			// Remove the two constraints
-			problem.delConstraint(numConstraints + 2);
-			problem.delConstraint(numConstraints + 1);
-
-			for (Edge e : loop.head.predEdges) {
-				constraint = new double[constraintSize];
-				constraint[e.index] = 1;
-				problem.addConstraint(constraint, EQ, 0);
-			}
-
-			problem.solve();
-			int otherBranch = (int) problem.getObjective();
-			if (otherBranch > maxBranch) {
-				maxBranch = otherBranch;
-			}
-
-			problem.printObjective();
-			problem.printSolution(1);
-
-			wcet = maxBranch;
-
-		} else { // There were no single block loops
-			problem.printLp();
-			problem.solve();
-
-			problem.printObjective();
-			problem.printSolution(1);
-
-			// The value of the objective function is the WCET
-			// -----------------------------------------------
-			wcet = (int) problem.getObjective();
-		}
+		// The value of the objective function is the WCET
+		// -----------------------------------------------
+		wcet = (int) problem.getObjective();
+	
 
 
 		// Costs: Branch -> 4 (Assume mispredicted)
@@ -261,7 +187,7 @@ public class IpetAnalysis {
 		return wcet;
 	}
 
-	private void buildEdges(Function func) {
+	public void buildEdges(Function func) {
 		calledFunctions = new HashMap<>();
 		for(Function f : func.getAllCalledFunctions()){
 			calledFunctions.put(f, 0);

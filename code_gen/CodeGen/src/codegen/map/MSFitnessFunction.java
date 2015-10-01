@@ -7,6 +7,8 @@ import org.jgap.FitnessFunction;
 import org.jgap.Gene;
 import org.jgap.IChromosome;
 
+import codegen.util.Logger;
+
 @SuppressWarnings("serial")
 public class MSFitnessFunction extends FitnessFunction{
 
@@ -42,10 +44,10 @@ public class MSFitnessFunction extends FitnessFunction{
 		}
 		
 		if(!schedule.checkConstraints(constraints)){
-			System.out.println("schedule illegal");
+			Logger.logMessage("schedule illegal");
 			return 0;
 		} else {
-			System.out.println("schedule legal");
+			Logger.logMessage("schedule legal");
 		}
 		
 		SchedAnalysis analysis = new SchedAnalysis(taskList, schedule,procList);
@@ -57,7 +59,7 @@ public class MSFitnessFunction extends FitnessFunction{
 			fitness = analysis.qosAnalysis();
 		}
 
-		System.out.println("result of schedulability analysis: " + schedResult);
+		Logger.logMessage("result of schedulability analysis: " + schedResult);
 		return fitness;
 	}
 	

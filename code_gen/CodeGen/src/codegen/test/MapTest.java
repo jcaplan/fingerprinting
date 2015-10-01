@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.Set;
 
 import codegen.map.*;
+import codegen.util.Logger;
 
 public class MapTest {
 
@@ -16,22 +17,21 @@ public class MapTest {
 	
 	static Mapper mapper;
 	
-	static public void generateRandomApplication(double pHI){
+	public static Application generateRandomApplication(double pHI){
 
 		Application app = new Application();
 		for(int i = 0; i < 10; i++){
 			
 			double Clo = 100*generator.nextDouble();
 			double Chi = Clo*1.5;
-			double period = Chi*(2 + generator.nextDouble());
+			double period = Chi*(4 + 2*generator.nextDouble());
 			boolean criticality = (generator.nextDouble() > pHI);
 			
 			
 			app.addTask(new Task(Clo,Chi,period,criticality));
 		}
 		
-		mapper.setApplication(app);
-		
+		return app;
 	}
 
 	private static void addProcessors(int numOdrCore, int numLockstepCore) {
@@ -51,8 +51,10 @@ public class MapTest {
 
 	public static void main(String[] args){
 		
+		Logger.turnLoggingOn(); 
 		mapper = new Mapper();
-		generateRandomApplication(percentHI);
+		Application app = generateRandomApplication(percentHI);
+		mapper.setApplication(app);
 		mapper.printApp();
 		
 		addProcessors(numOdrCores,numLockstepCores);

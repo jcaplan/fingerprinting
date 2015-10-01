@@ -9,5 +9,9 @@ public class MapConstraint {
 		this.t1 = t1;
 		this.t2 = t2;
 	}
+
+	public static boolean check(Processor p1, Processor p2) {
+		return !p1.equals(p2);
+	}
 	
 }

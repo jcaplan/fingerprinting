@@ -137,7 +137,7 @@ public class Profiler {
 //		System.out.println("Add the following lines to linker file: ");
 //		System.out.println(prof.getLibs(entryPoint));
 //		System.out.println("\n");
-		
+		prof.cfg.printDotCFG(entryPoint);
 		
 	}	
 	

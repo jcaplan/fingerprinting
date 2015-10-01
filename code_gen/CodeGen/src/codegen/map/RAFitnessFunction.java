@@ -5,6 +5,8 @@ import java.util.*;
 import org.jgap.*;
 import org.jgap.impl.IntegerGene;
 
+import codegen.util.Logger;
+
 @SuppressWarnings("serial")
 public class RAFitnessFunction extends FitnessFunction {
 
@@ -59,7 +61,7 @@ public class RAFitnessFunction extends FitnessFunction {
 
 		for (int i = 0; i < taskList.size(); i++) {
 			Task t = taskList.get(i);
-			System.out.println(t);
+			Logger.logMessage(t);
 		}
 
 		/*
@@ -135,7 +137,7 @@ public class RAFitnessFunction extends FitnessFunction {
 	private void printDetectionTypes(IChromosome chromosome) {
 		Gene[] geneList = chromosome.getGenes();
 		for (int i = 0; i < geneList.length; i++) {
-			System.out.println(faultMechanisms[(Integer) geneList[i]
+			Logger.logMessage(faultMechanisms[(Integer) geneList[i]
 					.getAllele()]);
 		}
 
