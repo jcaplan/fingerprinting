@@ -2,8 +2,8 @@
 
 void g(){
 	int i;
-	for(i = 0; i < 10; i++){
-		ANNOT_MAXITER(2);
+	for(i = 0; i < 99; i++){
+		ANNOT_MAXITER(99);
 		i++;
 	}
 
@@ -25,27 +25,27 @@ void h(){
 	}
 }
 
-void f(){
-	int i = 0;
-	int j = 5;
-	while(i < 100){
-		ANNOT_MAXITER(100);
-		while(j < 50){
-			ANNOT_MAXITER(50);
-			j++;
-		}
-		i++;
-	}
+// void f(){
+// 	int i = 0;
+// 	int j = 5;
+// 	while(i < 100){
+// 		ANNOT_MAXITER(100);
+// 		while(j < 50){
+// 			ANNOT_MAXITER(50);
+// 			j++;
+// 		}
+// 		i++;
+// 	}
 
-	int k;
-	for(i = 0; i < 200; i++){
-		ANNOT_MAXITER(200);
-		for(j = 0; j < 200; j++){
-			ANNOT_MAXITER(200);
-			k = i*j;
-		}
-	}
-}
+// 	int k;
+// 	for(i = 0; i < 200; i++){
+// 		ANNOT_MAXITER(200);
+// 		for(j = 0; j < 200; j++){
+// 			ANNOT_MAXITER(200);
+// 			k = i*j;
+// 		}
+// 	}
+// }
 
 int main(){
 
@@ -63,7 +63,7 @@ int main(){
 	// f();
 
 
-	double d1 = 0.3;
-	double d2 = 3.1;
-	double d3 = d1 * d2;
+	// double d1 = 0.3;
+	// double d2 = 3.1;
+	// double d3 = d1 * d2;
 }

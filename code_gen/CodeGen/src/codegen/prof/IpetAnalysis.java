@@ -107,12 +107,12 @@ public class IpetAnalysis {
 				
 				constraint = new double[constraintSize];
 				for (Edge e : l.head.predEdges) {
-					System.out.println(e);
+//					System.out.println(e);
 					constraint[e.index] = 1;
 					
 					if(!l.body.contains(e.startBlock)){ 
 						// then it is not a backwards edge
-						constraint[e.index] -= l.maxIterations;
+						constraint[e.index] = -l.maxIterations;
 					}
 				}
 				problem.addConstraint(constraint, LE, 0);

@@ -132,7 +132,7 @@ public class Profiler {
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
 //		System.out.println("Max stack height of " + entryPoint + ": " + prof.getMaxStackSize(entryPoint) + " bytes");
-		System.out.println("WCET of " + entryPoint + ": " + prof.getWCET(entryPoint,true) + " clock cycles");
+		System.out.println("WCET of " + entryPoint + ": " + prof.getWCET(entryPoint,false) + " clock cycles");
 //		System.out.println("Library functions are: " + prof.getLibFunctions());
 //		System.out.println("Add the following lines to linker file: ");
 //		System.out.println(prof.getLibs(entryPoint));

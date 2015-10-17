@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class PassiveReplication extends FaultMechanism{
 	
-	int[] reexecutionProfileOriginal = {1,2,1,2};
-	int[] reexecutionProfileReplica = {1,1,1,1};
+	int[] reexecutionProfileOriginal = {1,1,1,1};
+	int[] reexecutionProfileFault = {0,1,0,1};
 	
 	@Override
 	public String getCommandName() {
@@ -17,13 +17,16 @@ public class PassiveReplication extends FaultMechanism{
 	public void updateTaskList(ArrayList<Task> taskList, int taskIndex,
 			ArrayList<MapConstraint> constraints, Map<Task, FaultMechanism> techniqueMap) {
 		Task t = taskList.get(taskIndex);
-		Task replica = new Task(t,Task.replica);
-		taskList.add(replica);
-		constraints.add(new MapConstraint(t,replica));
+		Task replica1 = new Task(t,Task.replica);
+		taskList.add(replica1);
+		Task replica2 = new Task(t,Task.replica);
+		constraints.add(new MapConstraint(t,replica1));
 		t.setMaxNumReexecutions(reexecutionProfileOriginal);
-		replica.setMaxNumReexecutions(reexecutionProfileReplica);
+		replica1.setMaxNumReexecutions(reexecutionProfileOriginal);
+		replica2.setMaxNumReexecutions(reexecutionProfileFault);
 		techniqueMap.put(t, this);
-		techniqueMap.put(replica, this);
+		techniqueMap.put(replica1, this);
+		techniqueMap.put(replica2,this);
 	}
 
 }

@@ -9,7 +9,7 @@ proc myCallback { processorName breakpointNumber } {
 		set ::end [igeticount]
 		# puts "End instruction: $::end"
 		set elapsed [expr $::end - $::start]
-		puts "$elapsed"
+		puts "PROFILE::TIME_ELAPSED: $elapsed"
 	}
 	return False
 }
