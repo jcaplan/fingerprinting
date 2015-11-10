@@ -366,5 +366,13 @@ public class Function {
 		}
 		
 	}
+	
+	public ArrayList<BasicBlock> getBasicBlockList(){
+		return new ArrayList<>(bbList);
+	}
+	
+	public ArrayList<Loop> getLoopList(){
+		return loops;
+	}
 
 }

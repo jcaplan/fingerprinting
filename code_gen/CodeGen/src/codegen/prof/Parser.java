@@ -120,7 +120,6 @@ public class Parser {
 			String[] tkns = line.split("[\\s]+");
 			
 			
-			System.out.println(line);
 			/*
 			 * Always ignore first and last token (address and random text)
 			 */

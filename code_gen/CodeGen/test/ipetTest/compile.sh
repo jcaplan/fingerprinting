@@ -1,8 +1,13 @@
 #!/bin/bash
 
+ROOT=ipet
+
+if [[ $# > 1 ]];then 
+	ROOT=$1
+fi
+
 nios=~/altera/13.1/nios2eds/nios2_command_shell.sh
 
-${nios} nios2-elf-gcc ipet.c 
-${nios} nios2-elf-objdump a.out -d > ipet.objdump
-${nios} nios2-elf-objdump a.out -s -z --section=.wcet_annot > ipet.annot
-
+${nios} nios2-elf-gcc ${ROOT}.c -o ${ROOT}.out
+${nios} nios2-elf-objdump ${ROOT}.out -d > ${ROOT}.objdump
+${nios} nios2-elf-objdump ${ROOT}.out -s -z --section=.wcet_annot > ${ROOT}.annot

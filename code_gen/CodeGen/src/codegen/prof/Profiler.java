@@ -6,8 +6,9 @@ import java.util.ArrayList;
 
 import javax.management.RuntimeErrorException;
 
+import lpsolve.LpSolveException;
 import codegen.prof.BasicBlock.bbType;
-import lpsolve.*;
+import codegen.prof.flow.ConstantPropagation;
 
 public class Profiler {
 
@@ -106,6 +107,9 @@ public class Profiler {
 		return s;
 	}
 
+	public CFG getCfg(){
+		return cfg;
+	}
 
 	public static void main(String[] args) throws IOException{
 		if(args.length != 3){
@@ -139,6 +143,6 @@ public class Profiler {
 //		System.out.println("\n");
 		prof.cfg.printDotCFG(entryPoint);
 		
-	}	
+	}
 	
 }

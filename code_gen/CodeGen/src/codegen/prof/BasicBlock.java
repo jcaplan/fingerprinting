@@ -40,7 +40,7 @@ public class BasicBlock {
 	}
 	
 	public String getStartAddressHex(){
-		return Integer.toHexString(code.get(0).address);
+		return code.get(0).getAddressHex();
 	}
 	
 	public void printCode(){
@@ -282,5 +282,17 @@ public class BasicBlock {
 		// jmp,call,return -> 4
 		// load,store -> 1 + memory delay
 		// else -> 1
+	}
+	
+	public ArrayList<Code> getCode(){
+		return new ArrayList<>(code);
+	}
+
+	public ArrayList<BasicBlock> getSuccesors() {
+		return successors;
+	}
+	
+	public boolean isReturn(){
+		return type == bbType.RETURN;
 	}
 }

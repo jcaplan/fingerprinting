@@ -1,51 +1,66 @@
 #include "annot.h"
 
-void g(){
+int g(int j){
 	int i;
+	int k = 0;
 	for(i = 0; i < 99; i++){
 		ANNOT_MAXITER(99);
-		i++;
+		k += inter(i*j);
 	}
 
 
 
-	return;
+	return k;
+}
+
+int g1(int j){
+	int i;
+	int k = 0;
+	for(i = 0; i < 99; i++){
+		ANNOT_MAXITER(99);
+		k = i;
+	}
+
+
+
+	return k;
+}
+
+int inter(int k){
+
+	return k;
 }
 
 void h(){
 	int y = 0;
 	int x = 0;
 	while (x < 10) {
-	    if (!(x % 2)) {
-	        x = x + 1;
-	        
-	    } else {
-	    	x = x + 3;
+	    y = x++;
+	}
+}
+
+void f(){
+	int i = 0;
+	int j = 5;
+	while(i < 100){
+		ANNOT_MAXITER(100);
+		while(j < 50){
+			ANNOT_MAXITER(50);
+			j++;
+		}
+		i++;
+	}
+
+	int k;
+	for(i = 0; i < 200; i++){
+		ANNOT_MAXITER(200);
+		for(j = 0; j < 200; j++){
+			ANNOT_MAXITER(200);
+			k = i*j;
 		}
 	}
 }
 
-// void f(){
-// 	int i = 0;
-// 	int j = 5;
-// 	while(i < 100){
-// 		ANNOT_MAXITER(100);
-// 		while(j < 50){
-// 			ANNOT_MAXITER(50);
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-
-// 	int k;
-// 	for(i = 0; i < 200; i++){
-// 		ANNOT_MAXITER(200);
-// 		for(j = 0; j < 200; j++){
-// 			ANNOT_MAXITER(200);
-// 			k = i*j;
-// 		}
-// 	}
-// }
 
 int main(){
 
@@ -55,15 +70,9 @@ int main(){
 		ANNOT_MAXITER(10);
 		if(i > 5){
 
-			g();
+			j += g(i);
 		}
 	}
 
-//	h(); //doesn't work right now
-	// f();
-
-
-	// double d1 = 0.3;
-	// double d2 = 3.1;
-	// double d3 = d1 * d2;
+	return j;
 }

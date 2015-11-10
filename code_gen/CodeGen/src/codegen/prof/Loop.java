@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import lpsolve.BbListener;
 
-class Loop {
+public class Loop {
 
 	BasicBlock head;
 	BasicBlock tail;
@@ -83,6 +83,18 @@ class Loop {
 			}
 		}
 		return false;
+	}
+	
+	public BasicBlock getHead(){
+		return head;
+	}
+	
+	public BasicBlock getTail(){
+		return tail;
+	}
+	
+	public ArrayList<BasicBlock> getBody(){
+		return body;
 	}
 
 }

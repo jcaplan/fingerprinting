@@ -14,8 +14,9 @@ public class Code {
 	CodeType type;
 	int customInstructionID;
 
-	static enum CodeType {
-		CALL, INDIRECTCALL, JUMP, RETURN, COND_BRANCH, UNCOND_BRANCH, OTHER, STORE, LOAD, CUSTOM
+	public static enum CodeType {
+		CALL, INDIRECTCALL, JUMP, RETURN, COND_BRANCH, UNCOND_BRANCH, OTHER, STORE, LOAD, CUSTOM,
+		BINOP, COMPARE
 	};
 
 	public Code(String line) {
@@ -65,6 +66,14 @@ public class Code {
 						"Only FPU custom instructions supported. Not possible for N < 224. (N = "
 								+ customInstructionID));
 			}
+		} else if(instruction.equals("addi") || 
+					instruction.equals("add") ||
+					instruction.equals("sub") || 
+					instruction.equals("subi")){
+			type = CodeType.BINOP;
+		} else if (instruction.startsWith("cmp")){
+			type = CodeType.COMPARE;
+		
 		} else {
 			type = CodeType.OTHER;
 		}
@@ -102,6 +111,26 @@ public class Code {
 			s = s.substring(0, s.length() - 1);
 		}
 		return s;
+	}
+	
+	public Code.CodeType getType(){
+		return type;
+	}
+	
+	public String[] getOperands(){
+		return operands;
+	}
+	
+	public int getAddress(){
+		return address;
+	}
+	
+	public String getInstruction(){
+		return instruction;
+	}
+
+	public String getAddressHex() {
+		return Integer.toHexString(address);
 	}
 
 }
