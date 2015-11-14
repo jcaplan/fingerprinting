@@ -1,5 +1,7 @@
 package codegen.prof.flow;
 
+import java.util.ArrayList;
+
 import codegen.prof.*;
 import codegen.prof.flow.ExpCompareOp.Type;
 
@@ -10,12 +12,24 @@ public class ExpBinOp extends Expression {
 	};
 	
 	Type type;
-	Expression lhs,rhs;
+	public static final int LHS = 0;
+	public static final int RHS = 1;
 
 	public ExpBinOp(String instr) {
 		setType(instr);
+		initChildren();
 	}
 
+	public ExpBinOp(Type type){
+		this.type = type;
+		initChildren();
+	}
+	
+	@Override 
+	protected void initChildren(){
+		children = new Expression[2];
+	}
+	
 	protected void setType(String instr) {
 		switch(instr){
 		case "add":
@@ -34,17 +48,25 @@ public class ExpBinOp extends Expression {
 	}
 
 	public void setLHS(Expression exp) {
-		lhs = exp;
+		setChild(LHS, exp); 
 	}
 
 	public void setRHS(Expression exp) {
-		rhs = exp;
+		setChild(RHS, exp);
+	}
+	
+	public Expression getLHS(){
+		return getChild(LHS);
+	}
+	
+	public Expression getRHS(){
+		return getChild(RHS);
 	}
 	
 	
 	@Override
 	public String toString(){
-		return "(" + lhs + ")" + getOpString() + "(" + rhs + ")";
+		return "(" + getChild(LHS) + ")" + getOpString() + "(" + getChild(RHS) + ")";
 		
 	}
 
@@ -65,7 +87,15 @@ public class ExpBinOp extends Expression {
 	}
 	
 
+	@Override
+	public boolean equals(Object o){
+		if(!(o instanceof ExpBinOp)){
+			return false;
+		}
 		
+		ExpBinOp other = (ExpBinOp) o;
+		return getLHS().equals(other.getLHS()) && getRHS().equals(other.getRHS()) && type.equals(other.type);  
+	}	
 	
 	
 	

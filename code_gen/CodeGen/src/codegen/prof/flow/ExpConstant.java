@@ -13,5 +13,17 @@ public class ExpConstant extends Expression {
 	public String toString(){
 		return Integer.toString(value);
 	}
+	
+
+	@Override
+	public boolean equals(Object o){
+		if(!(o instanceof ExpConstant)){
+			return false;
+		}
+		
+		ExpConstant other = (ExpConstant) o;
+		return this.value == other.value;  
+	}	
+	
 
 }

@@ -44,11 +44,11 @@ public class Loop {
 			return;
 		}
 
-		findDescendants(tail);
+		findAncestors(tail);
 
 	}
 
-	private void findDescendants(BasicBlock end) {
+	private void findAncestors(BasicBlock end) {
 		if (!body.contains(end)) {
 			body.add(end);
 			// Important to go here in case there are loops inside of other
@@ -56,7 +56,7 @@ public class Loop {
 			// ------------------------------------------------------------
 			for (BasicBlock bb : end.predecessors) {
 				if (!bb.equals(head)) {
-					findDescendants(bb);
+					findAncestors(bb);
 				}
 			}
 		}
@@ -96,5 +96,25 @@ public class Loop {
 	public ArrayList<BasicBlock> getBody(){
 		return body;
 	}
+
+	public BasicBlock getSingleEntry() {
+		
+		boolean foundSingle = false;
+		BasicBlock entry = null;
+		for(BasicBlock bb : head.predecessors){
+			if(!body.contains(bb)){
+				if(!foundSingle){
+					entry = bb;
+					foundSingle = true;
+				} else {
+					entry = null;
+					break;
+				}
+			}
+		}
+		
+		return entry;
+	}
+	
 
 }

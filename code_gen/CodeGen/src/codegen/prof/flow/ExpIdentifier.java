@@ -13,4 +13,15 @@ public class ExpIdentifier extends Expression {
 	public String toString(){
 		return id;
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(!(o instanceof ExpIdentifier)){
+			return false;
+		}
+		
+		ExpIdentifier other = (ExpIdentifier) o;
+		
+		return id.equals(other.id);
+	}
 }

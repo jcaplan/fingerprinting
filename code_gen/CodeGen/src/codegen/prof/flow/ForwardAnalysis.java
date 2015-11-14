@@ -150,6 +150,7 @@ public abstract class ForwardAnalysis<A> {
 			}
 		}
 	}
+	
 
 	protected abstract void initCodeInSet(Code c);
 
@@ -194,6 +195,9 @@ public abstract class ForwardAnalysis<A> {
 		case COMPARE:
 			result = caseCompareOp(c, c_in, succ);
 			break;
+		case MOVE:
+			result = caseMoveOp(c, c_in, succ);
+			break;
 		default:
 			result = caseDefault(c, c_in, succ);
 			break;
@@ -205,6 +209,8 @@ public abstract class ForwardAnalysis<A> {
 	}
 
 	
+
+
 
 
 	protected abstract A merge(A bbOutSet2, A a);
@@ -264,6 +270,10 @@ public abstract class ForwardAnalysis<A> {
 		return caseDefault(c,c_in, succ);
 	}
 	
+	protected A caseMoveOp(Code c, A c_in, BasicBlock succ) {
+		return caseDefault(c,c_in, succ);
+	}
+	
 	
 	public void prettyPrint(){
 		for(BasicBlock bb : bbList){
@@ -272,6 +282,15 @@ public abstract class ForwardAnalysis<A> {
 		}
 	}
 	
+
+	public A getInSet(BasicBlock bb){
+		return (A) bbInSet.get(bb);
+	}
+
+	public A getOutSet(BasicBlock bb) {
+		return (A) codeOutSet.get(bb.getLastCode());
+	}
+
 
 	public void prettyPrint(BasicBlock bb) {
 		System.out.println("****************************************************");

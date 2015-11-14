@@ -125,7 +125,11 @@ public class Parser {
 			 */
 			for(int i = 1; i < tkns.length - 1; i++){
 				String value = reverseEndian(tkns[i]);
-				tokens.add(Integer.parseInt(value, 16));
+				try{
+					tokens.add(Integer.parseInt(value, 16));
+				} catch (NumberFormatException e){
+					//sometimes there's a space in the final token arg!
+				}
 			}
 		}
 		

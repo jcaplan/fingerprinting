@@ -7,10 +7,21 @@ public class ExpCompareOp extends Expression{
 	}
 	
 	Type type;
-	Expression lhs,rhs;
+	
+
+	public static final int LHS = 0;
+	public static final int RHS = 1;
+	
+	
+	
+	@Override 
+	protected void initChildren(){
+		children = new Expression[2];
+	}
 	
 	public ExpCompareOp(String instr) {
 		setType(instr);
+		initChildren();
 	}
 
 	protected void setType(String instr) {
@@ -54,17 +65,26 @@ public class ExpCompareOp extends Expression{
 	}
 
 	public void setLHS(Expression exp) {
-		lhs = exp;
+		setChild(LHS, exp); 
 	}
 
 	public void setRHS(Expression exp) {
-		rhs = exp;
+		setChild(RHS, exp);
 	}
+	
+	public Expression getLHS(){
+		return getChild(LHS);
+	}
+	
+	public Expression getRHS(){
+		return getChild(RHS);
+	}
+	
 	
 	
 	@Override
 	public String toString(){
-		return "(" + lhs + ")" + getOpString() + "(" + rhs + ")";
+		return "(" + getLHS() + ")" + getOpString() + "(" + getRHS() + ")";
 		
 	}
 
@@ -95,5 +115,16 @@ public class ExpCompareOp extends Expression{
 		}
 		return s;
 	}
+	
+
+	@Override
+	public boolean equals(Object o){
+		if(!(o instanceof ExpBinOp)){
+			return false;
+		}
+		
+		ExpBinOp other = (ExpBinOp) o;
+		return getLHS().equals(other.getLHS()) && getRHS().equals(other.getRHS()) && type.equals(other.type);  
+	}	
 	
 }

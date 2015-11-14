@@ -16,7 +16,7 @@ public class Code {
 
 	public static enum CodeType {
 		CALL, INDIRECTCALL, JUMP, RETURN, COND_BRANCH, UNCOND_BRANCH, OTHER, STORE, LOAD, CUSTOM,
-		BINOP, COMPARE
+		BINOP, COMPARE, MOVE
 	};
 
 	public Code(String line) {
@@ -74,6 +74,8 @@ public class Code {
 		} else if (instruction.startsWith("cmp")){
 			type = CodeType.COMPARE;
 		
+		} else if (instruction.equals("mov") || instruction.equals("movi")){
+			type = CodeType.MOVE;
 		} else {
 			type = CodeType.OTHER;
 		}
@@ -131,6 +133,10 @@ public class Code {
 
 	public String getAddressHex() {
 		return Integer.toHexString(address);
+	}
+
+	public String getCodeKey() {
+		return "@" + getAddressHex();
 	}
 
 }

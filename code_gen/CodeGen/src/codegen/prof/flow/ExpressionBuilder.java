@@ -52,6 +52,22 @@ public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
 		
 	};
 	
+	@Override 
+	protected Map<String,Expression> caseMoveOp(Code c, Map<String,Expression> c_in, BasicBlock succ) {
+		HashMap<String,Expression> c_out = new HashMap<>(c_in);
+		String[] ops = c.getOperands();
+		
+		c_out.remove(ops[0]);
+		
+		if(c_out.containsKey(ops[1])){
+			c_out.put(ops[0], c_out.get(ops[1]));
+		} else {
+			c_out.put(ops[0], convertOpToExp(ops[1]));
+		}
+		
+		
+		return c_out;
+	}
 	@Override
 	protected Map<String,Expression> caseStore(Code c, Map<String,Expression> c_in, BasicBlock succ) {
 		HashMap<String,Expression> c_out = new HashMap<>(c_in);
@@ -131,11 +147,11 @@ public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
 		ExpBranchCond exp = new ExpBranchCond(c.getInstruction());
 		exp.setLHS(op1);
 		exp.setRHS(op2);
-		String key = "@" + c.getAddressHex();
+		String key = c.getCodeKey();
 		c_out.put(key, exp);
 		
 		return c_out;
-	};
+	}
 
 
 
@@ -147,9 +163,18 @@ public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
 		} else if (set1 == null){
 			return set2;
 		}
-		HashMap<String, Expression> result = new HashMap<>(set1);
-		result.putAll(set2);
-		return result;
+
+		HashMap<String,Expression> out = new HashMap<>(set1);
+		
+		for(String key : set2.keySet()){
+			if(!set1.containsKey(key)){ //bottom is implied by no key stored yet
+				out.put(key,set2.get(key));
+			} else if(!set1.get(key).equals(set2.get(key))){ //if the keys are equal all is good, otherwise wipe it out
+				out.put(key, Expression.getNewTop());
+			}
+		}
+		
+		return out;
 	}
 
 
@@ -178,7 +203,6 @@ public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
 		
 	}
 
-	
-	
+
 	
 }

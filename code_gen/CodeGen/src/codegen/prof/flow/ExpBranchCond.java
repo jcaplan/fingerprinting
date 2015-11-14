@@ -5,12 +5,13 @@ public class ExpBranchCond extends ExpCompareOp{
 	
 	public ExpBranchCond(String instr) {
 		super(instr);
+		
 	}
 
 	@Override
 	protected void setType(String instr) { 
 		switch(instr){
-		case "be":
+		case "beq":
 			type = Type.EQ;
 			break;
 		case "bge":

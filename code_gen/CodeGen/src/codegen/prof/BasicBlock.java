@@ -7,12 +7,12 @@ import javax.management.RuntimeErrorException;
 import codegen.prof.Code.CodeType;
 
 public class BasicBlock {
-	
-	ArrayList<BasicBlock> predecessors = new ArrayList<>();
-	ArrayList<BasicBlock> successors = new ArrayList<>();
-	ArrayList<Edge> succEdges = new ArrayList<>();
-	ArrayList<Edge> predEdges = new ArrayList<>();
-	
+		
+		ArrayList<BasicBlock> predecessors = new ArrayList<>();
+		ArrayList<BasicBlock> successors = new ArrayList<>();
+		ArrayList<Edge> succEdges = new ArrayList<>();
+		ArrayList<Edge> predEdges = new ArrayList<>();
+		
 	ArrayList<Code> code = new ArrayList<>();
 	enum bbType {
 		CALL,
@@ -294,5 +294,9 @@ public class BasicBlock {
 	
 	public boolean isReturn(){
 		return type == bbType.RETURN;
+	}
+
+	public int getAge() {
+		return age;
 	}
 }

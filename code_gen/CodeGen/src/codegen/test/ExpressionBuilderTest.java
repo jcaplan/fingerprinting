@@ -37,29 +37,39 @@ public class ExpressionBuilderTest {
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
 		prof.getCfg().printDotCFG(entryPoint);
-//		Loop l = prof.getCfg().getFunction(entryPoint).getLoopList().get(0);
+		
+		ExpressionBuilder builder;
+		Loop l = prof.getCfg().getFunction(entryPoint).getLoopList().get(0);
+		
+		
 //		ExpressionBuilder builder = new ExpressionBuilder(l.getBody());
 //		builder.analyzeBasicBlock(l.getHead(), null, new HashMap<String,Expression>());
 //		builder.prettyPrint(l.getHead());
 		
-//		Loop l = prof.getCfg().getFunction(entryPoint).getLoopList().get(0);
 //		ExpressionBuilder builder = new ExpressionBuilder(l.getBody());
 //		BasicBlock bb = l.getBody().get(1);
 //		builder.analyzeBasicBlock(bb, null, new HashMap<String,Expression>());
 //		builder.prettyPrint(bb);
 
 		
-		Loop l = prof.getCfg().getFunction(entryPoint).getLoopList().get(0);
 		ArrayList<BasicBlock> bbList = new ArrayList<>(l.getBody());
 		bbList.remove(l.getHead());
 //		bbList.remove(l.getTail());
 		
-		ExpressionBuilder builder = new ExpressionBuilder(bbList);
+		builder = new ExpressionBuilder(bbList);
 		builder.analyze();
 		builder.prettyPrint();
-		
-//		ExpressionBuilder builder = new ExpressionBuilder(prof.getCfg().getFunction(entryPoint));
+//		
+//		bbList.clear();;
+//		bbList.add(l.getHead());
+//		
+//		builder = new ExpressionBuilder(bbList);
 //		builder.analyze();
 //		builder.prettyPrint();
+		
+		
+//		builder = new ExpressionBuilder(prof.getCfg().getFunction(entryPoint));
+//		builder.analyze();
+//		builder.prettyPrint(l.getHead());
 	}
 }
