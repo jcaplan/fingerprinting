@@ -1,5 +1,6 @@
 package codegen.prof.flow;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,19 +20,10 @@ public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
 	public ExpressionBuilder(List<BasicBlock> workList) {
 		super(workList);
 	}
-	
-	
-	
 
 	@Override
-	protected void initCodeInSet(Code c) {
-		codeInSet.put(c, new HashMap<String,Expression>());
-	}
-
-
-	@Override
-	protected void initBasicBlockInSet(BasicBlock bb) {
-		bbInSet.put(bb, new HashMap<String,Expression>());
+	protected HashMap<String,Expression> initSet() {
+		return new HashMap<String,Expression>();
 	}
 
 	@Override
@@ -176,6 +168,8 @@ public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
 		
 		return out;
 	}
+	
+
 
 
 	@Override

@@ -7,7 +7,7 @@ import java.util.*;
 
 import javax.management.RuntimeErrorException;
 
-import codegen.prof.BasicBlock.bbType;
+import codegen.prof.BasicBlock.BbType;
 
 public class CFG {
 
@@ -135,14 +135,14 @@ public class CFG {
 
 	private void buildCallTree(Function root) {
 		for(BasicBlock bb : root.bbList){
-			if(bb.type == bbType.CALL){
+			if(bb.type == BbType.CALL){
 				//Need to establish a reference to callee function
 				//has to be done at this level
 				String[] ops = bb.getCalleeString();
 					bb.callee = getFunction(ops[1]);	
 					if(!bb.callee.equals(root))
 						buildCallTree(bb.callee);
-			} else if(bb.type == bbType.JUMP){
+			} else if(bb.type == BbType.JUMP){
 				String[] ops = bb.getJumpDest();
 				if(ops.length > 1){
 					bb.callee = getFunction(ops[1]);

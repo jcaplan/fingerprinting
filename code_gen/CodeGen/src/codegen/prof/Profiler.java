@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import javax.management.RuntimeErrorException;
 
 import lpsolve.LpSolveException;
-import codegen.prof.BasicBlock.bbType;
+import codegen.prof.BasicBlock.BbType;
 import codegen.prof.flow.ConstantPropagation;
 
 public class Profiler {
@@ -66,7 +66,7 @@ public class Profiler {
 		int maxCalledSize = 0;
 		for(BasicBlock bb : f.bbList){
 			size += bb.getStackSize();
-			if(bb.type == bbType.CALL || bb.type == bbType.JUMP){
+			if(bb.type == BbType.CALL || bb.type == BbType.JUMP){
 				//Don't add up for all functions, only add up for the maximum function that was called
 				//(Matters when lots of functions are called)
 				if(bb.callee != null && !bb.callee.equals(f)){

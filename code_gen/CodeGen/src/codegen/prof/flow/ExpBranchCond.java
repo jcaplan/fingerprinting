@@ -1,11 +1,16 @@
 package codegen.prof.flow;
 
 
+
 public class ExpBranchCond extends ExpCompareOp{
 	
 	public ExpBranchCond(String instr) {
 		super(instr);
 		
+	}
+
+	public ExpBranchCond(Type type) {
+		super(type);
 	}
 
 	@Override
@@ -38,4 +43,7 @@ public class ExpBranchCond extends ExpCompareOp{
 		}
 		
 	}
+
+
+
 }

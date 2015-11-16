@@ -20,7 +20,8 @@ public class Loop {
 
 	public String getDotGraphString() {
 		String s = "";
-		s += "subgraph cluster_loop_" + head.getStartAddressHex() + " {\n";
+		String loopLabel = head.getStartAddressHex() + tail.getStartAddressHex();
+		s += "subgraph cluster_loop_" + loopLabel + " {\n";
 		s += "\tgraph [label = \"loop\"];\n";
 		s += "\tnode_" + head.getStartAddressHex();
 		s += " [color = green]\n";
@@ -97,23 +98,23 @@ public class Loop {
 		return body;
 	}
 
-	public BasicBlock getSingleEntry() {
-		
-		boolean foundSingle = false;
-		BasicBlock entry = null;
+	public ArrayList<BasicBlock> getEntryBlocks() {
+		ArrayList<BasicBlock> entryList = new ArrayList<>();
 		for(BasicBlock bb : head.predecessors){
 			if(!body.contains(bb)){
-				if(!foundSingle){
-					entry = bb;
-					foundSingle = true;
-				} else {
-					entry = null;
-					break;
-				}
-			}
+				entryList.add(bb);
+			} 
 		}
 		
-		return entry;
+		return entryList;
+	}
+
+	public void setMaxIterations(int maxIterations) {
+		this.maxIterations = maxIterations;
+	}
+
+	public int getMaxIterations() {
+		return maxIterations;
 	}
 	
 

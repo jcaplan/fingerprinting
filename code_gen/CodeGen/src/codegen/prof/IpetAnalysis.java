@@ -10,7 +10,7 @@ import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 import lpsolve.LpSolve;
 import lpsolve.LpSolveException;
-import codegen.prof.BasicBlock.bbType;
+import codegen.prof.BasicBlock.BbType;
 
 public class IpetAnalysis {
 	public static final double defaultMaxLoop = 15;
@@ -68,7 +68,7 @@ public class IpetAnalysis {
 		for (Function f : calledFunctions.keySet()) {
 			for (BasicBlock bb : f.bbList) {
 				constraint = new double[constraintSize];
-				if(bb.type != BasicBlock.bbType.RETURN){
+				if(bb.type != BasicBlock.BbType.RETURN){
 					// All blocks have predecessors (root block is empty and
 					// ignored)
 					// --------------------------------------------------------------
@@ -132,7 +132,7 @@ public class IpetAnalysis {
 			constraint = new double[constraintSize];
 			for(Function caller : calledFunctions.keySet()){
 				for(BasicBlock bb : caller.bbList){
-					if(bb.type == bbType.CALL && bb.callee.equals(f)){
+					if(bb.type == BbType.CALL && bb.callee.equals(f)){
 						called = true;
 						constraint[bb.succEdges.get(0).index] = 1;
 					}
@@ -200,7 +200,7 @@ public class IpetAnalysis {
 
 		for (Function f : calledFunctions.keySet()) {
 			for (BasicBlock bb : f.bbList) {
-				if (bb.type == bbType.CALL) {
+				if (bb.type == BbType.CALL) {
 					if (calledFunctions.containsKey(bb.callee)) {
 						int oldValue = calledFunctions.get(bb.callee);
 						calledFunctions.put(bb.callee, oldValue + 1);

@@ -2,7 +2,7 @@ package codegen.prof;
 
 import java.util.*;
 
-import codegen.prof.BasicBlock.bbType;
+import codegen.prof.BasicBlock.BbType;
 import codegen.prof.Code.CodeType;
 
 public class Function {
@@ -49,24 +49,24 @@ public class Function {
 			// Take different actions depending what the code is
 			switch (c.type) {
 			case CALL:
-				bb.type = bbType.CALL;
+				bb.type = BbType.CALL;
 				bbList.add(new BasicBlock());
 				break;
 			case INDIRECTCALL:
-				bb.type = bbType.INDIRECT_CALL;
+				bb.type = BbType.INDIRECT_CALL;
 				bbList.add(new BasicBlock());
 				break;
 			case RETURN:
-				bb.type = bbType.RETURN;
+				bb.type = BbType.RETURN;
 				bbList.add(new BasicBlock());
 				break;
 			case COND_BRANCH:
 			case UNCOND_BRANCH:
-				bb.type = bbType.BRANCH;
+				bb.type = BbType.BRANCH;
 				bbList.add(new BasicBlock());
 				break;
 			case JUMP:
-				bb.type = bbType.JUMP;
+				bb.type = BbType.JUMP;
 				bbList.add(new BasicBlock());
 				break;
 			case OTHER:
@@ -188,7 +188,7 @@ public class Function {
 		ArrayList<Function> fList = new ArrayList<>();
 		fList.add(this);
 		for (BasicBlock bb : bbList) {
-			if (bb.type == bbType.CALL && bb.callee != this) {
+			if (bb.type == BbType.CALL && bb.callee != this) {
 				if(!fList.contains(bb.callee)){
 					fList.add(bb.callee);
 				}

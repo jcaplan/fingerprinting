@@ -14,15 +14,10 @@ public class ConstantPropagation extends ForwardAnalysis<Map<String,Expression>>
 	}
 
 	@Override
-	protected void initCodeInSet(Code c) {
-		codeInSet.put(c, new HashMap<String,Expression>());
+	protected HashMap<String,Expression> initSet(){
+		return new HashMap<String,Expression>();
 	}
 
-	@Override
-	protected void initBasicBlockInSet(BasicBlock bb) {
-		bbInSet.put(bb, new HashMap<String,Expression>());
-		
-	}
 
 	@Override
 	protected Map<String, Expression> merge(Map<String, Expression> set1,
@@ -103,6 +98,12 @@ public class ConstantPropagation extends ForwardAnalysis<Map<String,Expression>>
 		if(c_out.containsKey(ops[1])){
 			c_out.put(ops[0], c_out.get(ops[1]));
 		} else {
+			Expression exp = getConstant(ops[1]);
+			if((exp instanceof ExpConstant) && c.getInstruction().equals("movhi")){
+				ExpConstant cexp = (ExpConstant) exp;
+				cexp.value = cexp.value << 16;
+			}
+			
 			c_out.put(ops[0], getConstant(ops[1]));
 		}
 		
@@ -145,9 +146,21 @@ public class ConstantPropagation extends ForwardAnalysis<Map<String,Expression>>
 		}
 		
 		if(!op1.isTop() && !op2.isTop()){
-			Expression result;
+			Expression result = null;
+			switch( ops[0]){
+			case "add":
+			case "addi":
 			result = Expression.sum((ExpConstant)op1, 
 					(ExpConstant)op2); 
+				break;
+			case "sub":
+			case "subi":
+				//TODO
+				break;
+			default:
+				result = Expression.sum((ExpConstant)op1, 
+						(ExpConstant)op2); 	
+			}
 			c_out.put(ops[0], result);
 		} else {
 			c_out.put(ops[0],Expression.getNewTop());
@@ -171,90 +184,12 @@ public class ConstantPropagation extends ForwardAnalysis<Map<String,Expression>>
 		}
 		
 	}
-
-//	@Override
-//	protected Map<String, Expression> caseBinOp(Code c, Map<String, Expression> c_in,
-//			BasicBlock succ){
-//	
-//		HashMap<String,Expression> c_out = new HashMap<>(c_in);
-//		String ins = c.getInstruction();
-//		String[] ops = c.getOperands();
-//		
-//		switch(ins){
-//		case "addi":
-//				int i = Integer.parseInt(ops[2]);   // know that operand is integer
-//				if(c_out.containsKey(ops[1]) && c_out.get(ops[1]).getStatus() != Expression.TOP){
-//					Expression result = new ExpConstant(((ExpConstant) c_out.get(ops[1])).value + i);
-//					c_out.put(ops[0], result);
-//				} else {
-//					c_out.put(ops[0], Expression.getNewTop());
-//				}
-//			break;
-//		default:
-//			break;
-//		}
-//		
-//		return c_out;
-//	}
 	
 	@Override
 	protected Map<String, Expression> copy(Map<String, Expression> original) {
 		return new HashMap<>(original);
 	}
-//	
-//	
-//	protected static class Expression {
-//		int type;
-//		static final int TOP = 0;
-//		static final int Expression = 1;
-//		static final int BOTTOM = 2;
-//		
-//		int constValue;
-//		
-//		private Expression(int type, int constValue){
-//			this.type = type;
-//			this.constValue = constValue;
-//		}
-//		
-//		@Override
-//		public String toString(){
-//			String s = "";
-//			if(type == TOP){
-//				s = "T";
-//			} else if (type == Expression){
-//				s = Integer.toString(constValue);
-//			}
-//			return s;
-//		}
-//		
-//		@Override 
-//		public boolean equals(Object o){
-//			if(!(o instanceof Expression))
-//				return false;
-//			
-//			Expression c = (Expression) o;
-//			
-//			return c.constValue == this.constValue;
-//		}
-//		
-//		private static Expression getNewTop(){
-//			return new Expression(TOP, -1);
-//		}
-//		
-//		private static Expression getNewConstant(int value){
-//			return new Expression(Expression, value);
-//		}
-//		
-//		private boolean hasConstantValue(){
-//			return type == Expression;
-//		}
-//		
-//		private boolean hasTopType(){
-//			return type == TOP;
-//		}
-//	}
-	//Ignore operations on stack and frame pointer,
-	//Assume Expression for
+
 
 
 

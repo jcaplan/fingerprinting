@@ -144,17 +144,15 @@ public abstract class ForwardAnalysis<A> {
 
 	private void initAllSets() {
 		for(BasicBlock bb : workList){
-			initBasicBlockInSet(bb);
+			bbInSet.put(bb, initSet());
 			for(Code c : bb.getCode()){
-				initCodeInSet(c);
+				codeInSet.put(c,initSet());
 			}
 		}
 	}
 	
 
-	protected abstract void initCodeInSet(Code c);
-
-	protected abstract void initBasicBlockInSet(BasicBlock bb);
+	protected abstract A initSet();
 
 	protected A getCodeOut(Code c, A c_in, BasicBlock succ){
 		A result = null;
@@ -291,6 +289,13 @@ public abstract class ForwardAnalysis<A> {
 		return (A) codeOutSet.get(bb.getLastCode());
 	}
 
+	public A getMergedOutSet(ArrayList<BasicBlock> entryList) {
+		A result = initSet();
+		for(BasicBlock bb : entryList){
+			result = merge(result, getOutSet(bb));
+		}
+		return result;
+	}
 
 	public void prettyPrint(BasicBlock bb) {
 		System.out.println("****************************************************");

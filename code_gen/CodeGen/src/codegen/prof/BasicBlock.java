@@ -8,13 +8,17 @@ import codegen.prof.Code.CodeType;
 
 public class BasicBlock {
 		
-		ArrayList<BasicBlock> predecessors = new ArrayList<>();
-		ArrayList<BasicBlock> successors = new ArrayList<>();
-		ArrayList<Edge> succEdges = new ArrayList<>();
-		ArrayList<Edge> predEdges = new ArrayList<>();
+		ArrayList<BasicBlock> predecessors;
+		ArrayList<BasicBlock> successors;
+		ArrayList<Edge> succEdges;
+		ArrayList<Edge> predEdges;
+		Function callee;
+		int age = 0;
+		BbType type;
+		ArrayList<Code> code;
 		
-	ArrayList<Code> code = new ArrayList<>();
-	enum bbType {
+		
+	enum BbType {
 		CALL,
 		RETURN,
 		BRANCH,
@@ -24,12 +28,29 @@ public class BasicBlock {
 	};
 	
 	public BasicBlock(){
-		type = bbType.OTHER;
+		predecessors = new ArrayList<>();
+		successors = new ArrayList<>();
+		succEdges = new ArrayList<>();
+		predEdges = new ArrayList<>();
+		code = new ArrayList<>();
+		type = BbType.OTHER;
 	}
 	
-	Function callee;
-	int age = 0;
-	bbType type;
+
+	
+	public BasicBlock(BasicBlock bb){
+		this.type = bb.type;
+		this.predecessors = new ArrayList<>(bb.successors);
+		this.successors = new ArrayList<>(bb.predecessors);
+		this.succEdges = new ArrayList<>(bb.succEdges);
+		this.predEdges = new ArrayList<>(bb.predEdges);
+		if(callee != null){
+			this.callee = bb.callee;
+		}
+		this.age = bb.age;
+		this.code = new ArrayList<>(bb.code);
+	}
+	
 
 	public void addCode(Code c) {
 		code.add(c);
@@ -74,7 +95,7 @@ public class BasicBlock {
 	 * @return an array of size two, first the address, then the function name
 	 */
 	public String[] getCalleeString() {
-		if(this.type != bbType.CALL){
+		if(this.type != BbType.CALL){
 			throw new RuntimeErrorException(new Error("Attempted to find a callee for non-call basic block"));
 		}
 		
@@ -83,7 +104,7 @@ public class BasicBlock {
 	}
 	
 	public String[] getJumpDest() {
-		if(this.type != bbType.JUMP){
+		if(this.type != BbType.JUMP){
 			throw new RuntimeErrorException(new Error("Attempted to find a destination for non-jump basic block"));
 		}
 		
@@ -96,14 +117,14 @@ public class BasicBlock {
 	}
 
 	public boolean isConditional() {
-		if(this.type != bbType.BRANCH){
+		if(this.type != BbType.BRANCH){
 			throw new RuntimeErrorException(new Error("Check if block is branch before using this method"));
 		}
 		return (getLastCode().type == CodeType.COND_BRANCH);
 	}
 	
 	public int getBranchAddress() {
-		if(this.type != bbType.BRANCH){
+		if(this.type != BbType.BRANCH){
 			throw new RuntimeErrorException(new Error("Check if block is branch before using this method"));
 		}
 		
@@ -199,7 +220,7 @@ public class BasicBlock {
 		
 		}
 		s += "\"";
-		if(type == bbType.JUMP && callee == null){
+		if(type == BbType.JUMP && callee == null){
 			s += ", color=red";
 		}
 		if(predecessors.isEmpty()){
@@ -293,10 +314,19 @@ public class BasicBlock {
 	}
 	
 	public boolean isReturn(){
-		return type == bbType.RETURN;
+		return type == BbType.RETURN;
 	}
 
 	public int getAge() {
 		return age;
+	}
+
+	public void removeSuccessor(BasicBlock bb) {
+		successors.remove(bb);
+	}
+
+	public void removePredecessor(BasicBlock bb) {
+		predecessors.remove(bb);
+		
 	}
 }

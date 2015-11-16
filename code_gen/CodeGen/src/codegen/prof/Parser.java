@@ -124,11 +124,11 @@ public class Parser {
 			 * Always ignore first and last token (address and random text)
 			 */
 			for(int i = 1; i < tkns.length - 1; i++){
-				String value = reverseEndian(tkns[i]);
 				try{
+					String value = reverseEndian(tkns[i]);
 					tokens.add(Integer.parseInt(value, 16));
-				} catch (NumberFormatException e){
-					//sometimes there's a space in the final token arg!
+				} catch (NumberFormatException | StringIndexOutOfBoundsException e){
+					//sometimes spaces in the last token mess things up...
 				}
 			}
 		}

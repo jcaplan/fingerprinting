@@ -74,7 +74,7 @@ public class Code {
 		} else if (instruction.startsWith("cmp")){
 			type = CodeType.COMPARE;
 		
-		} else if (instruction.equals("mov") || instruction.equals("movi")){
+		} else if (instruction.startsWith("mov")){
 			type = CodeType.MOVE;
 		} else {
 			type = CodeType.OTHER;

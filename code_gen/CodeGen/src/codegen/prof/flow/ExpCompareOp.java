@@ -23,7 +23,15 @@ public class ExpCompareOp extends Expression{
 		setType(instr);
 		initChildren();
 	}
+	
+	public ExpCompareOp(Type type){
+		this.type = type;
+		initChildren();
+	}
 
+	public void setType(Type type){
+		this.type = type;
+	}
 	protected void setType(String instr) {
 		switch(instr){
 		case "cmpeq":
@@ -122,9 +130,45 @@ public class ExpCompareOp extends Expression{
 		if(!(o instanceof ExpBinOp)){
 			return false;
 		}
-		
+		 
 		ExpBinOp other = (ExpBinOp) o;
 		return getLHS().equals(other.getLHS()) && getRHS().equals(other.getRHS()) && type.equals(other.type);  
 	}	
 	
+	public static Type getInvertedType(Type type) {
+		Type newType = null;
+		
+		switch(type){
+		case EQ:
+			type = Type.NE;
+			break;
+		case GE:
+			type = Type.LT;
+			break;
+		case GT:
+			type = Type.LE;
+			break;
+		case LE:
+			type = Type.GT;
+			break;
+		case LT:
+			type = Type.GE;
+			break;
+		case NE:
+			type = Type.EQ;
+			break;
+		default:
+			break;
+		
+		}
+		return newType;
+	}
+	
+	public Type getType() {
+		return type;
+	}
+	
+	public void invertType() {
+		type = getInvertedType(type);
+	}
 }
