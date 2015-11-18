@@ -93,6 +93,22 @@ public class LoopAnalysisTest {
 	}
 	
 	@Test
+	public void testG4(){
+		entryPoint = "g4";
+		Profiler prof = new Profiler(fileDir,rootName);
+		prof.parseFile(entryPoint);
+		try {
+			prof.getCfg().printDotCFG(entryPoint);
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {	
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
+		boolean result = la.analyze();
+		assertTrue(result);
+	}
+	
+	@Test
 	public void testG5(){
 		entryPoint = "g5";
 		Profiler prof = new Profiler(fileDir,rootName);

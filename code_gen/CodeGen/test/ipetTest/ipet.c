@@ -2,7 +2,7 @@
 
 static int global1 = 0;
 
-static int a[100];
+static int a[1000];
 
 //basic loop, problem with -O
 int *g(int j){
@@ -21,12 +21,14 @@ int *g(int j){
 }
 
 
-//basic loop, optimized out with -O
+//basic loop
+//Hybrid pattern when optimized...
 int g1(int j){
 	int i;
 	int k = 0;
 	for(i = 0; i < 99; i++){
 		ANNOT_MAXITER(99);
+		a[i] = k;
 		k = i;
 	}
 	return k;
@@ -40,12 +42,13 @@ int g2(int x, int y){
 	} else {
 		y = 3;
 	}
-	while( k < 15){
+	while( k < 300){
 		y = x + y;
 		k+=1 + 1;
 		k+=1;
 		k+=-1;
 		k+=4;
+		a[k] = k;
 	}
 	return k;
 }
@@ -53,7 +56,7 @@ int g2(int x, int y){
 
 //decrement, threshold > 0
 int g3(int x, int y){
-	int k = 5;
+	int k = 400;
 	if(x){
 		y = 0;
 	} else {
@@ -62,13 +65,14 @@ int g3(int x, int y){
 	while( k > 1){
 		y = x + y;
 		k-=1;
+		a[k] = y;
 	}
 	return k;
 }
 
 // decrement, threshold = 0
 int g4(int x, int y){
-	int k = 5;
+	int k = 400;
 	if(x){
 		y = 0;
 	} else {
@@ -77,6 +81,7 @@ int g4(int x, int y){
 	while( k > 0){
 		y = x + y;
 		k-=1;
+		a[k] = y;
 	}
 	return k;
 }
@@ -92,6 +97,7 @@ int g5(int x, int y, int *z){
 	while( k < 10){
 		y += *z*(x + *z);
 		k+=1;
+		a[k] = y;
 	}
 	return y;
 }
@@ -106,13 +112,14 @@ int g6(int x, int y){
 		y = 3;
 	}
 	int w = 1;
-	while( k < 15){
+	while( k < 500){
 		y = x + y;
 		k+=1 + 1;
 		k+=1;
 		k+=-1;
 		int z = w * 3; 
 		k+=z;
+		a[k] = k;
 	}
 	return k;
 }
@@ -145,10 +152,11 @@ int g8 (){
 	int k = 1;
 	int x = 0;
 	while(k == 1){
-		if(x == 7){
+		if(x == 105){
 			k = 0;
 		}
 		x++;
+		a[x] = x;
 	}
 	return x;
 }
@@ -159,20 +167,22 @@ int g9 (){
 	int k = 1;
 	int x = 0;
 	while(k == 1){
-		if(x++ == 7){
+		if(x++ == 105){
 			k = 0;
 		}
+		a[x] = x;
 	}
 	return x;
 }
 
 // upper bound is constant but stored in var
 int g10(){
-	int k = 5;
+	int k = 301;
 	int i = 0;
 	int y = 0;
 	for(i = 0; i < k; i++){
 		y += i;
+		a[i] = y;
 	}
 	return y;
 }
@@ -190,7 +200,7 @@ void h(){
 	}
 }
 
-//works
+//works unoptimized
 void f(){
 	int i = 0;
 	int j;
@@ -200,16 +210,18 @@ void f(){
 		while(j < 50){
 			ANNOT_MAXITER(50);
 			j++;
+			a[i + j] = j;
 		}
 		i++;
 	}
 
 	int k;
-	for(i = 0; i < 200; i++){
+	for(i = 0; i < 3; i++){
 		ANNOT_MAXITER(200);
 		for(j = 0; j < 200; j++){
 			ANNOT_MAXITER(200);
 			k = i*j;
+			a[i*200 + j] = k;
 		}
 	}
 }
@@ -222,6 +234,7 @@ void f1(){
 		for(j = i; j < 200; j++){
 			ANNOT_MAXITER(200);
 			k = i*j;
+			a[i + j] = k;
 		}
 	}
 }

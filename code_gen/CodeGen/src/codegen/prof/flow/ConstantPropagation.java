@@ -147,7 +147,7 @@ public class ConstantPropagation extends ForwardAnalysis<Map<String,Expression>>
 		
 		if(!op1.isTop() && !op2.isTop()){
 			Expression result = null;
-			switch( ops[0]){
+			switch( c.getInstruction()){
 			case "add":
 			case "addi":
 			result = Expression.sum((ExpConstant)op1, 
@@ -171,10 +171,14 @@ public class ConstantPropagation extends ForwardAnalysis<Map<String,Expression>>
 	
 	private Expression getConstant(String op) {
 		Integer x = null;
-		try{
-			x = Integer.parseInt(op);
-		} catch (NumberFormatException e){
-			//not a number;
+		if(op.equals("zero")){
+			x = 0;
+		} else {
+			try{
+				x = Integer.parseInt(op);
+			} catch (NumberFormatException e){
+				//not a number;
+			}
 		}
 		
 		if(x == null){

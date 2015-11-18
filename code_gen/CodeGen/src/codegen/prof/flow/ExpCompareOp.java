@@ -164,6 +164,32 @@ public class ExpCompareOp extends Expression{
 		return newType;
 	}
 	
+
+	public void changeDirection() {
+		switch(type){
+		case EQ:
+			type = Type.EQ;
+			break;
+		case GE:
+			type = Type.LE;
+			break;
+		case GT:
+			type = Type.LT;
+			break;
+		case LE:
+			type = Type.GE;
+			break;
+		case LT:
+			type = Type.GT;
+			break;
+		case NE:
+			type = Type.NE;
+			break;
+		default:
+			break;
+		
+		}
+	}
 	public Type getType() {
 		return type;
 	}

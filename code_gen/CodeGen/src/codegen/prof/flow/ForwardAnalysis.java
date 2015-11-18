@@ -78,7 +78,7 @@ public abstract class ForwardAnalysis<A> {
 			
 			A bb_in = bbInSet.get(bb);
 			
-			if(bb.isReturn()){
+			if(bb.getSuccesors().isEmpty()){
 				analyzeBasicBlock(bb, null, bb_in);
 			}
 			

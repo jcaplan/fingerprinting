@@ -44,17 +44,10 @@ public class LoopAnalysis {
 				e.printStackTrace();
 				allPassed = false;
 				continue;
-			}
-
-			// if block is both head and tail then it's pretty easy
-			// ---------------------------------------------------------
+			}			
+			
 			try {
-				if (bbBackwardsEdge.equals(bbExitPoint)) {
-					optimizedPattern(l, bbBackwardsEdge, bbExitPoint);
-				} else {
-					unoptimizedPattern(l, bbBackwardsEdge, bbExitPoint);
-				}
-
+				findLoopParameters(l, bbBackwardsEdge, bbExitPoint);
 			} catch (LoopAnalysisException e) {
 				e.printStackTrace();
 				allPassed = false;
@@ -66,16 +59,16 @@ public class LoopAnalysis {
 		return allPassed;
 	}
 
-	private void unoptimizedPattern(Loop l, BasicBlock bbBackwardsEdge,
+	private void findLoopParameters(Loop l, BasicBlock bbBackwardsEdge,
 			BasicBlock bbExitPoint) throws LoopAnalysisException {
-
-		// Analyze exit edge to get branch condition
-		// -----------------------------------------
-		ArrayList<BasicBlock> bExitEdge = new ArrayList<>();
-		bExitEdge.add(bbExitPoint);
-
-		ExpressionBuilder headExpBuilder = new ExpressionBuilder(bExitEdge);
-
+		
+		// Remove the backwards edge
+		// -------------------------
+		bbBackwardsEdge.removeSuccessor(l.getHead());
+		
+		// Get the branch condition, simplified and reduced
+		// ------------------------------------------------
+		ExpressionBuilder headExpBuilder = new ExpressionBuilder(l.getBody());
 		headExpBuilder.analyze();
 		HashMap<String, Expression> conditionOut = (HashMap<String, Expression>) headExpBuilder
 				.getOutSet(bbExitPoint);
@@ -84,156 +77,94 @@ public class LoopAnalysis {
 
 		// Simplify the condition expression
 		// ---------------------------------
-
 		HashMap<String, Expression> constants;
 		constants = (HashMap<String, Expression>) constProp
 				.getOutSet(bbExitPoint);
 		branchCondition = (ExpBranchCond) replaceConstants(constants,
 				branchCondition);
-
 		branchCondition = simplifyBranchCondition(branchCondition);
-
 		if (!trueCondStaysInLoop(l, bbExitPoint)) {
 			branchCondition.invertType();
 		}
-
-		// If we make it here then the branch condition should be
-		// of the form x <> c...
-
-		String iterator = ((ExpIdentifier) branchCondition.getLHS()).id;
-		System.out.println("Iterator id: " + iterator);
-
-		int bound = ((ExpConstant) branchCondition.getRHS()).value;
-		System.out.println("loop bound: " + bound);
-		System.out.println("loop condition: " + branchCondition.type);
-
-		// Now that the iterator has been identified we can find it's initial
-		// value and
-		// the change that happens over one iteration
-		// 2. Initial value
-		// -----------------
-
-		// Get iterator from merged outset of entry blocks
-		// (excluding backwards edge)
-		// -----------------------------------------------
-		ArrayList<BasicBlock> entryList = l.getEntryBlocks();
-		Map<String, Expression> inSet = constProp.getMergedOutSet(entryList);
-		int value = ((ExpConstant) inSet.get(iterator)).value;
-
-		System.out.println("Initial value: " + value);
-
-		// Find expression for iterator after one loop through body
-
-		ArrayList<BasicBlock> workList = new ArrayList<>(l.getBody());
-		workList.remove(l.getHead());
-		headExpBuilder = new ExpressionBuilder(workList);
-		headExpBuilder.analyze();
-
-		HashMap<String, Expression> outSet = (HashMap<String, Expression>) headExpBuilder
-				.getOutSet(l.getTail());
-
-		constants = (HashMap<String, Expression>) constProp.getOutSet(l
-				.getTail());
-
-		Expression change = outSet.get(iterator);
-
-		change = replaceConstants(constants, change);
-		ExpBinOp binOp = null;
-		if ((change instanceof ExpBinOp)) {
-			binOp = (ExpBinOp) change;
-			binOp = (ExpBinOp) simplifyBinOp(binOp);
-			System.out.println("check matching identifier:"
-					+ ((ExpIdentifier) binOp.getLHS()).id.equals(iterator));
-			System.out.println("change operator: " + binOp.type);
-			System.out.println("change increment: " + binOp.getRHS());
-		}
-
-		if (binOp != null) {
-			System.out.println(String.format(
-					"for(i = %d; i %s %d; i = i %s %d);", value,
-					branchCondition.type.toString(), bound, binOp.type,
-					((ExpConstant) binOp.getRHS()).value));
+		
+		// Declare the loop parameters
+		// ---------------------------
+		String iterator = null;
+		int incrValue = -1;
+		int threshold = -1;
+		int initValue = 0;
+		
+		if(branchCondition.getLHS() instanceof ExpBinOp){
+			// First pattern ( iterator + increment != threshold )
+			// ---------------------------------------------------
+			
+			ExpBinOp lhs = (ExpBinOp) branchCondition.getLHS();
+			if(!(lhs.getLHS() instanceof ExpIdentifier)){
+				throw new LoopAnalysisException("Expect identifier on lhs of binary operation in"
+						+ "branch condition");
+			}
+			if(!(lhs.getRHS() instanceof ExpConstant)){
+				throw new LoopAnalysisException("Expect constant on rhs of binary operation in"
+						+ "branch condition");
+			}
+			
+			// Simplify turns all subs int adds
+			// --------------------------------
+			lhs = (ExpBinOp) simplifyBinOp(lhs);
+			
+			// Get the variable name and the increment value from
+			// the exit block
+			//---------------------------------------------------
+			iterator = ((ExpIdentifier) lhs.getLHS()).id;
+			incrValue = ((ExpConstant) lhs.getRHS()).value; 
+			threshold = ((ExpConstant) branchCondition.getRHS()).value;
 		} else {
-			throw new LoopAnalysisException("Could not parse branch condition");
-		}
-		l.setMaxIterations(getMaxIterations(value, bound,
-				((ExpConstant) binOp.getRHS()).value, branchCondition.type));
-		System.out.println("max iterations: " + l.getMaxIterations());
-	}
+			// Second pattern ((iterator < threshold != 0)
+			iterator = ((ExpIdentifier) branchCondition.getLHS()).id;
+			threshold = ((ExpConstant) branchCondition.getRHS()).value;
 
-	
-	private boolean optimizedPattern(Loop l, BasicBlock bbBackwardsEdge,
-			BasicBlock bbExitPoint) throws LoopAnalysisException {
-
-		// Analyze exit edge to get branch condition
-		// -----------------------------------------
-
-		if (l.getHead().equals(l.getTail())) {
-			// If there is only a single block then remove the backwards edge
-			bbExitPoint = new BasicBlock(bbExitPoint);
-			bbExitPoint.removeSuccessor(l.getHead());
-			bbExitPoint.removePredecessor(l.getHead());
-		}
-
-		ArrayList<BasicBlock> bExitEdge = new ArrayList<>();
-		bExitEdge.add(bbExitPoint);
-
-		ExpressionBuilder headExpBuilder = new ExpressionBuilder(bExitEdge);
-
-		headExpBuilder.analyze();
-		HashMap<String, Expression> conditionOut = (HashMap<String, Expression>) headExpBuilder
-				.getOutSet(bbExitPoint);
-		ExpBranchCond branchCondition = (ExpBranchCond) conditionOut
-				.get(bbExitPoint.getLastCode().getCodeKey());
-
-		// The branch condition should already be cleaned up
-		// by the compiler. Check the format
-		// -------------------------------------------------
-		if (!(branchCondition.getLHS() instanceof ExpBinOp)) {
-			throw new LoopAnalysisException(
-					"Expect simple binary operation on lhs of branch condition");
+			// Need to do some extra work to find the increment value
+			// ------------------------------------------------------
+			
+			HashMap<String, Expression> outSet = (HashMap<String, Expression>) headExpBuilder
+					.getOutSet(l.getTail());
+			constants = (HashMap<String, Expression>) constProp.getOutSet(l
+					.getTail());
+			Expression change = outSet.get(iterator);
+			change = replaceConstants(constants, change);
+			ExpBinOp binOp = null;
+			if ((change instanceof ExpBinOp)) {
+				binOp = (ExpBinOp) change;
+				binOp = (ExpBinOp) simplifyBinOp(binOp);
+				if(! ((ExpIdentifier) binOp.getLHS()).id.equals(iterator)){
+					throw new LoopAnalysisException("Identifier must match on both sides of increment expression");
+				}
+			}
+			if(binOp != null){
+				incrValue = ((ExpConstant) binOp.getRHS()).value;
+			} else {
+				throw new LoopAnalysisException("Could not parse binary operation in branch condition");
+			}
 		}
 
-		ExpBinOp lhs = (ExpBinOp) branchCondition.getLHS();
-		if(!(lhs.getLHS() instanceof ExpIdentifier)){
-			throw new LoopAnalysisException("Expect identifier on lhs of binary operation in"
-					+ "branch condition");
-		}
-		if(!(lhs.getRHS() instanceof ExpConstant)){
-			throw new LoopAnalysisException("Expect constant on rhs of binary operation in"
-					+ "branch condition");
-		}
-		
-		// Simplify turns all subs int adds
-		// --------------------------------
-		lhs = (ExpBinOp) simplifyBinOp(lhs);
-		
-		// Get the variable name and the increment value from
-		// the exit block
-		//---------------------------------------------------
-		String iterator = ((ExpIdentifier) lhs.getLHS()).id;
-		int incrValue = ((ExpConstant) lhs.getRHS()).value; 
-		HashMap<String, Expression> constants;
-		constants = (HashMap<String, Expression>) constProp
-				.getOutSet(bbExitPoint);
-		branchCondition = (ExpBranchCond) replaceConstants(constants,
-				branchCondition);
-		int threshold = ((ExpConstant) branchCondition.getRHS()).value;
-		
-		
+		// Now find the initial value for iterator
+		// ---------------------------------------
 		ArrayList<BasicBlock> entryList = l.getEntryBlocks();
 		Map<String, Expression> inSet = constProp.getMergedOutSet(entryList);
-		int value = ((ExpConstant) inSet.get(iterator)).value;
+		initValue = ((ExpConstant) inSet.get(iterator)).value;
+		
+		int maxIterations = getMaxIterations(initValue, threshold, incrValue, branchCondition.type);
+		l.setMaxIterations(maxIterations);
+		
+		// Put the backwards edge back
+		// ---------------------------
+		bbBackwardsEdge.addSuccessor(l.getHead());
 
-		System.out.println("Initial value: " + value);
 		System.out.println("iterator: " + iterator);
+		System.out.println("Initial value: " + initValue);
 		System.out.println("increment: " + incrValue);
 		System.out.println("threshold: " + threshold);
-		// Get the initial value
-		int maxIterations = getMaxIterations(value, threshold, incrValue, branchCondition.type);
-		l.setMaxIterations(maxIterations);
 		System.out.println(maxIterations);
-		return false;
 	}
 
 	private boolean trueCondStaysInLoop(Loop loop, BasicBlock bbExitPoint) {
@@ -243,6 +174,16 @@ public class LoopAnalysis {
 	private ExpBranchCond simplifyBranchCondition(ExpBranchCond cond)
 			throws LoopAnalysisException {
 
+		if(cond.getLHS() instanceof ExpConstant && 
+				cond.getRHS() instanceof ExpIdentifier){
+			//swap them
+			Expression lhs = cond.getLHS();
+			cond.setLHS(cond.getRHS());
+			cond.setRHS(lhs);
+			cond.changeDirection();
+		}
+		
+		
 		// Throw error of rhs is not a constant
 		// ------------------------------------
 		if (!(cond.getRHS() instanceof ExpConstant)) {
@@ -419,21 +360,6 @@ public class LoopAnalysis {
 			result = binOp;
 		}
 		return result;
-	}
-
-	private ArrayList<BasicBlock> getPrunedTree(
-			ArrayList<BasicBlock> basicBlockList, BasicBlock head) {
-
-		ArrayList<BasicBlock> bbList = new ArrayList<>();
-
-		for (BasicBlock bb : basicBlockList) {
-			if (bb.getAge() < head.getAge()) {
-				bbList.add(bb);
-			}
-		}
-		bbList.add(head);
-
-		return bbList;
 	}
 
 	private int getMaxIterations(int initial, int threshold, int increment,
