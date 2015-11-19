@@ -1,8 +1,8 @@
 #include "annot.h"
 
-static int global1 = 0;
 
 static int a[1000];
+int inter(int k);
 
 //basic loop, problem with -O
 int *g(int j){
@@ -187,17 +187,117 @@ int g10(){
 	return y;
 }
 
+/*
+ * Conditional stuff starts
+ */
+
+// initial defined on two paths
+void g11(int j){
+	int x = 0;
+	if(j > 10){
+		x = 100;
+	}
+	while(x < 101){
+		x++;
+		a[x] = 3;
+	}
+}
+
+// initial only defined on one path
+void g12(int j, int x){
+	if(j > 10){
+		x = 100;
+	}
+	while(x < 101){
+		x++;
+		a[x] = 3;
+	}
+}
+
+// threshold defined on two paths
+void g13(int x){
+	int t;
+	if(x > 5){
+		t = 100;
+	} else {
+		t = 200;
+	}
+	int i;
+	for(i = 0; i < t; i++){
+		a[i] = x;
+	}
+
+}
+
+// initial value defined on two paths
+void g14(int x){
+	int i;
+	if(x < 0){
+		i = 0;
+	} else {
+		i = 10;
+	}
+	for(; i < 100; i++){
+		a[i] = x;
+	}
+}
+
+// increment defined on two paths
+void g15(int j){
+	int k;
+	int x = 3;
+	if(j > 10){
+		k = 2;
+	} else {
+		k = 4;
+	}
+	while(x < 103){
+		x+=k;
+		a[x] = 3;
+	}
+}
+
+
+
+// increment only defined on one path
+void g16(int j){
+	int k;
+	int x = 3;
+	if(j > 10){
+		k = 2;
+	}
+	while(x < 103){
+		x+=k;
+		a[x] = 3;
+	}
+}
+
+// threshold only defined on one path
+void g17(int x){
+	int t;
+	if(x > 5){
+		t = 100;
+	}
+	int i;
+	for(i = 0; i < t; i++){
+		a[i] = x;
+	}
+
+}
+
 
 int inter(int k){
 	return k;
 }
 
-void h(){
+int h(){
 	int y = 0;
 	int x = 0;
+	
 	while (x < 10) {
 	    y = x++;
 	}
+	return y;
 }
 
 //works unoptimized
@@ -241,7 +341,7 @@ void f1(){
 
 int main(){
 
-	int i,j;
+	int i,j = 0;
 
 	for(i = 0; i < 10; i++){
 		ANNOT_MAXITER(10);

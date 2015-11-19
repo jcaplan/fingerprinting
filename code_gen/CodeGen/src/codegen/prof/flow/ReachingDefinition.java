@@ -8,6 +8,7 @@ import java.util.List;
 import codegen.prof.BasicBlock;
 import codegen.prof.Code;
 import codegen.prof.Function;
+import codegen.prof.Code.CodeType;
 
 public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expression>>>{
 
@@ -23,7 +24,33 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 	protected HashMap<String, List<Expression>> initSet() {
 		return new HashMap<>();
 	}
+	
+	@Override
+	protected void analysisPreprocessing() {
+		//for every line of code create a bottom
+		HashMap<String,List<Expression>> initSet = bbInSet.get(func.getBasicBlockList().get(0));
+		for(BasicBlock bb : bbList){
+			for(Code c : bb.getCode()){
+				if(c.getType() == CodeType.COND_BRANCH || c.getType() == CodeType.UNCOND_BRANCH){
+					continue;
+				}
+				ArrayList<Expression> expList = new ArrayList<>();
+				expList.add(Expression.getNewBottom());
+				String[] operands = c.getOperands();
+				if(operands != null){
+					initSet.put(c.getOperands()[0],expList	);
+					if(c.getType() == CodeType.STORE){
+						expList = new ArrayList<>();
+						expList.add(Expression.getNewBottom());
+						initSet.put(c.getOperands()[1], expList);
+						
+					}
+				}
+			}
+		}
+	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	protected HashMap<String, List<Expression>> merge(
 			HashMap<String, List<Expression>> set1, HashMap<String, List<Expression>> set2) {
@@ -45,6 +72,7 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 		
 		for(String key : copySet2.keySet()){
 			if(copySet1.containsKey(key)){
+				//if they both contain key then union lists
 				List<Expression> resultList = result.get(key);
 				for(Expression exp : copySet2.get(key)){
 					if(!resultList.contains(exp)){
@@ -55,6 +83,7 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 				result.put(key,copySet2.get(key));
 			}
 		}
+		
 		return result;
 	}
 
@@ -79,7 +108,7 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 		if(c_out.get(ops[1]) != null && c_out.get(ops[1]).size() == 1){
 			op1 = c_out.get(ops[1]).get(0);
 		}
-		if(op1 == null){
+		if(op1 == null || op1.getStatus() == Expression.BOTTOM){
 			op1 = convertOpToExp(ops[1]);
 		}
 		
@@ -107,7 +136,7 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 		if(c_out.get(ops[0]) != null && c_out.get(ops[0]).size() == 1){
 			op0 = c_out.get(ops[0]).get(0);
 		}
-		if(op0 == null){
+		if(op0 == null || op0.getStatus() == Expression.BOTTOM){
 			op0 = convertOpToExp(ops[0]);
 		}
 
@@ -134,7 +163,7 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 		if(c_out.get(ops[1]) != null && c_out.get(ops[1]).size() == 1){
 			op1 = c_out.get(ops[1]).get(0);
 		}
-		if(op1 == null){
+		if(op1 == null || op1.getStatus() == Expression.BOTTOM){
 			op1 = convertOpToExp(ops[1]);
 		}
 		
@@ -164,10 +193,10 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 		if(c_out.get(ops[2]) != null && c_out.get(ops[2]).size() == 1){
 			op2 = c_out.get(ops[2]).get(0);
 		}
-		if(op1 == null){
+		if(op1 == null || op1.getStatus() == Expression.BOTTOM){
 			op1 = convertOpToExp(ops[1]);
 		}
-		if(op2 == null){
+		if(op2 == null || op2.getStatus() == Expression.BOTTOM){
 			op2 = convertOpToExp(ops[2]);
 		}
 		
@@ -201,10 +230,10 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 		if(c_out.get(ops[2]) != null && c_out.get(ops[2]).size() == 1){
 			op2 = c_out.get(ops[2]).get(0);
 		}
-		if(op1 == null){
+		if(op1 == null || op1.getStatus() == Expression.BOTTOM){
 			op1 = convertOpToExp(ops[1]);
 		}
-		if(op2 == null){
+		if(op2 == null || op2.getStatus() == Expression.BOTTOM){
 			op2 = convertOpToExp(ops[2]);
 		}
 		
@@ -239,10 +268,10 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 		if(c_out.get(ops[1]) != null && c_out.get(ops[1]).size() == 1){
 			op2 = c_out.get(ops[1]).get(0);
 		}
-		if(op1 == null){
+		if(op1 == null || op1.getStatus() == Expression.BOTTOM){
 			op1 = convertOpToExp(ops[0]);
 		}
-		if(op2 == null){
+		if(op2 == null || op2.getStatus() == Expression.BOTTOM){
 			op2 = convertOpToExp(ops[1]);
 		}
 		

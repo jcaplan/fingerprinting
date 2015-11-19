@@ -71,6 +71,7 @@ public abstract class ForwardAnalysis<A> {
 
 	public void analyze(){
 		
+		analysisPreprocessing();
 		
 		while(!workList.isEmpty()){
 			BasicBlock bb = workList.get(0);
@@ -105,6 +106,10 @@ public abstract class ForwardAnalysis<A> {
 				}
 			}	
 		}
+	}
+
+	protected void analysisPreprocessing() {
+		
 	}
 
 	public void resetAnalysis() {

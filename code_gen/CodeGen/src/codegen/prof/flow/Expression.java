@@ -77,6 +77,12 @@ public class Expression implements Comparable<Expression>{
 		exp.status = TOP;
 		return exp;
 	}
+	
+	public static Expression getNewBottom(){
+		Expression exp = new Expression();
+		exp.status = BOTTOM;
+		return exp;
+	}
 
 
 	public Expression[] getChildren() {
