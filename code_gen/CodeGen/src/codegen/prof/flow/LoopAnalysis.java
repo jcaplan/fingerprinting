@@ -58,23 +58,26 @@ public class LoopAnalysis {
 		}
 		return allPassed;
 	}
+	
 
 	private void findLoopParameters(Loop l, BasicBlock bbBackwardsEdge,
 			BasicBlock bbExitPoint) throws LoopAnalysisException {
 		
-		// Remove the backwards edge
-		// -------------------------
-		bbBackwardsEdge.removeSuccessor(l.getHead());
-		
 		// Get the branch condition, simplified and reduced
 		// ------------------------------------------------
-		ExpressionBuilder headExpBuilder = new ExpressionBuilder(l.getBody());
-		headExpBuilder.analyze();
-		HashMap<String, Expression> conditionOut = (HashMap<String, Expression>) headExpBuilder
+		ReachingDefinition reachingDef = new ReachingDefinition(l.getBody());
+		reachingDef.analyze();
+		HashMap<String, List<Expression>> conditionOut = (HashMap<String, List<Expression>>) reachingDef
 				.getOutSet(bbExitPoint);
-		ExpBranchCond branchCondition = (ExpBranchCond) conditionOut
-				.get(bbExitPoint.getLastCode().getCodeKey());
+		List<Expression> branchList =  conditionOut
+		.get(bbExitPoint.getLastCode().getCodeKey());
+		if(branchList.size() != 1){
+			throw new LoopAnalysisException("More than one reaching def found for branch condition");
+		}
+		ExpBranchCond branchCondition = (ExpBranchCond) branchList.get(0); 
 
+		
+		
 		// Simplify the condition expression
 		// ---------------------------------
 		HashMap<String, Expression> constants;
@@ -126,11 +129,14 @@ public class LoopAnalysis {
 			// Need to do some extra work to find the increment value
 			// ------------------------------------------------------
 			
-			HashMap<String, Expression> outSet = (HashMap<String, Expression>) headExpBuilder
+			HashMap<String, List<Expression>> outSet = (HashMap<String, List<Expression>>) reachingDef
 					.getOutSet(l.getTail());
 			constants = (HashMap<String, Expression>) constProp.getOutSet(l
 					.getTail());
-			Expression change = outSet.get(iterator);
+			if(outSet.get(iterator).size() != 1){
+				throw new LoopAnalysisException("More than one reaching def found for increment value");
+			}
+			Expression change = outSet.get(iterator).get(0); //TODO check only 1
 			change = replaceConstants(constants, change);
 			ExpBinOp binOp = null;
 			if ((change instanceof ExpBinOp)) {
@@ -154,11 +160,13 @@ public class LoopAnalysis {
 		initValue = ((ExpConstant) inSet.get(iterator)).value;
 		
 		int maxIterations = getMaxIterations(initValue, threshold, incrValue, branchCondition.type);
+		if(maxIterations < 0){
+			throw new LoopAnalysisException(String.format("Constraints have been violated for" +
+					"max iteration calculation: initValue: %d, threshold: %d, incrValue: %d, "
+					+ "branchType: %s",initValue,threshold,incrValue,branchCondition.type.toString()));		
+		}
 		l.setMaxIterations(maxIterations);
 		
-		// Put the backwards edge back
-		// ---------------------------
-		bbBackwardsEdge.addSuccessor(l.getHead());
 
 		System.out.println("iterator: " + iterator);
 		System.out.println("Initial value: " + initValue);

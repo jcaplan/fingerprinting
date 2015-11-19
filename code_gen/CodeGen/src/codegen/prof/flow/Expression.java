@@ -1,19 +1,12 @@
 package codegen.prof.flow;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
-
-public class Expression {
+public class Expression implements Comparable<Expression>{
 
 	
 	public static final int TOP = 0;
 	public static final int BOTTOM = 1;
 	public static final int WELL_DEFINED = 2;
-	
 	int status;
-	
 	protected Expression[] children;
 	
 	public Expression() {
@@ -98,6 +91,12 @@ public class Expression {
 
 	public boolean isTop() {
 		return status == TOP;
+	}
+
+
+	@Override
+	public int compareTo(Expression exp) {
+		return this.toString().compareTo(exp.toString());
 	}
 	
 }

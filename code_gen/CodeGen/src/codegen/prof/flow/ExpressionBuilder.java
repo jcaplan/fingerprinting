@@ -1,6 +1,5 @@
 package codegen.prof.flow;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,7 @@ public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
 			c_out.put(ops[0], convertOpToExp(ops[1]));
 		}
 		
-		
+
 		return c_out;
 		
 	};
@@ -57,9 +56,9 @@ public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
 			c_out.put(ops[0], convertOpToExp(ops[1]));
 		}
 		
-		
 		return c_out;
 	}
+
 	@Override
 	protected Map<String,Expression> caseStore(Code c, Map<String,Expression> c_in, BasicBlock succ) {
 		HashMap<String,Expression> c_out = new HashMap<>(c_in);
@@ -73,7 +72,7 @@ public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
 			c_out.put(ops[1], convertOpToExp(ops[0]));
 		}
 		
-		
+
 		return c_out;
 		
 	};
@@ -96,7 +95,7 @@ public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
 		exp.setLHS(op1);
 		exp.setRHS(op2);
 		c_out.put(ops[0], exp);
-		
+
 		return c_out;
 	};
 	
@@ -118,7 +117,7 @@ public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
 		exp.setLHS(op1);
 		exp.setRHS(op2);
 		c_out.put(ops[0], exp);
-		
+
 		return c_out;
 	};
 	
@@ -141,7 +140,7 @@ public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
 		exp.setRHS(op2);
 		String key = c.getCodeKey();
 		c_out.put(key, exp);
-		
+
 		return c_out;
 	}
 
@@ -161,6 +160,10 @@ public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
 		for(String key : set2.keySet()){
 			if(!set1.containsKey(key)){ //bottom is implied by no key stored yet
 				out.put(key,set2.get(key));
+			} else if(set1.get(key).isTop()){
+				out.put(key, set2.get(key));
+			} else if(set2.get(key).isTop()){
+				//do nothing
 			} else if(!set1.get(key).equals(set2.get(key))){ //if the keys are equal all is good, otherwise wipe it out
 				out.put(key, Expression.getNewTop());
 			}
@@ -196,6 +199,34 @@ public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
 			
 		
 	}
+	
+	private void simplify(HashMap<String, Expression> c_out) {
+		//go through each entry
+		//for each expression simplify each subsexpression
+		for(Expression exp : c_out.values()){
+			simplify(exp,c_out);
+		}
+	}
+
+	private Expression simplify(Expression exp, HashMap<String, Expression> c_out) {
+		Expression result = exp;
+		if(exp.getChildren() != null){
+			for(int i = 0; i < exp.numChildren(); i++){
+				exp.setChild(i, simplify(exp.getChild(i),c_out));
+			}
+		} else {
+			if(exp instanceof ExpIdentifier){
+				String name = ((ExpIdentifier) exp).id;
+				Expression sub = c_out.get(name);
+				if(sub != null){
+					result = sub;
+				}
+			}
+		}
+		
+		return result;
+	}
+
 
 
 	

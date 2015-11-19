@@ -211,7 +211,7 @@ public abstract class ForwardAnalysis<A> {
 
 
 
-	protected abstract A merge(A bbOutSet2, A a);
+	protected abstract A merge(A set1, A set2);
 	
 	protected abstract A copy(A original);
 	

@@ -35,7 +35,7 @@ public class ExpCompareOp extends Expression{
 	protected void setType(String instr) {
 		switch(instr){
 		case "cmpeq":
-		case "compeqi":
+		case "cmpeqi":
 			type = Type.EQ;
 			break;	
 		case "cmpge":
@@ -127,11 +127,11 @@ public class ExpCompareOp extends Expression{
 
 	@Override
 	public boolean equals(Object o){
-		if(!(o instanceof ExpBinOp)){
+		if(!(o instanceof ExpCompareOp)){
 			return false;
 		}
 		 
-		ExpBinOp other = (ExpBinOp) o;
+		ExpCompareOp other = (ExpCompareOp) o;
 		return getLHS().equals(other.getLHS()) && getRHS().equals(other.getRHS()) && type.equals(other.type);  
 	}	
 	

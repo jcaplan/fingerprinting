@@ -1,7 +1,6 @@
 package codegen.test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
@@ -10,6 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import codegen.prof.Loop;
 import codegen.prof.Profiler;
 import codegen.prof.flow.LoopAnalysis;
 
@@ -42,6 +42,7 @@ public class LoopAnalysisTest {
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
+		assertEquals(99,prof.getCfg().getFunction(entryPoint).getLoopList().get(0).getMaxIterations());
 	}
 	
 	@Test
@@ -58,6 +59,8 @@ public class LoopAnalysisTest {
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
+		assertEquals(99,prof.getCfg().getFunction(entryPoint).getLoopList().get(0).getMaxIterations());
+
 	}
 	
 	@Test
@@ -74,6 +77,8 @@ public class LoopAnalysisTest {
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
+		assertEquals(50,prof.getCfg().getFunction(entryPoint).getLoopList().get(0).getMaxIterations());
+
 	}
 	
 	@Test
@@ -90,6 +95,8 @@ public class LoopAnalysisTest {
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
+		assertEquals(399,prof.getCfg().getFunction(entryPoint).getLoopList().get(0).getMaxIterations());
+
 	}
 	
 	@Test
@@ -105,7 +112,9 @@ public class LoopAnalysisTest {
 		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
-		assertTrue(result);
+		assertTrue(result);		
+		assertEquals(400,prof.getCfg().getFunction(entryPoint).getLoopList().get(0).getMaxIterations());
+
 	}
 	
 	@Test
@@ -122,6 +131,8 @@ public class LoopAnalysisTest {
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
+		assertEquals(10,prof.getCfg().getFunction(entryPoint).getLoopList().get(0).getMaxIterations());
+
 	}
 	
 	@Test
@@ -138,6 +149,8 @@ public class LoopAnalysisTest {
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
+		assertEquals(100,prof.getCfg().getFunction(entryPoint).getLoopList().get(0).getMaxIterations());
+
 	}
 	
 	@Test
@@ -171,6 +184,8 @@ public class LoopAnalysisTest {
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
+		assertEquals(105,prof.getCfg().getFunction(entryPoint).getLoopList().get(0).getMaxIterations());
+
 	}
 	
 	@Test
@@ -188,6 +203,8 @@ public class LoopAnalysisTest {
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
+		assertEquals(105,prof.getCfg().getFunction(entryPoint).getLoopList().get(0).getMaxIterations());
+
 	}
 	
 	@Test
@@ -222,6 +239,13 @@ public class LoopAnalysisTest {
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
+		
+		int count = 0;
+		for(Loop l : prof.getCfg().getFunction(entryPoint).getLoopList()){
+			count += l.getMaxIterations();
+		}
+		
+		assertEquals(45+100+200+3,count);		
 	}
 	
 }
