@@ -1,16 +1,15 @@
 package codegen.prof;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javax.management.RuntimeErrorException;
-
-import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 import lpsolve.LpSolve;
 import lpsolve.LpSolveException;
 import codegen.prof.BasicBlock.BbType;
+import codegen.prof.flow.LoopAnalysis;
 
 public class IpetAnalysis {
 	public static final double defaultMaxLoop = 15;
@@ -23,7 +22,6 @@ public class IpetAnalysis {
 	CFG cfg;
 	private final int LE = 1;
 	private final int EQ = 3;
-	private final int GE = 2;
 	ArrayList<Edge> edges;
 
 	public IpetAnalysis(String funcName, CFG cfg) {
@@ -61,8 +59,6 @@ public class IpetAnalysis {
 		constraint[func.getEntryEdge().index] = 1;
 		problem.addConstraint(constraint, EQ, 1);
 
-		ArrayList<Loop> singleBlockLoops = new ArrayList<>();
-		double singleBlockLoopBound = 0;
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////////
 		for (Function f : calledFunctions.keySet()) {
@@ -112,7 +108,20 @@ public class IpetAnalysis {
 					
 					if(!l.body.contains(e.startBlock)){ 
 						// then it is not a backwards edge
+						LoopAnalysis la = new LoopAnalysis(f);
+						la.analyze();
 						constraint[e.index] = -l.maxIterations;
+						// if the head has children outside body then add one to constraint
+						boolean allHeadSuccInBody = true;;
+						for(BasicBlock succ : l.head.getSuccesors()){
+							if(!l.body.contains(succ)){
+								allHeadSuccInBody = false;
+								break;
+							}
+						}
+						if(allHeadSuccInBody){
+							constraint[e.index] += 1;
+						}
 					}
 				}
 				problem.addConstraint(constraint, LE, 0);
@@ -185,6 +194,32 @@ public class IpetAnalysis {
 		// else -> 1
 		System.out.println("WCET for func " + func + " = " + wcet);
 		return wcet;
+	}
+	
+	public void printTestScript(Function f){
+		String s = "#Make sure to place this file in the platform directory in the scripts folder!\n" + 
+				"\n" + 
+				"\n" + 
+				"tcl source scripts/icount.tcl\n" + 
+				"proc cpu0\n" + 
+				"b *0x" + f.getStartAddressHex() + "\n" + 
+				"b *0x" + f.getEndAddresshex() + "\n" + 
+				"\n" + 
+				"tclcallback 1 myCallback\n" + 
+				"tclcallback 2 myCallback\n" + 
+				"\n" + 
+				"continue";
+		
+		//write to file
+		PrintStream ps;
+		try {
+			ps = new PrintStream(new File(f.label + "_prof.sh"));
+			ps.println(s);
+			ps.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("Could not write script for function " + f.label);
+			e.printStackTrace();
+		}
 	}
 
 	public void buildEdges(Function func) {

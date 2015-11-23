@@ -44,12 +44,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g1";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
@@ -62,12 +56,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g2";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {		
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
@@ -80,12 +68,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g3";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {	
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
@@ -98,12 +80,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g4";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {	
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);		
@@ -116,12 +92,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g5";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
@@ -134,12 +104,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g6";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
@@ -152,12 +116,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g7";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
@@ -168,13 +126,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g8";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-			
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
@@ -187,13 +138,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g9";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-			
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
@@ -206,13 +150,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g10";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-			
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
@@ -225,13 +162,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g11";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-			
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
@@ -243,13 +173,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g12";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-			
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertFalse(result);
@@ -260,13 +183,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g13";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-			
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
@@ -278,13 +194,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g14";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-			
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
@@ -296,13 +205,6 @@ public class LoopAnalysisTest {
 		entryPoint = "g15";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-			
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);
@@ -314,16 +216,8 @@ public class LoopAnalysisTest {
 		entryPoint = "g16";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-			
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
-		boolean result = la.analyze();
-		assertFalse(result);
+		la.analyze();
 		
 	}
 	
@@ -332,16 +226,62 @@ public class LoopAnalysisTest {
 		entryPoint = "g17";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-			
-		}
+		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
+		la.analyze();
+	}
+	
+	@Test
+	public void testG18(){
+		entryPoint = "g18";
+		Profiler prof = new Profiler(fileDir,rootName);
+		prof.parseFile(entryPoint);
+		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
+		boolean result = la.analyze();
+		assertTrue(result);
+		assertEquals(100,prof.getCfg().getFunction(entryPoint).getLoopList().get(0).getMaxIterations());
+	}
+	
+	@Test
+	public void testG19(){
+		entryPoint = "g19";
+		Profiler prof = new Profiler(fileDir,rootName);
+		prof.parseFile(entryPoint);
+		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
+		boolean result = la.analyze();
+		assertTrue(result);
+		assertEquals(100,prof.getCfg().getFunction(entryPoint).getLoopList().get(0).getMaxIterations());
+	}
+	
+	@Test
+	public void testG20(){
+		entryPoint = "g20";
+		Profiler prof = new Profiler(fileDir,rootName);
+		prof.parseFile(entryPoint);
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertFalse(result);
+	}
+	
+	@Test
+	public void testG21(){
+		entryPoint = "g21";
+		Profiler prof = new Profiler(fileDir,rootName);
+		prof.parseFile(entryPoint);
+		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
+		boolean result = la.analyze();
+		assertTrue(result);	
+		assertEquals(100,prof.getCfg().getFunction(entryPoint).getLoopList().get(0).getMaxIterations());
+		
+	}
+	
+	@Test
+	public void testG22(){
+		entryPoint = "g22";
+		Profiler prof = new Profiler(fileDir,rootName);
+		prof.parseFile(entryPoint);
+		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
+		boolean result = la.analyze();
+		assertFalse(result);	
 	}
 	
 	
@@ -350,13 +290,6 @@ public class LoopAnalysisTest {
 		entryPoint = "f";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
-		try {
-			prof.getCfg().printDotCFG(entryPoint);
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-			
-		}
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
 		assertTrue(result);

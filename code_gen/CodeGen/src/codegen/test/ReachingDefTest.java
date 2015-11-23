@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import codegen.prof.Profiler;
-import codegen.prof.flow.ReachingDefinition;
+import codegen.prof.flow.ReachingDef;
 
 public class ReachingDefTest {
 	
@@ -41,7 +41,7 @@ public class ReachingDefTest {
 			fail(e.getMessage());
 		}
 		
-		ReachingDefinition rd = new ReachingDefinition(prof.getCfg().getFunction(entryPoint));
+		ReachingDef rd = new ReachingDef(prof.getCfg().getFunction(entryPoint));
 		rd.analyze();
 		rd.prettyPrint();
 		
@@ -59,7 +59,7 @@ public class ReachingDefTest {
 			fail(e.getMessage());
 		}
 		
-		ReachingDefinition rd = new ReachingDefinition(prof.getCfg().getFunction(entryPoint));
+		ReachingDef rd = new ReachingDef(prof.getCfg().getFunction(entryPoint));
 		rd.analyze();
 		rd.prettyPrint();
 		

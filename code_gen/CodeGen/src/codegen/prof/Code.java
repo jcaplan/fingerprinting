@@ -69,7 +69,13 @@ public class Code {
 		} else if(instruction.equals("addi") || 
 					instruction.equals("add") ||
 					instruction.equals("sub") || 
-					instruction.equals("subi")){
+					instruction.equals("subi") ||
+					instruction.equals("mul") ||
+					instruction.equals("muli") || 
+					instruction.equals("sll") ||
+					instruction.equals("slli") ||
+					instruction.equals("div") || 
+					instruction.equals("divi")){
 			type = CodeType.BINOP;
 		} else if (instruction.startsWith("cmp")){
 			type = CodeType.COMPARE;

@@ -1,5 +1,5 @@
 #include "annot.h"
-
+#include <stdio.h>
 
 static int a[1000];
 int inter(int k);
@@ -284,6 +284,72 @@ void g17(int x){
 	}
 
 }
+//slli
+void g18(int x){
+	int k = 3;
+	a[k*32] = k;
+	x = a[k*32];
+	while(x < 103){
+		x+=1;
+		a[x] = 3;
+	}
+}
+
+//mul
+void g19(int x){
+	int k = 3;
+	int j = 32;
+	int l = k*j;
+	a[l] = k;
+	x = a[k*j];
+	while(x < 103){
+		x+=1;
+		a[x] = 3;
+	}
+}
+
+// sign is wrong way...
+// there are two ways to break...
+// zero times or infinite times
+// should throw error for infinite
+// but should allow zero...
+void g20(int x){
+	int k = 3;
+	int j = 29;
+	a[k*j] = k;
+	x = a[k*j];
+	while(x > 103){
+		x+=1;
+		a[x] = 3;
+	}
+}
+
+//division
+void g21 (int x){
+	int k = 3;
+	int j = 29;
+	a[j/k] = k;
+	x = a[j/k];
+	while(x < 103){
+		x+=1;
+		a[x] = 3;
+	}
+}
+
+//could be infinite
+void g22(int x) {
+	int i;
+	int k;
+	if(x < 5){
+		k = 1;
+	} else {
+		k = -1;
+	}
+
+	for(i = 0; i < 10; i += k){
+		a[i] = i;
+	}
+}
 
 
 int inter(int k){
@@ -347,9 +413,11 @@ int main(){
 		ANNOT_MAXITER(10);
 		if(i > 5){
 
-			j += *g(i);
+			j += *(g(i));
 		}
 	}
-
+	g17(-1);
+	g13(0);
+	g14(-1);
 	return j;
 }

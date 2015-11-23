@@ -8,13 +8,13 @@ import java.util.*;
 public class LoopAnalysis {
 
 	Function root;
-	ReachingDefinition reachingDef;
+	ReachingDef reachingDef;
 	public LoopAnalysis(Function f) {
 		this.root = f;
 	}
 
 	public boolean analyze() {
-		reachingDef = new ReachingDefinition(root);
+		reachingDef = new ReachingDef(root);
 		reachingDef.analyze();
 		reachingDef.prettyPrint();
 		boolean allPassed = true;
@@ -152,7 +152,7 @@ public class LoopAnalysis {
 				throw new LoopAnalysisException("More than one reaching def found for increment value");
 			}
 			
-			Expression change = outSet.get(iterator).get(0); //TODO check only 1
+			Expression change = outSet.get(iterator).get(0);
 			ExpBinOp binOp = null;
 			if ((change instanceof ExpBinOp)) {
 				binOp = (ExpBinOp) change;
@@ -199,8 +199,8 @@ public class LoopAnalysis {
 	
 		int maxIterations = getMaxIterations(initValue, threshold, incrValue, branchCondition.type);
 		if(maxIterations < 0){
-			throw new LoopAnalysisException(String.format("Constraints have been violated for" +
-					"max iteration calculation: initValue: %d, threshold: %d, incrValue: %d, "
+			throw new LoopAnalysisException(String.format("Constraints have been violated for " +
+					"max iteration calculation: initValue: %s, threshold: %s, incrValue: %s, "
 					+ "branchType: %s",initValue,threshold,incrValue,branchCondition.type.toString()));		
 		}
 		l.setMaxIterations(maxIterations);
@@ -376,8 +376,31 @@ public class LoopAnalysis {
 
 		if (binOp.getLHS() instanceof ExpConstant
 				&& binOp.getRHS() instanceof ExpConstant) {
-			result = Expression.sum((ExpConstant) binOp.getLHS(),
-					(ExpConstant) binOp.getRHS());
+			switch(binOp.type){
+			case MINUS:
+				result = Expression.difference((ExpConstant) binOp.getLHS(),
+						(ExpConstant) binOp.getRHS());
+				break;
+			case PLUS:
+				result = Expression.sum((ExpConstant) binOp.getLHS(),
+						(ExpConstant) binOp.getRHS());
+				break;
+			case SLL:
+				result = Expression.shiftLeftLogical((ExpConstant) binOp.getLHS(),
+						(ExpConstant) binOp.getRHS());
+				break;
+			case TIMES:
+				result = Expression.multiply((ExpConstant) binOp.getLHS(),
+						(ExpConstant) binOp.getRHS());
+				break;
+			case DIV:
+				result = Expression.divide((ExpConstant) binOp.getLHS(),
+						(ExpConstant) binOp.getRHS());
+			default:
+				break;
+			
+			}
+			
 		}
 
 		// Pattern 3 lhs = exp -> rhs = constant, rhs = constant
@@ -429,11 +452,13 @@ public class LoopAnalysis {
 			incrValue = incrValueR.getMax(); // largest negative -> smallest step
 		} 
 		
+		
+		
 		//Double check that the constraints are respected
 		if (!(
-				(threshold > initValue && incrValue > 0 && (type.equals(Type.LT) || type
+				(thresholdR.getMin() > initValueR.getMax() && incrValueR.getMin() > 0 && (type.equals(Type.LT) || type
 				.equals(Type.LE) || type.equals(Type.NE))) || 
-				(threshold < initValue && incrValue < 0 && (type
+				(thresholdR.getMax() < initValueR.getMin() && incrValueR.getMax() < 0 && (type
 				.equals(Type.GT) || type.equals(Type.GE) || type.equals(Type.NE)))
 			)
 			) {

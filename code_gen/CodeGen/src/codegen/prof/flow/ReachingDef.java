@@ -10,13 +10,13 @@ import codegen.prof.Code;
 import codegen.prof.Function;
 import codegen.prof.Code.CodeType;
 
-public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expression>>>{
+public class ReachingDef extends ForwardAnalysis<HashMap<String,List<Expression>>>{
 
-	public ReachingDefinition(Function root) {
+	public ReachingDef(Function root) {
 		super(root);
 	}
 	
-	public ReachingDefinition(List<BasicBlock> workList) {
+	public ReachingDef(List<BasicBlock> workList) {
 		super(workList);
 	}
 
@@ -104,13 +104,7 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 		HashMap<String, List<Expression>> c_out = copy(c_in);
 		String[] ops = c.getOperands();
 		
-		Expression op1 = null;
-		if(c_out.get(ops[1]) != null && c_out.get(ops[1]).size() == 1){
-			op1 = c_out.get(ops[1]).get(0);
-		}
-		if(op1 == null || op1.getStatus() == Expression.BOTTOM){
-			op1 = convertOpToExp(ops[1]);
-		}
+		Expression op1 = getOpExpression(c_out, ops[1]);
 		
 		if(c_out.containsKey(ops[0])){
 			List<Expression> list = c_out.get(ops[0]);
@@ -131,16 +125,8 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 		HashMap<String, List<Expression>> c_out = copy(c_in);
 		String[] ops = c.getOperands();
 		
-		
-		Expression op0 = null;
-		if(c_out.get(ops[0]) != null && c_out.get(ops[0]).size() == 1){
-			op0 = c_out.get(ops[0]).get(0);
-		}
-		if(op0 == null || op0.getStatus() == Expression.BOTTOM){
-			op0 = convertOpToExp(ops[0]);
-		}
+		Expression op0 = getOpExpression(c_out, ops[0]);
 
-		
 		if(c_out.containsKey(ops[1])){
 			List<Expression> list = c_out.get(ops[1]);
 			list.clear();
@@ -159,13 +145,7 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 		HashMap<String, List<Expression>> c_out = copy(c_in);
 		String[] ops = c.getOperands();
 		
-		Expression op1 = null;
-		if(c_out.get(ops[1]) != null && c_out.get(ops[1]).size() == 1){
-			op1 = c_out.get(ops[1]).get(0);
-		}
-		if(op1 == null || op1.getStatus() == Expression.BOTTOM){
-			op1 = convertOpToExp(ops[1]);
-		}
+		Expression op1 = getOpExpression(c_out, ops[1]);
 		
 		if(c_out.containsKey(ops[0])){
 			List<Expression> list = c_out.get(ops[0]);
@@ -185,20 +165,9 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 		HashMap<String, List<Expression>> c_out = copy(c_in);
 		String[] ops = c.getOperands();
 		
-		Expression op1 = null;
-		Expression op2 = null;
-		if(c_out.get(ops[1]) != null && c_out.get(ops[1]).size() == 1){
-			op1 = c_out.get(ops[1]).get(0);
-		}
-		if(c_out.get(ops[2]) != null && c_out.get(ops[2]).size() == 1){
-			op2 = c_out.get(ops[2]).get(0);
-		}
-		if(op1 == null || op1.getStatus() == Expression.BOTTOM){
-			op1 = convertOpToExp(ops[1]);
-		}
-		if(op2 == null || op2.getStatus() == Expression.BOTTOM){
-			op2 = convertOpToExp(ops[2]);
-		}
+		Expression op1 = getOpExpression(c_out, ops[1]);
+		Expression op2 = getOpExpression(c_out,ops[2]);
+		
 		
 		ExpCompareOp exp = new ExpCompareOp(c.getInstruction());
 		exp.setLHS(op1);
@@ -216,27 +185,15 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 		return c_out;
 	}
 	
+
 	@Override
 	protected HashMap<String, List<Expression>> caseBinOp(Code c,
 			HashMap<String, List<Expression>> c_in, BasicBlock succ) {
 		HashMap<String, List<Expression>> c_out = copy(c_in);
 		String[] ops = c.getOperands();
 		
-		Expression op1 = null;
-		Expression op2 = null;
-		if(c_out.get(ops[1]) != null && c_out.get(ops[1]).size() == 1){
-			op1 = c_out.get(ops[1]).get(0);
-		}
-		if(c_out.get(ops[2]) != null && c_out.get(ops[2]).size() == 1){
-			op2 = c_out.get(ops[2]).get(0);
-		}
-		if(op1 == null || op1.getStatus() == Expression.BOTTOM){
-			op1 = convertOpToExp(ops[1]);
-		}
-		if(op2 == null || op2.getStatus() == Expression.BOTTOM){
-			op2 = convertOpToExp(ops[2]);
-		}
-		
+		Expression op1 = getOpExpression(c_out, ops[1]);
+		Expression op2 = getOpExpression(c_out, ops[2]);
 		
 		ExpBinOp exp = new ExpBinOp(c.getInstruction());
 		exp.setLHS(op1);
@@ -260,20 +217,8 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 		HashMap<String, List<Expression>> c_out = copy(c_in);
 		String[] ops = c.getOperands();
 		
-		Expression op1 = null;
-		Expression op2 = null;
-		if(c_out.get(ops[0]) != null && c_out.get(ops[0]).size() == 1){
-			op1 = c_out.get(ops[0]).get(0);
-		}
-		if(c_out.get(ops[1]) != null && c_out.get(ops[1]).size() == 1){
-			op2 = c_out.get(ops[1]).get(0);
-		}
-		if(op1 == null || op1.getStatus() == Expression.BOTTOM){
-			op1 = convertOpToExp(ops[0]);
-		}
-		if(op2 == null || op2.getStatus() == Expression.BOTTOM){
-			op2 = convertOpToExp(ops[1]);
-		}
+		Expression op1 = getOpExpression(c_out, ops[0]);
+		Expression op2 = getOpExpression(c_out, ops[1]);
 		
 		ExpBranchCond exp = new ExpBranchCond(c.getInstruction());
 		exp.setLHS(op1);
@@ -308,5 +253,20 @@ public class ReachingDefinition extends ForwardAnalysis<HashMap<String,List<Expr
 		return new ExpIdentifier(op);
 		
 	}
+	
+	private Expression getOpExpression(HashMap<String, List<Expression>> c_out,
+			String op) {
+		Expression result = null;
+		List<Expression> list = c_out.get(op);
+		if(list != null && list.size() == 1){
+			result = list.get(0);
+		}
+		
+		if(result == null || result.getStatus() == Expression.BOTTOM){
+			result = convertOpToExp(op);
+		}
+		return result;
+	}
+
 
 }

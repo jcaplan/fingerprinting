@@ -19,4 +19,10 @@ public class Annotation {
 		this.type = type;
 	}
 	
+	@Override
+	public String toString(){
+		String s = String.format("address: %x, value: %d, type: %d",address,value,type);
+		return s;
+	}
+	
 }

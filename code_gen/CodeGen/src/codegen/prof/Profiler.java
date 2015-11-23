@@ -18,6 +18,7 @@ public class Profiler {
 	Parser parser;
 	String fileDir;
 	String rootName;
+	IpetAnalysis ipet;
 	
 	public Profiler(String fileDir, String rootName){
 		this.fileDir = fileDir;
@@ -40,7 +41,7 @@ public class Profiler {
 
 	public int getWCET(String funcName, boolean cycleAccurate) {
 		
-		IpetAnalysis ipet = new IpetAnalysis(funcName,cfg);
+		ipet = new IpetAnalysis(funcName,cfg);
 		int wcet = 0;
 		try {
 			wcet = ipet.getWCET(cycleAccurate);
@@ -141,8 +142,12 @@ public class Profiler {
 //		System.out.println("Add the following lines to linker file: ");
 //		System.out.println(prof.getLibs(entryPoint));
 //		System.out.println("\n");
-		prof.cfg.printDotCFG(entryPoint);
+		prof.printProfScript(prof.getCfg().getFunction(entryPoint));
 		
+	}
+
+	private void printProfScript(Function f) {
+		ipet.printTestScript(f);
 	}
 	
 }

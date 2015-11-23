@@ -352,9 +352,21 @@ public class Function {
 				loop.maxIterations = 61;
 				break;
 			default:
+				boolean headContainsCode = false;
 				for(Annotation annot : annotations){
-					if (loop.containsAddress(annot.address)){
-						loop.maxIterations = annot.value;
+					boolean succContainsAnnot = false;
+					for(BasicBlock succ : loop.getHead().getSuccesors()){
+						if(loop.getBody().contains(succ) && succ.containsCode(annot.address)){
+							succContainsAnnot = true;
+							break;
+						}
+					}
+					if(!headContainsCode){
+					headContainsCode = loop.getHead().containsCode(annot.address);
+						if (headContainsCode || 
+								(!headContainsCode && succContainsAnnot)){
+							loop.maxIterations = annot.value;
+						}
 					}
 				}
 				if(loop.maxIterations == 0){

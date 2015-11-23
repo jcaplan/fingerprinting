@@ -68,10 +68,6 @@ public class Expression implements Comparable<Expression>{
 
 
 
-	public static Expression sum(ExpConstant c1, ExpConstant c2) {
-		return new ExpConstant(c1.value + c2.value);
-	}
-	
 	public static Expression getNewTop(){
 		Expression exp = new Expression();
 		exp.status = TOP;
@@ -103,6 +99,30 @@ public class Expression implements Comparable<Expression>{
 	@Override
 	public int compareTo(Expression exp) {
 		return this.toString().compareTo(exp.toString());
+	}
+
+
+	public static Expression sum(ExpConstant c1, ExpConstant c2) {
+		return new ExpConstant(c1.value + c2.value);
+	}
+	
+	
+	public static Expression difference(ExpConstant c1, ExpConstant c2) {
+		return new ExpConstant(c1.value - c2.value);
+	}
+
+
+	public static Expression shiftLeftLogical(ExpConstant c1, ExpConstant c2) {
+		return new ExpConstant(c1.value << c2.value);
+	}
+
+
+	public static Expression multiply(ExpConstant c1, ExpConstant c2) {
+		return new ExpConstant(c1.value * c2.value);
+	}
+	
+	public static Expression divide(ExpConstant c1, ExpConstant c2){
+		return new ExpConstant(c1.value / c2.value);
 	}
 	
 }

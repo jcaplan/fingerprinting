@@ -8,7 +8,7 @@ import codegen.prof.flow.ExpCompareOp.Type;
 public class ExpBinOp extends Expression {
 
 	enum Type{
-		PLUS,MINUS,
+		PLUS,MINUS,TIMES,SLL,DIV
 	};
 	
 	Type type;
@@ -40,7 +40,18 @@ public class ExpBinOp extends Expression {
 		case "subi":
 			type = Type.MINUS;
 			break;
-		
+		case "mul":
+		case "muli":
+			type = Type.TIMES;
+			break;
+		case "sll":
+		case "slli":
+			type = Type.SLL;
+			break;
+		case "div":
+		case "divi":
+			type = Type.DIV;
+			break;
 		default:
 			break;
 		}
@@ -79,6 +90,13 @@ public class ExpBinOp extends Expression {
 		case MINUS:
 			s = " - ";
 			break;
+		case SLL:
+			s = " << ";
+			break;
+		case TIMES:
+			s = " * ";
+		case DIV:
+			s = " / ";
 		default:
 			break;
 		
