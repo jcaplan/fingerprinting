@@ -11,20 +11,21 @@ import codegen.util.Logger;
 
 @SuppressWarnings("serial")
 public class MSFitnessFunction extends FitnessFunction{
-
+	
+	static Schedule bestSchedule;
+	double fittestScore;
+	
+	
 	ArrayList<Task> taskList;
 	ArrayList<MapConstraint> constraints;
 	Map<Task, ArrayList<Processor>> legalMappings;
-	Schedule bestSchedule;
 	ArrayList<Processor> procList;
 	
 	public MSFitnessFunction(ArrayList<Task> taskList,
-			ArrayList<MapConstraint> constraints, Map<Task, ArrayList<Processor>> legalMappings,
-			Schedule bestSchedule, ArrayList<Processor> procList) {
+			ArrayList<MapConstraint> constraints, Map<Task, ArrayList<Processor>> legalMappings, ArrayList<Processor> procList) {
 		this.taskList = taskList;
 		this.constraints = constraints;
 		this.legalMappings = legalMappings;
-		this.bestSchedule = bestSchedule;
 		this.procList = procList;
 	}
 
@@ -58,8 +59,12 @@ public class MSFitnessFunction extends FitnessFunction{
 		} else {
 			fitness = analysis.qosAnalysis();
 		}
+		if(fitness > fittestScore){
+			fittestScore = fitness;
+			bestSchedule = schedule;
+		}
 
-		Logger.logMessage("result of schedulability analysis: " + schedResult);
+		Logger.logMessage("result of schedulability analysis: " + schedResult + ", fitness = " + fitness);
 		return fitness;
 	}
 	

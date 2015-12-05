@@ -1,8 +1,6 @@
 package codegen.map;
 
-import java.util.Comparator;
 
-import codegen.gen.Function;
 
 public class Task implements Comparable<Task>{
 
@@ -15,18 +13,19 @@ public class Task implements Comparable<Task>{
 	boolean type;
 	public static final boolean replica = true;
 	public static final boolean original = false;
-	
+	public String name;
 	Processor proc;
 	
-	int[] maxNumReexecutions = new int[SchedAnalysis.numModes];
+	int[] maxNumReexecutions = {1,1,1,1};
 	
 	
 	
-	public Task(double clo, double chi, double period, boolean criticality) {
+	public Task(double clo, double chi, double period, boolean criticality, String name) {
 		wcetLowerBound = clo;
 		wcetUpperBound = chi;
 		this.period = period;
 		this.criticality = criticality;
+		this.name = name;
 	}
 
 	public Task(Task t, boolean isReplica) {
@@ -35,17 +34,24 @@ public class Task implements Comparable<Task>{
 		this.period = t.period;
 		this.criticality = t.criticality;
 		this.type = Task.replica;
+		this.maxNumReexecutions = t.maxNumReexecutions;
+		if(replica){
+			name = t.name + "R";
+		} else {
+			name = t.name;
+		}
 	}
 
-	@Override
-	public String toString(){
-		String s = "Clo: " + wcetLowerBound + ", Chi: " + wcetUpperBound +
-				", period: " + period + ", criticality: ";
+
+	public String toFullString(){
+		String s = name + ": ";
 		if(criticality == Task.HI){
-			s += "HI";
+			s += "HI ";
 		} else {
-			s += "LO";
+			s += "LO ";
 		}
+		s += "Clo: " + wcetLowerBound + ", Chi: " + wcetUpperBound +
+			", period: " + period + ", criticality: ";
 		s +=  ", replica: " + type;
 		return s;
 	}
@@ -77,6 +83,15 @@ public class Task implements Comparable<Task>{
 			result = 1;
 		}
 		return result;
+	}
+
+	public boolean isCritical() {
+		return criticality == true;
+	}
+	
+	@Override
+	public String toString(){
+		return name;
 	}
 	
 }

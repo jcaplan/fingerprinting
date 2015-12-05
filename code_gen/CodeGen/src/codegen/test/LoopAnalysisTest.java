@@ -284,6 +284,16 @@ public class LoopAnalysisTest {
 		assertFalse(result);	
 	}
 	
+	@Test
+	public void testG23(){
+		entryPoint = "g23";
+		Profiler prof = new Profiler(fileDir,rootName);
+		prof.parseFile(entryPoint);
+		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
+		boolean result = la.analyze();
+		assertTrue(result);	
+	}
+	
 	
 	@Test
 	public void testF(){

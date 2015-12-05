@@ -1,6 +1,7 @@
 package codegen.map;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.jgap.*;
 import org.jgap.impl.IntegerGene;
@@ -11,6 +12,9 @@ public class Mapper {
 
 	Application app;
 	ArrayList<Processor> procList;
+	Schedule bestSchedule;
+	double fitness;
+	Map<Task, FaultMechanism> bestTechniqueMap;
 	
 	
 	public Mapper(){
@@ -43,7 +47,7 @@ public class Mapper {
 		
 	}
 
-	public Schedule findSchedule() {
+	public void findSchedule() {
 		
 		Configuration.reset();
 		MapConfiguration reliabilityConfig = new MapConfiguration("raConfig");
@@ -57,10 +61,9 @@ public class Mapper {
 
 		GAEngine raEngine = new GAEngine(raFF,reliabilityConfig,sampleChromosome);		
 		raEngine.findSolution();
-		
-		
-		
-		return null;
+		bestSchedule = raFF.bestSchedule;
+		fitness = raEngine.getBestSolutionFitness();
+		bestTechniqueMap = raFF.bestTechniqueMap;
 		
 	}
 
@@ -84,6 +87,18 @@ public class Mapper {
 	
 	public ArrayList<Processor> getProcList(){
 		return procList;
+	}
+	
+	public Schedule getBestSchedule(){
+		return bestSchedule;
+	}
+	
+	public double getBestScheduleFitness(){
+		return fitness;
+	}
+	
+	public Map<Task, FaultMechanism> getBestFTMs(){
+		return bestTechniqueMap;
 	}
 	
 }

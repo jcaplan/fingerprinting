@@ -26,4 +26,9 @@ public class DMR extends FaultMechanism{
 		techniqueMap.put(replica, this);
 	}
 
+	@Override
+	public String toString(){
+		return "DMR";
+	}
+	
 }

@@ -9,6 +9,7 @@ public class LoopAnalysis {
 
 	Function root;
 	ReachingDef reachingDef;
+
 	public LoopAnalysis(Function f) {
 		this.root = f;
 	}
@@ -16,7 +17,6 @@ public class LoopAnalysis {
 	public boolean analyze() {
 		reachingDef = new ReachingDef(root);
 		reachingDef.analyze();
-		reachingDef.prettyPrint();
 		boolean allPassed = true;
 		// First do constant propagation on the entire function
 		// ----------------------------------------------------
@@ -43,8 +43,8 @@ public class LoopAnalysis {
 				e.printStackTrace();
 				allPassed = false;
 				continue;
-			}			
-			
+			}
+
 			try {
 				findLoopParameters(l, bbBackwardsEdge, bbExitPoint);
 			} catch (LoopAnalysisException e) {
@@ -53,158 +53,206 @@ public class LoopAnalysis {
 				continue;
 
 			}
-
+			// Now check other basic block branches besides the head
+			for (BasicBlock bb : l.getBody()) {
+				if (!bb.equals(bbExitPoint) && bb.isBranch()
+						&& bb.isConditional()) {
+					checkBranch(l,bb);
+				}
+			}
 		}
 		return allPassed;
 	}
-	
+
+	private void checkBranch(Loop l, BasicBlock bb) {
+		HashMap<String, List<Expression>> conditionOut = (HashMap<String, List<Expression>>) reachingDef
+				.getOutSet(bb);
+		List<Expression> branchList = conditionOut.get(bb.getLastCode()
+				.getCodeKey());
+		if (branchList.size() != 1) {
+			return;
+		}
+		ExpBranchCond branchCondition = (ExpBranchCond) branchList.get(0);
+		try {
+			branchCondition = simplifyBranchCondition(branchCondition);
+		} catch (LoopAnalysisException e) {
+			System.out.println(e.getMessage());
+			return;
+		}
+		System.out.println(bb + ": condition = " + branchCondition);
+		Range threshold = null;
+		
+		// Get the threshold value
+		// -----------------------
+		try {
+			threshold = getRangeFromExp(branchCondition.getRHS(), conditionOut);
+		} catch (LoopAnalysisException e) {
+			System.out.println("Could not determine threshold for " + bb);
+			return;
+		}
+		
+		//Based on new threshold determine max iterations...
+		System.out.println("Found new threshold for " + bb + ": " + threshold);
+		
+
+		
+		Range newInitValue = null;
+		Range newThreshold = null;
+
+		if(l.getIncrValue().isPositive()){
+			if(branchCondition.type == Type.LE || branchCondition.type == Type.LT){
+				newInitValue = l.getInitValue();
+				newThreshold = threshold;
+			} else if(branchCondition.type == Type.GE || branchCondition.type == Type.GT){
+				//from threshold to l.threshold
+				newInitValue = threshold;
+				newThreshold = l.getThreshold();
+			}
+		} else {
+			if(branchCondition.type == Type.LE || branchCondition.type == Type.LT){
+				//from threshold to l.threshold
+				newInitValue = threshold;
+				newThreshold = l.getThreshold();
+			} else if(branchCondition.type == Type.GE || branchCondition.type == Type.GT){
+				//from init to threshold
+				newInitValue = l.getInitValue();
+				newThreshold = threshold;
+			}
+		}
+		
+		System.out.println(String.format("check max iterations: %s,%s,%s",newInitValue,
+				newThreshold,l.getIncrValue()));
+		int maxIterations = getMaxIterations(newInitValue, newThreshold, l.getIncrValue(),
+				branchCondition.type);
+		if (maxIterations >= 0) {
+			System.out.println("Maximum true branch for " + bb + ": " + maxIterations);
+			bb.setMaxTrueBranch(maxIterations);
+		} else {
+			System.out.println("could not determine maxTrueBranch");
+		}
+	}
 
 	private void findLoopParameters(Loop l, BasicBlock bbBackwardsEdge,
 			BasicBlock bbExitPoint) throws LoopAnalysisException {
-		
+
 		// Get the branch condition, simplified and reduced
 		// ------------------------------------------------
 
 		HashMap<String, List<Expression>> conditionOut = (HashMap<String, List<Expression>>) reachingDef
 				.getOutSet(bbExitPoint);
-		List<Expression> branchList =  conditionOut
-		.get(bbExitPoint.getLastCode().getCodeKey());
-		if(branchList.size() != 1){
-			throw new LoopAnalysisException("More than one reaching def found for branch condition");
+		List<Expression> branchList = conditionOut.get(bbExitPoint
+				.getLastCode().getCodeKey());
+		if (branchList.size() != 1) {
+			throw new LoopAnalysisException(
+					"More than one reaching def found for branch condition");
 		}
-		ExpBranchCond branchCondition = (ExpBranchCond) branchList.get(0); 
-
+		ExpBranchCond branchCondition = (ExpBranchCond) branchList.get(0);
 		// Simplify the condition expression
 		// ---------------------------------
 		branchCondition = simplifyBranchCondition(branchCondition);
 		if (!trueCondStaysInLoop(l, bbExitPoint)) {
 			branchCondition.invertType();
 		}
-		
+
 		// Declare the loop parameters
 		// ---------------------------
 		String iterator = null;
 		Range incrValue = null;
-		Range threshold = null; 
-		Range initValue = null; 
+		Range threshold = null;
+		Range initValue = null;
+
+		Expression incrExp = null;
+		Expression thresholdExp = null;
 		
-		if(branchCondition.getLHS() instanceof ExpBinOp){
+		if (branchCondition.getLHS() instanceof ExpBinOp) {
+			
+			
 			// First pattern ( iterator + increment != threshold )
-			// ---------------------------------------------------
-			
+			// ---------------------------------------------------			
 			ExpBinOp lhs = (ExpBinOp) branchCondition.getLHS();
-			
+
 			// Simplify turns all subs int adds
 			// --------------------------------
 			lhs = (ExpBinOp) simplifyBinOp(lhs);
-			
+
 			// Get the variable name and the increment value from
 			// the exit block
-			//---------------------------------------------------
+			// ---------------------------------------------------
 			iterator = ((ExpIdentifier) lhs.getLHS()).id;
-			if(lhs.getRHS() instanceof ExpConstant){
-				incrValue = new Range(((ExpConstant) lhs.getRHS()).value);
-			} else if(lhs.getRHS() instanceof ExpIdentifier){
-				iterator = ((ExpIdentifier) lhs.getLHS()).id;
-				List<Expression> rhsList = conditionOut.get(((ExpIdentifier)lhs.getRHS()).id);
-				incrValue = getRange(rhsList);
-				if(incrValue == null){
-					throw new LoopAnalysisException("incrValue not defined on all paths");
-				}
-			}
-			
-			// Get the threshold value
-			// -----------------------
-			if(branchCondition.getRHS() instanceof ExpConstant){
-				threshold = new Range(((ExpConstant) branchCondition.getRHS()).value);
-			} else if(branchCondition.getRHS() instanceof ExpIdentifier){
-				List<Expression> rhsList = conditionOut.get(((ExpIdentifier)branchCondition.getRHS()).id);
-				threshold = getRange(rhsList);
-				if(threshold == null){
-					throw new LoopAnalysisException("Threshold not defined on all paths");
-				}
-			}
+			incrExp = lhs.getRHS();
+			thresholdExp = branchCondition.getRHS();
 		} else {
 			// Second pattern ((iterator < threshold != 0)
 			iterator = ((ExpIdentifier) branchCondition.getLHS()).id;
 
 			// First find the threshold
 			// ------------------------
-			if(branchCondition.getRHS() instanceof ExpConstant){
-				int value = ((ExpConstant) branchCondition.getRHS()).value;
-				threshold = new Range(value, value);
-			} else if(branchCondition.getRHS() instanceof ExpIdentifier){
-				//get the list of expressions for the RHS
-				List<Expression> rhsList = conditionOut.get(((ExpIdentifier)branchCondition.getRHS()).id);
-				threshold = getRange(rhsList);
-				if(threshold == null){
-					throw new LoopAnalysisException("Threshold not defined on all paths");
-				}
-			} else {
-				throw new LoopAnalysisException("Cannot parse RHS of branch expression");
-			}
-					
+			thresholdExp = branchCondition.getRHS();
+
 			// Find the increment value
 			// ------------------------------------------------------
+			// A bit safer to use tail instead of bbExitPoint in case exit point is head with 
+			// initial value in list. This way don't have to worry about some corner case 
+			// where order of list [incr, initValue] is reversed.
 			HashMap<String, List<Expression>> outSet = (HashMap<String, List<Expression>>) reachingDef
 					.getOutSet(l.getTail());
-			if(outSet.get(iterator).size() != 1){
-				throw new LoopAnalysisException("More than one reaching def found for increment value");
+			if (conditionOut.get(iterator).size() != 1) {
+				throw new LoopAnalysisException(
+						"More than one reaching def found for increment value");
 			}
-			
+
 			Expression change = outSet.get(iterator).get(0);
 			ExpBinOp binOp = null;
 			if ((change instanceof ExpBinOp)) {
 				binOp = (ExpBinOp) change;
 				binOp = (ExpBinOp) simplifyBinOp(binOp);
-				if(! ((ExpIdentifier) binOp.getLHS()).id.equals(iterator)){
-					throw new LoopAnalysisException("Identifier must match on both sides of increment expression");
+				if (!((ExpIdentifier) binOp.getLHS()).id.equals(iterator)) {
+					throw new LoopAnalysisException(
+							"Identifier must match on both sides of increment expression");
 				}
 			}
-			if(binOp != null){
-				if(binOp.getRHS() instanceof ExpConstant){
-					int value = ((ExpConstant) binOp.getRHS()).value;
-					incrValue = new Range(value, value);
-				} else if(binOp.getRHS() instanceof ExpIdentifier){
-					//get the list of expressions for the RHS
-					List<Expression> rhsList = conditionOut.get(((ExpIdentifier)binOp.getRHS()).id);
-					incrValue = getRange(rhsList);
-					if(incrValue == null){
-						throw new LoopAnalysisException("increment value not defined on all paths");
-					}
-				} else {
-					throw new LoopAnalysisException("Cannot parse binary operation in expression");
-				}
+			if (binOp != null) {
+				incrExp = binOp.getRHS();
 			} else {
-				throw new LoopAnalysisException("Could not identify binary operation in branch condition");
+				throw new LoopAnalysisException(
+						"Could not identify binary operation in branch condition");
 			}
 		}
+		
+		threshold = getRangeFromExp(thresholdExp, conditionOut);
+		incrValue = getRangeFromExp(incrExp, conditionOut);
+
 
 		// Now find the initial value for iterator
 		// ---------------------------------------
 		ArrayList<BasicBlock> entryList = l.getEntryBlocks();
-		Map<String, List<Expression>> inSet = reachingDef.getMergedOutSet(entryList);
-		
-		//Need to distinguish between known pairs, take worst case,
-		//and unkown branch...
-		if(inSet.get(iterator).get(0).getStatus() == Expression.TOP){
-			throw new LoopAnalysisException("Iterator does not have constant initial value on"
-					+ " all paths");
-		}
+		Map<String, List<Expression>> inSet = reachingDef
+				.getMergedOutSet(entryList);
+
+		// Need to distinguish between known pairs, take worst case,
+		// and unkown branch...
 		List<Expression> rhsList = inSet.get(iterator);
 		initValue = getRange(rhsList);
-		if(initValue == null){
-			throw new LoopAnalysisException("Could not determine initial value range");
+		if (initValue == null) {
+			throw new LoopAnalysisException(
+					"Could not determine initial value range");
 		}
-	
-		int maxIterations = getMaxIterations(initValue, threshold, incrValue, branchCondition.type);
-		if(maxIterations < 0){
-			throw new LoopAnalysisException(String.format("Constraints have been violated for " +
-					"max iteration calculation: initValue: %s, threshold: %s, incrValue: %s, "
-					+ "branchType: %s",initValue,threshold,incrValue,branchCondition.type.toString()));		
+
+		int maxIterations = getMaxIterations(initValue, threshold, incrValue,
+				branchCondition.type);
+		if (maxIterations < 0) {
+			throw new LoopAnalysisException(
+					String.format(
+							"Constraints have been violated for "
+									+ "max iteration calculation: initValue: %s, threshold: %s, incrValue: %s, "
+									+ "branchType: %s", initValue, threshold,
+							incrValue, branchCondition.type.toString()));
 		}
 		l.setMaxIterations(maxIterations);
-		
+		l.setInductionVar(iterator);
+		l.setIncrValue(incrValue);
+		l.setInitValue(initValue);
+		l.setThreshold(threshold);
 
 		System.out.println("iterator: " + iterator);
 		System.out.println("Initial value: " + initValue);
@@ -213,16 +261,33 @@ public class LoopAnalysis {
 		System.out.println(maxIterations);
 	}
 
+	private Range getRangeFromExp(Expression exp, HashMap<String, List<Expression>> defs) throws LoopAnalysisException {
+		Range range = null;
+		if (exp instanceof ExpConstant) {
+			range = new Range(((ExpConstant) exp).value);
+		} else if (exp instanceof ExpIdentifier) {
+			String name = ((ExpIdentifier) exp).id;
+			List<Expression> rhsList = defs
+					.get(name);
+			range = getRange(rhsList);
+			if (range == null) {
+				throw new LoopAnalysisException(
+						"range not defined on all paths");
+			}
+		}
+		return range;
+	}
+
 	private Range getRange(List<Expression> rhsList) {
 		Range range = null;
-		for(Expression exp : rhsList){
-			if(exp instanceof ExpBinOp){
+		for (Expression exp : rhsList) {
+			if (exp instanceof ExpBinOp) {
 				exp = simplifyBinOp((ExpBinOp) exp);
 			}
-			if(exp instanceof ExpConstant){
+			if (exp instanceof ExpConstant) {
 				int value = ((ExpConstant) exp).value;
-				if(range == null){
-					range = new Range(value,value);
+				if (range == null) {
+					range = new Range(value, value);
 				} else {
 					range.update(value);
 				}
@@ -240,28 +305,27 @@ public class LoopAnalysis {
 	private ExpBranchCond simplifyBranchCondition(ExpBranchCond cond)
 			throws LoopAnalysisException {
 
-		if(cond.getLHS() instanceof ExpBranchCond){
+		if (cond.getLHS() instanceof ExpBranchCond) {
 			simplifyBranchCondition((ExpBranchCond) cond.getLHS());
-		} else if(cond.getRHS() instanceof ExpBranchCond){
+		} else if (cond.getRHS() instanceof ExpBranchCond) {
 			simplifyBranchCondition((ExpBranchCond) cond.getRHS());
-		} 
-		
-		if (cond.getLHS() instanceof ExpBinOp){
+		}
+
+		if (cond.getLHS() instanceof ExpBinOp) {
 			cond.setLHS(simplifyBinOp((ExpBinOp) cond.getLHS()));
-		} 
-		if (cond.getRHS() instanceof ExpBinOp){
+		}
+		if (cond.getRHS() instanceof ExpBinOp) {
 			cond.setRHS(simplifyBinOp((ExpBinOp) cond.getRHS()));
 		}
-		
-		if(cond.getLHS() instanceof ExpConstant && 
-				(cond.getRHS() instanceof ExpIdentifier || 
-				cond.getRHS() instanceof ExpBinOp)){
-			//swap them
+
+		if (cond.getLHS() instanceof ExpConstant
+				&& (cond.getRHS() instanceof ExpIdentifier || cond.getRHS() instanceof ExpBinOp)) {
+			// swap them
 			Expression lhs = cond.getLHS();
 			cond.setLHS(cond.getRHS());
 			cond.setRHS(lhs);
 			cond.changeDirection();
-		}		
+		}
 
 		// If the LHS is an identifier than no simplifying required
 		// ------------------------------------------------------
@@ -376,7 +440,7 @@ public class LoopAnalysis {
 
 		if (binOp.getLHS() instanceof ExpConstant
 				&& binOp.getRHS() instanceof ExpConstant) {
-			switch(binOp.type){
+			switch (binOp.type) {
 			case MINUS:
 				result = Expression.difference((ExpConstant) binOp.getLHS(),
 						(ExpConstant) binOp.getRHS());
@@ -386,7 +450,8 @@ public class LoopAnalysis {
 						(ExpConstant) binOp.getRHS());
 				break;
 			case SLL:
-				result = Expression.shiftLeftLogical((ExpConstant) binOp.getLHS(),
+				result = Expression.shiftLeftLogical(
+						(ExpConstant) binOp.getLHS(),
 						(ExpConstant) binOp.getRHS());
 				break;
 			case TIMES:
@@ -398,9 +463,9 @@ public class LoopAnalysis {
 						(ExpConstant) binOp.getRHS());
 			default:
 				break;
-			
+
 			}
-			
+
 		}
 
 		// Pattern 3 lhs = exp -> rhs = constant, rhs = constant
@@ -432,47 +497,45 @@ public class LoopAnalysis {
 		return result;
 	}
 
-	private int getMaxIterations(Range initValueR, Range thresholdR, Range incrValueR,
-			ExpCompareOp.Type type) {
+	private int getMaxIterations(Range initValueR, Range thresholdR,
+			Range incrValueR, ExpCompareOp.Type type) {
 		// first check conditions
 		int threshold = 0;
 		int initValue = 0;
 		int incrValue = 0;
-		
-		//Get the min or max depending on operation type
-		if(type.equals(Type.LT) || type.equals(Type.LE) || 
-				(type.equals(Type.NE) && incrValueR.isPositive())){
+
+		// Get the min or max depending on operation type
+		if (type.equals(Type.LT) || type.equals(Type.LE)
+				|| (type.equals(Type.NE) && incrValueR.isPositive())) {
 			threshold = thresholdR.getMax();
 			initValue = initValueR.getMin();
 			incrValue = incrValueR.getMin();
-		} else if(type.equals(Type.GT) || type.equals(Type.GE) || 
-				(type.equals(Type.NE) && incrValueR.isNegative())){
+		} else if (type.equals(Type.GT) || type.equals(Type.GE)
+				|| (type.equals(Type.NE) && incrValueR.isNegative())) {
 			threshold = thresholdR.getMin();
 			initValue = initValueR.getMax();
-			incrValue = incrValueR.getMax(); // largest negative -> smallest step
-		} 
-		
-		
-		
-		//Double check that the constraints are respected
-		if (!(
-				(thresholdR.getMin() > initValueR.getMax() && incrValueR.getMin() > 0 && (type.equals(Type.LT) || type
-				.equals(Type.LE) || type.equals(Type.NE))) || 
-				(thresholdR.getMax() < initValueR.getMin() && incrValueR.getMax() < 0 && (type
-				.equals(Type.GT) || type.equals(Type.GE) || type.equals(Type.NE)))
-			)
-			) {
+			incrValue = incrValueR.getMax(); // largest negative -> smallest
+												// step
+		}
+
+		// Double check that the constraints are respected
+		if (!((thresholdR.getMin() > initValueR.getMax()
+				&& incrValueR.getMin() > 0 && (type.equals(Type.LT)
+				|| type.equals(Type.LE) || type.equals(Type.NE))) || (thresholdR
+				.getMax() < initValueR.getMin() && incrValueR.getMax() < 0 && (type
+				.equals(Type.GT) || type.equals(Type.GE) || type
+					.equals(Type.NE))))) {
 			return -1;
 		}
 
-		//Increment if including threshold
+		// Increment if including threshold
 		if (type.equals(Type.LE)) {
 			threshold++;
 		} else if (type.equals(Type.GE)) {
 			threshold--;
 		}
-		
-		//Calculate
+
+		// Calculate
 		return (int) Math.ceil((threshold - initValue) / ((double) incrValue));
 	}
 }

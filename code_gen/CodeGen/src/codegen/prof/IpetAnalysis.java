@@ -125,7 +125,17 @@ public class IpetAnalysis {
 					}
 				}
 				problem.addConstraint(constraint, LE, 0);
+			
+				//Add for other conditions...
+				for(BasicBlock bb : l.body){
+					if(bb.isBranch() && bb.getMaxTrueBranch() >= 0){
+						constraint = new double[constraintSize];
+						constraint[bb.getFalseEdgeIndex()] = 1;
+						problem.addConstraint(constraint, LE, 49);
+					}
 				}
+				
+			}
 			
 
 

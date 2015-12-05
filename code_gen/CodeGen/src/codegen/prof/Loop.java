@@ -2,7 +2,7 @@ package codegen.prof;
 
 import java.util.ArrayList;
 
-import lpsolve.BbListener;
+import codegen.prof.flow.Range;
 
 public class Loop {
 
@@ -10,6 +10,11 @@ public class Loop {
 	BasicBlock tail;
 	ArrayList<BasicBlock> body;
 	int maxIterations = 0;
+	String inductionVar;
+	private Range incrValue;
+	private Range initValue;
+	private Range threshold;
+	
 	public static final int defaultMaxIterations = 10;
 	
 	public Loop(BasicBlock head, BasicBlock tail) {
@@ -115,6 +120,40 @@ public class Loop {
 
 	public int getMaxIterations() {
 		return maxIterations;
+	}
+
+	public void setInductionVar(String iterator) {
+		inductionVar = iterator;
+	}
+
+	public void setIncrValue(Range incrValue) {
+		this.incrValue = incrValue;
+	}
+
+	public void setInitValue(Range initValue) {
+		this.initValue = initValue;
+		
+	}
+
+	public void setThreshold(Range threshold) {
+		this.threshold = threshold;
+		
+	}
+	
+	public String getInductionVar(){
+		return inductionVar;
+	}
+	
+	public Range getIncrValue(){
+		return incrValue;
+	}
+	
+	public Range getInitValue(){
+		return initValue;
+	}
+	
+	public Range getThreshold(){
+		return threshold;
 	}
 	
 

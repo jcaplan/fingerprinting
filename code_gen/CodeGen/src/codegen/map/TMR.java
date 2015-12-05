@@ -33,5 +33,9 @@ public class TMR extends FaultMechanism{
 		techniqueMap.put(replica2, this);
 	}
 
+	@Override
+	public String toString(){
+		return "TMR";
+	}
 
 }

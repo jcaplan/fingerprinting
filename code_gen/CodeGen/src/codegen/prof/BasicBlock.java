@@ -13,6 +13,7 @@ public class BasicBlock {
 		ArrayList<Edge> succEdges;
 		ArrayList<Edge> predEdges;
 		Function callee;
+		int maxTrueBranch = -1;
 		int age = 0;
 		BbType type;
 		ArrayList<Code> code;
@@ -328,5 +329,36 @@ public class BasicBlock {
 	public void removePredecessor(BasicBlock bb) {
 		predecessors.remove(bb);
 		
+	}
+
+
+
+	public boolean isBranch() {
+		return this.type == BbType.BRANCH;
+	}
+
+
+
+	public void setMaxTrueBranch(int maxIterations) {
+		maxTrueBranch = maxIterations;
+	}
+
+
+
+	public int getMaxTrueBranch() {
+		return maxTrueBranch;
+	}
+
+
+
+
+
+	public int getFalseEdgeIndex() {
+		for(Edge e : succEdges){
+			if(e.endBlock.getStartAddress() == this.getEndAddress() + 4){
+				return e.index;
+			}
+		}
+		return -1;
 	}
 }

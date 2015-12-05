@@ -15,7 +15,10 @@ public class RAFitnessFunction extends FitnessFunction {
 	Application app;
 	String[] faultMechanisms;
 	ArrayList<MapConstraint> constraints;
-
+	Schedule bestSchedule;
+	double bestFitness;
+	Map<Task, FaultMechanism> bestTechniqueMap;
+	
 	public RAFitnessFunction(Mapper mapper) {
 		procList = mapper.getProcList();
 		app = mapper.getApplication();
@@ -58,11 +61,6 @@ public class RAFitnessFunction extends FitnessFunction {
 		}
 
 		printDetectionTypes(chromosome);
-
-		for (int i = 0; i < taskList.size(); i++) {
-			Task t = taskList.get(i);
-			Logger.logMessage(t);
-		}
 
 		/*
 		 * Want to maximize mutations, so anything that doesn't change should
@@ -107,11 +105,17 @@ public class RAFitnessFunction extends FitnessFunction {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Schedule bestSchedule = new Schedule();
-		MSFitnessFunction msFF = new MSFitnessFunction(taskList, constraints,legalMappings,bestSchedule,procList);
+
+		MSFitnessFunction msFF = new MSFitnessFunction(taskList, constraints,legalMappings,procList);
 		GAEngine msEngine = new GAEngine(msFF, msConfig,sampleChromosome);
 
 		msEngine.findSolution();
+		double fitness = msEngine.getBestSolutionFitness();
+		if(fitness > bestFitness){
+			bestFitness = fitness;
+			bestSchedule = MSFitnessFunction.bestSchedule;
+			bestTechniqueMap = techniqueMap;	
+		}
 		return msEngine.getBestSolutionFitness();
 	}
 

@@ -20,6 +20,7 @@ public class PassiveReplication extends FaultMechanism{
 		Task replica1 = new Task(t,Task.replica);
 		taskList.add(replica1);
 		Task replica2 = new Task(t,Task.replica);
+		taskList.add(replica2);
 		constraints.add(new MapConstraint(t,replica1));
 		t.setMaxNumReexecutions(reexecutionProfileOriginal);
 		replica1.setMaxNumReexecutions(reexecutionProfileOriginal);
@@ -27,6 +28,11 @@ public class PassiveReplication extends FaultMechanism{
 		techniqueMap.put(t, this);
 		techniqueMap.put(replica1, this);
 		techniqueMap.put(replica2,this);
+	}
+	
+	@Override
+	public String toString(){
+		return "PR";
 	}
 
 }

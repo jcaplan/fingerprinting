@@ -10,9 +10,9 @@ import codegen.util.Logger;
 public class MapTest {
 
 	private static final int randomSeed = 1;
-	private static final double percentHI = 0.5;
+	private static final double percentHI = 0.45;
 	private static Random generator = new Random(randomSeed);
-	private static final int numOdrCores = 4;
+	private static final int numOdrCores = 2;
 	private static final int numLockstepCores = 1;
 	
 	static Mapper mapper;
@@ -23,12 +23,12 @@ public class MapTest {
 		for(int i = 0; i < 10; i++){
 			
 			double Clo = 100*generator.nextDouble();
-			double Chi = Clo*1.5;
-			double period = Chi*(4 + 2*generator.nextDouble());
+			double Chi = Clo*(1 + generator.nextDouble());
+			double period = Chi*(5 + 5*generator.nextDouble());
 			boolean criticality = (generator.nextDouble() > pHI);
 			
 			
-			app.addTask(new Task(Clo,Chi,period,criticality));
+			app.addTask(new Task(Clo,Chi,period,criticality,"T" + i));
 		}
 		
 		return app;
@@ -61,6 +61,16 @@ public class MapTest {
 		mapper.printProcessors();
 
 		mapper.findSchedule();
+		System.out.println("**********************************");
+		for(Task t : app.getTaskList()){
+			System.out.println(t.toFullString());
+		}
+		System.out.println("**********************************");
+		System.out.println(mapper.getBestSchedule());
+		System.out.println("**********************************");
+		System.out.println(mapper.getBestScheduleFitness());
+		System.out.println("**********************************");
+		System.out.println(mapper.getBestFTMs());
 	}
 
 

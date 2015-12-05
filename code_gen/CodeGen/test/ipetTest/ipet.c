@@ -351,6 +351,18 @@ void g22(int x) {
 	}
 }
 
+//Condition depends on induction
+void g23(void){
+	int i;
+	int j = 1;
+	for(i = 0 ; i < 150; i++){
+		a[i] = 1000*i/2;
+		if(i > 100){
+			a[i] += g1(j);
+		}
+	}
+}
+
 
 int inter(int k){
 	return k;
@@ -419,5 +431,6 @@ int main(){
 	g17(-1);
 	g13(0);
 	g14(-1);
+	g23();
 	return j;
 }

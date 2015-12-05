@@ -8,7 +8,6 @@ import javax.management.RuntimeErrorException;
 
 import lpsolve.LpSolveException;
 import codegen.prof.BasicBlock.BbType;
-import codegen.prof.flow.ConstantPropagation;
 
 public class Profiler {
 

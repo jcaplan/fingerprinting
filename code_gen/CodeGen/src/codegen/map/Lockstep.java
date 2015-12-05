@@ -20,4 +20,8 @@ public class Lockstep extends FaultMechanism{
 		techniqueMap.put(t, this);
 	}
 
+	@Override
+	public String toString(){
+		return "LS";
+	}
 }

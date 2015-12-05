@@ -14,7 +14,7 @@ public class GAEngine {
 
 	private static final int populationSize = 100;
 	private static final int numGenerations = 30;
-	
+	private static final double MAX_FITNESS = 1.0;
 	
 	FitnessFunction ff;
 	Configuration config;
@@ -51,6 +51,13 @@ public class GAEngine {
 			population.evolve();
 
 			IChromosome bestSolutionSoFar = population.getFittestChromosome();
+			
+			// Check if max
+			if(bestSolutionSoFar.getFitnessValue() == MAX_FITNESS){
+				Logger.logMessage("Found max fitness in " + i + "iterations.");
+				break;
+			}
+			
 			// Check if the answer changed from last iteration
 			if (lastFitness == bestSolutionSoFar.getFitnessValue()) {
 				sameCount++;
@@ -60,7 +67,7 @@ public class GAEngine {
 			}
 
 			if (sameCount > 4) {
-				Logger.logMessage("Seems to be converging. Quitting early.");
+				Logger.logMessage("Seems to be converging. Quitting after " + i + " iterations.");
 				break;
 			}
 		}
