@@ -2,9 +2,6 @@ package codegen.test;
 
 import static org.junit.Assert.*;
 
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -259,7 +256,7 @@ public class LoopAnalysisTest {
 		prof.parseFile(entryPoint);
 		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
 		boolean result = la.analyze();
-		assertFalse(result);
+		assertFalse(prof.getCfg().getFunction(entryPoint).getLoopList().size() > 0 && result);
 	}
 	
 	@Test
@@ -294,6 +291,28 @@ public class LoopAnalysisTest {
 		assertTrue(result);	
 	}
 	
+	@Test
+	public void testG24(){
+		entryPoint = "g24";
+		Profiler prof = new Profiler(fileDir,rootName);
+		prof.parseFile(entryPoint);
+		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
+		boolean result = la.analyze();
+		assertTrue(result);
+		
+	}
+	
+	@Test
+	public void testG25(){
+		entryPoint = "g25";
+		Profiler prof = new Profiler(fileDir,rootName);
+		prof.parseFile(entryPoint);
+		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
+		boolean result = la.analyze();
+		assertTrue(result);
+		
+	}
+	
 	
 	@Test
 	public void testF(){
@@ -310,6 +329,23 @@ public class LoopAnalysisTest {
 		}
 		
 		assertEquals(45+100+200+3,count);		
+	}
+	
+	@Test
+	public void matmulTest(){
+		entryPoint = "matmul";
+		Profiler prof = new Profiler(fileDir,rootName);
+		prof.parseFile(entryPoint);
+		LoopAnalysis la = new LoopAnalysis(prof.getCfg().getFunction(entryPoint));
+		boolean result = la.analyze();
+		assertTrue(result);
+		
+		int count = 0;
+		for(Loop l : prof.getCfg().getFunction(entryPoint).getLoopList()){
+			count += l.getMaxIterations();
+		}
+		
+		assertEquals(384,count);		
 	}
 	
 }

@@ -12,6 +12,18 @@ public class ExpCompareOp extends Expression{
 	public static final int LHS = 0;
 	public static final int RHS = 1;
 	
+	@Override
+	public Expression copy(){
+		Expression exp = new ExpCompareOp(type);
+		exp.status = this.status;
+		if(children != null){
+			for(int i = 0; i < children.length; i++){
+				exp.setChild(i, children[i]);
+			}
+		}
+		exp.line = line;
+		return exp;
+	}
 	
 	
 	@Override 
@@ -140,22 +152,22 @@ public class ExpCompareOp extends Expression{
 		
 		switch(type){
 		case EQ:
-			type = Type.NE;
+			newType = Type.NE;
 			break;
 		case GE:
-			type = Type.LT;
+			newType = Type.LT;
 			break;
 		case GT:
-			type = Type.LE;
+			newType = Type.LE;
 			break;
 		case LE:
-			type = Type.GT;
+			newType = Type.GT;
 			break;
 		case LT:
-			type = Type.GE;
+			newType = Type.GE;
 			break;
 		case NE:
-			type = Type.EQ;
+			newType = Type.EQ;
 			break;
 		default:
 			break;

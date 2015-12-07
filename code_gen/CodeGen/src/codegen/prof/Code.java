@@ -74,6 +74,10 @@ public class Code {
 					instruction.equals("muli") || 
 					instruction.equals("sll") ||
 					instruction.equals("slli") ||
+					instruction.equals("srl") ||
+					instruction.equals("sra") ||
+					instruction.equals("srai") ||
+					instruction.equals("srli") ||
 					instruction.equals("div") || 
 					instruction.equals("divi")){
 			type = CodeType.BINOP;

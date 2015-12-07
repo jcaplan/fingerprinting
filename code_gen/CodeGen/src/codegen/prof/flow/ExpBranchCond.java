@@ -14,6 +14,19 @@ public class ExpBranchCond extends ExpCompareOp{
 	}
 
 	@Override
+	public Expression copy(){
+		Expression exp = new ExpBranchCond(type);
+		exp.status = this.status;
+		if(children != null){
+			for(int i = 0; i < children.length; i++){
+				exp.setChild(i, children[i]);
+			}
+		}
+		exp.line = line;
+		return exp;
+	}
+	
+	@Override
 	protected void setType(String instr) { 
 		switch(instr){
 		case "beq":

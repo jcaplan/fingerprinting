@@ -12,11 +12,16 @@ public class BasicBlock {
 		ArrayList<BasicBlock> successors;
 		ArrayList<Edge> succEdges;
 		ArrayList<Edge> predEdges;
+		ArrayList<BasicBlock> dominators;
+		ArrayList<BasicBlock> domFrontier;
+		ArrayList<BasicBlock> domTreeChildren;
+		BasicBlock immDominator;
 		Function callee;
-		int maxTrueBranch = -1;
+		int maxFalseBranch = -1;
 		int age = 0;
 		BbType type;
 		ArrayList<Code> code;
+		private Loop innerLoop;
 		
 		
 	enum BbType {
@@ -34,6 +39,9 @@ public class BasicBlock {
 		succEdges = new ArrayList<>();
 		predEdges = new ArrayList<>();
 		code = new ArrayList<>();
+		dominators = new ArrayList<>();
+		domFrontier = new ArrayList<>();
+		domTreeChildren = new ArrayList<>();
 		type = BbType.OTHER;
 	}
 	
@@ -45,6 +53,9 @@ public class BasicBlock {
 		this.successors = new ArrayList<>(bb.predecessors);
 		this.succEdges = new ArrayList<>(bb.succEdges);
 		this.predEdges = new ArrayList<>(bb.predEdges);
+		this.dominators = new ArrayList<>(bb.dominators);
+		this.domFrontier = new ArrayList<>(bb.domFrontier);
+		this.domTreeChildren = new ArrayList<>(bb.domTreeChildren);
 		if(callee != null){
 			this.callee = bb.callee;
 		}
@@ -339,14 +350,14 @@ public class BasicBlock {
 
 
 
-	public void setMaxTrueBranch(int maxIterations) {
-		maxTrueBranch = maxIterations;
+	public void setMaxFalseBranch(int maxIterations) {
+		maxFalseBranch = maxIterations;
 	}
 
 
 
-	public int getMaxTrueBranch() {
-		return maxTrueBranch;
+	public int getMaxFalseBranch() {
+		return maxFalseBranch;
 	}
 
 
@@ -360,5 +371,64 @@ public class BasicBlock {
 			}
 		}
 		return -1;
+	}
+
+	public void setInnerLoop(Loop l) {
+		innerLoop = l;
+		
+	}
+	public Loop getInnerLoop(){
+		return innerLoop;
+	}
+
+
+
+	public void setDominators(List<BasicBlock> list) {
+		dominators = (ArrayList<BasicBlock>) list;
+	}
+
+
+
+	public List<BasicBlock> getDomFrontier() {
+		return domFrontier;
+	}
+	
+
+	public void setDomFrontier(List<BasicBlock> list) {
+		domFrontier = (ArrayList<BasicBlock>) list;
+	}
+
+
+
+	public List<BasicBlock> getDomTreeChildren() {
+		return domTreeChildren;
+	}
+
+	public void setDomTreeChildren(List<BasicBlock> list) {
+		domTreeChildren = (ArrayList<BasicBlock>) list;
+	}
+
+
+
+	public List<BasicBlock> getDominators() {
+		return dominators;
+	}
+
+
+
+	public void setImmDominator(BasicBlock idom) {
+		immDominator = idom;
+	}
+	
+	public BasicBlock getImmDominator(){
+		return immDominator;
+	}
+
+
+
+	public void addToDomFrontier(BasicBlock succ) {
+		if(!domFrontier.contains(succ)){
+			domFrontier.add(succ);
+		}
 	}
 }

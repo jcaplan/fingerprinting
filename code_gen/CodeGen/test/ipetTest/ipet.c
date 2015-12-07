@@ -363,6 +363,52 @@ void g23(void){
 	}
 }
 
+//Condition depends on induction (nested twice)
+void g24(void){
+	int i;
+	int j;
+	for(j = 0; j < 2; j++){
+		for(i = 0 ; i < 150; i++){
+			a[i] = 1000*i/2;
+			if(i > 100){
+				a[i+j] += g1(j);
+			}
+		}
+	}
+}
+
+void g25(int x){
+	int i = 0;
+	int j = 1;
+	if(x > 0){
+		for(; i < 150; i++){
+			a[i] = 1000*i/2;
+			if(i > 100){
+				a[i] += g1(j);
+			}
+		
+		}
+	}
+}
+
+
+//From WCET benchmarks
+
+#define SIZE 128
+typedef int matrix_t[SIZE][SIZE];
+
+void matmul (matrix_t a, matrix_t b, matrix_t c){
+  int i,j,k;
+  for (i=0 ; i<SIZE; i++){
+    for (j=0 ; j<SIZE ; j++) {
+      c[i][j] = 0;
+      for (k=0 ; k< SIZE ; k++){
+			c[i][j] += a[i][k] * b[k][j];
+      }
+    }
+  }
+}
+
 
 int inter(int k){
 	return k;

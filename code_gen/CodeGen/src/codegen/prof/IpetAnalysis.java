@@ -96,6 +96,8 @@ public class IpetAnalysis {
 			// advance for double precision floating poitnt
 			// -------------------------------------------------------------
 
+			LoopAnalysis la = new LoopAnalysis(f);
+			la.analyze();
 
 			for (int i = 0; i < f.loops.size(); i++) {
 				Loop l = f.loops.get(i);
@@ -103,13 +105,10 @@ public class IpetAnalysis {
 				
 				constraint = new double[constraintSize];
 				for (Edge e : l.head.predEdges) {
-//					System.out.println(e);
 					constraint[e.index] = 1;
 					
 					if(!l.body.contains(e.startBlock)){ 
 						// then it is not a backwards edge
-						LoopAnalysis la = new LoopAnalysis(f);
-						la.analyze();
 						constraint[e.index] = -l.maxIterations;
 						// if the head has children outside body then add one to constraint
 						boolean allHeadSuccInBody = true;;
@@ -124,21 +123,23 @@ public class IpetAnalysis {
 						}
 					}
 				}
-				problem.addConstraint(constraint, LE, 0);
-			
-				//Add for other conditions...
-				for(BasicBlock bb : l.body){
-					if(bb.isBranch() && bb.getMaxTrueBranch() >= 0){
-						constraint = new double[constraintSize];
-						constraint[bb.getFalseEdgeIndex()] = 1;
-						problem.addConstraint(constraint, LE, 49);
-					}
-				}
+				problem.addConstraint(constraint, LE, 0);				
 				
 			}
 			
-
-
+			for(BasicBlock bb : f.bbList){
+				if(bb.getMaxFalseBranch() > 0){
+					constraint = new double[constraintSize];
+					Loop innerLoop = bb.getInnerLoop();
+					constraint[bb.getFalseEdgeIndex()] = innerLoop.getMaxIterations();
+					int maxFalse = bb.getMaxFalseBranch();
+					for(Edge e : bb.predEdges){
+						constraint[e.index] = -maxFalse;
+					}
+					problem.addConstraint(constraint, LE,0);
+					
+				}
+			}
 		}
 		// ///////////////////////////////////////////////////////////////////////////////////
 

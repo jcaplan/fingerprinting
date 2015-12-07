@@ -86,7 +86,6 @@ public abstract class ForwardAnalysis<A> {
 			for(BasicBlock succ : bb.getSuccesors()){
 				if(bbList.contains(succ)){								//if doing entire function then this should always be true
 					A bb_out = analyzeBasicBlock(bb,succ,bb_in);
-					
 					A succ_in = merge(bb_out, bbInSet.get(succ));
 					
 					
@@ -281,6 +280,13 @@ public abstract class ForwardAnalysis<A> {
 	public void prettyPrint(){
 		for(BasicBlock bb : bbList){
 			prettyPrint(bb);
+			
+		}
+	}
+	
+	public void prettyPrintBlockList(){
+		for(BasicBlock bb : bbList){
+			System.out.println(bb + ": " + bbInSet.get(bb));
 			
 		}
 	}

@@ -8,6 +8,7 @@ public class Expression implements Comparable<Expression>{
 	public static final int WELL_DEFINED = 2;
 	int status;
 	protected Expression[] children;
+	int line;
 	
 	public Expression() {
 		status = WELL_DEFINED;
@@ -15,6 +16,18 @@ public class Expression implements Comparable<Expression>{
 	}
 	
 
+	public Expression copy(){
+		Expression exp = new Expression();
+		exp.status = this.status;
+		if(children != null){
+			for(int i = 0; i < children.length; i++){
+				exp.setChild(i, children[i]);
+			}
+		}
+		exp.line = line;
+		return exp;
+	}
+	
 	protected void initChildren() {
 		//No children for expression
 	}
@@ -115,6 +128,14 @@ public class Expression implements Comparable<Expression>{
 	public static Expression shiftLeftLogical(ExpConstant c1, ExpConstant c2) {
 		return new ExpConstant(c1.value << c2.value);
 	}
+	
+	public static Expression shiftRightLogical(ExpConstant c1, ExpConstant c2) {
+		return new ExpConstant(c1.value >>> c2.value);
+	}
+	
+	public static Expression shiftRightArithmetic(ExpConstant c1, ExpConstant c2) {
+		return new ExpConstant(c1.value >> c2.value);
+	}
 
 
 	public static Expression multiply(ExpConstant c1, ExpConstant c2) {
@@ -123,6 +144,12 @@ public class Expression implements Comparable<Expression>{
 	
 	public static Expression divide(ExpConstant c1, ExpConstant c2){
 		return new ExpConstant(c1.value / c2.value);
+	}
+
+
+	public void setLine(int address) {
+		line = address;
+		
 	}
 	
 }

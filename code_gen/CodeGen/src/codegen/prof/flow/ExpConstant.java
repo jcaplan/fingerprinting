@@ -10,6 +10,18 @@ public class ExpConstant extends Expression {
 	}
 	
 	@Override
+	public Expression copy(){
+		Expression exp = new ExpConstant(value);
+		exp.status = this.status;
+		if(children != null){
+			for(int i = 0; i < children.length; i++){
+				exp.setChild(i, children[i]);
+			}
+		}
+		exp.line = line;
+		return exp;
+	}
+	@Override
 	public String toString(){
 		return Integer.toString(value);
 	}

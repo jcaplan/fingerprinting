@@ -1,20 +1,29 @@
 package codegen.prof.flow;
 
-import java.util.ArrayList;
-
-import codegen.prof.*;
-import codegen.prof.flow.ExpCompareOp.Type;
 
 public class ExpBinOp extends Expression {
 
 	enum Type{
-		PLUS,MINUS,TIMES,SLL,DIV
+		PLUS,MINUS,TIMES,SLL,DIV,SRL,SRA
 	};
 	
 	Type type;
 	public static final int LHS = 0;
 	public static final int RHS = 1;
 
+	@Override
+	public Expression copy(){
+		Expression exp = new ExpBinOp(type);
+		exp.status = this.status;
+		if(children != null){
+			for(int i = 0; i < children.length; i++){
+				exp.setChild(i, children[i]);
+			}
+		}
+		exp.line = line;
+		return exp;
+	}
+	
 	public ExpBinOp(String instr) {
 		setType(instr);
 		initChildren();
@@ -47,6 +56,14 @@ public class ExpBinOp extends Expression {
 		case "sll":
 		case "slli":
 			type = Type.SLL;
+			break;
+		case "sra":
+		case "srai":
+			type = Type.SRA;
+			break;
+		case "srl":
+		case "srli":
+			type = Type.SRL;
 			break;
 		case "div":
 		case "divi":
@@ -83,6 +100,9 @@ public class ExpBinOp extends Expression {
 
 	private String getOpString() {
 		String s = "";
+		if(type == null){
+			System.out.println("problem here");
+		}
 		switch(type){
 		case PLUS:
 			s = " + ";
@@ -93,10 +113,18 @@ public class ExpBinOp extends Expression {
 		case SLL:
 			s = " << ";
 			break;
+		case SRA:
+			s = " >> ";
+			break;
+		case SRL:
+			s = " >>> ";
+			break;
 		case TIMES:
 			s = " * ";
+			break;
 		case DIV:
 			s = " / ";
+			break;
 		default:
 			break;
 		

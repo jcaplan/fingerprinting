@@ -1,6 +1,5 @@
 package codegen.test;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
@@ -11,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import codegen.prof.Profiler;
-import codegen.prof.flow.ReachingDef;
+import codegen.prof.flow.ReachingExp;
 
 public class ReachingDefTest {
 	
@@ -41,7 +40,7 @@ public class ReachingDefTest {
 			fail(e.getMessage());
 		}
 		
-		ReachingDef rd = new ReachingDef(prof.getCfg().getFunction(entryPoint));
+		ReachingExp rd = new ReachingExp(prof.getCfg().getFunction(entryPoint));
 		rd.analyze();
 		rd.prettyPrint();
 		
@@ -59,7 +58,7 @@ public class ReachingDefTest {
 			fail(e.getMessage());
 		}
 		
-		ReachingDef rd = new ReachingDef(prof.getCfg().getFunction(entryPoint));
+		ReachingExp rd = new ReachingExp(prof.getCfg().getFunction(entryPoint));
 		rd.analyze();
 		rd.prettyPrint();
 		

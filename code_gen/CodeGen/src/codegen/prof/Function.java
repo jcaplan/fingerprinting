@@ -74,6 +74,8 @@ public class Function {
 			case LOAD:
 			case CUSTOM:
 				break;
+			default:
+				break;
 			}
 		}
 		if (getLastBlock().isEmpty()){
