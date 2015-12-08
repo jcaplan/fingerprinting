@@ -200,6 +200,9 @@ public abstract class ForwardAnalysis<A> {
 		case MOVE:
 			result = caseMoveOp(c, c_in, succ);
 			break;
+		case PHI:
+			result = casePhiOp(c, c_in, succ);
+			break;
 		default:
 			result = caseDefault(c, c_in, succ);
 			break;
@@ -276,6 +279,10 @@ public abstract class ForwardAnalysis<A> {
 		return caseDefault(c,c_in, succ);
 	}
 	
+	protected A casePhiOp(Code c, A c_in, BasicBlock succ) {
+		return caseDefault(c,c_in, succ);
+	}
+
 	
 	public void prettyPrint(){
 		for(BasicBlock bb : bbList){
@@ -294,6 +301,10 @@ public abstract class ForwardAnalysis<A> {
 
 	public A getInSet(BasicBlock bb){
 		return (A) bbInSet.get(bb);
+	}
+	
+	public A getInSet(Code c){
+		return (A) codeInSet.get(c);
 	}
 
 	public A getOutSet(BasicBlock bb) {

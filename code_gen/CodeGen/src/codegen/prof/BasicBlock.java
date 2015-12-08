@@ -22,7 +22,7 @@ public class BasicBlock {
 		BbType type;
 		ArrayList<Code> code;
 		private Loop innerLoop;
-		
+		int numLinesCode = 0;
 		
 	enum BbType {
 		CALL,
@@ -66,6 +66,16 @@ public class BasicBlock {
 
 	public void addCode(Code c) {
 		code.add(c);
+		if(c.type != CodeType.PHI){
+			numLinesCode++;
+		}
+	}
+	
+	public void addCodeToFront(Code c){
+		code.add(0, c);
+		if(c.type != CodeType.PHI){
+			numLinesCode++;
+		}
 	}
 	
 	public int getStartAddress(){
@@ -254,7 +264,8 @@ public class BasicBlock {
 	}
 
 	public int getNumInstructions(){
-		return code.size();
+		//exclude the PHI code
+		return numLinesCode;
 	}
 	
 	public int getCost(int memoryDelay) {
@@ -430,5 +441,17 @@ public class BasicBlock {
 		if(!domFrontier.contains(succ)){
 			domFrontier.add(succ);
 		}
+	}
+
+
+
+	public List<BasicBlock> getPredecessors() {
+		return predecessors;
+	}
+
+
+
+	public int getPredIndex(BasicBlock node) {
+		return predecessors.indexOf(node);
 	}
 }

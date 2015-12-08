@@ -9,17 +9,20 @@ public class LoopAnalysis {
 
 	Function root;
 	ReachingExp reachingExp;
-	Dominator reachingDef;
 	public LoopAnalysis(Function f) {
 		this.root = f;
 	}
 
 	public boolean analyze() {
+		Dominator domFrontier = new Dominator(root);
+		domFrontier.analyze();
+		PhiInsertion phiInsert = new PhiInsertion(root);
+		phiInsert.analyze();
+		RenameSSA ssa = new RenameSSA(root,phiInsert.getVarSet());
+		ssa.analyze();
+		phiInsert.prettyPrint();
 		reachingExp = new ReachingExp(root);
 		reachingExp.analyze();
-		reachingDef = new Dominator(root);
-		reachingDef.analyze();
-		reachingDef.printDominanceFrontiers();
 		boolean allPassed = true;
 		// First do constant propagation on the entire function
 		// ----------------------------------------------------
@@ -75,19 +78,14 @@ public class LoopAnalysis {
 
 		ArrayList<BasicBlock> branchesToTest = new ArrayList<>();
 		
-		for(BasicBlock bb : root.getBasicBlockList()){
-			if(bb.isBranch() && bb.isConditional()){
-				branchesToTest.add(bb);
-			}
-		}
-		
-		
-		// remove blocks inside of invalid loops
-		for(Loop l : unsuccessfulLoops){
+		for(Loop l : successfulLoops){
 			for(BasicBlock bb : l.getBody()){
-				branchesToTest.remove(bb);
+				if(bb.isBranch() && bb.isConditional()){
+					branchesToTest.add(bb);
+				}
 			}
 		}
+		
 		//remove exit edges and backwards edges
 		branchesToTest.removeAll(exitPoints);
 		branchesToTest.removeAll(backwardEdges);
@@ -266,12 +264,27 @@ public class LoopAnalysis {
 			// where order of list [incr, initValue] is reversed.
 			HashMap<String, List<Expression>> outSet = (HashMap<String, List<Expression>>) reachingExp
 					.getOutSet(l.getTail());
-			if (outSet.get(iterator).size() != 1) {
+			
+			//Index should be the highest possible index (the most recent def)
+			
+			String incrVar = PhiCode.getRootString(iterator, 0);
+			int incr = 0;
+			List<Expression> changeList = outSet.get(incrVar);
+			while(changeList != null){
+				//If you hit a bottom then you've also gone too far
+				if(changeList.isEmpty()){
+					break;
+				}
+				incrVar = PhiCode.getRootString(iterator, ++incr);
+				changeList = outSet.get(incrVar);
+			}
+			incrVar = PhiCode.getRootString(iterator, --incr);
+			if (outSet.get(incrVar).size() != 1) {
 				throw new LoopAnalysisException(
 						"More than one reaching def found for increment value");
 			}
 
-			Expression change = outSet.get(iterator).get(0);
+			Expression change = outSet.get(incrVar).get(0);
 			ExpBinOp binOp = null;
 			if ((change instanceof ExpBinOp)) {
 				binOp = (ExpBinOp) change;
@@ -294,13 +307,8 @@ public class LoopAnalysis {
 
 		// Now find the initial value for iterator
 		// ---------------------------------------
-		ArrayList<BasicBlock> entryList = l.getEntryBlocks();
-		Map<String, List<Expression>> inSet = reachingExp
-				.getMergedOutSet(entryList);
+		List<Expression> rhsList  = getMergedOutList(l,iterator);
 
-		// Need to distinguish between known pairs, take worst case,
-		// and unkown branch...
-		List<Expression> rhsList = inSet.get(iterator);
 		boolean nonConstantInit = false;
 		for(Expression exp : rhsList){
 			if(!(exp instanceof ExpConstant)){
@@ -311,7 +319,7 @@ public class LoopAnalysis {
 		
 		if(nonConstantInit){
 			if(rhsList.size() > 1){			
-				throw new LoopAnalysisException("Found multiple non-constant reaching expressions for induction");
+				throw new LoopAnalysisException("Found multiple non-constant reaching expressions for induction initialization");
 			}
 			initExp = rhsList.get(0);
 			
@@ -319,8 +327,6 @@ public class LoopAnalysis {
 			String thresId = getLeftmostIdentifier(thresholdExp);
 			
 			if(!initId.isEmpty() && initId.equals(thresId)){
-				//TODO: is it the same defs?
-				
 				if(initExp instanceof ExpIdentifier){
 					initExp = new ExpConstant(0);
 				} else if(initExp instanceof ExpBinOp){
@@ -363,6 +369,52 @@ public class LoopAnalysis {
 		System.out.println("increment: " + incrValue);
 		System.out.println("threshold: " + threshold);
 		System.out.println(maxIterations);
+	}
+
+	private List<Expression> getMergedOutList(
+			Loop l, String iterator) {
+		
+		BasicBlock head = l.getHead();
+		
+		//find the predecessors not in the body and get their indices
+		ArrayList<Integer> entryIndices = new ArrayList<>();
+		for(BasicBlock pred : head.getPredecessors()){
+			if(!l.getBody().contains(pred)){
+				entryIndices.add(head.getPredIndex(pred));
+			}
+		}
+		
+		if(entryIndices.size() == 1){
+			//the last variable holds the interesting value
+			String initVar = PhiCode.getRootString(iterator,-1);
+			//get the output of the last basic block
+			return reachingExp.codeOutSet.get(head.getPredecessors().get(entryIndices.get(0)).getLastCode()).get(initVar);
+		}
+		
+		//get the phi function for the iterator
+		PhiCode phi = null;
+		for(Code c : head.getCode()){
+			if(c instanceof PhiCode){
+				PhiCode cc = (PhiCode) c;
+				if(cc.def.equals(iterator)){
+					phi = cc;
+					break;
+				}
+			}
+		}
+		ArrayList<Expression> result = new ArrayList<>();
+		// Now build a list using the info from the Phi
+		for(int i : entryIndices){
+			String def = phi.getOperands()[i];
+			List<Expression> list = (reachingExp.getInSet(phi)).get(def);
+			for(Expression e : list){
+				if(!result.contains(e)){
+					result.add(e);
+				}
+			}
+			
+		}
+		return result;
 	}
 
 	private Range getRangeFromExp(Expression exp, HashMap<String, List<Expression>> defs) throws LoopAnalysisException {

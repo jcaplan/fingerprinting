@@ -108,6 +108,10 @@ public class Expression implements Comparable<Expression>{
 		return status == TOP;
 	}
 
+	public boolean isBottom() {
+		return status == BOTTOM;
+	}
+
 
 	@Override
 	public int compareTo(Expression exp) {

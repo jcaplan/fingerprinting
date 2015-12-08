@@ -81,8 +81,7 @@ public class Dominator extends ForwardAnalysis<List<BasicBlock>>{
 			
 		}	
 		//Find the dominance frontier
-		computeDF(func.getBasicBlockList().get(0));
-		
+		computeDF(func.getBasicBlockList().get(0));		
 	}
 	
 	private void computeDF(BasicBlock bb) {
@@ -103,9 +102,6 @@ public class Dominator extends ForwardAnalysis<List<BasicBlock>>{
 				}
 			}
 		}
-		
-		
-		
 	}
 
 	@Override

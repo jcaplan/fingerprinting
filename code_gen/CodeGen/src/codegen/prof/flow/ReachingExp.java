@@ -3,6 +3,7 @@ package codegen.prof.flow;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import codegen.prof.BasicBlock;
@@ -43,7 +44,6 @@ public class ReachingExp extends ForwardAnalysis<HashMap<String,List<Expression>
 						if(op.startsWith("r") || op.contains("sp") || 
 								op.contains("fp")){
 							expList = new ArrayList<>();
-							expList.add(Expression.getNewBottom());
 							initSet.put(op, expList);								
 						}
 					}				
@@ -239,6 +239,35 @@ public class ReachingExp extends ForwardAnalysis<HashMap<String,List<Expression>
 			ArrayList<Expression> list = new ArrayList<>();
 			list.add(exp);
 			c_out.put(key, list);
+		}
+		
+		return c_out;
+	}
+	
+	@Override
+	protected HashMap<String, List<Expression>> casePhiOp(Code c,
+			HashMap<String, List<Expression>> c_in, BasicBlock succ) {
+		
+		
+		HashMap<String, List<Expression>> c_out = copy(c_in);
+		
+		String[] ops = c.getOperands();
+		String def = ((PhiCode) c).def;
+		
+		List<Expression> expList = new ArrayList<>();
+		c_out.put(def, expList);
+		
+		for(String op : ops){
+			List<Expression> opList = c_out.get(op);
+			if(opList != null){
+				for(Expression opexp : opList){
+					if(!(opexp.isBottom() && opList.size() > 1)){
+						if(!expList.contains(opexp)){
+							expList.add(opexp);
+						}
+					}
+				}
+			}
 		}
 		
 		return c_out;

@@ -8,21 +8,23 @@ import javax.management.RuntimeErrorException;
 public class Code {
 
 	String line;
-	int address;
-	String instruction;
-	String[] operands;
-	CodeType type;
+	protected int address;
+	protected String instruction;
+	protected String[] operands;
+	protected CodeType type;
 	int customInstructionID;
 
 	public static enum CodeType {
 		CALL, INDIRECTCALL, JUMP, RETURN, COND_BRANCH, UNCOND_BRANCH, OTHER, STORE, LOAD, CUSTOM,
-		BINOP, COMPARE, MOVE
+		BINOP, COMPARE, MOVE, PHI
 	};
 
 	public Code(String line) {
 		this.line = line;
 		// Parse the line immediately
-		parseLine();
+		if(!line.isEmpty()){ //pass empty line for PHI code
+			parseLine();
+		}
 	}
 
 	private void parseLine() {
