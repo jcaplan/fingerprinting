@@ -20,7 +20,6 @@ public class LoopAnalysis {
 		phiInsert.analyze();
 		RenameSSA ssa = new RenameSSA(root,phiInsert.getVarSet());
 		ssa.analyze();
-		phiInsert.prettyPrint();
 		reachingExp = new ReachingExp(root);
 		reachingExp.analyze();
 		boolean allPassed = true;
@@ -388,7 +387,9 @@ public class LoopAnalysis {
 			//the last variable holds the interesting value
 			String initVar = PhiCode.getRootString(iterator,-1);
 			//get the output of the last basic block
-			return reachingExp.codeOutSet.get(head.getPredecessors().get(entryIndices.get(0)).getLastCode()).get(initVar);
+			//find the predecessor
+			BasicBlock pred = head.getPredecessors().get(entryIndices.get(0));
+			return reachingExp.getOutSet(pred).get(initVar);
 		}
 		
 		//get the phi function for the iterator
