@@ -37,10 +37,21 @@ public class PhiCode extends Code{
 		return defRoot;
 	}
 	
-	public static String getRootString(String s,int offset){
+	public static String getDefKey(String s,int offset){
 		String[] tokens = s.split("_");
+		if(tokens.length != 2){
+			return null;
+		}
 		String root = tokens[0] + "_" + (Integer.parseInt(tokens[1]) + offset);
 		return root;
+	}
+	
+	public static String getDefRoot(String s){
+		String[] tokens = s.split("_");
+		if(tokens.length != 2){
+			return null;
+		}
+		return tokens[0];
 	}
 
 }

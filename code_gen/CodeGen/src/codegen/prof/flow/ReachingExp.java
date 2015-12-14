@@ -1,20 +1,20 @@
 package codegen.prof.flow;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
+import java.util.*;
 import codegen.prof.BasicBlock;
 import codegen.prof.Code;
 import codegen.prof.Function;
-import codegen.prof.Code.CodeType;
 
 public class ReachingExp extends ForwardAnalysis<HashMap<String,List<Expression>>>{
 
+	//Keep a symbol table for easy lookup of defs
+	
+	Map<String,List<Expression>> symTable;
+	
+	
 	public ReachingExp(Function root) {
 		super(root);
+		symTable = new HashMap<>();
 	}
 	
 	public ReachingExp(List<BasicBlock> workList) {
@@ -24,32 +24,6 @@ public class ReachingExp extends ForwardAnalysis<HashMap<String,List<Expression>
 	@Override
 	protected HashMap<String, List<Expression>> initSet() {
 		return new HashMap<>();
-	}
-	
-	@Override
-	protected void analysisPreprocessing() {
-		//for every line of code create a bottom
-		HashMap<String,List<Expression>> initSet = bbInSet.get(func.getBasicBlockList().get(0));
-		for(BasicBlock bb : bbList){
-			for(Code c : bb.getCode()){
-				if(c.getType() == CodeType.COND_BRANCH || c.getType() == CodeType.UNCOND_BRANCH){
-					continue;
-				}
-				
-				String[] operands = c.getOperands();
-				
-				ArrayList<Expression> expList;
-				if(operands != null){
-					for(String op : operands){
-						if(op.startsWith("r") || op.contains("sp") || 
-								op.contains("fp")){
-							expList = new ArrayList<>();
-							initSet.put(op, expList);								
-						}
-					}				
-				}
-			}
-		}
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -107,18 +81,30 @@ public class ReachingExp extends ForwardAnalysis<HashMap<String,List<Expression>
 		String[] ops = c.getOperands();
 		
 		Expression op1 = getOpExpression(c_out, ops[1]);
+		updateFlow(c_out, ops[0], op1);
 		
-		if(c_out.containsKey(ops[0])){
-			List<Expression> list = c_out.get(ops[0]);
-			list.clear();
-			list.add(op1);
-		} else {
-			ArrayList<Expression> list = new ArrayList<>();
-			list.add(op1);
-			c_out.put(ops[0], list);
-		}
 		return c_out;
 
+	}
+
+	private void updateFlow(HashMap<String, List<Expression>> c_out,
+			String key, Expression value) {
+		List<Expression> list;
+		//clear out the previous definition if it exists
+		String lastDef = PhiCode.getDefKey(key,-1);
+		if(lastDef != null && c_out.containsKey(lastDef)){
+			c_out.remove(lastDef);
+		}
+		if(c_out.containsKey(key)){
+			 list = c_out.get(key);
+			list.clear();
+			list.add(value);
+		} else {
+			list = new ArrayList<>();
+			list.add(value);
+			c_out.put(key, list);
+		}
+		symTable.put(key, list);
 	}
 
 	@Override
@@ -129,15 +115,7 @@ public class ReachingExp extends ForwardAnalysis<HashMap<String,List<Expression>
 		
 		Expression op0 = getOpExpression(c_out, ops[0]);
 
-		if(c_out.containsKey(ops[1])){
-			List<Expression> list = c_out.get(ops[1]);
-			list.clear();
-			list.add(op0);
-		} else {
-			ArrayList<Expression> list = new ArrayList<>();
-			list.add(op0);
-			c_out.put(ops[1], list);
-		}
+		updateFlow(c_out, ops[1], op0);
 		return c_out;
 	}
 		
@@ -154,15 +132,7 @@ public class ReachingExp extends ForwardAnalysis<HashMap<String,List<Expression>
 			shift.setRHS(new ExpConstant(16));
 			op1 = shift;
 		}
-		if(c_out.containsKey(ops[0])){
-			List<Expression> list = c_out.get(ops[0]);
-			list.clear();
-			list.add(op1);
-		} else {
-			ArrayList<Expression> list = new ArrayList<>();
-			list.add(op1);
-			c_out.put(ops[0], list);
-		}
+		updateFlow(c_out, ops[0], op1);
 		return c_out;
 	}
 
@@ -179,15 +149,7 @@ public class ReachingExp extends ForwardAnalysis<HashMap<String,List<Expression>
 		ExpCompareOp exp = new ExpCompareOp(c.getInstruction());
 		exp.setLHS(op1);
 		exp.setRHS(op2);
-		if(c_out.get(ops[0]) != null){
-			List<Expression> list = c_out.get(ops[0]);
-			list.clear();
-			list.add(exp);
-		} else {
-			ArrayList<Expression> list = new ArrayList<>();
-			list.add(exp);
-			c_out.put(ops[0], list);
-		}
+		updateFlow(c_out, ops[0], exp);
 		
 		return c_out;
 	}
@@ -205,15 +167,7 @@ public class ReachingExp extends ForwardAnalysis<HashMap<String,List<Expression>
 		ExpBinOp exp = new ExpBinOp(c.getInstruction());
 		exp.setLHS(op1);
 		exp.setRHS(op2);
-		if(c_out.get(ops[0]) != null){
-			List<Expression> list = c_out.get(ops[0]);
-			list.clear();
-			list.add(exp);
-		} else {
-			ArrayList<Expression> list = new ArrayList<>();
-			list.add(exp);
-			c_out.put(ops[0], list);
-		}
+		updateFlow(c_out, ops[0], exp);
 		
 		return c_out;
 	}
@@ -231,15 +185,7 @@ public class ReachingExp extends ForwardAnalysis<HashMap<String,List<Expression>
 		exp.setLHS(op1);
 		exp.setRHS(op2);
 		String key = c.getCodeKey();
-		if(c_out.get(key) != null){
-			List<Expression> list = c_out.get(key);
-			list.clear();
-			list.add(exp);
-		} else {
-			ArrayList<Expression> list = new ArrayList<>();
-			list.add(exp);
-			c_out.put(key, list);
-		}
+		updateFlow(c_out, key, exp);
 		
 		return c_out;
 	}
@@ -256,7 +202,6 @@ public class ReachingExp extends ForwardAnalysis<HashMap<String,List<Expression>
 		
 		List<Expression> expList = new ArrayList<>();
 		c_out.put(def, expList);
-		
 		for(String op : ops){
 			List<Expression> opList = c_out.get(op);
 			if(opList != null){
@@ -268,8 +213,9 @@ public class ReachingExp extends ForwardAnalysis<HashMap<String,List<Expression>
 					}
 				}
 			}
+			c_out.remove(op);
 		}
-		
+		symTable.put(def, expList);
 		return c_out;
 	}
 
@@ -302,6 +248,10 @@ public class ReachingExp extends ForwardAnalysis<HashMap<String,List<Expression>
 			result = convertOpToExp(op);
 		}
 		return result;
+	}
+	
+	public List<Expression> getSymbolExpList(String var){
+		return symTable.get(var);
 	}
 
 

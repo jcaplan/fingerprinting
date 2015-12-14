@@ -2,6 +2,10 @@ package codegen.test;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -332,7 +336,10 @@ public class LoopAnalysisTest {
 	}
 	
 	@Test
-	public void matmulTest(){
+	public void matmulTest() throws FileNotFoundException{
+//		PrintStream out = System.out;
+//		System.setOut(new PrintStream(new File("out.txt")));
+		
 		entryPoint = "matmul";
 		Profiler prof = new Profiler(fileDir,rootName);
 		prof.parseFile(entryPoint);
@@ -344,8 +351,9 @@ public class LoopAnalysisTest {
 		for(Loop l : prof.getCfg().getFunction(entryPoint).getLoopList()){
 			count += l.getMaxIterations();
 		}
-		
-		assertEquals(384,count);		
+		assertEquals(384,count);	
+
+//		System.setOut(out);
 	}
 	
 }

@@ -8,12 +8,12 @@ import java.util.Map;
 import codegen.prof.BasicBlock;
 import codegen.prof.Function;
 
-public class Dominator extends ForwardAnalysis<List<BasicBlock>>{
+public class DomFrontier extends ForwardAnalysis<List<BasicBlock>>{
 
 	
 	Map<BasicBlock,List<BasicBlock>>  bbOutSet;
 	
-	public Dominator(Function root) {
+	public DomFrontier(Function root) {
 		super(root);
 		bbOutSet = new HashMap<BasicBlock, List<BasicBlock>>();
 	}

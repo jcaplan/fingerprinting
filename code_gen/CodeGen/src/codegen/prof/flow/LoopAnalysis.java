@@ -14,12 +14,12 @@ public class LoopAnalysis {
 	}
 
 	public boolean analyze() {
-		Dominator domFrontier = new Dominator(root);
+		DomFrontier domFrontier = new DomFrontier(root);
 		domFrontier.analyze();
 		PhiInsertion phiInsert = new PhiInsertion(root);
-		phiInsert.analyze();
 		RenameSSA ssa = new RenameSSA(root,phiInsert.getVarSet());
 		ssa.analyze();
+		phiInsert.prettyPrint();
 		reachingExp = new ReachingExp(root);
 		reachingExp.analyze();
 		boolean allPassed = true;
@@ -140,7 +140,7 @@ public class LoopAnalysis {
 		// Get the threshold value
 		// -----------------------
 		try {
-			threshold = getRangeFromExp(branchCondition.getRHS(), conditionOut);
+			threshold = getRangeFromExp(branchCondition.getRHS());
 		} catch (LoopAnalysisException e) {
 			System.out.println("Could not determine threshold for " + bb);
 			return;
@@ -264,26 +264,21 @@ public class LoopAnalysis {
 			HashMap<String, List<Expression>> outSet = (HashMap<String, List<Expression>>) reachingExp
 					.getOutSet(l.getTail());
 			
-			//Index should be the highest possible index (the most recent def)
-			
-			String incrVar = PhiCode.getRootString(iterator, 0);
-			int incr = 0;
-			List<Expression> changeList = outSet.get(incrVar);
-			while(changeList != null){
-				//If you hit a bottom then you've also gone too far
-				if(changeList.isEmpty()){
+			//Index should be the index in the outset			
+			String root = PhiCode.getDefRoot(iterator);
+			String incrVar = null;
+			for(String key : outSet.keySet()){
+				if(key.startsWith(root)){
+					incrVar = key;
 					break;
 				}
-				incrVar = PhiCode.getRootString(iterator, ++incr);
-				changeList = outSet.get(incrVar);
 			}
-			incrVar = PhiCode.getRootString(iterator, --incr);
-			if (outSet.get(incrVar).size() != 1) {
+			if (reachingExp.getSymbolExpList(incrVar).size() != 1) {
 				throw new LoopAnalysisException(
 						"More than one reaching def found for increment value");
 			}
 
-			Expression change = outSet.get(incrVar).get(0);
+			Expression change = reachingExp.getSymbolExpList(incrVar).get(0);
 			ExpBinOp binOp = null;
 			if ((change instanceof ExpBinOp)) {
 				binOp = (ExpBinOp) change;
@@ -300,9 +295,6 @@ public class LoopAnalysis {
 						"Could not identify binary operation in branch condition");
 			}
 		}
-		
-
-	
 
 		// Now find the initial value for iterator
 		// ---------------------------------------
@@ -345,8 +337,8 @@ public class LoopAnalysis {
 			throw new LoopAnalysisException(
 					"Could not determine initial value range");
 		}
-		threshold = getRangeFromExp(thresholdExp, conditionOut);
-		incrValue = getRangeFromExp(incrExp, conditionOut);
+		threshold = getRangeFromExp(thresholdExp);
+		incrValue = getRangeFromExp(incrExp);
 		int maxIterations = getMaxIterations(initValue, threshold, incrValue,
 				branchCondition.type);
 		if (maxIterations < 0) {
@@ -385,12 +377,14 @@ public class LoopAnalysis {
 		
 		if(entryIndices.size() == 1){
 			//the last variable holds the interesting value
-			String initVar = PhiCode.getRootString(iterator,-1);
+			String initVar = PhiCode.getDefKey(iterator,-1);
 			//get the output of the last basic block
 			//find the predecessor
 			BasicBlock pred = head.getPredecessors().get(entryIndices.get(0));
 			return reachingExp.getOutSet(pred).get(initVar);
 		}
+		
+		//more than one predecessor 
 		
 		//get the phi function for the iterator
 		PhiCode phi = null;
@@ -403,6 +397,7 @@ public class LoopAnalysis {
 				}
 			}
 		}
+		
 		ArrayList<Expression> result = new ArrayList<>();
 		// Now build a list using the info from the Phi
 		for(int i : entryIndices){
@@ -418,14 +413,13 @@ public class LoopAnalysis {
 		return result;
 	}
 
-	private Range getRangeFromExp(Expression exp, HashMap<String, List<Expression>> defs) throws LoopAnalysisException {
+	private Range getRangeFromExp(Expression exp) throws LoopAnalysisException {
 		Range range = null;
 		if (exp instanceof ExpConstant) {
 			range = new Range(((ExpConstant) exp).value);
 		} else if (exp instanceof ExpIdentifier) {
 			String name = ((ExpIdentifier) exp).id;
-			List<Expression> rhsList = defs
-					.get(name);
+			List<Expression> rhsList = reachingExp.getSymbolExpList(name);
 			range = getRange(rhsList);
 			if (range == null) {
 				throw new LoopAnalysisException(
