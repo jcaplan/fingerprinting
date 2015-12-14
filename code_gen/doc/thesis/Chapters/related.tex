@@ -8,4 +8,11 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Main Section 1}
+
+Several examples of code generation for real-time multicore systems have been discussed in recent literature. Several groups have demonstrated integrated frameworks that allows specification of both a hardware and software model and generates both hardware and software code \cite{goossens2013compsoc,gauthier2001automatic}. Strategies for code generation in real-time systems also exist that use platform specific features to address thread replication and fault tolerance \cite{huang2012framework}.
+
+Mapping strategies and automated design space exploration for multicore systems are explored in \cite{bolchini2013reliability}, and \cite{kang2014static}. Recent work has also examined porting of multi-rate synchronous languages to multicore systems \cite{puffitsch2013mapping}. I am also involved in a recently accepted conference paper on this subject that proposes a different analysis technique.
+
+The analysis in \cite{kang2014static} was tested in real many-core systems in \cite{sigrist2015mixed}. It was found that the models are inaccurate and that many of the model assumptions are extremely optimistic (up to 97\% of systems that passed analysis failed on real hardware). Work moving forward will depend on closing the gap between the models and systems and working non-ideal considerations in an integrated framework. An effective profiling tool will be critical to reducing time-consuming iterations and reducing at least one key source of error in the mapping and scheduling analysis.
+
+The worst-case execution time (WCET) analysis will be based on the work in \cite{li1995performance} on implicit path enumeration technique. Based on Heptane~\cite{heptane} and static analysis book Appel~\cite{andrew2002modern}. 

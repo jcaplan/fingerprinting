@@ -9,3 +9,63 @@
 %----------------------------------------------------------------------------------------
 
 \section{Main Section 1}
+
+class diagram
+directory structure
+
+
+
+\section{Integration of Simulink generated code}
+
+The code generated from the Simulink model will dictate how to structure the communication between tasks. Functions must be generated using the reusable code option and using the input and output structures option. Discrete models must be used for Nios compatibility.
+
+\todojc{show simulink options menu figure here}
+There are three functions generated for each group of blocks: an initalization, a termination, and a step function. Example function declarations are shown in Listing~\ref{l:airbag-proto} along with the struct definitions for the input parameters. There are three different parameters for all the function: 
+\texttt{RT\_MODEL\_AirbagModel\_T} stores the state that is needed between time steps, \texttt{ExtU\_AirbagModel\_T} stores the external input parameters, and \texttt{ExtY\_AirbagModel\_T} stores the external outputs. The members of each input and output struct must either connect to inputs and outputs of other functions or communicate somehow with on-chip peripherals or through IO. The connection to IO is not currently implemented.
+
+\begin{lstlisting}[caption={Airbag model function declarations},label=l:airbag-proto,language=C]
+/* Model entry point functions */
+extern void AirbagModel_initialize(RT_MODEL_AirbagModel_T *const AirbagModel_M,
+  ExtU_AirbagModel_T *AirbagModel_U, ExtY_AirbagModel_T *AirbagModel_Y);
+extern void AirbagModel_step(RT_MODEL_AirbagModel_T *const AirbagModel_M,
+  ExtU_AirbagModel_T *AirbagModel_U, ExtY_AirbagModel_T *AirbagModel_Y);
+extern void AirbagModel_terminate(RT_MODEL_AirbagModel_T *const AirbagModel_M);
+\end{lstlisting}
+
+In Figure~\ref{f:simulink} the cruise control outputs a single \texttt{real\_T} value (Listing~\ref{l:cc-output}) and the derivative function has an identical input (Listing~\ref{l:der-input}). The monitor will need to pass the signals between the data structures.
+\begin{lstlisting}[caption={Cruise control output struct definition},label=l:cc-output,language=C]
+/* External outputs (root outports fed by signals with auto storage) */
+typedef struct {
+  real_T Out1;                         /* '<Root>/Out1' */
+} ExtY_CruiseControlSystem_T;
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Derivative input struct definition},label=l:der-input,language=C]
+/* External inputs (root inport signals with auto storage) */
+typedef struct {
+  real_T In1;                          /* '<Root>/In1' */
+} ExtU_Derivative_T;
+\end{lstlisting}
+
+There will be two more levels of packaging for the monitor that will be used later on for convenient DMA transfers. First, all three structs will be packaged in a single container. Then, for all critical tasks that will require DMA transfer and that have precedence relations between them (i.e. the completion of one triggers the beginning of the next), they will be placed in a single struct so that the DMA can transfer data with a single command. The structs, presented in Listing~\ref{l:dma-struct}, are not all located in the same file. The model contains pointers that must be assigned to static variables manually. Examples are located in the \texttt{ert\_main.c} file accompanying each generated project.
+
+\begin{lstlisting}[caption={Structures of structures to facilitate DMA transfer.},label=l:dma-struct,language=C]
+/* LOCATED IN critical.h */
+typedef struct {
+	RT_MODEL_Derivative_T Derivative_M;
+	ExtU_Derivative_T Derivative_U;
+	ExtY_Derivative_T Derivative_Y;
+} DerivativeStruct;
+
+typedef struct {
+	RT_MODEL_AirbagModel_T AirbagModel_M;
+	ExtU_AirbagModel_T AirbagModel_U;
+	ExtY_AirbagModel_T AirbagModel_Y;
+} AirbagModelStruct;
+
+/* LOCATED in monitor main.c */
+typedef struct {
+	AirbagModelStruct airbagModelStruct_0;
+	DerivativeStruct derivativeStruct_0;
+} DMAPackageStruct;
+\end{lstlisting}

@@ -31,12 +31,14 @@ for_loop_100000_0 cpu0 cpu1
 for_loop_50000_50000 cpu0
 </MAPPING>
 
-
+#optional - skip stack profiling if included
 <STACK_PROFILE>
 for_loop_100000_0 80
 for_loop_50000_50000 80
 </STACK_PROFILE>
 
+
+#optional - skip wcet profiling if included
 <WCET_PROFILE>
 for_loop_50000_50000 1600035
 for_loop_100000_0 1600004 2400006

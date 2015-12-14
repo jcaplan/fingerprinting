@@ -138,13 +138,13 @@
 
 \usepackage{siunitx} % Required for \SI commands
 
-\usepackage{graphicx} % Required to include images
+\usepackage[pdftex]{graphicx} % Required to include images
 \graphicspath{{Figures/}{./}} % Specifies where to look for included images
 
 \usepackage{booktabs} % Required for better table rules
 
-\RequirePackage[centerlast,small,sc]{caption} % Required for customising the captions
-\setlength{\captionmargin}{50pt}
+% \RequirePackage[centerlast,small,sc]{caption} % Required for customising the captions
+% \setlength{\captionmargin}{50pt}
 
 %----------------------------------------------------------------------------------------
 
@@ -171,7 +171,7 @@
 \RequirePackage{geometry}
 \geometry{
 	paper=a4paper, % Default paper size, change to "letterpaper" for US Letter (you'll need to adjust margins after)
-	inner=1.5in, % The inner margin (beside binding)
+	inner=1in, % The inner margin (beside binding)
 	outer=1in, % The outer margin (opposite binding)
 	top=.6in, % Top margin
 	bottom=.8in, % bottom margin

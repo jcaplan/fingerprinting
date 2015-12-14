@@ -17,9 +17,9 @@ public class LoopAnalysis {
 		DomFrontier domFrontier = new DomFrontier(root);
 		domFrontier.analyze();
 		PhiInsertion phiInsert = new PhiInsertion(root);
+		phiInsert.analyze();
 		RenameSSA ssa = new RenameSSA(root,phiInsert.getVarSet());
 		ssa.analyze();
-		phiInsert.prettyPrint();
 		reachingExp = new ReachingExp(root);
 		reachingExp.analyze();
 		boolean allPassed = true;

@@ -7,5 +7,405 @@
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
+\section{IPET Analysis}
+The WCET for a function is calculated using implicit path enumeration technique (IPET) \cite{li1995performance}. IPET is a method of pessimistically determining the WCET of a
+program without actually identifying the worst-case path. The first step is to convert the CFG into an integer linear program (ILP) and the second step is to determine the cost of each basic block using microarchitectural modelling and/or dataflow analysis. 
 
-\section{Main Section 1}
+The goal of the ILP is to maximize the objective function:
+
+\begin{equation}
+\sum_{i=1}^{N}c_ix_i
+\end{equation}
+
+where:
+
+\begin{itemize}
+  \item $N$: Number of basic blocks
+  \item $c_i$: Execution time of block $i$
+  \item $x_i$: frequency of block $i$
+\end{itemize}
+
+The CFG is transformed into a set of linear constraints by noting that the number of times a basic block is entered must equal the number of times it is exited. Each edge in the CFG is assigned a variable $e_i$. The entry edge into the root basic block has the constraint $e_0 = 1$. For all other edges, constraints are extracted based on the observation that for each basic block: $\sum e_{in} - \sum e_{out} = 0$. For example, in Figure~\ref{f:bbedges}: $e_0+e_1+e_2-e_3=0$.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1]{bbedges.pdf}
+\caption{Sum of the edges into the basic block must equal the sum of the edges out: $\sum e_{in} - \sum e_{out} = 0$.} 
+\label{f:bbedges}
+\end{figure}
+
+
+% Loops require an additional constraint on the maximum number of times the loop can can run. Therefore for each loop $\sum e_{in} \leq m$ where $m$ is the maximum number of iterations. In Figure~\ref{f:loopedges}, taking $m=10$ gives: $e_0 + e_1 + e_2 + e_4 \leq 10$. Functions calls are not explicitly represented in the constraint system. Each function is analyzed independently and then the final execution time of a basic block $i$ that calls function $f$ is defined as: 
+%   $(c_i+WCET(f))x_i$. Recursive function calls are not supported but are also generally not used in real-time systems.
+
+
+Loops require an additional constraint on the maximum number of iterations. Therefore for each loop $\sum e_{in} - \sum \mathrm{maxIter}*e_{fl} \le 0$, where $\mathrm{maxIter}$ is the maximum number of iterations for the loop and $e_{fl}$ are the non-backwards edges into the loop (i.e. those that can only execute once per single round of loop iterations).
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1]{loopedges.pdf}
+\caption{An additional constraint is required for loops: $\sum e_{in} \leq m$.} 
+\label{f:loopedges}
+\end{figure}
+
+
+Function calls are handled quite simply. The entry-point to the top-level function simply equals 1. For all other functions, the entry-point equals the sum of all the edges leaving basic blocks that call that function. In Figure~\ref{f:function-ipet}, the result is: $e_2+e_3-e_4 = 0$.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1]{function-ipet.pdf}
+\caption{The sum edges leaving function call blocks is equal to the edge entering that function's root block.} 
+\label{f:function-ipet}
+\end{figure}
+ 
+
+
+\section{Solution Strategy and Implementation}
+
+The pre-existing IR is a basic control flow graph (CFG) constructed from the assembly code. The structure of the IR and tools is shown in Figure~\ref{f:class}. Basic blocks have been identified and the instruction types have been roughly categorized (e.g. branch, binary operation). However, the operation and operands are still in unparsed string form. Before loop analysis can be done, several steps must be taken to create a more meaningful IR for the code within basic blocks.
+
+\addfigure{0.55}{class.pdf}{Class diagram of profiling tool}{f:class}
+
+\addfigure{0.6}{stages.pdf}{Stages of loop analysis}{f:stages}
+Building the new IR requires several stages, shown in Figure~\ref{f:stages}. The goal of these analyses is to transform the representation of the program from a list of \texttt{Code} objects into a list of available expressions at each program point, represented as trees with the \texttt{Expression} class. Furthermore, static single assignment (SSA) is used to ensure that the correct version of each variable is being referenced in the loop analysis. Not much will be said about the conversion to SSA form except that it follows the technique found in Appel~\cite{andrew2002modern}. A sample input and output are shown in Listing~\ref{l:ssa-example}. One detail worth mentioning is that function calls cause an increment to the counter of the return registers $r_2$ and $r_3$.
+
+
+\begin{figure}[h]
+\captionsetup{type=lstlisting}
+\caption{Example of SSA renaming output}
+\begin{sublstlisting}[t]{0.47\linewidth}
+\caption{Original Code}
+\lstinputlisting[captionpos=t,language=C]{code/ssa.c}
+\end{sublstlisting} \hfill
+\begin{sublstlisting}[t]{0.47\linewidth}
+\caption{Renamed Code}
+\lstinputlisting[captionpos=t,language=C]{code/ssa.s}
+\end{sublstlisting}
+\label{l:ssa-example}
+\end{figure}
+
+
+
+
+\subsection{Reaching Expression Analysis}
+
+The reaching expression analysis combines elements of reaching defintion analysis, constant propagation and copy propagation. This analysis, like the normal reaching definition analysis, is a \textit{may} analysis. The use of SSA form simplifies the analysis compared to previous iterations because the $\phi$ function eliminates the need for explicit representation of undefined paths (this will be discussed in more detail later).
+
+\begin{enumerate}
+  \item The analysis approximates lists of expressions that may be available on the stack or in registers.
+  \item At a program point $p$, we would like to know the expressions that \textit{may} be stored on the stack or in registers.  We would also like to substitute older expressions into newer expressions as they are generated at each $p$ during the analysis if the substitution is \textit{unambiguous} (i.e. if only one definition is reaching).
+  \item This is a forwards analysis.
+  \item The merge operation is a simple union. 
+  \item In general, registers and frame offsets will be considered temporary variables and the entire frame offset (e.g. ``-8(fp)'') will be considered an identifier. The frame pointer can safely be considered a constant value for intraprocedural analysis as it is only modified in the prologue and epilogue.
+   
+  \textbf{loads}: $out(S) = (in(S) - kill(S)) \cap gen(S)$ where the kill set is any previous expression stored in the destination register and the generated value is either the identifier of the load source or the expression that was stored there if it was known. 
+  
+  \textbf{moves}: same as load.
+  
+  \textbf{stores}: $out(S) = (in(S) - kill(S)) \cap gen(S)$ where the kill set is any previous expression stored in the destination address and the generated value is either the identifier of the source register or the expression that was stored there if it was known.
+  
+  \textbf{binary operators}: $out(S) = (in(S) - kill(S)) \cap gen(S)$ where the kill set is any previous expression stored in the destination register and the generated expression corresponds to the condition of the instruction.
+  
+  \textbf{conditional branches}: The expression evaluated by conditional branches are useful state to propagate for the loop analysis but is not stored on the stack or in a register. The expression is placed in the out set at a key corresponding to the instruction address.
+  
+  \textbf{$\phi$ function}: The merge operation combines sets of expressions from different branches. The $\phi$ function explicitly handles the merges of different versions of the same variable. For example $\phi(a_3) \leftarrow a_2,a_1$ generates the set $\{a_3, \{in(a_2) \cup in(a_1)\}\}$. The $\phi$ function kills the sets for $a_2$ or $a_1$.
+  
+  All other expressions have no effect at the current time. Support for more statement types will be added as necessary. Function calls do not currently kill the values of return registers however they do increment the counter of the return registers in the variable renaming stage. The flow contains a few extra terms due to this limitation.
+  
+  \item As this is a \textit{may} analysis, $in(start)=\{\}$ and $in(s)=\{\}$. 
+\end{enumerate}
+
+An exerpt from the analysis output is shown in Listing~\ref{l:reachexp}. The example shows how expressions are constructed and how known old values of variables are immediately folded into newer ones. The $\phi$ function merges the expressions from the previous definitions into the new one and kills the old references. It is also possible to maintain a symbol table of definitions. The definition of a variable can be unambiguously retrieved since there is only one. Definitions can be conveniently retrieved for variables that have already beek killed in the flow-set for the current line of code when attempting to simplify expressions later on in the loop analysis.
+
+\begin{lstlisting}[caption={Example reaching expression analysis},label=l:reachexp,captionpos=t]
+Basic block start address: 10e0
+@!Address: 10e0; instruction: movhi; operands: r3_1,0@!
+in: {}
+out: {r3_1=[(0) << (16)]}
+-------------------------------
+@!Address: 10e4; instruction: addi; operands: r3_2,r3_1,9248@!
+in: {r3_1=[(0) << (16)]}
+out: {r3_2=[((0) << (16)) + (9248)], r3_1=[(0) << (16)]}
+-------------------------------
+@!Address: 10e8; instruction: mov; operands: r2_1,zero@!
+in: {r3_2=[((0) << (16)) + (9248)], r3_1=[(0) << (16)]}
+out: {r3_2=[((0) << (16)) + (9248)], r2_1=[0], r3_1=[(0) << (16)]}
+-------------------------------
+@!Address: 10ec; instruction: movi; operands: r4_1,300@!
+in: {r3_2=[((0) << (16)) + (9248)], r2_1=[0], r3_1=[(0) << (16)]}
+out: {r3_2=[((0) << (16)) + (9248)], r2_1=[0], r3_1=[(0) << (16)], r4_1=[300]}
+-------------------------------
+****************************************************
+Basic block start address: 10f0
+@!Address: 10f0; instruction: phi; operands: r3_2,r3_4 -> r3_3@!
+in: {r3_3=[], r3_2=[((0) << (16)) + (9248)], r3_4=[(r3_3) + (24), (((0) << (16)) + (9248)) + (24)], ...}
+out: {r3_3=[((0) << (16)) + (9248), (r3_3) + (24), (((0) << (16)) + (9248)) + (24)], ...}
+
+\end{lstlisting} 
+
+\section{Loop Analysis}
+
+Algorithm~\ref{a:analysis} shows how the loop is characterized. Note that nested loops do not break the condition that only one backwards edge can exist because a backwards edge is defined as going back to the \textit{head} of the loop. 
+
+The maximum number of iterations of a loop $l$, defined as $M(l)$, is given by the following equation:
+\begin{equation}
+	M(l) = 
+	\begin{dcases*}
+		\max{\left \lceil \frac{threshold - initial}{increment} \right \rceil}, & $\{<,>\}$ expressions \\
+		\max{\left \lceil \frac{threshold - initial + 1}{increment} \right \rceil}, & $\{\leq,\geq\}$ expressions
+	\end{dcases*}
+	\label{eq:max}
+\end{equation}
+and subject to the constraints:
+\begin{equation}
+(\min(th) > \max(init)) \wedge (\min(inc) > 0), \{<,\leq\} \text{expressions} 
+\end{equation}
+\begin{equation}
+(\max(th) < \min(init)) \wedge (\max(inc) < 0), \{>,\geq\} \text{expressions} 
+\end{equation}
+Zero and infinite iterations throw exceptions for now. All values in all ranges must respect constraints.
+		
+The maximum or minimum of each range is chosen as appropriate to maximize $M(l)$.	
+
+	
+\begin{algorithm}
+\KwData{Function f}
+\KwResult{Max iteration for each loop in f}
+reachingExp = Reaching expression analysis on f\;
+\Begin{
+	\For{Loop l in f.getLoops()}{
+		String iterator; \tcp{Name of induction variable} \
+		Range incrValue; \tcp{Range of values for constant increment} \
+		Range threshold; \tcp{Range of constant threshold for loop exit} \
+		Range initValue; \tcp{Range of constant initial values for induction} \
+		BasicBlock $backEdge\leftarrow$getSingleBackwardsEdge(l)\;
+		\If{backEdge == null}{
+			fail\;		}
+		BasicBlock $exitPoint\leftarrow$getSingleExitPoint(l)\;
+		\If{exitPoint == null}{
+			fail\;
+		}
+		conditionOut $\leftarrow$ The reaching expressions at $exitPoint$\;
+		branchCondition $\leftarrow$ The expression of the branch condition in $conditionOut$\;
+		Simplify $branchCondition$\;
+		$iterator \leftarrow$ lefmost identifier in $branchCondition$\;
+		\tcp{tricky part} \
+		Find expressions $thresholdExp$ and $initExp$\;
+		$inSet \leftarrow $ merged output of $\phi(iterator)$ without backwards edge\;
+		\If{$inSet$ contains non-constant expressions}{
+			\If{inSet.size() $>$ 1}{
+				fail \tcp{limit one common unkown for now}
+			}
+			remove common unknown identifier from $thresholdExp$ and $initExp$\;
+		}
+		determine ranges from expressions\;
+		\If{all ranges defined}{
+			$l.maxIterations \leftarrow$ getMaxIterations(initValue,threshold,incrValue,branchCondition.type)\;
+		}\Else {
+			fail\;
+		}
+	}
+}
+ 
+ \caption{Algorithm for loop analysis.}
+ \label{a:analysis}
+ \end{algorithm}
+ 
+ \begin{algorithm}
+ 
+\SetKwFunction{getRange}{getRange}
+  \SetKwProg{Fn}{Function}{}{}
+  \Fn{\getRange{expList}}{
+	  $Range \leftarrow$ null\;
+	  \For{$exp$ in $expList$}{
+	  	\If{$exp$ is binary operation}{
+	  		$exp \leftarrow$ simplify $exp$
+	  	}
+	  	\If{$exp$ is constant}{
+	  		$value \leftarrow$ $exp.value$\;
+	  		\If{$range$ is null}{
+	  			$range \leftarrow [value,value]$\;
+	  		}\Else{
+	  			\If{$value < range.min$}{
+	  				$range.min \leftarrow value$\;
+	  			}\ElseIf{$value > range.max$}{
+	  				$range.max \leftarrow value$\;
+	  			}
+	  		}
+	  	}
+	  	\Else{
+	  		\Return null\;
+	  	}
+	  }
+	  \Return $range$\;
+  }
+  \caption{Get range function for loop detection.}
+ \end{algorithm}
+
+
+
+
+\subsection{Example}
+It may be easier to demonstrate the behaviour of the analysis with an example. Consider the code in Listing~\ref{l:matmul} and corresponding CFG in Figure~\ref{f:matmul}. This function is interesting because there is nested looping, the inner loops use the array address as induction variables in the assembly code, and the number of iterations can be calculated despite the fact that the initial array address is unknown.
+
+The analysis does not examine the loops in any specific order. The middle-level loop beginning at 0x17a4 is first. The branch condition is then identified (line 4). When the branch condition takes this form then the threshold and increment can be easily identified (lines 7 and 8). The initial condition is also found and the maximum iterations is calculated (lines 9 to 14). The second loop is a bit tricker because the initial value and threshold are offset by a constant unkown (lines 23 and 25). This pattern is recognized by the analysis and the unkown term is cancelled out from both expressions (lines 26 to 29).
+
+\subsection{Conditional branches Depending on Induction Variable}
+The expressions for conditional branches inside the body of a loop (that are not the backwards or exit edges) may be checked to see if they depend on the induction variable.The maximum number of times the true branch is taken can then be calculated using Equation~\ref{eq:max} with same increment value and updated threshold and initial values that reflect the condition. For example, a conditional branch with expression \texttt{if(i > 75)} contained in a loop \texttt{for(i = 0; i < 100; i++)} will execute a maximum of 24 times using Equation~\ref{eq:max} with an initial value of 76 and threshold of 100.
+ 
+\begin{lstlisting}[caption={Example output for loop analysis on matrix multiplication code.},label={l:matmul-out},captionpos=t]
+loop head: 17a4; tail: 17e0; body: 17a4, 17e0, 17bc,
+exit point: BB @17e0
+backwards edge head: BB @17e0
+branch condition: ((r9_3) + (1)) != (128)
+simplified lhs: (r9_3) + (1)
+iterator: r9_3
+increment: [1]
+threshold: [128]
+merged inSet: [0]
+initial value = [0]
+thresholdRange = [128,128]
+incrementRange = [1,1]
+initialRange = [0,0]
+maxIterations = 128
+//Second loop *************
+loop head: 17bc; tail: 17bc; body: 17bc,
+exit point: BB @17bc
+backwards edge head: BB @17bc
+branch condition: ((r2_4) + (4)) != (r8_2)
+simplified lhs: (r2_4) + (4)
+iterator: r2_4
+increment: [4]
+threshold: [r8_2]
+merged inSet: [(r8_2) + (-512)]
+initial value = [[(r8_2) + (-512)]]
+Initial value not constant!
+Matching unknown in threshold and initial: r8_2
+new initial value: [-512]
+new threshold: [0]
+thresholdRange = [0,0]
+incrementRange = [4,4]
+initialRange = [-512,-512]
+maxIterations = 128
+...
+\end{lstlisting}
+
+
+\printCode{matmul}{Example for loop analysis}{l:matmul}
+% \includecode{matmul.c}{l:matmul}{Example code for loop analysis}{C}
+\addfigure{0.7}{matmul.pdf}{CFG for matrix multiplication example in Listing~\ref{l:matmul}}{f:matmul}
+
+
+\section{Experimental Framework and Results}
+28 micro-benchmarks were used to test the various forms a loop may have. The benchmarks are fairly representative of the different forms a loop may take. All benchmarks pass that meet the general pattern outlined in this report. Listing~\ref{l:fail} shows one case that does not work when compiling without optimizations. The analysis only considers the behaviour of the variable in the loop condition and fails to recognize that $x$ is in fact behaving as an induction variable and that $k$ depends on $x$. Interestingly, gcc optimizes out the variable $k$ with -O so a more generic analysis of conditional expressions may improve the loop analysis.
+
+\begin{lstlisting}[caption={Indirect test on induction variable fails.},label=l:fail]
+int g8 (){
+
+	int k = 1;
+	int x = 0;
+	while(k == 1){
+		if(x == 105){
+			k = 0;
+		}
+		x++;
+		a[x] = x;
+	}
+	return x;
+}
+\end{lstlisting}
+
+The matrix multiplication example is one of the benchmarks used in the WCET Workshop competition. Listing~\ref{l:inter} shows a useful case from another benchmark that fails without interprocedural analysis. A summary approach could be used to identify that the missing information is a function argument. However, this information is not easily integrated into the ILP formulation (which I've decided not to discuss in this report). Control flow representing infeasible paths is also generally difficult and requires several ILP problems to be generated representing sets of orthogonal constraints in the solution space. 
+
+\begin{lstlisting}[caption={Interprocedural analysis is necessary to analyze programs that call a function which takes the threshold as an argument.},label={l:inter}]
+uint8_t fixFilter(uint8_t *f, int size){
+  int i;
+  int length = 1 << size;
+  int sum = 0;
+  for(i = 0; i < length; i++){
+    sum = sum + f[i];	
+  }   
+  // divide by length
+  sum = sum >> size;
+  return sum;
+}
+\end{lstlisting}
+
+The maximum number of iterations for each loop is checked by the test framework. The total number of instructions generated by the ILP solver is checked against an instruction accurate simulator. 
+
+
+\subsection{Stack Analysis}
+It is possible to start analysis once the parser has built the CFG. Stack analysis is quite straightforward. Each basic block in a function is checked for instructions that increase the stack size. Note that stack instructions should not occur in a loop. If a basic block calls a function, then that function is also checked for stack instructions and then this result is added on to the original calculation. Recursive functions are not supported.
+
+
+\section{Library functions}
+
+The object file and archive location of each library function has been determined and made statically available. There are (at least) two potential uses for this data. First, Some library functions may not conform to the patterns described in this Chapter. However, approximations based on runtime profiling could be substituted when library functions are encountered. Second, instruction prefetching into scratchpads requires that the entire call graph is known for the critical function. The library functions must be placed in a contiguous memory page for the simplistic virtual memory system currently implemented. Modifications to the linker script, a shown in Listing~\ref{l:jlib}, require the exact location for each function.
+
+
+% Library functions are important because they must be copied into the scratchpad along with the rest of the critical code. The library as well as the object that contains the function must be known in order to efficiently modify the linker script. All the library functions can be placed in a contiguous portion of memory for easy DMA transfer. The library directory for the default compiler used by the Nios II Software Build Tools (SBT) is located at: 
+% 
+% \texttt{altera/13.1/nios2eds/bin/gnu/H-i686-pc-linux-gnu/nios2-elf/lib}. 
+% 
+% These libraries have been copied to \texttt{code\_gen/nioslib} for convenience. The script \texttt{extract.sh} has been provided to extract object names and function names from each library. The main commands are explained in Listing \ref{l:extract}. Static objects mapping functions to their containing object files and library are then created in Java, as demonstrated in Listing \ref{l:jlib}.
+% 
+% \begin{lstlisting}[caption={Extracting information from shared libraries},label=l:extract]
+% 
+% # list the object files in an archive
+% ar -t $archive
+% 
+% # extract the object files from the archive
+% ar -x library.a
+% 
+% #create an objdump for each file.o 
+% nios2-elf-objdump -d file.o > file.objdump
+% 
+% #Extract the function names for each object file
+% grep "<.*>:" $f.objdump | sed -r 's/.*<(.*)>:/\1/' >> $OUTPUT
+% 
+% \end{lstlisting}
+% 
+% \begin{lstlisting}[caption={Extracting information from shared libraries},label=l:jlib,language=Java]
+%  
+% static HashMap<String, String> libc = new HashMap<>();
+% 	static {
+% 		libc.put("memset", "lib_a-memset.o");
+% 		libc.put("critical_factorization", "lib_a-memmem.o");
+% 		etc...
+% 	}
+% 
+% \end{lstlisting}
+% 
+% The output from the library analysis is a code listing that can be added inside a region in the linker script to place those functions. 
+% 
+\begin{lstlisting}[caption={Placing library functions in \texttt{.critical} region},label=l:jlib,language=C]
+/* Library functions are: __muldf3,__muldi3,__pack_d,__unpack_d,__mulsi3,__lshrdi3,__ashldi3 */
+/* To place these functions in a section called critical in linker.x: */
+    .critical :
+    {
+        PROVIDE (_alt_partition_critical_start = ABSOLUTE(.));
+        *(.critical .critical.*)
+
+        /* INSERT THE FOLLOWING */
+
+        */libgcc:_mul_df.o
+        */libgcc:_unpack_df.o
+        */libgcc:_pack_df.o
+        */libgcc:_lshrdi3.o
+        */libgcc:_ashldi3.o
+        */libgcc:_muldi3.o
+        */libgcc:lib2-mul.o
+
+        /* END OF INSERTED CODED */
+
+        . = ALIGN(4);
+
+        PROVIDE (_alt_partition_critical_end = ABSOLUTE(.));
+    } > processor0_0_scratchpad
+
+
+\end{lstlisting}
+
+
+
