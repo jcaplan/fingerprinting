@@ -174,7 +174,7 @@ public class CodeGen {
 	 * Shows results of stack analysis
 	 */
 	public void printStackResults(){
-		System.out.println("\nStack results (in bytes):");
+		System.out.println("\n#Stack results (in bytes):");
 		System.out.println("<STACK_PROFILE>");
 		for (Function f : funcList) {
 			System.out.println(f.name + " " + f.stackSize);
@@ -183,7 +183,7 @@ public class CodeGen {
 	}
 
 	public void printWcetResults() {
-		System.out.println("\nWCET results (in clockcycles):");
+		System.out.println("\n#WCET results (in clockcycles):");
 		System.out.println("<WCET_PROFILE>");
 		for (Function f : funcList) {
 			System.out.print(f.name + " " + f.wcetLowerBound);
@@ -195,6 +195,20 @@ public class CodeGen {
 			}
 		}
 		System.out.println("</WCET_PROFILE>");
+		
+	}
+
+	public void printMapingResults() {
+		System.out.println("\n#Mapping results");
+		System.out.println("<MAPPING>");
+		for (Function f : funcList){
+			System.out.print(f + " ");
+			for(String c : f.cores){
+				System.out.print(c + " ");
+			}
+			System.out.println("");
+		}
+		System.out.println("</MAPPING>");
 		
 	}
 	

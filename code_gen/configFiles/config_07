@@ -26,10 +26,10 @@
 -usedefault
 </PLATFORM>
 
-# <MAPPING>
-# for_loop_100000_0 cpu0 cpu1
-# for_loop_50000_50000 cpu0
-# </MAPPING>
+<MAPPING>
+for_loop_100000_0 cpu0 cpu1
+for_loop_50000_50000 cpu0
+</MAPPING>
 
 #optional - skip stack profiling if included
 <STACK_PROFILE>
