@@ -72,6 +72,13 @@ public class LoopAnalysis {
 			successfulLoops.add(l);
 		}
 		
+		//TODO if unsuccessful loops > 0, check for annotation.. if neither error
+		for(Loop l : unsuccessfulLoops){
+			if (l.getMaxIterations() < 0){
+				throw new RuntimeException("LoopAnalysis:: " + l + ": does not have annotation and loop analysis failed");
+			}
+		}
+		
 		//Now check branches.t..
 		// Now check other basic block branches besides the head
 
@@ -339,6 +346,10 @@ public class LoopAnalysis {
 		}
 		threshold = getRangeFromExp(thresholdExp);
 		incrValue = getRangeFromExp(incrExp);
+		if(threshold == null){
+			throw new LoopAnalysisException(
+					"Could not determine range value range");
+		}
 		int maxIterations = getMaxIterations(initValue, threshold, incrValue,
 				branchCondition.type);
 		if (maxIterations < 0) {
@@ -349,6 +360,7 @@ public class LoopAnalysis {
 									+ "branchType: %s", initValue, threshold,
 							incrValue, branchCondition.type.toString()));
 		}
+
 		l.setMaxIterations(maxIterations);
 		l.setInductionVar(iterator);
 		l.setIncrValue(incrValue);

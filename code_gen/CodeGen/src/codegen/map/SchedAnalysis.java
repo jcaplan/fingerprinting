@@ -363,8 +363,8 @@ public class SchedAnalysis {
 			results[mode] /= (double)numLoTasks;
 			avg += results[mode];
 		}
-		System.out.println(String.format("OV: %f, TF: %f, HI: %f",results[modeOV],results[modeTF],
-				results[modeHI]));
+//		System.out.println(String.format("OV: %f, TF: %f, HI: %f",results[modeOV],results[modeTF],
+//				results[modeHI]));
 		
 		return avg/3;
 	}

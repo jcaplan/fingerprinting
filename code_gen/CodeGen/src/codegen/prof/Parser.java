@@ -107,10 +107,11 @@ public class Parser {
 		
 		String line = "";
 		
+		
 		/*
 		 * skip the front matter
 		 */
-		while(!reader.readLine().contains("Contents of section .wcet_annot:"))
+		while(((line = reader.readLine()) != null) && !line.contains("Contents of section .wcet_annot:"))
 			;
 		
 		

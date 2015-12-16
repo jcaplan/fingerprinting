@@ -57,7 +57,9 @@ public class CodeGen {
 		SourceAnalysis sa = new SourceAnalysis(platform, funcList, config,fprintList);
 		sa.doSourceProfiling();
 		if(config.mappingRequired){
+			System.out.println("Starting mapping");
 			doMapping();
+			System.out.println("finished mapping");
 			for(Function f : funcList){
 				System.out.print(f + ": ");
 				for(String c : f.cores){

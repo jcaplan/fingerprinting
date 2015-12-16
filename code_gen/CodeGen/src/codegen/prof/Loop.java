@@ -9,7 +9,7 @@ public class Loop {
 	BasicBlock head;
 	BasicBlock tail;
 	ArrayList<BasicBlock> body;
-	int maxIterations = 0;
+	int maxIterations = -1;
 	String inductionVar;
 	private Range incrValue;
 	private Range initValue;

@@ -149,6 +149,7 @@ C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/RadarTracker.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/cpu1.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/critical.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/for_loop_100000_0.c
+C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/for_loop_50000_50000.c
 CXX_SRCS :=
 ASM_SRCS :=
 
