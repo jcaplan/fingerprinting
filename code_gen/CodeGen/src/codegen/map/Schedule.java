@@ -6,7 +6,6 @@ public class Schedule {
 
 	Map<Task,Binding> bindings = new HashMap<>();
 	
-	
 	public void allocate(Task t, Processor p) {
 		bindings.put(t,new Binding(p,t.isCritical()));		
 	}
@@ -113,5 +112,24 @@ public class Schedule {
 		public String toString(){
 			return String.format("[%s,%s,%s]\n",processor[1],processor[2],processor[3]);
 		}
+	}
+
+	public List<Processor> getProcessorsForAllPreplicas(Task t) {
+		List<Processor> procList = new ArrayList<>();
+		procList.add(bindings.get(t).getLoModeProcessor());
+		String name = t.name;
+		if(name.endsWith("R")){
+			name = name.substring(0, name.length() - 2);
+		}
+		
+		for(Task key : bindings.keySet()){
+			if(key.name.startsWith(name)){
+				Processor p = bindings.get(key).getLoModeProcessor(); 
+				if(!procList.contains(p)){
+					procList.add(p);
+				}
+			}
+		}
+		return procList;
 	}
 }

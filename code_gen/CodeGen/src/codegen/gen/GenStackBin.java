@@ -42,7 +42,9 @@ public class GenStackBin {
 	 * BSP.
 	 */
 	public void genStackBins() {
-		getStackBins();
+		if(!getStackBins()){
+			return;
+		}
 		setStackBinAddresses();
 		try {
 			updateStackBinRegions();
@@ -54,7 +56,7 @@ public class GenStackBin {
 	/**
 	 * This method creates the StackBin objects
 	 */
-	private void getStackBins() {
+	private boolean getStackBins() {
 		// MIN_OFFSET = 1256
 		// SAFETY = 80
 		// MIN_OFFSET + SAFETY + f.stacksize > 2048
@@ -70,7 +72,10 @@ public class GenStackBin {
 
 		// ////////////////////////////////////////////////
 
-		
+		if(fprintList.isEmpty()){
+			System.out.println("No stack bins because no fingerprinting...");
+			return false;
+		}
 		@SuppressWarnings("unchecked")
 		ArrayList<Function> fprintListCopy = (ArrayList<Function>) fprintList.clone();
 		Collections.sort(fprintListCopy, Function.stackCompareDecreasing);
@@ -106,6 +111,7 @@ public class GenStackBin {
 			StackBin sb = stackBins.get(i);
 			sb.name = "stack_bin_" + i;
 		}
+		return true;
 	}
 	
 	/**

@@ -1,7 +1,6 @@
 package codegen.map;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 import org.jgap.*;
 import org.jgap.impl.IntegerGene;
@@ -15,11 +14,12 @@ public class Mapper {
 	Schedule bestSchedule;
 	double fitness;
 	Map<Task, FaultMechanism> bestTechniqueMap;
-	
+	List<FaultMechanism> ftms;
 	
 	public Mapper(){
 		app = new Application();
 		procList = new ArrayList<>();
+		ftms = new ArrayList<FaultMechanism>();
 	}
 	
 	public Mapper(Application app, ArrayList<Processor> procList){
@@ -69,7 +69,7 @@ public class Mapper {
 
 	private Chromosome createRAChromosome(MapConfiguration config) throws InvalidConfigurationException {
 		Gene[] sampleGenes = new Gene[app.getNumHiTasks()];
-		int geneSize = FaultMechanism.getNumMechanisms()-1;
+		int geneSize = ftms.size()-1;
 		for(int i = 0; i < app.getNumHiTasks(); i++){
 				sampleGenes[i] = new IntegerGene(config,0,geneSize);
 
@@ -99,6 +99,20 @@ public class Mapper {
 	
 	public Map<Task, FaultMechanism> getBestFTMs(){
 		return bestTechniqueMap;
+	}
+
+	public void clearFTMs() {
+		ftms.clear();
+	}
+
+	public void addFTM(FaultMechanism mech) {
+		if(!ftms.contains(mech)){
+			ftms.add(mech);
+		}
+	}
+
+	public List<FaultMechanism> getFtmList() {
+		return ftms;
 	}
 	
 }

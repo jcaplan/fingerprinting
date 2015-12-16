@@ -45,51 +45,57 @@ public class SourceAnalysis {
 	 * from ert_main.c, then the max stack height is determined if necessary.
 	 * Finally the variable size is checked (not implemented yet).
 	 */
-	public void doAnalysis() {
+	
+	
+	public void doSourceProfiling() {
+		/*
+		 * The following analysis require a temporary app to be built
+		 */
+
+		if (config.stackProfilingRequired || config.wcetProfilingRequired) {
+			for (Function f : funcList) {
+				// System.out.println("Starting profiling for " + f);
+				String outputDir = config.outputDir + "/prof";
+				copySourceFiles(f.codeDirectory, outputDir);
+				Core core;
+				core = platform.getCore("cpu0");
+				config.niosSBT.generateMakefile(outputDir, core.bspDir,
+						"ucos.elf");
+
+				config.niosSBT.updateMakefile(outputDir, f.name);
+				config.niosSBT.makeProject(outputDir);
+				config.niosSBT.generateAnnotations(outputDir, "ucos");
+
+				Profiler prof = new Profiler(outputDir, "ucos");
+				String funcStep = f.name + "_step";
+				prof.parseFile(funcStep);
+				
+				if (config.stackProfilingRequired) {
+					try {
+						f.stackSize = getMaxStacks(funcStep,prof);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				if (config.wcetProfilingRequired) {
+					f.setWCET(getWCET(funcStep,prof));
+					
+				}
+
+				deleteDirectory(outputDir);
+			}
+
+		}
+	}
+	
+	public void doSourceParsing() {
 		// Parse source
 		initHeaders();
 		try {
 			getVariableDeclarations();
 			getFunctionInitialization();
 
-			/*
-			 * The following analysis require a temporary app to be built
-			 */
-
-			if (config.stackProfilingRequired || config.wcetProfilingRequired) {
-				for (Function f : funcList) {
-					// System.out.println("Starting profiling for " + f);
-					String outputDir = config.outputDir + "/prof";
-					copySourceFiles(f.codeDirectory, outputDir);
-					Core core;
-					if (f.cores.contains("cpuM")) {
-						core = platform.getCore("cpuM");
-					} else {
-						core = platform.getCore("cpu0");
-					}
-					config.niosSBT.generateMakefile(outputDir, core.bspDir,
-							"ucos.elf");
-
-					config.niosSBT.updateMakefile(outputDir, f.name);
-					config.niosSBT.makeProject(outputDir);
-					config.niosSBT.generateAnnotations(outputDir, "ucos");
-
-					Profiler prof = new Profiler(outputDir, "ucos");
-					String funcStep = f.name + "_step";
-					prof.parseFile(funcStep);
-					
-					if (config.stackProfilingRequired) {
-						f.stackSize = getMaxStacks(funcStep,prof);
-					}
-					if (config.wcetProfilingRequired) {
-						f.setWCET(getWCET(funcStep,prof));
-						
-					}
-
-					deleteDirectory(outputDir);
-				}
-
-			}
+			
 
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -150,6 +150,7 @@ C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpuM/TractionControl.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpuM/cpuM.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpuM/critical.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpuM/for_loop_100000_0.c
+C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpuM/for_loop_50000_50000.c
 CXX_SRCS :=
 ASM_SRCS :=
 

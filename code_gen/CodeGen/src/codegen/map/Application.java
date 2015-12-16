@@ -50,4 +50,13 @@ public class Application {
 		}
 		return numHiTasks;
 	}
+
+	public Task getTask(String name) {
+		for(Task t : taskList){
+			if(t.name.equals(name)){
+				return t;
+			}
+		}
+		return null;
+	}
 }

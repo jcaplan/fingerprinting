@@ -8,7 +8,60 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-Front matter
 
+	Embedded system design lies at the intersection of several fields: software design, signal processing, control theory, harware design, etc. 
+	Often the hardware and software in these systems must be specified and designed in parallel due to increasing time-to-market pressures. 
+	FPGA prototyping and virtual platform simulation are opening up new possibilities for effective hardware-software codesign strategies. 
+	As a result, most application engineers in large industries such as automative are managing the complexity of the design space and the difficulties in writing and debugging dependable code by moving towards model based design and code generation. 
+	Code generation also has the benefit of reducing platform specific dependencies and increasing code reuseability. 
+	A sigificant portion of the millions of lines of code in modern cars will be generated automatically from models.
+
+	The use of multicore architectures in real-time systems further complicates the design process. 
+	Multicore engine control units (ECUs) have only appeared on the market in the last couple of years (e.g. Infineon Aurix product line). 
+	Support for multicore architectures by software providers in real-time model based design (e.g. LabVIEW, Simulink, Esterel) is very limited or non-existent.
+	Multicore architectures are of particular interest in providing more efficient solutions to transient fault management in mixed criticality systems where resources are shared by both safety critical and non-safety critical functions. 
+
+	In previous work we have designed and implemented a prototype multicore architecture on an FPGA using Nios soft cores and fingerprinting to detect errors caused by transient faults. 
+	Programming with fingerprinting requires a lot of tedious detail work and is error-prone and difficult.
+% 	The development of high caliber research implementations of software systems using the new platform intersects several fields: control systems, embedded software, digital design, code profiling, and schedulability analysis. 
+% 	Code generation allows abstract models to be implemented at a much faster rate.
+	This project provides a baseline framework that allows quick porting of code to the multicore system. 
+	
 \section{Contributions}
+
+	This project specifically contributes the following infrastructure to support the goal of reference implementation development:
+	\begin{itemize}
+	  \item A novel schedulability analysis for mixed criticality fault tolerant multicore systems.
+	  \item A code generation framework for porting code quickly to a Nios based multicore system.
+	  \item Profiling and design space exploration tools to support automation of low level design parameters for code generation from high level functional configuration requirements.
+	\end{itemize}
+	
+	In general, each component is fairly naive in its implementation and assumptions. 
+	The purpose of this project is to deliver a framework with well defined interfaces between discrete aspects of the design problem in order to facilitate future collaboration and research development. 
+	The most pressing long term issues are the discrepency between high level schedulability models and actual system performance as well as generating high quality static worst case execution time estimates.
+	We believe the starting point for significant work in this area must requires a model based framework that speeds up the implementation cycle to compare measurements of actual systems with the models used to design them.
+	Code generation further allows participants to address specific aspects of the problem without being experts in all overlapping domains.
+
 \section{Outline}
+% 	The thesis chapters are as follows:
+% 	\begin{itemize}
+% 	  \item Chapter~\ref{c:background} reviews prior work and related concepts including mixed criticality systems, on demand redundancy, fingerprinting, Simulink, and Open Virtual Platforms.
+% 	  \item Chapter~\ref{c:tool-arch} presents an overview of the entire tool chain and the workflow for each component. 
+% 	  \item Chapter~\ref{c:prof} discusses the profiling tool with special emphasis on the reconstruction of control flow graphs and expressions from the assembly code. These representations are then analyzed in further detail to infer maximum number of loop iterations.
+% 	  \item Chapter~\ref{c:sched} discusses a schedulability analysis based on AMC-rtb is presented that supports fault-tolerant cores (e.g. lockstep) as well as several varieties of on-demand redundancy in multicore systems. The analysis is then integrated into a design space exploration engine that maps tasks onto platforms and decides which technique to use for each task.
+% 	  \item Chapter~\ref{c:soft-impl} discusses the implementation model of the fault tolerant system in more detail.
+% 	  \item Chapter~\ref{c:code-gen} discusses the code generation tool that produces code for all cores in the platform based on the mapping results. The tool also automatically generates and configures the board support package (BSP) using the Nios SBT tools.
+% 	  \item Chapter~\ref{c:related} discusses related work. 
+% 	  \item Chapter~\ref{c:concl} discusses possible directions for future work and presents our conclusion.
+% 	\end{itemize}
+	Chapter~\ref{c:background} reviews prior work and related concepts including mixed criticality systems, on demand redundancy, fingerprinting, Simulink, and Open Virtual Platforms. 
+	Chapter~\ref{c:tool-arch} presents an overview of the entire tool chain and the workflow for each component. 
+	Chapter~\ref{c:prof} discusses the profiling tool with special emphasis on the reconstruction of control flow graphs and expressions from the assembly code. 
+	These representations are then analyzed in further detail to infer maximum number of loop iterations. 
+	Chapter~\ref{c:sched} discusses a schedulability analysis based on AMC-rtb is presented that supports fault-tolerant cores (e.g. lockstep) as well as several varieties of on-demand redundancy in multicore systems. 
+	The analysis is then integrated into a design space exploration engine that maps tasks onto platforms and decides which technique to use for each task. C
+	hapter~\ref{c:soft-impl} discusses the implementation model of the fault tolerant system in more detail. 
+	Chapter~\ref{c:code-gen} discusses the code generation tool that produces code for all cores in the platform based on the mapping results. 
+	The tool also automatically generates and configures the board support package (BSP) using the Nios SBT tools. 
+	Chapter~\ref{c:related} discusses related work. 
+	Chapter~\ref{c:concl} discusses possible directions for future work and presents our conclusion.

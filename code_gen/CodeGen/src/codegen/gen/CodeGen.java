@@ -3,6 +3,14 @@ package codegen.gen;
 import java.io.*;
 import java.util.*;
 
+import codegen.map.Application;
+import codegen.map.DMR;
+import codegen.map.Lockstep;
+import codegen.map.Mapper;
+import codegen.map.Processor;
+import codegen.map.Schedule;
+import codegen.map.Task;
+
 /**
  * Codegen is the main class through which the generation flow occurs.
  * 
@@ -30,26 +38,40 @@ public class CodeGen {
 		this.config = config;
 		this.funcList = config.funcList;
 		platform = config.platform;
+		fprintList = new ArrayList<>();
 	}
 
 	/**
 	 * generates code for all cores.
 	 * @throws IOException
+	 * @throws ConfigurationException 
 	 */
-	public void generateCores() throws IOException {
+	public void generateCores() throws IOException, ConfigurationException {
 
 
-		getFprintList();
-		
 		
 		//Generate necessary scripts and SBT files
 		if(config.generateBSPRequired()){
 			new GenBSP(config).generateBSPs();
 		}
+		SourceAnalysis sa = new SourceAnalysis(platform, funcList, config,fprintList);
+		sa.doSourceProfiling();
+		if(config.mappingRequired){
+			doMapping();
+			for(Function f : funcList){
+				System.out.print(f + ": ");
+				for(String c : f.cores){
+					System.out.print(c + ",");
+				}
+				System.out.println("");
+			}
+		}
+		
+		getFprintList();
+		sa.doSourceParsing();
 		
 		new GenCriticalLibrary(config, funcList, fprintList).generateCriticalLibrary();
 		new GenScripts(config).generateScripts();
-		new SourceAnalysis(platform, funcList, config,fprintList).doAnalysis();
 		new GenStackBin(stackBins,fprintList,platform,config).genStackBins(); 
 	
 		
@@ -73,12 +95,55 @@ public class CodeGen {
 
 
 
+	private void doMapping() throws ConfigurationException {
+			Application app = new Application();
+			for(Function func : config.funcList){
+				app.addTask(new Task(func.getCloMS(), func.getChiMS(), func.period, func.critical, func.name));
+			}
+			
+			ArrayList<Processor> pList = new ArrayList<>();
+			for(Core core : config.platform.coreList){
+				pList.add(new Processor(core.name, core.isMonitor));
+			}
+			
+			Mapper map = new Mapper();
+			map.setProcList(pList);
+			map.setApplication(app);
+			
+			//only use lockstep and dmr for now
+			map.clearFTMs();
+			map.addFTM(new Lockstep());
+			map.addFTM(new DMR());
+			
+			//Solve the mapping problem
+			map.findSchedule();
+			
+			Schedule sched = map.getBestSchedule();
+			if(sched == null){
+				throw new ConfigurationException("Could not find legal mapping of tasks onto platform");
+			}
+			
+			//The schedule now tells a bunch of things...
+			//for the functions in the configuration
+				//update the priority
+				//for each binding add to processor list
+			for(Function f : config.funcList){
+				Task t = app.getTask(f.name);
+				f.priority = sched.getPriority(t) + 1; //DMA gets 0
+				for(Processor p : sched.getProcessorsForAllPreplicas(t)){
+					f.cores.add(p.getName());
+				}
+			}
+
+			platform.addFunctionsToCores();
+		
+	}
+
 	/**
 	 * Initializes the fprintList. Any function assigned to more than one core is 
 	 * considered fingerprinted.
 	 */
 	private void getFprintList() {
-		fprintList = new ArrayList<>();
 		for (Function f : funcList) {
 			if (f.cores.size() > 1) {
 				fprintList.add(f);

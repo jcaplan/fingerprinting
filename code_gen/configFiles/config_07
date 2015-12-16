@@ -11,8 +11,8 @@
 # 	if profiler was used: should have a profile.log file in the function folders
 <FUNCTIONLIST>
 -rootdir /home/jonah/fingerprinting/automotive_control/CompiledC/for_loops
--name for_loop_100000_0    -subdir for_loop_100000_0           -T  30   -c  -Priority 2	
--name for_loop_50000_50000 -subdir for_loop_50000_50000		   -T  30       -Priority 1 -printRuntime -addPreamble preamble.txt
+-name for_loop_100000_0    -subdir for_loop_100000_0           -T  60   -c  -Priority 2	
+-name for_loop_50000_50000 -subdir for_loop_50000_50000		   -T  60       -Priority 1 -printRuntime -addPreamble preamble.txt
 </FUNCTIONLIST>
 
 #preamble -> in subdir folder, contains code to go before while loop in task, used for threadsafe newlib config, should not have extension .c or .h
@@ -26,10 +26,10 @@
 -usedefault
 </PLATFORM>
 
-<MAPPING>
-for_loop_100000_0 cpu0 cpu1
-for_loop_50000_50000 cpu0
-</MAPPING>
+# <MAPPING>
+# for_loop_100000_0 cpu0 cpu1
+# for_loop_50000_50000 cpu0
+# </MAPPING>
 
 #optional - skip stack profiling if included
 <STACK_PROFILE>

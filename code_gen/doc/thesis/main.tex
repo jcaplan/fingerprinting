@@ -67,7 +67,7 @@ onehalfspacing, % Single line spacing, alternatives: onehalfspacing or doublespa
 \usepackage{subcaption}
 \setlength{\captionmargin}{50pt}
 
-
+\AtBeginDocument{\renewcommand{\bibname}{References}}
 \usepackage{todonotes}
 \newcommand{\todojc}[1]{\todo[inline]{JC: #1}}
 
@@ -310,9 +310,9 @@ The Thesis Abstract is written here (and usually kept to just this page). The pa
 \input{Chapters/intro}
 \input{Chapters/background}
 \input{Chapters/tool-arch}
-\input{Chapters/soft-impl}
 \input{Chapters/prof}
 \input{Chapters/map-sched}
+\input{Chapters/soft-impl}
 \input{Chapters/code-gen}
 % \input{Chapters/results}
 \input{Chapters/related}

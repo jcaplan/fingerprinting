@@ -29,4 +29,8 @@ public class Processor {
 		Processor p = (Processor) o;
 		return name.equals(p.name);
 	}
+
+	public String getName() {
+		return name;
+	}
 }

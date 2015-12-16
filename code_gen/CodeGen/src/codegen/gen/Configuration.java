@@ -12,6 +12,7 @@ import codegen.gen.Function.Type;
  */
 public class Configuration {
 
+	public static final int CLOCK_FREQUENCY = 50000000;
 	String configFilename;
 	BufferedReader reader;
 	int lineCount;
@@ -22,6 +23,7 @@ public class Configuration {
 	String sopcinfoFilename;
 	String outputDir;
 	public boolean wcetProfilingRequired = true;
+	public boolean mappingRequired = true;
 
 	/**
 	 * 
@@ -83,6 +85,7 @@ public class Configuration {
 				parsePlatform();
 				break;
 			case "<MAPPING>":
+				mappingRequired = false;
 				parseMapping();
 				break;
 			case "<STACK_PROFILE>":
@@ -106,7 +109,6 @@ public class Configuration {
 		reader.close();
 
 		Collections.sort(funcList);
-		platform.addFunctionsToCores();
 	}
 
 	private void parseWcetProfiling() throws IOException, ConfigurationException {
@@ -178,8 +180,12 @@ public class Configuration {
 			} else {
 				System.out.println(", period = " + f.period);
 			}
-			System.out.print(f.name + " executes on cores: ");
-			printStringArray(f.cores);
+			if(!mappingRequired){
+				System.out.print(f.name + " executes on cores: ");
+				printStringArray(f.cores);
+			} else {
+				System.out.println("need to determine mapping");
+			}
 			for (Dataflow d : f.dataflowList) {
 				System.out.println(d);
 			}

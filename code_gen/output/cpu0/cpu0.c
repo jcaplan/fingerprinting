@@ -15,8 +15,6 @@
 #include "cpu0.h"
 #include "reset_monitor.h"
 #include "runtimeMonitor.h"
-#include "critical.h"
-#include "for_loop_50000_50000.h"
 #include "for_loop_100000_0.h"
 
 
@@ -26,12 +24,6 @@
 /**********************************
  * Global variable declarations
  **********************************/
-/* for_loop_50000_50000*/
-static RT_MODEL_for_loop_50000_50000_T for_loop_50000_50000_M_;
-static RT_MODEL_for_loop_50000_50000_T *const for_loop_50000_50000_M = &for_loop_50000_50000_M_;/* Real-time model */
-static ExtU_for_loop_50000_50000_T for_loop_50000_50000_U;     /* External inputs */
-static ExtY_for_loop_50000_50000_T for_loop_50000_50000_Y;     /* External outputs */
-
 /* for_loop_100000_0*/
 
 
@@ -42,7 +34,6 @@ static ExtY_for_loop_50000_50000_T for_loop_50000_50000_Y;     /* External outpu
 /*****************************************************************************
  * Stack Declarations
  *****************************************************************************/
-OS_STK for_loop_50000_50000_STACK[FOR_LOOP_50000_50000_STACKSIZE];
 OS_STK for_loop_100000_0_STACK[FOR_LOOP_100000_0_STACKSIZE] __attribute__ ((section (".stack_bin_0")));
 
 
@@ -53,7 +44,6 @@ OS_STK for_loop_100000_0_STACK[FOR_LOOP_100000_0_STACKSIZE] __attribute__ ((sect
  * Execution time monitoring table
  *****************************************************************************/
 rtMonitor_task rtMonTaskTable[NUM_TASKS] = {
-	{ FOR_LOOP_50000_50000_PRIORITY, 0, FOR_LOOP_50000_50000_WCET_LOWERBOUND, false, false, "for_loop_50000_50000" },
 	{ FOR_LOOP_100000_0_PRIORITY, 0, FOR_LOOP_100000_0_WCET_LOWERBOUND, false, true, "for_loop_100000_0" }
 };
 
@@ -118,23 +108,6 @@ void waitForPartnerCore(int partnerCore) {
 
 
 
-
-/*****************************************************************************
- * for_loop_50000_50000Task wrapper
- *****************************************************************************/
-void for_loop_50000_50000_TASK(void* pdata) {
-    srand(RANDOM_SEED);
-	while (1) {
-		rtMonitorStartTask(FOR_LOOP_50000_50000_RT_PRIO);
-		INT32U time = OSTimeGet();
-		for_loop_50000_50000_step(for_loop_50000_50000_M, &for_loop_50000_50000_U,
-			&for_loop_50000_50000_Y);
-		time = OSTimeGet() - time;
-		printf("runtime task %s: %u\n",rtMonitorGetTaskName(FOR_LOOP_50000_50000_RT_PRIO),time);
-		rtMonitorEndTask(FOR_LOOP_50000_50000_RT_PRIO);
-		OSTimeDlyHMSM(0, 0, 0, FOR_LOOP_50000_50000_PERIOD);
-	}
-}
 
 /*****************************************************************************
  * for_loop_100000_0Task wrapper
@@ -332,9 +305,6 @@ int main() {
 	functionTable[FOR_LOOP_100000_0_TABLE_INDEX].stackAddress[CORE_ID] = &for_loop_100000_0_STACK;
 	functionTable[FOR_LOOP_100000_0_TABLE_INDEX].address = for_loop_100000_0_CT;
 
-	for_loop_50000_50000_initialize(for_loop_50000_50000_M);
-
-
 	critical_SEM[0] = OSSemCreate(0);
 	//Start up the MPU
 	//----------------
@@ -356,13 +326,7 @@ int main() {
 	// Declare the OS tasks
 	// -------------------
 
-	INT8U perr;	OSTaskCreateExt(for_loop_50000_50000_TASK, NULL,
-			&for_loop_50000_50000_STACK[FOR_LOOP_50000_50000_STACKSIZE - 1],
-			FOR_LOOP_50000_50000_PRIORITY, FOR_LOOP_50000_50000_PRIORITY,
-			for_loop_50000_50000_STACK, FOR_LOOP_50000_50000_STACKSIZE, NULL,
-			OS_TASK_OPT_STK_CLR);
-	OSTaskNameSet(FOR_LOOP_50000_50000_PRIORITY, (INT8U *)"for_loop_50000_50000", &perr);
-	OSTaskCreateExt(for_loop_100000_0_TASK, NULL,
+	INT8U perr;	OSTaskCreateExt(for_loop_100000_0_TASK, NULL,
 			(OS_STK *)0x63794,
 			FOR_LOOP_100000_0_PRIORITY, FOR_LOOP_100000_0_PRIORITY,
 			(OS_STK *)0x63000, FOR_LOOP_100000_0_STACKSIZE, NULL,

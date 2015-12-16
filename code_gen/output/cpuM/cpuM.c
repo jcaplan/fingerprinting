@@ -14,7 +14,7 @@
 #include "reset_monitor.h"
 #include "runtimeMonitor.h"
 #include "repos.h"
-#include "critical.h"
+#include "for_loop_50000_50000.h"
 #include "for_loop_100000_0.h"
 
 
@@ -24,6 +24,12 @@
 /**********************************
  * Global variable declarations
  **********************************/
+/* for_loop_50000_50000*/
+static RT_MODEL_for_loop_50000_50000_T for_loop_50000_50000_M_;
+static RT_MODEL_for_loop_50000_50000_T *const for_loop_50000_50000_M = &for_loop_50000_50000_M_;/* Real-time model */
+static ExtU_for_loop_50000_50000_T for_loop_50000_50000_U;     /* External inputs */
+static ExtY_for_loop_50000_50000_T for_loop_50000_50000_Y;     /* External outputs */
+
 /* dma*/
 typedef struct {
 	for_loop_100000_0Struct for_loop_100000_0_STRUCT;
@@ -48,6 +54,7 @@ INT32U dmaQMem[DMA_Q_SIZE];
  * Stack Declarations
  *****************************************************************************/
 OS_STK dma_STACK[DMA_STACKSIZE] __attribute__ ((section (".critical")));
+OS_STK for_loop_50000_50000_STACK[FOR_LOOP_50000_50000_STACKSIZE] __attribute__ ((section (".critical")));
 
 
 
@@ -279,6 +286,17 @@ void REPOSInit(void) {
 
 
 
+/*****************************************************************************
+ * for_loop_50000_50000Task wrapper
+ *****************************************************************************/
+void for_loop_50000_50000_TASK(void* pdata) {
+	while (1) {
+		for_loop_50000_50000_step(for_loop_50000_50000_M, &for_loop_50000_50000_U,
+			&for_loop_50000_50000_Y);
+		OSTimeDlyHMSM(0, 0, 0, FOR_LOOP_50000_50000_PERIOD);
+	}
+}
+
 
 
 
@@ -351,6 +369,8 @@ int main(void) {
 	//---------------------------
 	initDMA();
 
+	for_loop_50000_50000_initialize(for_loop_50000_50000_M);
+
 
 	RT_MODEL_for_loop_100000_0_T *for_loop_100000_0_M =
 			&for_loop_100000_0PackageStruct.for_loop_100000_0_STRUCT.for_loop_100000_0_M;
@@ -371,6 +391,12 @@ int main(void) {
 
 	//Declare the OS tasks
 	//-------------------
+	OSTaskCreateExt(for_loop_50000_50000_TASK, NULL,
+			&for_loop_50000_50000_STACK[FOR_LOOP_50000_50000_STACKSIZE - 1],
+			FOR_LOOP_50000_50000_PRIORITY, FOR_LOOP_50000_50000_PRIORITY,
+			for_loop_50000_50000_STACK, FOR_LOOP_50000_50000_STACKSIZE, NULL,
+			OS_TASK_OPT_STK_CLR);
+	OSTaskNameSet(FOR_LOOP_50000_50000_PRIORITY, (INT8U *)"for_loop_50000_50000", &perr);
 	OSTaskCreateExt(dma_TASK, NULL,
 			&dma_STACK[DMA_STACKSIZE - 1],
 			DMA_PRIORITY, DMA_PRIORITY,

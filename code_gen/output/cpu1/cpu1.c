@@ -15,7 +15,6 @@
 #include "cpu1.h"
 #include "reset_monitor.h"
 #include "runtimeMonitor.h"
-#include "critical.h"
 
 
 

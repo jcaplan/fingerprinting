@@ -13,7 +13,7 @@ public class RAFitnessFunction extends FitnessFunction {
 	
 	ArrayList<Processor> procList;
 	Application app;
-	String[] faultMechanisms;
+	List<FaultMechanism> faultMechanisms;
 	ArrayList<MapConstraint> constraints;
 	Schedule bestSchedule;
 	double bestFitness;
@@ -22,21 +22,21 @@ public class RAFitnessFunction extends FitnessFunction {
 	public RAFitnessFunction(Mapper mapper) {
 		procList = mapper.getProcList();
 		app = mapper.getApplication();
-		faultMechanisms = FaultMechanism.getAvailableMechanismsArray();
+		faultMechanisms = mapper.getFtmList();
+		initDefaultMechs();
+	}
+
+	private void initDefaultMechs() {
+		faultMechanisms.add(new DMR());
+		faultMechanisms.add(new TMR());
+		faultMechanisms.add(new PassiveReplication());
+		faultMechanisms.add(new Lockstep());
 	}
 
 	public FaultMechanism getDetectionType(IChromosome chromosome, int index) {
 		Integer type = (Integer) chromosome.getGene(index).getAllele();
-		FaultMechanism mec = FaultMechanism
-				.getMechanismInstance(faultMechanisms[type]);
-
+		FaultMechanism mec = faultMechanisms.get(type);
 		return mec;
-	}
-
-	public String getDetectionTypeString(IChromosome chromosome, int index) {
-		Integer type = (Integer) chromosome.getGene(index).getAllele();
-		return faultMechanisms[type];
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -141,8 +141,8 @@ public class RAFitnessFunction extends FitnessFunction {
 	private void printDetectionTypes(IChromosome chromosome) {
 		Gene[] geneList = chromosome.getGenes();
 		for (int i = 0; i < geneList.length; i++) {
-			Logger.logMessage(faultMechanisms[(Integer) geneList[i]
-					.getAllele()]);
+			Logger.logMessage(faultMechanisms.get((Integer) geneList[i]
+					.getAllele()));
 		}
 
 	}

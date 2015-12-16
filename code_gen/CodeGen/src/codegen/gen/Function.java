@@ -248,5 +248,13 @@ public class Function implements Comparable<Function>{
 			wcetUpperBound = (int)(IpetAnalysis.WCET_RATIO * wcetLowerBound);
 		}
 	}
+
+	public double getChiMS() {
+		return wcetUpperBound * 1000 / Configuration.CLOCK_FREQUENCY;
+	}
+
+	public double getCloMS() {
+		return wcetLowerBound * 1000 / Configuration.CLOCK_FREQUENCY;
+	}
 	
 }
