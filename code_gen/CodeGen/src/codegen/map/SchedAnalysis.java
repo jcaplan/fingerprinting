@@ -291,7 +291,7 @@ public class SchedAnalysis {
 								* hpTask.wcetUpperBound * hpTask.maxNumReexecutions[modeHI];
 					} else if (schedule.isScheduled(hpTask, modeTF)){
 						rSum += Math.ceil(schedule.getResponseTime(t, modeTF) / hpTask.period)
-								* hpTask.wcetLowerBound;
+								* hpTask.wcetLowerBound * hpTask.maxNumReexecutions[modeTF];
 					} else {
 						rSum += Math.ceil(schedule.getResponseTime(t,modeLO) / hpTask.period)
 								* hpTask.wcetLowerBound;

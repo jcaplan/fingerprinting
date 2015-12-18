@@ -8,23 +8,47 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Schedulability Analysis}
+The two mode AMC response time analysis for mixed criticality systems was presented in Section~\ref{s:mixedcriticality}. We have shown that it is advantageous to consider a four mode model when both transient faults and execution time ovearruns are possible in a single lockstep-core mixed criticality fault tolerant system (MCFTS) \cite{albayati2016modes}. This chapter will review the four mode analysis and then extend it to include several ODR strategies in multicore systems. A DSE mapping algorithm that uses the new analysis will then be presented which is similar to \cite{bolchini2013reliability} and \cite{kang2014reliability}.
 
-\addfigure{0.6}{modes.pdf}{The 4 modes of operation in MCFTS analysis}{f:modes}
+\section{Four Mode Response Time Analysis for MCFTS}
 
-\addfigure{0.55}{ftm.pdf}{The 4 fault tolerance mechanisms supported by the proposed MCFTS analysis}{f:ftm}
+	The motivation for four modes in a MCFTS is to reduce the number of LO tasks that must be dropped in the event that only an execution overrun or transient fault occurs rather than both. 
+	We initially consider a lockstep core that is capable of detecting but not correcting errors.
+	The RTOS kernel is assumed to remain uncorrupted.
+	Under these conditions, a task may be re-executed when an error is detected.
+	\addfigure{0.6}{modes.pdf}{The 4 modes of operation in MCFTS analysis.}{f:modes}
+\addfigure{0.6}{sched-example.pdf}{Mode change scenarios.}{f:mode-scenarios}
+	
+	The four modes and their transition conditions are shown in Figure~\ref{f:modes}. 
+	Furthermore, three possible scenarios are presented in Figure~\ref{f:mode-scenarios} for the task set in Table~\ref{t:example}.
+	In scenario (a), $\tau_1$ exceeds its $C(LO)$ threshold of 3 and the system transitions into OV mode. In scenario (b), $\tau_1$ suffers a transient fault and required re-execution. The system stays in TF mode because none of the re-executions exceed $C(LO)$. In scenario (c), $\tau_1$ first exceeds $C(LO)$ and the system transitions to OV mode. Once in OV mode, an fault occurs and the system transitions into HI mode, presumably dropping even more tasks.
+	
+	
+	
+	\begin{table}[t!]
+\caption{Example Task Set}
+\centering
 
+	\begin{tabular}{@{}lcccc@{}}
+	\toprule
+	& $C(LO)$ & $C(HI)$ & T=D & L 	 \\
+	\bottomrule
+	$\tau_1$ & 3 & 4 & 12 & HI  \\
+	$\tau_2$ & 4 & - & 12 & LO  \\
+	$\tau_3$ & 4 & - & 12 & LO  \\
+	$\tau_4$ & 1 & - & 12 & LO  \\
+	\end{tabular}
+
+\label{t:example}
+\end{table}
+	
+	%In addition to the LO and HI modes, there is now a transient fault (TF) and overrun (OV) mode. 
+	Equations \ref{eq:lomode}-\ref{eq:hiovmode} show the updated response time analysis.
+	
+	
 \begin{equation}
 R_i^{(LO)}= C_i(LO)+\sum_{j \in hp(i)}\Big\lceil\frac{R_i^{(LO)}}{T_j}\Big\rceil \cdot C_j(LO)
 \label{eq:lomode}
-\end{equation}
-
-\begin{equation}\label{eq:tfmode}
-\begin{aligned}
-R_i^{(TF)} & = n_i(TF) \cdot C_i(LO)
-+\sum_{j \in hpC(TF,i)}\Big\lceil\frac{R_i^{(TF)}}{T_j}\Big\rceil \cdot n_j(TF) \cdot C_j(LO) \\
-&  +\sum_{k \in hp(i)-hpC(TF,i)}\Big\lceil\frac{R_i^{(LO)}}{T_k}\Big\rceil \cdot C_k(LO)
-\end{aligned}
 \end{equation}
 
 \begin{equation}\label{eq:ovmode}
@@ -33,28 +57,75 @@ R_i^{(OV)} &  = C_i(L_i)+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV)}}{T_j}\
  +\sum_{k \in hp(i)-hpC(OV,i)}\Big\lceil\frac{R_i^{(LO)}}{T_k}\Big\rceil \cdot C_k(LO)
 \end{aligned}
 \end{equation}
-
-
-\begin{equation}\label{eq:hitfmode}
+	
+	
+	The LO mode analysis remains unchanged. Equation~\ref{eq:ovmode} shows the response time for the OV mode. 
+	The set of tasks $hpC(L,i)$ is defined as the set of tasks with higher priority than $\tau_i$ that are not dropped in mode $L$. 
+	Therefore, in the OV mode, we can see that the jobs that continue to execute are assumed to take the maximum amount of time $C(OV)=C(HI)$ whereas the dropped jobs ($hp(i) - hpC(OV,i)$) only execute during $R_i(LO)$ for up to their $C(LO)$ times.
+	
+\begin{equation}\label{eq:tfmode}
 \begin{aligned}
-R_i^{(HIa)} & = n_i(HI) \cdot C_i(L_i) 
-  +\sum_{j \in hpC(HI,i)}\Big\lceil\frac{R_i^{(HIa)}}{T_j}\Big\rceil \cdot n_j(HI) \cdot C_j(L_j) \\
-&  +\sum_{k \in hpC(TF,i)-hpC(HI,i)}\Big\lceil\frac{R_i^{(TF)}}{T_k}\Big\rceil \cdot C_k(LO)
-  +\sum_{l \in hp(i)-hpC(TF,i)}\Big\lceil\frac{R_i^{(LO)}}{T_l}\Big\rceil \cdot C_l(LO)
+R_i^{(TF)} & = n_i(TF) \cdot C_i(LO)
++\sum_{j \in hpC(TF,i)}\Big\lceil\frac{R_i^{(TF)}}{T_j}\Big\rceil \cdot n_j(TF) \cdot C_j(LO) \\
+&  +\sum_{k \in hp(i)-hpC(TF,i)}\Big\lceil\frac{R_i^{(LO)}}{T_k}\Big\rceil \cdot C_k(LO)
 \end{aligned}
 \end{equation}
+
+	Equation~\ref{eq:tfmode} shows the response time for TF mode. 
+	In the transient fault mode at least one task must re-execute. 
+	Each task is assigned a maximum number of executions that it is required to run, $n_i$, in order to meet some threshold in terms of probability of failure (derivation in \cite{albayati2016modes}). 
+	In the TF mode, the execution time is still assumed not to exceed the optimistic threshold $C(LO)$. 
+	The resulting execution time for task $\tau_i$ is $n_i(TF) \cdot C_i(LO)$ where $n_i$ is the number of re-executions required in the TF mode.\footnote{$n$ depends on $C$, therefore it is possible that $n(TF) \ne n(HI)$ though this is not often the case.}
+
+	Finally, Equations~\ref{eq:hiovmode} and \ref{eq:hitfmode} show the response time analysis for transitions from OV to HI and TF to HI modes, respectively. The set of dropped jobs on the final transition is different for the two modes.
+
+
+
+
 
 \begin{equation}\label{eq:hiovmode}
 \begin{aligned}
-R_i^{(HIb)} & = n_i(HI) \cdot C_i(L_i) 
-  +\sum_{j \in hpC(HI,i)}\Big\lceil\frac{R_i^{(HIb)}}{T_j}\Big\rceil \cdot n_j(HI) \cdot C_j(L_j) \\
-&  +\sum_{k \in hpC(OV,i)-hpC(HI,i)}\Big\lceil\frac{R_i^{(OV)}}{T_k}\Big\rceil \cdot C_k(LO)
-  +\sum_{l \in hp(i)-hpC(OV,i)}\Big\lceil\frac{R_i^{(LO)}}{T_l}\Big\rceil \cdot C_l(LO)
+R_i^{(HI-OV)} & = n_i(HI) \cdot C_i(L_i) 
+  +\sum_{j \in hpC(HI,i)}\Big\lceil\frac{R_i^{(HI-OV)}}{T_j}\Big\rceil \cdot n_j(HI) \cdot C_j(L_j) \\
+&  +\sum_{k \in hpC(OV,i)-hpC(HI,i)}\Big\lceil\frac{R_i^{(OV)}}{T_k}\Big\rceil \cdot C_k(LO) \\
+& \hspace{1cm}  +\sum_{l \in hp(i)-hpC(OV,i)}\Big\lceil\frac{R_i^{(LO)}}{T_l}\Big\rceil \cdot C_l(LO)
+\end{aligned}
+\end{equation}
+
+% \begin{equation}\label{eq:hitfmode}
+% \begin{aligned}
+% R_i^{(HI-TF)} & = n_i(HI) \cdot C_i(L_i) 
+%   +\sum_{j \in hpC(HI,i)}\Big\lceil\frac{R_i^{(HI-TF)}}{T_j}\Big\rceil \cdot n_j(HI) \cdot C_j(L_j) \\
+% &  +\sum_{k \in hpC(TF,i)-hpC(HI,i)}\Big\lceil\frac{R_i^{(TF)}}{T_k}\Big\rceil \cdot C_k(LO)
+%   +\sum_{l \in hp(i)-hpC(TF,i)}\Big\lceil\frac{R_i^{(LO)}}{T_l}\Big\rceil \cdot C_l(LO)
+% \end{aligned}
+% \end{equation}
+
+\begin{equation}\label{eq:hitfmode}
+\begin{aligned}
+R_i^{(HI-TF)} & = n_i(HI) \cdot C_i(L_i) 
+  +\sum_{j \in hpC(HI,i)}\Big\lceil\frac{R_i^{(HI-TF)}}{T_j}\Big\rceil \cdot n_j(HI) \cdot C_j(L_j) \\
+&  +\sum_{k \in hpC(TF,i)-hpC(HI,i)}\Big\lceil\frac{R_i^{(TF)}}{T_k}\Big\rceil  \cdot n_k(TF) \cdot C_k(LO) \\
+& \hspace{1cm}  +\sum_{l \in hp(i)-hpC(TF,i)}\Big\lceil\frac{R_i^{(LO)}}{T_l}\Big\rceil \cdot C_l(LO)
 \end{aligned}
 \end{equation}
 
 
 
+\section{Extending Response Time Analysis to ODR}
+
+	We will extend the analysis on lockstep (LS) to support three types of ODR. The four scenarios are shown in Figure~\ref{f:ftm}. 
+	In (a), LS execution occurs when a node has internal mechanisms for detecting but not correcting errors. 
+	An error simply results in a re-execution on that node, as previously discussed. 	
+	In (b), dual modular redundancy (DMR) replicates a thread on two cores that cannot detect errors. 
+	The task must be re-executed if the task executions are found not to match by some external comparison and voting mechanism.
+	In (c), triple modular redundancy (TMR) replicates a thread on three cores that cannot detect errors. 
+	If an error occurs, the majority answer is taken from the three replicas and no re-execution is required.
+	Finally, in (d), passive replication is similar to TMR but the final replica does not execute if the first two copies return the same result. 
+	
+	The execution profile $N_i$ is introduced to extend the  	
+
+\addfigure{0.55}{ftm.pdf}{The 4 fault tolerance mechanisms supported by the proposed MCFTS analysis}{f:ftm}
 lockstep:
 \begin{itemize}
   \item $N=<1,2,1,2>$
@@ -159,7 +230,7 @@ $\tau_2$ & 5 & - & 20 & LO  \\
 \end{table}
 
 
-\subsection{Design Space Exploration}
+\section{Design Space Exploration}
 
 The initial scheduling algorithm will be taken from Bolchini and  Miele \cite{bolchini2013reliability}. A genetic algorithm (GA) is used to explore the design space. The general details that follow on genetic algorithms are based on the overview in \cite{geatbx}.
 
@@ -168,7 +239,7 @@ Figure \ref{f:ga_ov} shows an overview of how to implement a genetic algorithm. 
 \begin{figure}[h]
 \centering
 \includegraphics[width=12cm]{ga_ov}
-\caption{The basic structure of a genetic algorithm \cite{geatbx}.}
+\caption{The basic structure of a genetic algorithm \cite{geatbx}.} 
 \label{f:ga_ov}
 \end{figure}
 
