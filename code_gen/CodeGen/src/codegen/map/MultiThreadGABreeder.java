@@ -9,9 +9,9 @@ import org.jgap.IChromosome;
 import org.jgap.Population;
 import org.jgap.impl.GABreeder;
 
-public class MulitThreadGABreeder extends GABreeder {
+public class MultiThreadGABreeder extends GABreeder {
 
-	private static final int NUM_THREADS = 20;
+	public static int NUM_THREADS = 3;
 
 	@Override
 	protected void updateChromosomes(Population a_pop, Configuration a_conf) {
