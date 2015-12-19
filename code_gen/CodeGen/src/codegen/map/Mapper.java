@@ -11,15 +11,16 @@ public class Mapper {
 
 	Application app;
 	ArrayList<Processor> procList;
-	Schedule bestSchedule;
-	double fitness;
-	Map<Task, FaultMechanism> bestTechniqueMap;
+	protected Schedule bestSchedule;
+	protected double fitness;
+	protected Map<Task, FaultMechanism> bestTechniqueMap;
 	List<FaultMechanism> ftms;
 	
 	public Mapper(){
 		app = new Application();
 		procList = new ArrayList<>();
 		ftms = new ArrayList<FaultMechanism>();
+		initDefaultMechs();
 	}
 	
 	public Mapper(Application app, ArrayList<Processor> procList){
@@ -50,7 +51,7 @@ public class Mapper {
 	public void findSchedule() {
 		
 		Configuration.reset();
-		MapConfiguration reliabilityConfig = new MapConfiguration("raConfig");
+		RAConfiguration reliabilityConfig = new RAConfiguration("raConfig");
 		Chromosome sampleChromosome = null;
 		RAFitnessFunction raFF = new RAFitnessFunction(this);
 		try {
@@ -61,13 +62,13 @@ public class Mapper {
 
 		GAEngine raEngine = new GAEngine(raFF,reliabilityConfig,sampleChromosome);		
 		raEngine.findSolution();
-		bestSchedule = raFF.bestSchedule;
+		bestSchedule = raFF.getBestSchedule();
 		fitness = raEngine.getBestSolutionFitness();
-		bestTechniqueMap = raFF.bestTechniqueMap;
+		bestTechniqueMap = raFF.getBestTechniqueMap();
 		
 	}
 
-	private Chromosome createRAChromosome(MapConfiguration config) throws InvalidConfigurationException {
+	public Chromosome createRAChromosome(Configuration config) throws InvalidConfigurationException {
 		Gene[] sampleGenes = new Gene[app.getNumHiTasks()];
 		int geneSize = ftms.size()-1;
 		for(int i = 0; i < app.getNumHiTasks(); i++){
@@ -113,6 +114,17 @@ public class Mapper {
 
 	public List<FaultMechanism> getFtmList() {
 		return ftms;
+	}
+	
+	private void initDefaultMechs() {
+		ftms.add(new DMR());
+		ftms.add(new TMR());
+		ftms.add(new PassiveReplication());
+		ftms.add(new Lockstep());
+	}
+
+	public void setFTMS(ArrayList<FaultMechanism> ftms) {
+		this.ftms = ftms;
 	}
 	
 }

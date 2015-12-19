@@ -3,7 +3,7 @@ package codegen.map;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class DMR extends FaultMechanism{
+public class DMR extends FaultMechanism {
 	
 	private final int[] reexecutionProfile = {1,2,1,2};
 	

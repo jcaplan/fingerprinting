@@ -49,14 +49,15 @@ public class GAEngine {
 		double lastFitness = 0;
 		for (int i = 0; i < numGenerations; i++) {
 			population.evolve();
+			IChromosome bestSolutionSoFar = null;
 
-			IChromosome bestSolutionSoFar = population.getFittestChromosome();
+			bestSolutionSoFar = population.getFittestChromosome();
 			
 			// Check if max
-			if(bestSolutionSoFar.getFitnessValue() == MAX_FITNESS){
-				Logger.logMessage("Found max fitness in " + i + "iterations.");
-				break;
-			}
+//			if(bestSolutionSoFar.getFitnessValue() == MAX_FITNESS){
+//				Logger.logMessage("Found max fitness in " + i + "iterations.");
+//				break;
+//			}
 			
 			// Check if the answer changed from last iteration
 			if (lastFitness == bestSolutionSoFar.getFitnessValue()) {

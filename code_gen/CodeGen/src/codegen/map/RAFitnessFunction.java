@@ -15,23 +15,18 @@ public class RAFitnessFunction extends FitnessFunction {
 	Application app;
 	List<FaultMechanism> faultMechanisms;
 	ArrayList<MapConstraint> constraints;
-	Schedule bestSchedule;
+	private Schedule bestSchedule;
 	double bestFitness;
-	Map<Task, FaultMechanism> bestTechniqueMap;
+	private Map<Task, FaultMechanism> bestTechniqueMap;
+	int count = 0;
 	
 	public RAFitnessFunction(Mapper mapper) {
 		procList = mapper.getProcList();
 		app = mapper.getApplication();
 		faultMechanisms = mapper.getFtmList();
-		initDefaultMechs();
 	}
 
-	private void initDefaultMechs() {
-		faultMechanisms.add(new DMR());
-		faultMechanisms.add(new TMR());
-		faultMechanisms.add(new PassiveReplication());
-		faultMechanisms.add(new Lockstep());
-	}
+
 
 	public FaultMechanism getDetectionType(IChromosome chromosome, int index) {
 		Integer type = (Integer) chromosome.getGene(index).getAllele();
@@ -96,7 +91,7 @@ public class RAFitnessFunction extends FitnessFunction {
 		 * Otherwise, name must be unique every time.
 		 */
 		MapConfiguration.reset();
-		MapConfiguration msConfig = new MapConfiguration("");
+		MapConfiguration msConfig = new MapConfiguration("msEngine" + count++);
 		Chromosome sampleChromosome = null;
 		try {
 			sampleChromosome = createMSChromosome(msConfig,
@@ -113,8 +108,9 @@ public class RAFitnessFunction extends FitnessFunction {
 		double fitness = msEngine.getBestSolutionFitness();
 		if(fitness > bestFitness){
 			bestFitness = fitness;
-			bestSchedule = MSFitnessFunction.bestSchedule;
-			bestTechniqueMap = techniqueMap;	
+			setBestSchedule(msFF.bestSchedule);
+			System.out.println(bestSchedule);
+			setBestTechniqueMap(techniqueMap);	
 		}
 		return msEngine.getBestSolutionFitness();
 	}
@@ -145,6 +141,30 @@ public class RAFitnessFunction extends FitnessFunction {
 					.getAllele()));
 		}
 
+	}
+
+
+
+	public Map<Task, FaultMechanism> getBestTechniqueMap() {
+		return bestTechniqueMap;
+	}
+
+
+
+	public void setBestTechniqueMap(Map<Task, FaultMechanism> bestTechniqueMap) {
+		this.bestTechniqueMap = bestTechniqueMap;
+	}
+
+
+
+	public Schedule getBestSchedule() {
+		return bestSchedule;
+	}
+
+
+
+	public void setBestSchedule(Schedule bestSchedule) {
+		this.bestSchedule = bestSchedule;
 	}
 
 }

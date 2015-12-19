@@ -1,10 +1,12 @@
 package codegen.map;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import codegen.util.Logger;
 
-public class Application {
+public class Application implements Serializable{
 	
 	ArrayList<Task> taskList;
 	ArrayList<Task> redundantList;
@@ -58,5 +60,13 @@ public class Application {
 			}
 		}
 		return null;
+	}
+
+	public void shuffleTasks() {
+		Collections.shuffle(taskList);
+	}
+
+	public void setTasks(ArrayList<Task> taskList) {
+		this.taskList = taskList;
 	}
 }

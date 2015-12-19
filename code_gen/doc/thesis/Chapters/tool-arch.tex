@@ -7,12 +7,21 @@
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
-
-Figure~\ref{f:tool-arch} depicts the code generation and analysis framework. The three main components contributed by this project are the profiling tool, the code generation tool, and the mapping and scheduling tool. Simulink is used to generate the control algorithm C code and the Nios Software Build Tools (SBT) are used to generate and customize board support packages (BSPs) for each core. The BSP contains the Nios Hardware Abstraction Layer (HAL) (the minimal bare-metal drivers provided by Altera), the uC-OS II real-time operating system (RTOS), and the custom drivers required for fingerprinting and thread replication. 
+	Figure~\ref{f:tool-arch} depicts the code generation and analysis framework. 
+	The three main components contributed by this project are the profiling tool, the code generation tool, and the mapping and scheduling tool. 
+	Simulink is used to generate the control algorithm C code and the Nios Software Build Tools (SBT) are used to generate and customize board support packages (BSPs) for each core. 
+	The BSP contains the Nios Hardware Abstraction Layer (HAL) (the minimal bare-metal drivers provided by Altera), the uC-OS II real-time operating system (RTOS), and the custom drivers required for fingerprinting and thread replication. 
 
 \addfigure{0.59}{toolarch1.pdf}{Tool architecture}{f:tool-arch}
  
-The user provides a configuration file that contains information about the application such as timing requirements for each task in the system. The user may supply their own profiling results or task mappings in the configuration file (if they would like to use an externally derived estimates or if they want to skip the profiling stage after it has already run once). A sample configuration file is provided in Appendix~\ref{A:ConfigFile}. While future work may allow the user to specify a custom hardware configuration, the tool is currently limited to two processing cores and one FTC. 
+	The user provides a configuration file that contains information about the application such as timing requirements for each task in the system. 
+	The user may supply their own profiling results or task mappings in the configuration file (if they would like to use an externally derived estimates or if they want to skip the profiling stage after it has already run once). 
+	A sample configuration file is provided in Appendix~\ref{A:ConfigFile}. 
+	While future work may allow the user to specify a custom hardware configuration, the tool is currently limited to two processing cores and one FTC. 
 
 
-The code generation tool (CG) first parses the configuration file and determines if profiling is required. It then generates the necessary inputs for the profiling tool and collects the results (which can include maximum stack depth and worst case execution time). The code generation tool then takes the provided or generated profiling information and forwards it to the Mapping and Scheduling (MS) tool. The MS tool returns an optimal schedule and mapping for the task set. Finally a main file is generated for each core that configures all threads and replication related services as well as scripts to configure the BSP given the mapping. The three sets of source files are packaged and scripts are generated to compile the system.
+	The code generation tool (CG) first parses the configuration file and determines if profiling is required. 
+	It then generates the necessary inputs for the profiling tool and collects the results (which can include maximum stack depth and worst case execution time). 
+	The code generation tool then takes the provided or generated profiling information and forwards it to the Mapping and Scheduling (MS) tool. 
+	The MS tool returns an optimal schedule and mapping for the task set. 
+	Finally a main file is generated for each core that configures all threads and replication related services as well as scripts to configure the BSP given the mapping. 	The three sets of source files are packaged and scripts are generated to compile the system.

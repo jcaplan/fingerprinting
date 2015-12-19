@@ -1,8 +1,10 @@
 package codegen.map;
 
+import java.io.Serializable;
 
 
-public class Task implements Comparable<Task>{
+
+public class Task implements Comparable<Task>, Serializable{
 
 	double wcetLowerBound;
 	double wcetUpperBound;
@@ -13,6 +15,7 @@ public class Task implements Comparable<Task>{
 	boolean type;
 	public static final boolean replica = true;
 	public static final boolean original = false;
+	double utilization;
 	public String name;
 	Processor proc;
 	
@@ -74,11 +77,7 @@ public class Task implements Comparable<Task>{
 		if(this.period > task.period){
 			result = -1;
 		} else if(this.period == task.period){
-			if(System.currentTimeMillis()%2 == 0){
-				result = -1;
-			} else {
-				result = 1;
-			}
+			result = 0;
 		} else {
 			result = 1;
 		}
@@ -92,6 +91,23 @@ public class Task implements Comparable<Task>{
 	@Override
 	public String toString(){
 		return name;
+	}
+
+	public void setPeriod(int period) {
+		this.period = period;	
+	}
+
+	public void setUtilization(double utilization) {
+		this.utilization = utilization;
+	}
+
+	public double getUtilization() {
+		return utilization;
+	}
+
+	public void setExecutionTimes(double cRatio) {
+		wcetLowerBound = period * utilization;
+		wcetUpperBound = wcetLowerBound * cRatio;
 	}
 	
 }

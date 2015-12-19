@@ -31,11 +31,11 @@ import org.jgap.event.*;
  * modified 2015
  */
 @SuppressWarnings("serial")
-public class MapConfiguration
+public class RAConfiguration
     extends Configuration {
 
   Application app;
-  public MapConfiguration(String name){
+  public RAConfiguration(String name){
 	  this(name,"");
   }
 
@@ -52,10 +52,10 @@ public class MapConfiguration
    * @author Klaus Meffert
    * @since 1.0
    */
-  public MapConfiguration(String a_id, String a_name) {
+  public RAConfiguration(String a_id, String a_name) {
     super(a_id, a_name);
     try {
-      setBreeder(new GABreeder());
+      setBreeder(new MulitThreadGABreeder());
       setRandomGenerator(new StockRandomGenerator());
       setEventManager(new EventManager());
       setMinimumPopSizePercent(0);

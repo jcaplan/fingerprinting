@@ -178,8 +178,13 @@ public class SchedAnalysis {
 	private boolean schedOVMode(ArrayList<Task> procTaskList){
 		for (int i = 0; i < procTaskList.size(); i++) {
 			Task t = procTaskList.get(i);
-			//always n = 1 for OV
-			double responseTime = t.wcetUpperBound;
+			
+			double responseTime = t.wcetUpperBound * t.maxNumReexecutions[modeOV];
+			if(responseTime == 0){
+				//don't calculate response time for PR replicas with c= 0...
+				schedule.setResponseTime(t, modeOV, 0);
+				return true;
+			}
 			while (responseTime < t.period) {
 				double rSum = t.wcetUpperBound;
 				for (int j = i + 1; j < procTaskList.size(); j++) {
@@ -187,7 +192,7 @@ public class SchedAnalysis {
 					
 					if(schedule.isScheduled(hpTask,modeOV)){
 						rSum += Math.ceil(responseTime / hpTask.period)
-								* hpTask.wcetUpperBound * hpTask.maxNumReexecutions[modeHI];
+								* hpTask.wcetUpperBound * hpTask.maxNumReexecutions[modeOV];
 					} else {
 						rSum += Math.ceil(schedule.getResponseTime(t,modeLO) / hpTask.period)
 								* hpTask.wcetLowerBound;
@@ -202,7 +207,7 @@ public class SchedAnalysis {
 			if (responseTime > t.period) {
 				return false;
 			}
-			schedule.setResponseTime(t, modeHI, responseTime);
+			schedule.setResponseTime(t, modeOV, responseTime);
 		}
 		return true;
 	}
@@ -238,7 +243,7 @@ public class SchedAnalysis {
 			if (responseTime > t.period) {
 				return false;
 			}
-			schedule.setResponseTime(t, modeHI, responseTime);
+			schedule.setResponseTime(t, modeTF, responseTime);
 		}
 		return true;
 	}
@@ -315,6 +320,11 @@ public class SchedAnalysis {
 		for (int i = 0; i < procTaskList.size(); i++) {
 			Task t = procTaskList.get(i);
 			double responseTime = t.wcetLowerBound;
+			if(t.maxNumReexecutions[modeLO] == 0){
+				//don't calculate response time for PR replicas with c= 0...
+				schedule.setResponseTime(t, modeLO, 0);
+				return true;
+			}
 			while (responseTime < t.period) {
 				double rSum = t.wcetLowerBound;
 				for (int j = i + 1; j < procTaskList.size(); j++) {

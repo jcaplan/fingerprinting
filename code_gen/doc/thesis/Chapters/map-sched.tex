@@ -25,6 +25,9 @@ The two mode AMC response time analysis for mixed criticality systems was presen
 	
 	
 	
+\section{}
+	
+	
 	\begin{table}[t!]
 \caption{Example Task Set}
 \centering
@@ -92,23 +95,15 @@ R_i^{(HI-OV)} & = n_i(HI) \cdot C_i(L_i)
 \end{aligned}
 \end{equation}
 
-% \begin{equation}\label{eq:hitfmode}
-% \begin{aligned}
-% R_i^{(HI-TF)} & = n_i(HI) \cdot C_i(L_i) 
-%   +\sum_{j \in hpC(HI,i)}\Big\lceil\frac{R_i^{(HI-TF)}}{T_j}\Big\rceil \cdot n_j(HI) \cdot C_j(L_j) \\
-% &  +\sum_{k \in hpC(TF,i)-hpC(HI,i)}\Big\lceil\frac{R_i^{(TF)}}{T_k}\Big\rceil \cdot C_k(LO)
-%   +\sum_{l \in hp(i)-hpC(TF,i)}\Big\lceil\frac{R_i^{(LO)}}{T_l}\Big\rceil \cdot C_l(LO)
-% \end{aligned}
-% \end{equation}
-
 \begin{equation}\label{eq:hitfmode}
 \begin{aligned}
-R_i^{(HI-TF)} & = n_i(HI) \cdot C_i(L_i) 
+R_i^{(HI-TF)} & = n_i(HI) \cdot C_i(L_i)
   +\sum_{j \in hpC(HI,i)}\Big\lceil\frac{R_i^{(HI-TF)}}{T_j}\Big\rceil \cdot n_j(HI) \cdot C_j(L_j) \\
-&  +\sum_{k \in hpC(TF,i)-hpC(HI,i)}\Big\lceil\frac{R_i^{(TF)}}{T_k}\Big\rceil  \cdot n_k(TF) \cdot C_k(LO) \\
+&  +\sum_{k \in hpC(TF,i)-hpC(HI,i)}\Big\lceil\frac{R_i^{(TF)}}{T_k}\Big\rceil \cdot C_k(LO) \\
 & \hspace{1cm}  +\sum_{l \in hp(i)-hpC(TF,i)}\Big\lceil\frac{R_i^{(LO)}}{T_l}\Big\rceil \cdot C_l(LO)
 \end{aligned}
 \end{equation}
+
 
 
 
@@ -122,138 +117,142 @@ R_i^{(HI-TF)} & = n_i(HI) \cdot C_i(L_i)
 	In (c), triple modular redundancy (TMR) replicates a thread on three cores that cannot detect errors. 
 	If an error occurs, the majority answer is taken from the three replicas and no re-execution is required.
 	Finally, in (d), passive replication is similar to TMR but the final replica does not execute if the first two copies return the same result. 
-	
-	The execution profile $N_i$ is introduced to extend the  	
+
 
 \addfigure{0.55}{ftm.pdf}{The 4 fault tolerance mechanisms supported by the proposed MCFTS analysis}{f:ftm}
-lockstep:
-\begin{itemize}
-  \item $N=<1,2,1,2>$
-  \item Task set does not change.
-  \item No constraints are required because there are no replicas.
-\end{itemize}
-
-dmr:
-\begin{itemize}
-  \item One replica
-  \item $N=<1,2,1,2>$
-  \item For each task $\tau_i$ with replica $\tau_j$, constraint is generated that processor $\pi_i \ne \pi_j$
-  \item In example: $\pi_1 \ne \pi_{1.1}$
-\end{itemize}
+	
+	Each technique is expressed in the new analysis by three parameters: a task set transformation, mapping constraints, and a re-executiong profile denoted by $N$.
+	The task set transformation represents each replica explicitly in the task set. 
+	Consider the example task set in Table~\ref{t:transform}. 
+	Lockstep does not introduce any replicas to the system and does not require any transformation of the task set. 
+	DMR requires one replica to be added to the task set while TMR and PR require two replicas to be added.
+	
+	Constraints must be added to the problem for the processors $\pi_i$ assigned to $\tau_i$ in order to properly reflect the semantics of the different techniques. 
+	The constraints shown in the table ensure that the replicas are not assigned to the same core. 
+	These constraints will be useful in the mapping stage.
+	
+	
 \begin{table}
 \centering
-\caption{Example task set}
-\begin{tabular}{@{}l|cccc@{}}
-\toprule
+\caption{Task set transformations}
+\label{t:transform}
+	\begin{subtable}{0.3\textwidth}
+		\caption{Example task set}
+		\begin{tabular}{@{}l|cccc@{}}
+		\toprule
 		& C(LO) & C(HI) & T=D & L 	 \\\bottomrule
-$\tau_1$ & 5 & 10 & 25 & HI  \\
-$\tau_2$ & 5 & - & 20 & LO  \\
-$\tau_3$ & 2 & - & 8 & LO  \\
-\end{tabular}
-\end{table}
-
-
-\begin{table}
-\centering
-\caption{Updated task set}
-\begin{tabular}{@{}l|cccc@{}}
-\toprule
+		$\tau_1$ & 5 & 10 & 25 & HI  \\
+		$\tau_2$ & 5 & - & 20 & LO  \\
+		\multicolumn{5}{c}{ } \\
+		\multicolumn{5}{c}{ } \\
+		\end{tabular}
+	\end{subtable} \hspace{2cm}
+	\begin{subtable}{0.3\textwidth}
+		\caption{DMR transformation}
+		\begin{tabular}{@{}l|cccc@{}}
+		\toprule
+				& C(LO) & C(HI) & T=D & L	 \\\bottomrule
+		$\tau_1$ & 5 & 10 & 25 & HI  \\
+		$\tau_{1.1}$ & 5 & 10 & 25 & HI  \\
+		$\tau_2$ & 5 & - & 20 & LO  \\
+		\multicolumn{5}{c}{$\pi_1 \ne \pi_{1.1}$}
+		\end{tabular}
+	\end{subtable}
+	
+	\begin{subtable}{0.3\textwidth}
+		\caption{TMR transformation}
+		\begin{tabular}{@{}l|cccc@{}}
+		\toprule
+				& C(LO) & C(HI) & T=D & L	 \\\bottomrule
+		$\tau_1$ & 5 & 10 & 25 & HI  \\
+		$\tau_{1.1}$ & 5 & 10 & 25 & HI  \\
+		$\tau_{1.2}$ & 5 & 10 & 25 & HI  \\
+		$\tau_2$ & 5 & - & 20 & LO  \\
+		\multicolumn{5}{c}{$\pi_1 \ne \pi_{1.1} \ne \pi_{1.2}$}
+		\end{tabular}
+	\end{subtable} \hspace{2cm}
+	\begin{subtable}{0.3\textwidth}
+		\caption{PR replication}
+		\begin{tabular}{@{}l|cccc@{}}
+		\toprule
 		& C(LO) & C(HI) & T=D & L	 \\\bottomrule
-$\tau_1$ & 5 & 10 & 25 & HI  \\
-$\tau_{1.1}$ & 5 & 10 & 25 & HI  \\
-$\tau_2$ & 5 & - & 20 & LO  \\
-$\tau_3$ & 2 & - & 8 & LO  \\
-\end{tabular}
+		$\tau_1$ & 5 & 10 & 25 & HI  \\
+		$\tau_{1.1}$ & 5 & 10 & 25 & HI  \\
+		$\tau_{1.2}$ & 5 & 10 & 25 & HI  \\
+		$\tau_2$ & 5 & - & 20 & LO  \\
+		\multicolumn{5}{c}{$\pi_1 \ne \pi_{1.1}$}
+		\end{tabular}
+	\end{subtable}
 \end{table}
 
 
-tmr:
-\begin{itemize}
-  \item Two replicas
-  \item $N=<1,1,1,1>$
-  \item For each task $\tau_i$ with replica $\tau_j$, constraint is generated that processor $\pi_i \ne \pi_j$
-  \item In example: $\pi_1 \ne \pi_{1.1} \ne \pi_{1.2}$
-\end{itemize}
-\begin{table}
+	The re-execution variable $n_i$ has been generalized into the vector:
+\begin{equation}
+	N_i=<n_i(LO),n_i(OV),n_i(TF),n_i(HI)>
+\end{equation} 
+	The $N$ for each mode is shown in Table~\ref{t:reex} and the updated equation for the OV mode response time are given by the following equations:
+	\begin{equation}
+\begin{aligned}
+R_i^{(OV)} =
+\begin{dcases*}
+C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV)}}{T_j}\Big\rceil \cdot C_j(L_j) \\
+\hspace{0.3cm} +\sum_{k \in hp(i)-hpC(OV,i)}\Big\lceil\frac{R_i^{(LO)}}{T_k}\Big\rceil \cdot C_k(LO), &  $n_i(OV)>0$ \\
+	0, & $n_i(OV)=0$
+\end{dcases*}
+   \end{aligned}
+\end{equation}
+	We note that all techniques have $n(LO)$ and $n(OV)$ values of either 0 or 1. When $n=0$, the task is not executing and the response time is simply 0. The same is true for LO mode.
+	
+	For example, TMR has $N=<1,1,1,1>$. This means that in all modes, any task using TMR will have $n=1$ which in effect signals that no re-executions are required. For PR, one replica executes one time in all modes and the other only executes in the case of a fault (hence only executes once in TF or HI modes).
+
+	\begin{table}
+\caption{Re-execution profiles for the fault tolerance mechanisms}
+\label{t:reex}
 \centering
-\caption{Example task set}
-\begin{tabular}{@{}l|cccc@{}}
-\toprule
-		& C(LO) & C(HI) & T=D & L 	 \\\bottomrule
-$\tau_1$ & 5 & 10 & 25 & HI  \\
-$\tau_2$ & 5 & - & 20 & LO  \\
-\end{tabular}
-\end{table}
-
-\begin{table}
-\centering
-\caption{Updated task set}
-\begin{tabular}{@{}l|cccc@{}}
-\toprule
-		& C(LO) & C(HI) & T=D & L	 \\\bottomrule
-$\tau_1$ & 5 & 10 & 25 & HI  \\
-$\tau_{1.1}$ & 5 & 10 & 25 & HI  \\
-$\tau_{1.2}$ & 5 & 10 & 25 & HI  \\
-$\tau_2$ & 5 & - & 20 & LO  \\
-\end{tabular}
-\end{table}
-
-passive replication:
-\begin{itemize}
-  \item Two replicas.
-  \item $N=<1,1,1,1>$ for the original and one replica, $N=<0,1,0,1>$ for the other.
-  \item In example: $\pi_1 \ne \pi_{1.1}$, $\pi_{1.2}$ can execute on any core.
-\end{itemize}
-
-\begin{table}
-\centering
-\caption{Example task set}
-\begin{tabular}{@{}l|cccc@{}}
-\toprule
-		& C(LO) & C(HI) & T=D & L 	 \\\bottomrule
-$\tau_1$ & 5 & 10 & 25 & HI  \\
-$\tau_2$ & 5 & - & 20 & LO  \\
-\end{tabular}
-\end{table}
-
-\begin{table}
-\centering
-\caption{Updated task set}
-\begin{tabular}{@{}l|cccc@{}}
-\toprule
-		& C(LO) & C(HI) & T=D & L	 \\\bottomrule
-$\tau_1$ & 5 & 10 & 25 & HI  \\
-$\tau_{1.1}$ & 5 & 10 & 25 & HI  \\
-$\tau_{1.2}$ & 5 & 10 & 25 & HI  \\
-$\tau_2$ & 5 & - & 20 & LO  \\
-\end{tabular}
-\end{table}
-
+	\begin{tabular}{@{}l|c@{}}
+	\toprule
+	Technique & Profile ($N$) \\
+	\bottomrule
+	LS & $<1,2,1,2>$ \\
+	DMR & $<1,2,1,2>$ \\
+	TMR & $<1,1,1,1>$ \\
+	PR & $<1,1,1,1>$ and $<0,1,0,1>$ \\
+	\end{tabular}
+\end{table} 	
 
 \section{Design Space Exploration}
 
-The initial scheduling algorithm will be taken from Bolchini and  Miele \cite{bolchini2013reliability}. A genetic algorithm (GA) is used to explore the design space. The general details that follow on genetic algorithms are based on the overview in \cite{geatbx}.
+\subsection{Genetic Algorithm}
 
-Figure \ref{f:ga_ov} shows an overview of how to implement a genetic algorithm. There are two stages of GA in the given process. First tasks must be organized into groups of tasks, and each group of tasks must be assigned a fault detection technique or fault tolerance technique. DMR Fingerprinting is an example of a detection mechanism. This work will remain agnostic about the method of implementation of fault tolerance. We assume that appropriate hardening measures are applied to a single core.
- 
-\begin{figure}[h]
-\centering
-\includegraphics[width=12cm]{ga_ov}
-\caption{The basic structure of a genetic algorithm \cite{geatbx}.} 
-\label{f:ga_ov}
-\end{figure}
+\subsection{Two Stage GA}
+	The mapping and scheduling algorithm follows the procedure used in \cite{bolchini2013reliability} and \cite{kang2014reliability}. Two stages of genetic algorithms (GA) are used to explore both the techniques used to harden each task and the core assignment for each task and its replicas. The basic flow is shown in Figure~\ref{f:dse}. The Reliability Aware (RA) stage is responsible for assigning 
+	
+\addfigure{0.6}{dse.pdf}{Overview of DSE workflow using nested genetic algorithm searches}{f:dse}
+	
+	
 
-Once a population of various groupings and associated fault-handling mechanisms has been generated it is necessary to test their fitness. This must be done by generating a system schedule for each member of the population. 
-
-The generation of the schedule is itself done with a second round of GA. Each task is assigned to an appropriate core based on the fault-handling requirements of its group. The group adopts the most stringent requirements of any of its members. Various mappings are generated as the GA population. Then it is necessary to order the tasks on each core. This is complicated by the fact that there may be inter-core data dependencies. For now, we will neglect the overhead associated with data transfer between cores.
-
-The implementation details of the genetic algorithm will be adopted from \cite{bolchini2013reliability}. Tournament selection and single-point crossover operator recombination will be used. Mutations will be applied randomly. There are four mutations at the task level: change the group of a task, split a group in two, join two groups, or change the fault-management technique applied to a group. The mutation for the mapping phase consists of switching a task to another processor that can meet the assigned fault-management requirements.
-
-Tournament selection means choosing a subset of the population and selecting the most fit member. This is repeated as many times as necessary. Single-point crossover cuts two parent chromosomes into two pieces and then exchanges the second substrings between the chromosomes. 
-
-The initial parameters for the GA will be the ones suggested in \cite{bolchini2010multi}. The crossover rate is 80\%, the mutation rate is 10\%. The program will run for 30 generations. The population size will be between one and two thousand.
-
-The JGAP library \cite{jgap} is used to implement the genetic algorithm. 
+% The initial scheduling algorithm will be taken from Bolchini and  Miele \cite{bolchini2013reliability}. A genetic algorithm (GA) is used to explore the design space. The general details that follow on genetic algorithms are based on the overview in \cite{geatbx}.
+% 
+% Figure \ref{f:ga_ov} shows an overview of how to implement a genetic algorithm. There are two stages of GA in the given process. First tasks must be organized into groups of tasks, and each group of tasks must be assigned a fault detection technique or fault tolerance technique. DMR Fingerprinting is an example of a detection mechanism. This work will remain agnostic about the method of implementation of fault tolerance. We assume that appropriate hardening measures are applied to a single core.
+%  
+% \begin{figure}[h]
+% \centering
+% \includegraphics[width=12cm]{ga_ov}
+% \caption{The basic structure of a genetic algorithm \cite{geatbx}.} 
+% \label{f:ga_ov}
+% \end{figure}
+% 
+% Once a population of various groupings and associated fault-handling mechanisms has been generated it is necessary to test their fitness. This must be done by generating a system schedule for each member of the population. 
+% 
+% The generation of the schedule is itself done with a second round of GA. Each task is assigned to an appropriate core based on the fault-handling requirements of its group. The group adopts the most stringent requirements of any of its members. Various mappings are generated as the GA population. Then it is necessary to order the tasks on each core. This is complicated by the fact that there may be inter-core data dependencies. For now, we will neglect the overhead associated with data transfer between cores.
+% 
+% The implementation details of the genetic algorithm will be adopted from \cite{bolchini2013reliability}. Tournament selection and single-point crossover operator recombination will be used. Mutations will be applied randomly. There are four mutations at the task level: change the group of a task, split a group in two, join two groups, or change the fault-management technique applied to a group. The mutation for the mapping phase consists of switching a task to another processor that can meet the assigned fault-management requirements.
+% 
+% Tournament selection means choosing a subset of the population and selecting the most fit member. This is repeated as many times as necessary. Single-point crossover cuts two parent chromosomes into two pieces and then exchanges the second substrings between the chromosomes. 
+% 
+% The initial parameters for the GA will be the ones suggested in \cite{bolchini2010multi}. The crossover rate is 80\%, the mutation rate is 10\%. The program will run for 30 generations. The population size will be between one and two thousand.
+% 
+% The JGAP library \cite{jgap} is used to implement the genetic algorithm. 
 
 
 

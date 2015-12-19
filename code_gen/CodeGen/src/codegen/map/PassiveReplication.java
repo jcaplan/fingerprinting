@@ -3,7 +3,7 @@ package codegen.map;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class PassiveReplication extends FaultMechanism{
+public class PassiveReplication extends FaultMechanism {
 	
 	int[] reexecutionProfileOriginal = {1,1,1,1};
 	int[] reexecutionProfileFault = {0,1,0,1};

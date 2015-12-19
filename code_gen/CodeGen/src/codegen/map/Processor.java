@@ -1,6 +1,8 @@
 package codegen.map;
 
-public class Processor {
+import java.io.Serializable;
+
+public class Processor implements Serializable{
 
 	boolean faultTolerant;
 	String name;

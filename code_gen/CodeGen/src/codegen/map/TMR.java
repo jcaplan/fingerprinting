@@ -3,7 +3,7 @@ package codegen.map;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class TMR extends FaultMechanism{
+public class TMR extends FaultMechanism {
 
 	int[] reexecutionProfile = {1,1,1,1};
 	

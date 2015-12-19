@@ -1,8 +1,9 @@
 package codegen.map;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Schedule {
+public class Schedule implements Serializable{
 
 	Map<Task,Binding> bindings = new HashMap<>();
 	
@@ -68,7 +69,7 @@ public class Schedule {
 		return s;
 	}
 	
-	private class Binding {
+	private class Binding implements Serializable{
 		Processor[] processor = new Processor[SchedAnalysis.numModes];
 		int priority;
 		double[] responseTime = new double[SchedAnalysis.numModes];	

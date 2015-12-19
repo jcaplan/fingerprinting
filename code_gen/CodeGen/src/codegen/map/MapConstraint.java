@@ -1,6 +1,8 @@
 package codegen.map;
 
-public class MapConstraint {
+import java.io.Serializable;
+
+public class MapConstraint implements Serializable{
 
 	Task t1;
 	Task t2;

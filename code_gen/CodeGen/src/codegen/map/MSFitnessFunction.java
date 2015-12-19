@@ -3,6 +3,7 @@ package codegen.map;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.homedns.dade.jcgrid.worker.GridWorkerFeedback;
 import org.jgap.FitnessFunction;
 import org.jgap.Gene;
 import org.jgap.IChromosome;
@@ -12,7 +13,7 @@ import codegen.util.Logger;
 @SuppressWarnings("serial")
 public class MSFitnessFunction extends FitnessFunction{
 	
-	static Schedule bestSchedule;
+	 Schedule bestSchedule;
 	double fittestScore;
 	
 	
@@ -44,12 +45,12 @@ public class MSFitnessFunction extends FitnessFunction{
 			schedule.allocate(t,p);
 		}
 		
-		if(!schedule.checkConstraints(constraints)){
-			Logger.logMessage("schedule illegal");
-			return 0;
-		} else {
-			Logger.logMessage("schedule legal");
-		}
+//		if(!schedule.checkConstraints(constraints)){
+//			Logger.logMessage("schedule illegal");
+//			return 0;
+//		} else {
+//			Logger.logMessage("schedule legal");
+//		}
 		
 		SchedAnalysis analysis = new SchedAnalysis(taskList, schedule,procList);
 		double fitness;
@@ -63,11 +64,12 @@ public class MSFitnessFunction extends FitnessFunction{
 			fittestScore = fitness;
 			bestSchedule = schedule;
 		}
-
-		Logger.logMessage("result of schedulability analysis: " + schedResult + ", fitness = " + fitness);
+//		Logger.logMessage("result of schedulability analysis: " + schedResult + ", fitness = " + fitness);
 		return fitness;
 	}
 	
-
+	public Schedule getBestSchedule(){
+		return bestSchedule;
+	}
 
 }
