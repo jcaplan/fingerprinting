@@ -44,7 +44,7 @@ public class MultiThreadPopulation extends Population {
 		ExecutorService executor = Executors.newFixedThreadPool(numThreads);
 
 		while (it.hasNext()) {
-			IChromosome chrom = (IChromosome) it.next();
+			final IChromosome chrom = (IChromosome) it.next();
 			executor.execute(new Runnable() {
 				public void run() {
 					chrom.getFitnessValue();

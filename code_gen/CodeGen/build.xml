@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="CodeGen">
+    <property environment="env"/>
+    <property name="junit.output.dir" value="junit"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <path id="JUnit 4.libraryclasspath">
+        <pathelement location="../../../eclipse/plugins/org.junit_4.11.0.v201303080030/junit.jar"/>
+        <pathelement location="../../../eclipse/plugins/org.hamcrest.core_1.3.0.v201303031735.jar"/>
+    </path>
+    <path id="CodeGen.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="lib/stdlib-package.jar"/>
+        <pathelement location="lib/algs4-package.jar"/>
+        <pathelement location="lib/jgap.jar"/>
+        <pathelement location="lib/javailp-1.2a.jar"/>
+        <pathelement location="lib/lpsolvajava.jar"/>
+        <pathelement location="lib/gnuprologjava-0.2.6.jar"/>
+        <pathelement location="lib/commons-io-2.4.jar"/>
+        <path refid="JUnit 4.libraryclasspath"/>
+        <pathelement location="lib/jcgrid.jar"/>
+        <pathelement location="lib/log4j.jar"/>
+        <pathelement location="lib/commons-cli-1.2.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="CodeGen.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target name="LoopAnalysisTest.matmulTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="CriticalityTest">
+        <java classname="codegen.test.CriticalityTest" failonerror="true" fork="yes">
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="LoopAnalysisTest">
+        <java classname="codegen.test.LoopAnalysisTest" failonerror="true" fork="yes">
+            <arg line="/home/jonah/fingerprinting/code_gen/CodeGen/test/ipetTest&#10;ipet g"/>
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="ExpressionBuilderTest">
+        <java classname="codegen.test.ExpressionBuilderTest" failonerror="true" fork="yes">
+            <arg line="/home/jonah/fingerprinting/code_gen/CodeGen/test/ipetTest&#10;ipet g2"/>
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="LoopAnalysisTest.testG10">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="ConstantPropTest">
+        <java classname="codegen.test.ConstantPropTest" failonerror="true" fork="yes">
+            <arg line="/home/jonah/fingerprinting/code_gen/CodeGen/test/ipetTest ipet g6"/>
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="LoopAnalysisTest.testG16">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="PrintSchedule">
+        <java classname="codegen.map.PrintSchedule" failonerror="true" fork="yes">
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="Main">
+        <java classname="codegen.gen.Main" failonerror="true" fork="yes">
+            <env key="NIOS_CODEGEN_ROOT" value="/home/jonah/fingerprinting/code_gen"/>
+            <arg line="--config-file /home/jonah/fingerprinting/code_gen/configFiles/config_07 --nios2-cmd-dir  /home/jonah/altera/13.1/nios2eds --output-dir /home/jonah/fingerprinting/code_gen/output --sopcinfo --log log.txt"/>
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="LoopAnalysisTest.testG21">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="LoopAnalysisTest.testG25">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="Parser">
+        <java classname="codegen.prof.Parser" failonerror="true" fork="yes">
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="LoopAnalysisTest.testG22">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="JavaILPTest">
+        <java classname="codegen.test.JavaILPTest" failonerror="true" fork="yes">
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="Test">
+        <java classname="codegen.prof.Test" failonerror="true" fork="yes">
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="LoopAnalysisTest.testG13">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="LoopAnalysisTest.testG20">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="IpetTest0">
+        <java classname="codegen.test.IpetTest0" failonerror="true" fork="yes">
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="ReachingDefTest.testG2">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.ReachingDefTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="LoopAnalysisTest.testG11">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="RAChromosome">
+        <java classname="codegen.map.RAChromosome" failonerror="true" fork="yes">
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="LoopAnalysisTest.testF">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="MapGridTest">
+        <java classname="codegen.test.MapGridTest" failonerror="true" fork="yes">
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="LoopAnalysisTest.testG19">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="LoopAnalysisTest.testG3">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="LoopAnalysisTest.testG15">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="Application">
+        <java classname="codegen.sw.Application" failonerror="true" fork="yes">
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="TestFunction">
+        <java classname="codegen.map.TestFunction" failonerror="true" fork="yes">
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="LoopAnalysisTest.testG4">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="LoopAnalysisTest.testG1">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="LoopAnalysisTest.testG">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="LoopAnalysisTest (1)">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="MapServer">
+        <java classname="codegen.map.grid.ne.MapServer" failonerror="true" fork="yes">
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="LoopAnalysisTest.testG2">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="RAEngine">
+        <java classname="codegen.map.RAEngine" failonerror="true" fork="yes">
+            <arg line="p1"/>
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="LoopAnalysisTest.testG12">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="LoopAnalysisTest.testG23">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="LoopAnalysisTest.testG8">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="MapTest">
+        <java classname="codegen.test.MapTest" failonerror="true" fork="yes">
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="LoopAnalysisTest.testG17">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="LoopAnalysisTest.testG24">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="LPSolveTest">
+        <java classname="codegen.test.LPSolveTest" failonerror="true" fork="yes">
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="Profiler">
+        <java classname="codegen.prof.Profiler" failonerror="true" fork="yes">
+            <arg line="/home/jonah/fingerprinting/code_gen/CodeGen/test/ipetTest&#10;ipet g24"/>
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="LoopAnalysisTest.testG14">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="ReachingDefTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.ReachingDefTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="MSEngine">
+        <java classname="codegen.map.MSEngine" failonerror="true" fork="yes">
+            <classpath refid="CodeGen.classpath"/>
+        </java>
+    </target>
+    <target name="LoopAnalysisTest.testG18">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="codegen.test.LoopAnalysisTest" todir="${junit.output.dir}"/>
+            <classpath refid="CodeGen.classpath"/>
+        </junit>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>
+</project>

@@ -11,7 +11,7 @@ import org.jgap.impl.GABreeder;
 
 public class MulitThreadGABreeder extends GABreeder {
 
-	private static final int NUM_THREADS = 5;
+	private static final int NUM_THREADS = 20;
 
 	@Override
 	protected void updateChromosomes(Population a_pop, Configuration a_conf) {
@@ -24,7 +24,7 @@ public class MulitThreadGABreeder extends GABreeder {
 			ExecutorService executor = Executors
 					.newFixedThreadPool(NUM_THREADS);
 			for (int i = 0; i < currentPopSize; i++) {
-				IChromosome chrom = a_pop.getChromosome(i);
+				final IChromosome chrom = a_pop.getChromosome(i);
 				executor.execute(new Runnable() {
 					public void run() {
 						chrom.getFitnessValue();
