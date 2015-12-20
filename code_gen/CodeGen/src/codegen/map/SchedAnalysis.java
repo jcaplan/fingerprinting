@@ -142,7 +142,7 @@ public class SchedAnalysis {
 		for (int i = 0; i < procTaskList.size(); i++) {
 			Task t = procTaskList.get(i);
 			//no carry overs -> skip LO tasks
-			if(t.isCritical()){
+			if(!t.isCritical()){
 				continue;
 			}
 			double responseTime = t.wcetUpperBound * t.maxNumReexecutions[modeHI];
@@ -155,7 +155,6 @@ public class SchedAnalysis {
 						rSum += Math.ceil(responseTime / hpTask.period)
 								* hpTask.wcetUpperBound * hpTask.maxNumReexecutions[modeHI];
 					} else {
-						
 						rSum += Math.ceil(schedule.getResponseTime(t,modeLO) / hpTask.period)
 								* hpTask.wcetLowerBound;
 					}
@@ -169,7 +168,7 @@ public class SchedAnalysis {
 			if (responseTime > t.period) {
 				return false;
 			}
-			schedule.setResponseTime(t, modeHI, responseTime);
+//			schedule.setResponseTime(t, modeHI, responseTime);
 		}
 		return true;
 	}
@@ -178,7 +177,9 @@ public class SchedAnalysis {
 	private boolean schedOVMode(ArrayList<Task> procTaskList){
 		for (int i = 0; i < procTaskList.size(); i++) {
 			Task t = procTaskList.get(i);
-			
+			if(!schedule.isScheduled(t, modeOV)){
+				continue;
+			}
 			double responseTime = t.wcetUpperBound * t.maxNumReexecutions[modeOV];
 			if(responseTime == 0){
 				//don't calculate response time for PR replicas with c= 0...
@@ -215,13 +216,13 @@ public class SchedAnalysis {
 	private boolean schedTFMode(ArrayList<Task> procTaskList){
 		for (int i = 0; i < procTaskList.size(); i++) {
 			Task t = procTaskList.get(i);
-			//no carry overs -> skip LO tasks
-			if(t.isCritical()){
+			if(!schedule.isScheduled(t, modeTF)){
 				continue;
 			}
+			//no carry overs -> skip LO tasks
 			double responseTime = t.wcetUpperBound * t.maxNumReexecutions[modeTF];
 			while (responseTime < t.period) {
-				double rSum = t.wcetUpperBound * t.maxNumReexecutions[modeTF];
+				double rSum = t.wcetLowerBound * t.maxNumReexecutions[modeTF];
 				for (int j = i + 1; j < procTaskList.size(); j++) {
 					Task hpTask = procTaskList.get(j);
 
@@ -251,6 +252,9 @@ public class SchedAnalysis {
 	private boolean schedOVHIMode(ArrayList<Task> procTaskList) {
 		for (int i = 0; i < procTaskList.size(); i++) {
 			Task t = procTaskList.get(i);
+			if(!schedule.isScheduled(t, modeHI)){
+				continue;
+			}
 			double responseTime = t.wcetUpperBound * t.maxNumReexecutions[modeHI];
 			while (responseTime < t.period) {
 				double rSum = t.wcetUpperBound * t.maxNumReexecutions[modeHI];
@@ -285,6 +289,9 @@ public class SchedAnalysis {
 	private boolean schedTFHIMode(ArrayList<Task> procTaskList) {
 		for (int i = 0; i < procTaskList.size(); i++) {
 			Task t = procTaskList.get(i);
+			if(!schedule.isScheduled(t, modeHI)){
+				continue;
+			}
 			double responseTime = t.wcetUpperBound * t.maxNumReexecutions[modeHI];
 			while (responseTime < t.period) {
 				double rSum = t.wcetUpperBound * t.maxNumReexecutions[modeHI];

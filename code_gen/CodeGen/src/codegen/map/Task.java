@@ -18,7 +18,8 @@ public class Task implements Comparable<Task>, Serializable{
 	double utilization;
 	public String name;
 	Processor proc;
-	
+	static int numTasks;
+	int id;
 	int[] maxNumReexecutions = {1,1,1,1};
 	
 	
@@ -29,6 +30,7 @@ public class Task implements Comparable<Task>, Serializable{
 		this.period = period;
 		this.criticality = criticality;
 		this.name = name;
+		id = numTasks++;
 	}
 
 	public Task(Task t, boolean isReplica) {
@@ -77,7 +79,7 @@ public class Task implements Comparable<Task>, Serializable{
 		if(this.period > task.period){
 			result = -1;
 		} else if(this.period == task.period){
-			result = 0;
+			result = this.id > task.id ? -1 : 1;
 		} else {
 			result = 1;
 		}

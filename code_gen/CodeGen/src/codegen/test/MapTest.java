@@ -2,6 +2,7 @@ package codegen.test;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Random;
 
 import codegen.map.*;
@@ -13,7 +14,7 @@ public class MapTest {
 
 	private static final int MIN_NUM_TASKS = 10;
 	private static final double MIN_PERCENT_HI = 0.4;
-	private static final double AVERAGE_DEFAULT_UTILIZATION = 0.7;
+	private static final double AVERAGE_DEFAULT_UTILIZATION = 0.8;
 	private static final double MAX_WCET_FACTOR = 2.0;
 	private static Random generator;
 	
@@ -21,13 +22,6 @@ public class MapTest {
 	private static final int NUM_ODR_CORES = 4;
 	private static final int NUM_LOCKSTEP_CORES = 1;
 	private static ArrayList<FaultMechanism> ftms;
-	static{
-		ftms = new ArrayList<>();
-		ftms.add(new TMR());
-		ftms.add(new DMR());
-		ftms.add(new Lockstep());
-		ftms.add(new PassiveReplication());
-	}
 	static Mapper mapper;
 	
 	public static Application generateRandomApplication(int minNumTasks, double minHiPercent,
@@ -133,7 +127,7 @@ public class MapTest {
 		
 		int c;
 		LongOpt[] longopts = new LongOpt[9];
-		longopts[0] = new LongOpt("minhinum", LongOpt.REQUIRED_ARGUMENT,
+		longopts[0] = new LongOpt("mintasknum", LongOpt.REQUIRED_ARGUMENT,
 				null, 0);
 		longopts[1] = new LongOpt("minhiperc", LongOpt.REQUIRED_ARGUMENT, null, 1);
 		longopts[2] = new LongOpt("avgutil", LongOpt.REQUIRED_ARGUMENT,
@@ -191,10 +185,19 @@ public class MapTest {
 		
 		Logger.turnLoggingOn(); 
 		mapper = new Mapper();
-
 		
-		if(numOdrCores < 3){
-			ftms.remove(0);
+		ftms = new ArrayList<>();
+		
+		if(numLockstepCores > 0){
+			ftms.add(new Lockstep());
+		}
+		
+		if(numOdrCores >= 2){
+			ftms.add(new DMR());
+			ftms.add(new PassiveReplication());
+		} 
+		if(numOdrCores >= 3){
+			ftms.add(new TMR());
 		}
 		
 		 
@@ -215,12 +218,22 @@ public class MapTest {
 		for(Task t : app.getTaskList()){
 			System.out.println(t.toFullString());
 		}
+		if(mapper.getBestSchedule() == null){
+			System.out.println("no schedule found");
+			System.exit(0);
+		}
 		System.out.println("**********************************");
 		System.out.println(mapper.getBestSchedule());
 		System.out.println("**********************************");
+		System.out.println(mapper.getBestFTMs());
+		System.out.println("**********************************");
 		System.out.println(mapper.getBestScheduleFitness());
 		System.out.println("**********************************");
-		System.out.println(mapper.getBestFTMs());
+		double[] qos = mapper.getBestSchedule().getQosPerMode();
+		System.out.println("qos [LO,TF,OV,HI]: ");
+		for(int i = 0; i < qos.length; i++){
+			System.out.println(qos[i] + ", ");
+		}
 	}
 
 

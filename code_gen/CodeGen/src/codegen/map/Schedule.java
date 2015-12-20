@@ -107,6 +107,7 @@ public class Schedule implements Serializable{
 
 		public void removBinding(int mode) {
 			processor[mode] = null;
+			responseTime[mode] = 0;
 		}
 		
 		@Override
@@ -132,5 +133,34 @@ public class Schedule implements Serializable{
 			}
 		}
 		return procList;
+	}
+	
+	public double[] getQosPerMode(){
+		double[] results = new double[SchedAnalysis.numModes];
+		results[SchedAnalysis.modeLO] = 1;
+		int numLoTasks = 0;
+		//each mode requires a QoS number
+		int[] modes = {SchedAnalysis.modeOV,SchedAnalysis.modeTF,SchedAnalysis.modeHI};
+		for(Task t : bindings.keySet()){
+			if(t.isCritical()){
+				continue;
+			}
+			
+			numLoTasks++;
+			
+			for(int mode : modes){
+				if(isScheduled(t, mode)){
+					results[mode]++;
+				}
+			}
+		}
+		
+		for(int mode : modes){
+			results[mode] /= (double)numLoTasks;
+		}
+//		System.out.println(String.format("OV: %f, TF: %f, HI: %f",results[modeOV],results[modeTF],
+//				results[modeHI]));
+		
+		return results;
 	}
 }

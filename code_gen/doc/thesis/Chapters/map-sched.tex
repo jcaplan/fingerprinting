@@ -8,7 +8,7 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-The two mode AMC response time analysis for mixed criticality systems was presented in Section~\ref{s:mixedcriticality}. We have shown that it is advantageous to consider a four mode model when both transient faults and execution time ovearruns are possible in a single lockstep-core mixed criticality fault tolerant system (MCFTS) \cite{albayati2016modes}. This chapter will review the four mode analysis and then extend it to include several ODR strategies in multicore systems. A DSE mapping algorithm that uses the new analysis will then be presented which is similar to \cite{bolchini2013reliability} and \cite{kang2014reliability}.
+The two mode AMC response time analysis for mixed criticality systems was presented in Section~\ref{s:mixedcriticality}. We have shown that it is advantageous to consider a four mode model when both transient faults and execution time ovearruns are possible in a single lockstep-core mixed criticality fault tolerant system (MCFTS) \cite{albayati2016modes}. This chapter will review the four mode analysis and initial single core results on improved quality of service (QoS) and then extend it to include several ODR strategies in multicore systems. A DSE mapping algorithm that uses the new analysis will then be presented.
 
 \section{Four Mode Response Time Analysis for MCFTS}
 
@@ -230,6 +230,10 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 \addfigure{0.6}{dse.pdf}{Overview of DSE workflow using nested genetic algorithm searches}{f:dse}
 	
 	
+\subsection{Performance Optimization}
+
+1 thread per MS stage
+\texttt{GABreeder}
 
 % The initial scheduling algorithm will be taken from Bolchini and  Miele \cite{bolchini2013reliability}. A genetic algorithm (GA) is used to explore the design space. The general details that follow on genetic algorithms are based on the overview in \cite{geatbx}.
 % 
