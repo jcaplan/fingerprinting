@@ -1,8 +1,6 @@
 package codegen.test;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Locale;
 import java.util.Random;
 
 import codegen.map.*;
@@ -12,98 +10,19 @@ import gnu.getopt.LongOpt;
 
 public class MapTest {
 
-	private static final int MIN_NUM_TASKS = 10;
-	private static final double MIN_PERCENT_HI = 0.4;
+	private static final int MIN_NUM_TASKS = 20;
+	private static final double MIN_PERCENT_HI = 0.5;
 	private static final double AVERAGE_DEFAULT_UTILIZATION = 0.8;
 	private static final double MAX_WCET_FACTOR = 2.0;
-	private static Random generator;
+	private static Random random;
 	
 	private static  int randomSeed = 1;
-	private static final int NUM_ODR_CORES = 4;
+	private static final int NUM_ODR_CORES = 2;
 	private static final int NUM_LOCKSTEP_CORES = 1;
 	private static ArrayList<FaultMechanism> ftms;
 	static Mapper mapper;
 	
-	public static Application generateRandomApplication(int minNumTasks, double minHiPercent,
-			double averageDefaultUtilization, int numOdrCores, int numLockstepCores,
-			double maxWcetFactor){
 
-		//create tasks and assign criticality
-		ArrayList<Task> taskList = new ArrayList<>();
-		int numTasks = minNumTasks + (int)(Math.random()*minNumTasks);
-		int numHiTasks = (int) Math.ceil(numTasks * minHiPercent);
-		Application app = new Application();
-		for(int i = 0; i < numTasks; i++){	
-			taskList.add(new Task(0,0,0, (i < numHiTasks),"T" + i));
-		}
-		
-		//shuffle so critical tasks aren't next to each other
-		Collections.shuffle(taskList);
-		
-		//assign execution times:
-		for(int i = 0; i < numTasks; i++){
-			int rand = (int)(generator.nextInt(9));
-			Task t = taskList.get(i);
-			switch(rand){
-			case 0:
-				t.setPeriod(10);
-				break;
-			case 1:
-				t.setPeriod(20);
-				break;
-			case 2:
-				t.setPeriod(40);
-				break;
-			case 3:
-				t.setPeriod(50);
-				break;
-			case 4:
-				t.setPeriod(100);
-				break;
-			case 5:
-				t.setPeriod(200);
-				break;
-			case 6:
-				t.setPeriod(400);
-				break;
-			case 7:
-				t.setPeriod(500);
-				break;
-			case 8:
-				t.setPeriod(1000);
-			}
-		}
-		
-		double util = averageDefaultUtilization*(numOdrCores/2 + numLockstepCores);
-		
-		//calculate the utilization for each task
-		for(int i = 0; i < taskList.size() ; i++){
-			Task t = taskList.get(i);
-			double ftemp1 = generator.nextDouble();
-			double ftemp2 = util*Math.pow(ftemp1, 1.0/((double)taskList.size() - (i + 1)));
-			t.setUtilization(util-ftemp2);
-			if(t.getUtilization() > 0.45){
-				t.setUtilization(0.45);
-				ftemp2 = util - 0.45;
-			}
-			
-			if(t.isCritical()){
-				double cRatio = 1 + generator.nextDouble()*(maxWcetFactor-1);
-				if(cRatio * t.getUtilization() > 0.45){
-					cRatio = 0.45 / t.getUtilization();
-				}
-				t.setExecutionTimes(cRatio);
-				ftemp2 = util - t.getUtilization();
-			} else {
-				t.setExecutionTimes(1);
-			}
-			util = ftemp2;
-		}
-		
-		app.setTasks(taskList);
-		
-		return app;
-	}
 
 	private static void addProcessors(int numOdrCore, int numLockstepCore) {
 		ArrayList<Processor> pList = new ArrayList<>();
@@ -187,7 +106,7 @@ public class MapTest {
 		}
 		
 		
-//		Logger.turnLoggingOn(); 
+		Logger.turnLoggingOn(); 
 		
 		ftms = new ArrayList<>();
 		
@@ -204,12 +123,12 @@ public class MapTest {
 		}
 		
 		 
-		generator = new Random(randomSeed);
+		random = new Random(randomSeed);
 		
 		
 		
-		Application app = generateRandomApplication(minNumTasks, minHiPercent, avgDefaultUtil,
-				numOdrCores, numLockstepCores, maxWcetFactor);
+		Application app = Application.generateRandomApplication(minNumTasks, minHiPercent, avgDefaultUtil,
+				numOdrCores, numLockstepCores, maxWcetFactor,random);
 		
 
 		mapper = new Mapper();

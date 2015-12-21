@@ -15,7 +15,7 @@ public class MSFitnessFunction extends FitnessFunction{
 	
 	 Schedule bestSchedule;
 	double fittestScore;
-	
+	Object lock = new Object();
 	
 	ArrayList<Task> taskList;
 	ArrayList<MapConstraint> constraints;
@@ -63,14 +63,22 @@ public class MSFitnessFunction extends FitnessFunction{
 		}
 		if(fitness > fittestScore){
 			fittestScore = fitness;
-			bestSchedule = schedule;
+			setBestSchedule(schedule);
 		}
 //		Logger.logMessage("result of schedulability analysis: " + schedResult + ", fitness = " + fitness);
 		return fitness;
 	}
 	
 	public Schedule getBestSchedule(){
-		return bestSchedule;
+		synchronized(lock){
+			return bestSchedule;
+		}
+	}
+	
+	public void setBestSchedule(Schedule schedule){
+		synchronized(lock){
+			bestSchedule = schedule;
+		}
 	}
 
 }

@@ -15,6 +15,7 @@ public class GAEngine {
 	private static final int populationSize = 100;
 	private static final int numGenerations = 30;
 	private static final double MAX_FITNESS = 1.0;
+	private boolean quitEarly = true;
 	
 	FitnessFunction ff;
 	Configuration config;
@@ -22,7 +23,8 @@ public class GAEngine {
 	Genotype population;
 
 	public GAEngine(FitnessFunction ff, Configuration config,
-			Chromosome sampleChromosome) {
+			Chromosome sampleChromosome, boolean quitEarly) {
+		this.quitEarly = quitEarly;
 		this.ff = ff;
 		this.config = config;
 		this.sampleChromosome = sampleChromosome;
@@ -59,17 +61,19 @@ public class GAEngine {
 				break;
 			}
 			
-			// Check if the answer changed from last iteration
-			if (lastFitness == bestSolutionSoFar.getFitnessValue()) {
-				sameCount++;
-			} else {
-				lastFitness = bestSolutionSoFar.getFitnessValue();
-				sameCount = 0;
-			}
-
-			if (sameCount > 4) {
-//				Logger.logMessage("Seems to be converging. Quitting after " + i + " iterations.");
-				break;
+			if(quitEarly){
+				// Check if the answer changed from last iteration
+				if (lastFitness == bestSolutionSoFar.getFitnessValue()) {
+					sameCount++;
+				} else {
+					lastFitness = bestSolutionSoFar.getFitnessValue();
+					sameCount = 0;
+				}
+	
+				if (sameCount > 4) {
+					Logger.logMessage("Seems to be converging. Quitting after " + i + " iterations.");
+					break;
+				}
 			}
 		}
 	}

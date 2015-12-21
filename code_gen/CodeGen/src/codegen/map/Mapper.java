@@ -49,23 +49,49 @@ public class Mapper {
 	}
 
 	public void findSchedule() {
-		
-		Configuration.reset();
-		RAConfiguration reliabilityConfig = new RAConfiguration("raConfig" + count++);
-		Chromosome sampleChromosome = null;
-		RAFitnessFunction raFF = new RAFitnessFunction(this);
-		try {
-			sampleChromosome = createRAChromosome(reliabilityConfig);
-		} catch (InvalidConfigurationException e) {
-			e.printStackTrace();
-		}
+		if (ftms.size() == 1 && ftms.get(0) instanceof Lockstep) {
+			// Skip the first stage, go around mapper
+			Map<Task, ArrayList<Processor>> legalMappings = new HashMap<>();
+			for (Task t : app.getTaskList()) {
+				legalMappings.put(t, procList);
+			}
 
-		GAEngine raEngine = new GAEngine(raFF,reliabilityConfig,sampleChromosome);		
-		raEngine.findSolution();
-		bestSchedule = raFF.getBestSchedule();
-		fitness = raEngine.getBestSolutionFitness();
-		bestTechniqueMap = raFF.getBestTechniqueMap();
-		
+			MapConfiguration.reset();
+			MapConfiguration msConfig = new MapConfiguration("msEngine"
+					+ RAFitnessFunction.count++);
+			Chromosome sampleChromosome = null;
+			try {
+				sampleChromosome = RAFitnessFunction.createMSChromosome(
+						msConfig, app.getTaskList(), legalMappings);
+			} catch (InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+			ArrayList<MapConstraint> contraints = new ArrayList<>();
+			MSFitnessFunction msFF = new MSFitnessFunction(app.getTaskList(),
+					contraints, legalMappings, procList);
+			GAEngine msEngine = new GAEngine(msFF, msConfig, sampleChromosome,false);
+
+			msEngine.findSolution();
+			bestSchedule = msFF.getBestSchedule();
+			fitness = msEngine.getBestSolutionFitness();
+			bestTechniqueMap = null;
+		} else {
+			RAConfiguration.reset();
+			RAConfiguration reliabilityConfig = new RAConfiguration("raConfig" + count++);
+			Chromosome sampleChromosome = null;
+			RAFitnessFunction raFF = new RAFitnessFunction(this);
+			try {
+				sampleChromosome = createRAChromosome(reliabilityConfig);
+			} catch (InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+	
+			GAEngine raEngine = new GAEngine(raFF,reliabilityConfig,sampleChromosome,true);		
+			raEngine.findSolution();
+			bestSchedule = raFF.getBestSchedule();
+			fitness = raEngine.getBestSolutionFitness();
+			bestTechniqueMap = raFF.getBestTechniqueMap();
+		}
 	}
 
 	public Chromosome createRAChromosome(Configuration config) throws InvalidConfigurationException {

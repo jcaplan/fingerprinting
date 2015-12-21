@@ -55,7 +55,9 @@ public class RAConfiguration
   public RAConfiguration(String a_id, String a_name) {
     super(a_id, a_name);
     try {
-      setBreeder(new MultiThreadGABreeder());
+//      setBreeder(new MultiThreadGABreeder());
+
+      setBreeder(new GABreeder());
       setRandomGenerator(new StockRandomGenerator());
       setEventManager(new EventManager());
       setMinimumPopSizePercent(0);
