@@ -58,21 +58,21 @@ public class MapConfiguration
       setBreeder(new GABreeder());
       setRandomGenerator(new StockRandomGenerator());
       setEventManager(new EventManager());
-      setMinimumPopSizePercent(0);
+      setMinimumPopSizePercent(99);
       //
-      setSelectFromPrevGen(1.0d);
+      setSelectFromPrevGen(0.7d);
       setKeepPopulationSizeConstant(true);
       setFitnessEvaluator(new DefaultFitnessEvaluator());
       setChromosomePool(new ChromosomePool());
       //New values
       //----------
-      addGeneticOperator(new CrossoverOperator(this,0.8d));
-      addGeneticOperator(new MutationOperator(this,10));
-//      addNaturalSelector(new TournamentSelector(this,10,0.8), false);
-      BestChromosomesSelector bestChromsSelector = new BestChromosomesSelector(
-              this, 0.90d);
-          bestChromsSelector.setDoubletteChromosomesAllowed(true);
-      addNaturalSelector(bestChromsSelector, false);
+      addGeneticOperator(new CrossoverOperator(this,0.4d));
+      addGeneticOperator(new MutationOperator(this,2));
+      addNaturalSelector(new TournamentSelector(this,10,0.8), false);
+//      BestChromosomesSelector bestChromsSelector = new BestChromosomesSelector(
+//              this, 0.90d);
+//          bestChromsSelector.setDoubletteChromosomesAllowed(true);
+//      addNaturalSelector(bestChromsSelector, false);
     }
     catch (InvalidConfigurationException e) {
       throw new RuntimeException(

@@ -45,10 +45,11 @@ public class MSFitnessFunction extends FitnessFunction{
 			schedule.allocate(t,p);
 		}
 		
-//		if(!schedule.checkConstraints(constraints)){
+		if(!schedule.checkConstraints(constraints)){
 //			Logger.logMessage("schedule illegal");
-//			return 0;
-//		} else {
+			return 0;
+		} 
+//			else {
 //			Logger.logMessage("schedule legal");
 //		}
 		

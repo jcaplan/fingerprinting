@@ -54,10 +54,10 @@ public class GAEngine {
 			bestSolutionSoFar = population.getFittestChromosome();
 			
 			// Check if max
-//			if(bestSolutionSoFar.getFitnessValue() == MAX_FITNESS){
-//				Logger.logMessage("Found max fitness in " + i + "iterations.");
-//				break;
-//			}
+			if(bestSolutionSoFar.getFitnessValue() == MAX_FITNESS){
+				Logger.logMessage("Found max fitness in " + i + "iterations.");
+				break;
+			}
 			
 			// Check if the answer changed from last iteration
 			if (lastFitness == bestSolutionSoFar.getFitnessValue()) {
@@ -68,7 +68,7 @@ public class GAEngine {
 			}
 
 			if (sameCount > 4) {
-				Logger.logMessage("Seems to be converging. Quitting after " + i + " iterations.");
+//				Logger.logMessage("Seems to be converging. Quitting after " + i + " iterations.");
 				break;
 			}
 		}

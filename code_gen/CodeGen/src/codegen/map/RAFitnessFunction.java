@@ -14,11 +14,10 @@ public class RAFitnessFunction extends FitnessFunction {
 	ArrayList<Processor> procList;
 	Application app;
 	List<FaultMechanism> faultMechanisms;
-	ArrayList<MapConstraint> constraints;
 	private Schedule bestSchedule;
 	double bestFitness;
 	private Map<Task, FaultMechanism> bestTechniqueMap;
-	int count = 0;
+	public static int count = 0;
 	
 	public RAFitnessFunction(Mapper mapper) {
 		procList = mapper.getProcList();
@@ -42,6 +41,7 @@ public class RAFitnessFunction extends FitnessFunction {
 
 		int numOriginalTasks = taskList.size();
 
+		ArrayList<MapConstraint> constraints;
 		constraints = new ArrayList<>();
 		
 		Map<Task, FaultMechanism> techniqueMap = new HashMap<>();
@@ -86,10 +86,7 @@ public class RAFitnessFunction extends FitnessFunction {
 				}
 			}
 		}
-		/*
-		 * Note: library will break if MapConfiguration is given a non-blank name.
-		 * Otherwise, name must be unique every time.
-		 */
+		
 		MapConfiguration.reset();
 		MapConfiguration msConfig = new MapConfiguration("msEngine" + count++);
 		Chromosome sampleChromosome = null;
@@ -97,7 +94,6 @@ public class RAFitnessFunction extends FitnessFunction {
 			sampleChromosome = createMSChromosome(msConfig,
 					taskList, legalMappings);
 		} catch (InvalidConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -115,7 +111,7 @@ public class RAFitnessFunction extends FitnessFunction {
 		return msEngine.getBestSolutionFitness();
 	}
 
-	private Chromosome createMSChromosome(MapConfiguration config,
+	public static Chromosome createMSChromosome(MapConfiguration config,
 			ArrayList<Task> taskList,
 			Map<Task, ArrayList<Processor>> legalMappings)
 			throws InvalidConfigurationException {

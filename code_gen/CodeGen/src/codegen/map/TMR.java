@@ -13,7 +13,7 @@ public class TMR extends FaultMechanism {
 	}
 
 	@Override
-	public void updateTaskList(ArrayList<Task> taskList, int taskIndex,
+	public synchronized void updateTaskList(ArrayList<Task> taskList, int taskIndex,
 			ArrayList<MapConstraint> constraints, Map<Task, FaultMechanism> techniqueMap) {
 		Task t = taskList.get(taskIndex);
 		

@@ -15,7 +15,7 @@ public class Mapper {
 	protected double fitness;
 	protected Map<Task, FaultMechanism> bestTechniqueMap;
 	List<FaultMechanism> ftms;
-	
+	public static int count;
 	public Mapper(){
 		app = new Application();
 		procList = new ArrayList<>();
@@ -51,7 +51,7 @@ public class Mapper {
 	public void findSchedule() {
 		
 		Configuration.reset();
-		RAConfiguration reliabilityConfig = new RAConfiguration("raConfig");
+		RAConfiguration reliabilityConfig = new RAConfiguration("raConfig" + count++);
 		Chromosome sampleChromosome = null;
 		RAFitnessFunction raFF = new RAFitnessFunction(this);
 		try {

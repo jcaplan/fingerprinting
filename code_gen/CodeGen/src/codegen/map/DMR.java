@@ -14,7 +14,7 @@ public class DMR extends FaultMechanism {
 	}
 
 	@Override
-	public void updateTaskList(ArrayList<Task> taskList, int taskIndex,
+	public synchronized void updateTaskList(ArrayList<Task> taskList, int taskIndex,
 			ArrayList<MapConstraint> constraints, Map<Task, FaultMechanism> techniqueMap) {
 		Task t = taskList.get(taskIndex);
 		Task replica = new Task(t,Task.replica);

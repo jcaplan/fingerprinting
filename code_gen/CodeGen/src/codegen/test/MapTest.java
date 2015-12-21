@@ -77,24 +77,28 @@ public class MapTest {
 		double util = averageDefaultUtilization*(numOdrCores/2 + numLockstepCores);
 		
 		//calculate the utilization for each task
-		for(int i = 0; i < taskList.size(); i++){
+		for(int i = 0; i < taskList.size() ; i++){
 			Task t = taskList.get(i);
-			double rand = generator.nextDouble();
-			double newUtil = util*Math.pow(rand, 1.0/((double)taskList.size() - (i + 1)));
-			t.setUtilization(util-newUtil);
-			if(t.getUtilization() > 0.49){
-				t.setUtilization(0.49);
-				newUtil = util - 0.49;
+			double ftemp1 = generator.nextDouble();
+			double ftemp2 = util*Math.pow(ftemp1, 1.0/((double)taskList.size() - (i + 1)));
+			t.setUtilization(util-ftemp2);
+			if(t.getUtilization() > 0.45){
+				t.setUtilization(0.45);
+				ftemp2 = util - 0.45;
 			}
 			
 			if(t.isCritical()){
 				double cRatio = 1 + generator.nextDouble()*(maxWcetFactor-1);
+				if(cRatio * t.getUtilization() > 0.45){
+					cRatio = 0.45 / t.getUtilization();
+				}
 				t.setExecutionTimes(cRatio);
+				ftemp2 = util - t.getUtilization();
 			} else {
 				t.setExecutionTimes(1);
 			}
+			util = ftemp2;
 		}
-		
 		
 		app.setTasks(taskList);
 		
@@ -183,8 +187,7 @@ public class MapTest {
 		}
 		
 		
-		Logger.turnLoggingOn(); 
-		mapper = new Mapper();
+//		Logger.turnLoggingOn(); 
 		
 		ftms = new ArrayList<>();
 		
@@ -202,8 +205,14 @@ public class MapTest {
 		
 		 
 		generator = new Random(randomSeed);
+		
+		
+		
 		Application app = generateRandomApplication(minNumTasks, minHiPercent, avgDefaultUtil,
 				numOdrCores, numLockstepCores, maxWcetFactor);
+		
+
+		mapper = new Mapper();
 		mapper.setApplication(app);
 		mapper.printApp();
 		
