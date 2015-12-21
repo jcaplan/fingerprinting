@@ -39,6 +39,7 @@ public class Task implements Comparable<Task>, Serializable{
 		this.period = t.period;
 		this.criticality = t.criticality;
 		this.type = Task.replica;
+		id = numTasks++;
 		this.maxNumReexecutions = t.maxNumReexecutions;
 		if(replica){
 			name = t.name + "R";
