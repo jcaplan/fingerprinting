@@ -11,17 +11,7 @@ public class Schedule implements Serializable{
 		bindings.put(t,new Binding(p,t.isCritical()));		
 	}
 
-	public boolean checkConstraints(ArrayList<MapConstraint> constraints) {
-		for(MapConstraint c : constraints){
-			Processor p1 = bindings.get(c.t1).getLoModeProcessor();
-			Processor p2 = bindings.get(c.t2).getLoModeProcessor();
-			
-			if(!MapConstraint.check(p1,p2)){
-				return false;
-			}
-		}
-		return true;
-	}
+
 	
 	public Processor getLoModeProcessor(Task t){
 		return bindings.get(t).getLoModeProcessor();

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
+import org.jgap.Gene;
+
 public abstract class FaultMechanism implements Serializable{
 
 	
@@ -65,6 +67,11 @@ public abstract class FaultMechanism implements Serializable{
     }
     public abstract String getCommandName();
 
-	public abstract void updateTaskList(ArrayList<Task> taskList, int i, ArrayList<MapConstraint> constraints, Map<Task, FaultMechanism> techniqueMap);
+	public abstract void updateTaskList(ArrayList<Task> taskList, int i, Map<Task,Task[]> replicas, Map<Task, FaultMechanism> techniqueMap);
+
+	public abstract int getPermutationSize(int numLegalProcessors);
+
+	public abstract void allocateProcessors(Schedule schedule, int permutation,
+			Map<Task, ArrayList<Processor>> legalMappings, Task t, Map<Task,Task[]> replicas);
 
 }

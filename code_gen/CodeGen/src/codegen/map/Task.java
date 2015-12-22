@@ -18,7 +18,8 @@ public class Task implements Comparable<Task>, Serializable{
 	double utilization;
 	public String name;
 	Processor proc;
-	static int numTasks;
+	static int tID;
+	static int numOriginalTasks;
 	int id;
 	int[] maxNumReexecutions = {1,1,1,1};
 	
@@ -30,7 +31,8 @@ public class Task implements Comparable<Task>, Serializable{
 		this.period = period;
 		this.criticality = criticality;
 		this.name = name;
-		id = numTasks++;
+		id = tID++;
+		numOriginalTasks++;
 	}
 
 	public Task(Task t, boolean isReplica) {
@@ -39,7 +41,7 @@ public class Task implements Comparable<Task>, Serializable{
 		this.period = t.period;
 		this.criticality = t.criticality;
 		this.type = Task.replica;
-		id = numTasks++;
+		id = tID++;
 		this.maxNumReexecutions = t.maxNumReexecutions;
 		if(replica){
 			name = t.name + "R";
@@ -113,4 +115,11 @@ public class Task implements Comparable<Task>, Serializable{
 		wcetUpperBound = wcetLowerBound * cRatio;
 	}
 	
+	public static int getNumOriginalTasks(){
+		return numOriginalTasks;
+	}
+	
+	public boolean isReplica(){
+		return type = replica;
+	}
 }

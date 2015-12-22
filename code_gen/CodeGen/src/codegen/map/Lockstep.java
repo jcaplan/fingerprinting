@@ -14,7 +14,7 @@ public class Lockstep extends FaultMechanism{
 
 	@Override
 	public synchronized void updateTaskList(ArrayList<Task> taskList, int taskIndex,
-			ArrayList<MapConstraint> constraints, Map<Task, FaultMechanism> techniqueMap) {
+			Map<Task,Task[]> constraints, Map<Task, FaultMechanism> techniqueMap) {
 		Task t = taskList.get(taskIndex);
 		t.setMaxNumReexecutions(reexecutionProfile);
 		techniqueMap.put(t, this);
@@ -23,5 +23,17 @@ public class Lockstep extends FaultMechanism{
 	@Override
 	public String toString(){
 		return "LS";
+	}
+
+	@Override
+	public int getPermutationSize(int numLegalProcessors) {
+		return numLegalProcessors;
+	}
+
+	@Override
+	public void allocateProcessors(Schedule schedule, int permutation,
+			Map<Task, ArrayList<Processor>> legalMappings, Task t,
+			Map<Task, Task[]> replicas) {
+		schedule.allocate(t,legalMappings.get(t).get(permutation));
 	}
 }

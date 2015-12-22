@@ -3,7 +3,6 @@ package codegen.map;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.homedns.dade.jcgrid.worker.GridWorkerFeedback;
 import org.jgap.FitnessFunction;
 import org.jgap.Gene;
 import org.jgap.IChromosome;
@@ -18,16 +17,28 @@ public class MSFitnessFunction extends FitnessFunction{
 	Object lock = new Object();
 	
 	ArrayList<Task> taskList;
-	ArrayList<MapConstraint> constraints;
+	Map<Task,Task[]> replicas;
 	Map<Task, ArrayList<Processor>> legalMappings;
 	ArrayList<Processor> procList;
+	private Map<Task, FaultMechanism> techniqueMap;
 	
+//	public MSFitnessFunction(ArrayList<Task> taskList,
+//			ArrayList<MapConstraint> constraints, Map<Task, ArrayList<Processor>> legalMappings, ArrayList<Processor> procList) {
+//		this.taskList = taskList;
+//		this.constraints = constraints;
+//		this.legalMappings = legalMappings;
+//		this.procList = procList;
+//	}
+
 	public MSFitnessFunction(ArrayList<Task> taskList,
-			ArrayList<MapConstraint> constraints, Map<Task, ArrayList<Processor>> legalMappings, ArrayList<Processor> procList) {
+			Map<Task,Task[]> replicas, Map<Task, FaultMechanism> techniqueMap,
+			Map<Task, ArrayList<Processor>> legalMappings,
+			ArrayList<Processor> procList) {
 		this.taskList = taskList;
-		this.constraints = constraints;
+		this.techniqueMap = techniqueMap;
 		this.legalMappings = legalMappings;
 		this.procList = procList;
+		this.replicas = replicas;
 	}
 
 	@Override
@@ -38,20 +49,21 @@ public class MSFitnessFunction extends FitnessFunction{
 		 */
 		Schedule schedule = new Schedule();
 		Gene[] geneList = chromosome.getGenes();
+		
+		//need to convert chromosome values into core allocations
+
 		for(int i = 0; i < geneList.length; i++){
 			Task t = taskList.get(i);
-			int procIndex = (int)geneList[i].getAllele();
-			Processor p = legalMappings.get(t).get(procIndex);
-			schedule.allocate(t,p);
+			int permutation = (int)geneList[i].getAllele();
+			if(t.isCritical()){
+				//go through the FTM...
+				techniqueMap.get(t).allocateProcessors(schedule,permutation,legalMappings,t,replicas);
+			} else {
+				schedule.allocate(t, legalMappings.get(t).get(permutation));
+			}
+			
 		}
 		
-		if(!schedule.checkConstraints(constraints)){
-//			Logger.logMessage("schedule illegal");
-			return 0;
-		} 
-//			else {
-//			Logger.logMessage("schedule legal");
-//		}
 		
 		SchedAnalysis analysis = new SchedAnalysis(taskList, schedule,procList);
 		double fitness;

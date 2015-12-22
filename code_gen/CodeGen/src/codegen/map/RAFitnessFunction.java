@@ -41,9 +41,10 @@ public class RAFitnessFunction extends FitnessFunction {
 
 		int numOriginalTasks = taskList.size();
 
-		ArrayList<MapConstraint> constraints;
-		constraints = new ArrayList<>();
+		Map<Task,Task[]> replicas;
+		replicas = new HashMap<>();
 		
+		//technique map only contains original task set
 		Map<Task, FaultMechanism> techniqueMap = new HashMap<>();
 		int hiCount = 0;
 		for (int i = 0; i < numOriginalTasks; i++) {
@@ -51,28 +52,22 @@ public class RAFitnessFunction extends FitnessFunction {
 			if (t.criticality == Task.HI) {
 				FaultMechanism mec = getDetectionType(chromosome, hiCount);
 				hiCount++;
-				mec.updateTaskList(taskList, i, constraints, techniqueMap);
+				mec.updateTaskList(taskList, i, replicas, techniqueMap);
 			}
 		}
 
 		printDetectionTypes(chromosome);
 
-		/*
-		 * Want to maximize mutations, so anything that doesn't change should
-		 * not be in the gene... build list of legal processors. should work to
-		 * have gene size of 1, skip most of the heavy library stuff. too tricky
-		 * to try and leave out genes of size 1.
-		 */
-
+		
+		//find the legal mappings for each of the original tasks
 		Map<Task, ArrayList<Processor>> legalMappings = new HashMap<>();
 
-		for (Task t : taskList) {
-			ArrayList<Processor> legalProcList = new ArrayList<>();
-			legalMappings.put(t, legalProcList);
+		for (Task t : app.getTaskList()) {
+			legalMappings.put(t, new ArrayList<Processor>());
 		}
 
 		for (Processor p : procList) {
-			for (Task t : taskList) {
+			for (Task t : app.getTaskList()) {
 				if (t.criticality == Task.HI) {
 					boolean lockstepTask = techniqueMap.get(t).getCommandName()
 							.equals("Lockstep");
@@ -92,13 +87,13 @@ public class RAFitnessFunction extends FitnessFunction {
 		Chromosome sampleChromosome = null;
 		try {
 			sampleChromosome = createMSChromosome(msConfig,
-					taskList, legalMappings);
+					app.getTaskList(), legalMappings, techniqueMap);
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
 
-		MSFitnessFunction msFF = new MSFitnessFunction(taskList, constraints,legalMappings,procList);
-		GAEngine msEngine = new GAEngine(msFF, msConfig,sampleChromosome,false,50);
+		MSFitnessFunction msFF = new MSFitnessFunction(app.getTaskList(), replicas,techniqueMap,legalMappings,procList);
+		GAEngine msEngine = new GAEngine(msFF, msConfig,sampleChromosome,false,30);
 
 		msEngine.findSolution();
 		double fitness = msEngine.getBestSolutionFitness();
@@ -110,18 +105,24 @@ public class RAFitnessFunction extends FitnessFunction {
 		}
 		return msEngine.getBestSolutionFitness();
 	}
+	
+
 
 	public static Chromosome createMSChromosome(MapConfiguration config,
 			ArrayList<Task> taskList,
-			Map<Task, ArrayList<Processor>> legalMappings)
+			Map<Task, ArrayList<Processor>> legalMappings, Map<Task, FaultMechanism> techniqueMap)
 			throws InvalidConfigurationException {
 		Gene[] sampleGenes = new Gene[taskList.size()];
 		
 		for (int i = 0; i < sampleGenes.length; i++) {
 			Task t = taskList.get(i);
 			int numLegalProcessors = legalMappings.get(t).size();
-			sampleGenes[i] = new IntegerGene(config, 0, numLegalProcessors - 1);
-
+			if(t.isCritical()){
+			sampleGenes[i] = new IntegerGene(config, 0, 
+					techniqueMap.get(t).getPermutationSize(numLegalProcessors) - 1);
+			} else {
+				sampleGenes[i] = new IntegerGene(config, 0, numLegalProcessors-1);
+			}
 		}
 		Chromosome sampleChromosome = null;
 		sampleChromosome = new Chromosome(config, sampleGenes);
@@ -162,5 +163,8 @@ public class RAFitnessFunction extends FitnessFunction {
 	public void setBestSchedule(Schedule bestSchedule) {
 		this.bestSchedule = bestSchedule;
 	}
+
+
+
 
 }

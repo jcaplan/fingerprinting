@@ -66,7 +66,7 @@ public class RAConfiguration
       setChromosomePool(new ChromosomePool());
       //New values
       //----------
-      addGeneticOperator(new CrossoverOperator(this,0.8d));
+      addGeneticOperator(new CrossoverOperator(this,0.4d));
       addGeneticOperator(new MutationOperator(this,10));
       addNaturalSelector(new TournamentSelector(this,100,0.8), false);
 //      BestChromosomesSelector bestChromsSelector = new BestChromosomesSelector(

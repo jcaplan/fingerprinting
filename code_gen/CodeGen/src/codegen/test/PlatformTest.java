@@ -100,7 +100,7 @@ public class PlatformTest {
 				iter = Integer.parseInt(g.getOptarg());
 				break;
 			case 7:
-				log = false;
+				log = true;
 				break;
 			case 'h':
 				System.out.println("minhinum=int minhiperc=double avgutil=double \n"
@@ -117,13 +117,13 @@ public class PlatformTest {
 		random = new Random(randomSeed);
 		
 		ArrayList<Processor> lsList = addProcessors(0,2);
-		ArrayList<Processor> fpList = addProcessors(4,0);
+		ArrayList<Processor> fpList = addProcessors(2,1);
 
 		ArrayList<FaultMechanism> ls = new ArrayList<>();
 		ls.add(new Lockstep());
 		ArrayList<FaultMechanism> odr = new ArrayList<>();
 		odr.add(new DMR());
-//		odr.add(new Lockstep());
+		odr.add(new Lockstep());
 		
 		
 		double[] sched = new double[2];

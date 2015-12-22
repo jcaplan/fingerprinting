@@ -52,23 +52,27 @@ public class Mapper {
 		if (ftms.size() == 1 && ftms.get(0) instanceof Lockstep) {
 			// Skip the first stage, go around mapper
 			Map<Task, ArrayList<Processor>> legalMappings = new HashMap<>();
+			Map<Task, FaultMechanism> techniqueMap = new HashMap<>();
+			Lockstep ls = new Lockstep();
 			for (Task t : app.getTaskList()) {
 				legalMappings.put(t, procList);
+				techniqueMap.put(t, ls);
 			}
 
 			MapConfiguration.reset();
 			MapConfiguration msConfig = new MapConfiguration("msEngine"
 					+ RAFitnessFunction.count++);
 			Chromosome sampleChromosome = null;
+			
 			try {
 				sampleChromosome = RAFitnessFunction.createMSChromosome(
-						msConfig, app.getTaskList(), legalMappings);
+						msConfig, app.getTaskList(), legalMappings,techniqueMap);
 			} catch (InvalidConfigurationException e) {
 				e.printStackTrace();
 			}
-			ArrayList<MapConstraint> contraints = new ArrayList<>();
+			Map<Task,Task[]> replicas = new HashMap<>();
 			MSFitnessFunction msFF = new MSFitnessFunction(app.getTaskList(),
-					contraints, legalMappings, procList);
+					replicas, techniqueMap, legalMappings, procList);
 			GAEngine msEngine = new GAEngine(msFF, msConfig, sampleChromosome,false,30);
 
 			msEngine.findSolution();
