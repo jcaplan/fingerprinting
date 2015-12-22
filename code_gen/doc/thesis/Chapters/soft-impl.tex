@@ -7,35 +7,38 @@
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
+	This chapter will review the semantics of the fingerprint based multicore architecture in Figure~\ref{f:platform-arch}. 
+	The implementation details will then be provided for the embedded C code templates. 
+	The chapter starts with an overview of the main interactions between the system level components. 
+	Each interaction will then be decomposed until the low level behaviour of is exposed. While hardware exists to support TMR, only DMR code generation has currently been implemented at this time. 
+	As a general comment on notation, sequence diagrams will be used to depict interactions between physical components in the system. They do not in any way represent an object oriented software implementation. 
 
-\section{Overview}
- 
 
- 
-\begin{lstlisting}
-some code
-//goes here
-\end{lstlisting}
+\section{System Level Control Flow}
 
-\addfigure{0.8}{ovFull.pdf}{Sequence diagram depicting\ldots}{f:ovFull}
+	The main components in the system that interact in order to implement ODR are the monitor core (FTC), the processing core, the fingerprint (FP) unit, and the comparator. 
+	The following interactions when distributed redundant copies of critical tasks are correctly executed in the system. 
+	First the monitor configures the comparator. 
+	Then the monitor prepares and sends the data and stack to the scratchpads of both processing cores. 
+	The monitor then notifies the cores to begin execution of the critical task. 
+	Each core notifies its FP unit that a critical task is beginning. 
+	The FP units then notify the comparator. 
+	The FP units send the checksum to the comparator when a task is complete. 
+	When all checksums are received the comparator notifies the monitor of the result. 
+	If the execution is correct the monitor then copies back one of the correct scratchpad contents. 
+	This flow is pictured in Figure~\ref{f:correct-op}.
 
-\subsection{Monitor tasks}
+\addfigure{0.6}{imp-correct.pdf}{The main sequence of operations in correct execution of a distributed task on the platform}{f:correct-op}
+
+\section{Monitor}
+
 The monitor tasks must run on the FTC. They consist of:
 \begin{itemize}
   \item setting up task parameters and initializing all critical task models
-  \item managing dataflow between tasks 
-  \item intercore task communication 
-  \item retrieving valid data when critical tasks execute correctly on other resources 
+  \item managing dataflow between tasks
+%   \item intercore task communication
+  \item retrieving valid data when critical tasks execute correctly on other resources
   \item restarting cores in the case of a transient fault
   \item managing the global data space
   \item organizing coordinated virtual memory management and memory protection between cores to achieve correct fingerprinting
-\end{itemize} 
-
-Figure~\ref{f:monitor-send} shows a high-level view of how the interaction between monitor tasks in order to send a message.
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.7]{monitor-send.pdf}
-\caption{The interaction between monitor tasks when setting up a critical task to run on another core}
-\label{f:monitor-send}
-\end{figure}
+\end{itemize}

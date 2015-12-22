@@ -13,7 +13,7 @@ public class GAEngine {
 
 
 	private static final int populationSize = 100;
-	private static final int numGenerations = 30;
+	private int numGenerations = 30;
 	private static final double MAX_FITNESS = 1.0;
 	private boolean quitEarly = true;
 	
@@ -23,11 +23,12 @@ public class GAEngine {
 	Genotype population;
 
 	public GAEngine(FitnessFunction ff, Configuration config,
-			Chromosome sampleChromosome, boolean quitEarly) {
+			Chromosome sampleChromosome, boolean quitEarly, int numGenerations) {
 		this.quitEarly = quitEarly;
 		this.ff = ff;
 		this.config = config;
 		this.sampleChromosome = sampleChromosome;
+		this.numGenerations = numGenerations;
 	}
 
 	public GAEngine(FitnessFunction ff, Configuration config) {
@@ -70,7 +71,7 @@ public class GAEngine {
 					sameCount = 0;
 				}
 	
-				if (sameCount > 4) {
+				if (sameCount > 8) {
 					Logger.logMessage("Seems to be converging. Quitting after " + i + " iterations.");
 					break;
 				}

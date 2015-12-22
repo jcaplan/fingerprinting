@@ -68,7 +68,7 @@ public class MapConfiguration
       //----------
       addGeneticOperator(new CrossoverOperator(this,0.4d));
       addGeneticOperator(new MutationOperator(this,2));
-      addNaturalSelector(new TournamentSelector(this,10,0.8), false);
+      addNaturalSelector(new TournamentSelector(this,100,0.8), false);
 //      BestChromosomesSelector bestChromsSelector = new BestChromosomesSelector(
 //              this, 0.90d);
 //          bestChromsSelector.setDoubletteChromosomesAllowed(true);

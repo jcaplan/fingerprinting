@@ -55,14 +55,12 @@ public class RAConfiguration
   public RAConfiguration(String a_id, String a_name) {
     super(a_id, a_name);
     try {
-//      setBreeder(new MultiThreadGABreeder());
-
-      setBreeder(new GABreeder());
+      setBreeder(new MultiThreadGABreeder());
       setRandomGenerator(new StockRandomGenerator());
       setEventManager(new EventManager());
-      setMinimumPopSizePercent(0);
+      setMinimumPopSizePercent(95);
       //
-      setSelectFromPrevGen(1.0d);
+      setSelectFromPrevGen(0.8d);
       setKeepPopulationSizeConstant(true);
       setFitnessEvaluator(new DefaultFitnessEvaluator());
       setChromosomePool(new ChromosomePool());
@@ -70,11 +68,11 @@ public class RAConfiguration
       //----------
       addGeneticOperator(new CrossoverOperator(this,0.8d));
       addGeneticOperator(new MutationOperator(this,10));
-//      addNaturalSelector(new TournamentSelector(this,10,0.8), false);
-      BestChromosomesSelector bestChromsSelector = new BestChromosomesSelector(
-              this, 0.90d);
-          bestChromsSelector.setDoubletteChromosomesAllowed(true);
-      addNaturalSelector(bestChromsSelector, false);
+      addNaturalSelector(new TournamentSelector(this,100,0.8), false);
+//      BestChromosomesSelector bestChromsSelector = new BestChromosomesSelector(
+//              this, 0.90d);
+//          bestChromsSelector.setDoubletteChromosomesAllowed(true);
+//      addNaturalSelector(bestChromsSelector, false);
     }
     catch (InvalidConfigurationException e) {
       throw new RuntimeException(

@@ -70,6 +70,13 @@ public class Application implements Serializable {
 	public void setTasks(ArrayList<Task> taskList) {
 		this.taskList = taskList;
 	}
+	
+	public static Application generateRandomApplication(int minNumTasks,
+			double minHiPercent, double averageDefaultUtilization,
+			int numOdrCores, int numLockstepCores, double maxWcetFactor){
+		return generateRandomApplication(minNumTasks, minHiPercent, averageDefaultUtilization, 
+				numOdrCores, numLockstepCores, maxWcetFactor,new Random());
+	}
 
 	public static Application generateRandomApplication(int minNumTasks,
 			double minHiPercent, double averageDefaultUtilization,
@@ -81,7 +88,7 @@ public class Application implements Serializable {
 		// create tasks and assign criticality
 		ArrayList<Task> taskList = generateTaskList(random,minHiPercent,minNumTasks);
 
-		generateExecutionTimes(random, taskList);
+		generatePeriods(random, taskList);
 
 		double util = averageDefaultUtilization
 				* (numOdrCores / 2 + numLockstepCores);
@@ -90,13 +97,13 @@ public class Application implements Serializable {
 		for (int i = 0; i < taskList.size() - 1; i++) {
 			Task t = taskList.get(i);
 			double ftemp1 = random.nextDouble();
-			double ftemp2 = util
+			double nextUtil = util
 					* Math.pow(ftemp1,
-							1.0 / ((double) taskList.size() - (i + 1)));
-			t.setUtilization(util - ftemp2);
+							1.0 / ((double) taskList.size() - i));
+			t.setUtilization(util - nextUtil);
 			if (t.getUtilization() > 0.45) {
 				t.setUtilization(0.45);
-				ftemp2 = util - 0.45;
+				nextUtil = util - 0.45;
 			}
 
 			if (t.isCritical()) {
@@ -105,11 +112,11 @@ public class Application implements Serializable {
 					t.setUtilization(0.45 / cRatio);
 				}
 				t.setExecutionTimes(cRatio);
-				ftemp2 = util - t.getUtilization();
+				nextUtil = util - t.getUtilization();
 			} else {
 				t.setExecutionTimes(1);
 			}
-			util = ftemp2;
+			util = nextUtil;
 		}
 
 		Task t = taskList.get(taskList.size() - 1);
@@ -136,7 +143,7 @@ public class Application implements Serializable {
 		return tasks;
 	}
 
-	private static void generateExecutionTimes(Random random,
+	private static void generatePeriods(Random random,
 			ArrayList<Task> taskList) {
 		// assign execution times:
 		for (int i = 0; i < taskList.size(); i++) {

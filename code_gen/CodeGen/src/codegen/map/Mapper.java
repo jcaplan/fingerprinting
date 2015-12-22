@@ -69,7 +69,7 @@ public class Mapper {
 			ArrayList<MapConstraint> contraints = new ArrayList<>();
 			MSFitnessFunction msFF = new MSFitnessFunction(app.getTaskList(),
 					contraints, legalMappings, procList);
-			GAEngine msEngine = new GAEngine(msFF, msConfig, sampleChromosome,false);
+			GAEngine msEngine = new GAEngine(msFF, msConfig, sampleChromosome,false,30);
 
 			msEngine.findSolution();
 			bestSchedule = msFF.getBestSchedule();
@@ -86,7 +86,7 @@ public class Mapper {
 				e.printStackTrace();
 			}
 	
-			GAEngine raEngine = new GAEngine(raFF,reliabilityConfig,sampleChromosome,true);		
+			GAEngine raEngine = new GAEngine(raFF,reliabilityConfig,sampleChromosome,true,30);		
 			raEngine.findSolution();
 			bestSchedule = raFF.getBestSchedule();
 			fitness = raEngine.getBestSolutionFitness();

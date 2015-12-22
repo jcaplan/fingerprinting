@@ -29,16 +29,16 @@ public class PlatformTest {
 	private static  int randomSeed = 2;
 	static Mapper mapper;
 	
-	
+	static int pcount = 0;
 
 	private static ArrayList<Processor> addProcessors(int numOdrCore, int numLockstepCore) {
 		ArrayList<Processor> pList = new ArrayList<>();
 		
 		for(int i = 0; i < numOdrCore; i++){
-			pList.add(new Processor("cpu" + i, Processor.OdrType));	
+			pList.add(new Processor("cpu" + pcount++, Processor.OdrType));	
 		}
 		for(int i = 0; i < numLockstepCore; i++){
-			pList.add(new Processor("cpuM" + i,Processor.lockstepType));
+			pList.add(new Processor("cpuM" + pcount++,Processor.lockstepType));
 		}
 		
 		return pList;
@@ -117,13 +117,13 @@ public class PlatformTest {
 		random = new Random(randomSeed);
 		
 		ArrayList<Processor> lsList = addProcessors(0,2);
-		ArrayList<Processor> fpList = addProcessors(2,1);
+		ArrayList<Processor> fpList = addProcessors(4,0);
 
 		ArrayList<FaultMechanism> ls = new ArrayList<>();
 		ls.add(new Lockstep());
 		ArrayList<FaultMechanism> odr = new ArrayList<>();
 		odr.add(new DMR());
-		odr.add(new Lockstep());
+//		odr.add(new Lockstep());
 		
 		
 		double[] sched = new double[2];

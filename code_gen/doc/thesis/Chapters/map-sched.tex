@@ -8,24 +8,41 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-The two mode AMC response time analysis for mixed criticality systems was presented in Section~\ref{s:mixedcriticality}. We have shown that it is advantageous to consider a four mode model when both transient faults and execution time ovearruns are possible in a single lockstep-core mixed criticality fault tolerant system (MCFTS) \cite{albayati2016modes}. This chapter will review the four mode analysis and initial single core results on improved quality of service (QoS) and then extend it to include several ODR strategies in multicore systems. A DSE mapping algorithm that uses the new analysis will then be presented.
+	The two mode AMC response time analysis for mixed criticality systems was presented in Section~\ref{s:mixedcriticality}. 
+	We have shown that it is advantageous to consider a four mode model when both transient faults and execution time overruns are possible in a single lockstep-core mixed criticality fault tolerant system (MCFTS) \cite{albayati2016modes}. 
+	This chapter will review the four mode analysis and initial single core results on improved quality of service (QoS) and then extend it to include several ODR strategies in multicore systems. 
+	A DSE mapping algorithm that uses the new analysis will then be presented.
 
-\section{Four Mode Response Time Analysis for MCFTS}
-
-	The motivation for four modes in a MCFTS is to reduce the number of LO tasks that must be dropped in the event that only an execution overrun or transient fault occurs rather than both. 
+\section{Four Mode MCFTS Model}
+\label{s:mcfts}
+	AMC response time analysis depends on the notion that safety critical systems must be proven operational under optimistic and pessimistic worst case execution time estimates. 
+	A runtime mechanism must be available to monitor the execution time of tasks in the system.
+	Some or all LO tasks must be dropped from the system when a any task overruns its optimistic execution time budget.
+	In order to accomodate fault tolerance, we extend the analysis to scenarios where a task may also execute more than once in case of failure.
+	
+	Initial work on AMC assumed that all LO tasks are dropped during a mode change. 
+	Current work in MCS aims to reduce the amount of LO criticality tasks that must be dropped through migration in multicore systems \cite{al2015enhanced} and designer specified importance \cite{fleming2014incorporating}. 
+	We introduce a four mode model to MCFTS in order to reduce the number of LO tasks that must be dropped in the event that only an execution overrun or transient fault occurs rather than both. 
 	We initially consider a lockstep core that is capable of detecting but not correcting errors.
 	The RTOS kernel is assumed to remain uncorrupted.
 	Under these conditions, a task may be re-executed when an error is detected.
+		The four modes intuitively improve QoS because any response time analysis that considers both faults and overruns at the same time will be overly pessimistic in deciding which tasks to drop.
 	\addfigure{0.6}{modes.pdf}{The 4 modes of operation in MCFTS analysis.}{f:modes}
 \addfigure{0.6}{sched-example.pdf}{Mode change scenarios.}{f:mode-scenarios}
 	
 	The four modes and their transition conditions are shown in Figure~\ref{f:modes}. 
-	Furthermore, three possible scenarios are presented in Figure~\ref{f:mode-scenarios} for the task set in Table~\ref{t:example}.
+	Initially, the system is in LO mode. 
+	When a transient fault is detected, the system transitions into TF mode. 
+	If an execution overrun occurs ($C>C(LO)$), then the system transitions into OV mode. 
+	Finally, a transition to HI mode occurs from one of the intermediate mode if the other event occurs before a transition back to LO mode.\footnote{Reverse transitions are usually treated as a separate problem in MCS and is not considered in this thesis. Possible implementation may be found in \cite{bate2015bailout}.}
+	
+	Three example scenarios are presented in Figure~\ref{f:mode-scenarios} for the task set in Table~\ref{t:example}. 
 	In scenario (a), $\tau_1$ exceeds its $C(LO)$ threshold of 3 and the system transitions into OV mode. In scenario (b), $\tau_1$ suffers a transient fault and required re-execution. The system stays in TF mode because none of the re-executions exceed $C(LO)$. In scenario (c), $\tau_1$ first exceeds $C(LO)$ and the system transitions to OV mode. Once in OV mode, an fault occurs and the system transitions into HI mode, presumably dropping even more tasks.
 	
+
 	
 	
-\section{}
+\subsection{Response Time Analysis}
 	
 	
 	\begin{table}[t!]
@@ -46,7 +63,7 @@ The two mode AMC response time analysis for mixed criticality systems was presen
 \end{table}
 	
 	%In addition to the LO and HI modes, there is now a transient fault (TF) and overrun (OV) mode. 
-	Equations \ref{eq:lomode}-\ref{eq:hiovmode} show the updated response time analysis.
+	Equations \ref{eq:lomode}-\ref{eq:hiovmode} show the updated four mode response time analysis.
 	
 	
 \begin{equation}
@@ -104,8 +121,46 @@ R_i^{(HI-TF)} & = n_i(HI) \cdot C_i(L_i)
 \end{aligned}
 \end{equation}
 
+\subsection{Reducing Model Pessimism}
 
+	The model is still highly pessimistic as \emph{all} tasks are assumed to re-execute upon a transition into TF mode. 
+	This pessimisim is reduced by the introduction of a new parameter $F$, the maximum number of faults expected in an interval $D_{max}$, the largest relative deadline among the tasks in the task set.
+	For example, if $\tau_i$ and $\tau_j$ preempt $\tau_k$, then it is obviously beneficial when calculating the response time of $\tau_k$ that \emph{only} $\tau_i$ \emph{or} $\tau_j$ may preempt $\tau_k$ but not both.
 
+	The term $n_i$ in the response time equations for HI and TF modes may be replaced with a new term $1 + f_i$ where $f_i$ is the maximum number of faults that may occur for task $\tau_i$. The updated equation for $R^{(TF)}$ is given by:
+	\begin{equation}\label{eq:mode3new}
+\begin{aligned}
+R_i^{(TF)} & = (1+f_i) \cdot C_i(LO) \\
+&  +\sum_{j \in hpC(TF,i)}\Big\lceil\frac{R_i^{(TF)}}{T_j}\Big\rceil \cdot (1+f_j) \cdot C_j(LO) \\
+&  +\sum_{k \in hp(i)-hpC(TF,i)}\Big\lceil\frac{R_i^{(LO)}}{T_k}\Big\rceil \cdot C_k(LO)
+\end{aligned}
+\end{equation}
+under the constraints:
+\begin{subequations}
+%\small
+\begin{equation}
+1+f_i \le n_i, \ \ fi \ge 0 \,  \forall \tau_i
+\end{equation}
+\begin{equation}
+\sum_i{f_i} \le F.
+\end{equation}
+\end{subequations}
+
+\subsection{Four Mode QoS Results for Single Core}
+
+	We defined QoS to be the percentage of LO criticality tasks not dropped in any given mode. The QoS for the LO mode is always 1. Random task sets were generated according to the UUnifast algorithm \cite{bini2005measuring} such that LO mode utilization is approximately 80\% on all cores. The ratio $C(HI)/C(LO)$ is determined randomly from the range $[1,2]$ and periods were chosen at random from the set ${10,20,40,50,100,200,400,500,1000}$. For each test, the average of 1000 systems is presented.
+
+\addfigure{0.6}{final-allModesNoF.pdf}{Modes OV and TF achieve better QoS than HI for all utilizations ($F$ not bounded).}{f:util_basic}
+\addfigure{0.6}{averageQoS.pdf}{Average improvement over all system utilizations for OV and TF modes compared to HI mode. }{f:avgU}
+
+	Figure~\ref{f:util_basic} shows the QoS of OV and TF modes is improved over the HI mode for all utilizations in systems of 20 tasks (10 HI and 10 LO). LO task QoS is better in the OV and TF modes than in the HI mode. On average, the OV and TF modes outperform the HI mode by 42.9\% and 20.2\% respectively. The improvement increases with the utilization, especially for the OV mode which could be significant in systems where transient faults are less frequent than execution time overruns. Figure~\ref{f:avgU} shows the average improvement of QoS across all utilizations for the TF and OV mode compared to the HI mode.
+	
+\addfigure{0.6}{final-percentHI.pdf}{Modes OV and TF achieve better QoS than HI for different percentages of HI tasks ($F$ not bounded).}{f:perchi_basic}
+	
+	Figure~\ref{f:perchi_basic} shows a similar picture, this time holding utilization constant at 80\% while exploring the percentage of HI tasks. The QoS of the HI and TF modes degrade quickly as the percentage of HI tasks increases because none of these tasks can be dropped and the penalty for re-execution becomes very severe.
+	 	
+\addfigure{0.6}{TFmodeAvgu.pdf}{Performance of TF mode for different $F$}{f:avgUN}
+	Figure~\ref{f:avgUN} shows how the $F$ parameter improves QoS for the TF mode ($F=\infty$ is the default). QoS improves by about 15\% compared to the default when only two errors are assumed to occur close enough in time to affect the same mode change.
 
 \section{Extending Response Time Analysis to ODR}
 
@@ -223,28 +278,63 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 \section{Design Space Exploration}
 
 \subsection{Genetic Algorithm}
+\begin{figure}[h]
+\centering
+\includegraphics[width=12cm]{ga_ov}
+\caption{The basic structure of a genetic algorithm \cite{geatbx}.}
+\label{f:ga_ov}
+\end{figure}
+
+	Genetic algorithm is an unsupervised exploration technique that attempts to find optimal answers in large problem spaces. 
+	Genetic algorithms operate on \emph{chromosomes} which are essentially a vector representation of the problem space.
+	An initial population of chromosomes are rated using an \emph{objective} or \emph{fitness} function which determines the quality of each result. 
+	If a sufficient answer has been found then the algorithm may quit.
+	Otherwise, a new population is generated using selection, recombination and mutation. 
+	
+	There are many variations on each of these operations. Selection could be as simple as passing on the top $x$ chromosomes and then randomly generating the remainder of the population after each \emph{generation}. 
+	Another alternative is tournament selection, where pairs of chromosomes are selected randomly from the population and the higher of the two is passed on to the next generation. 
+	Recombination is typically done using the crossover operator which chops two chromosomes at some \emph{gene} location (element index) and swaps the ends.
+	Finally mutation randomly modifies a randomly selected gene in a randomly selected chromosome.
+	There are many probabilistic parameters that require calibration for each operator as well as the population size and number of generations.
+	
+	There is not a generally well defined methodology for selecting these parameters. These experiments will evolve a population of size 100 over 30 generations. 80\% of chromosomes are selected from the previous generation using tournament selection. The tournament selection itself passes on the best chromosomes with a probability of 80\%. The crossover rate is 40\% and the mutation rate is 50\%.
 
 \subsection{Two Stage GA}
-	The mapping and scheduling algorithm follows the procedure used in \cite{bolchini2013reliability} and \cite{kang2014reliability}. Two stages of genetic algorithms (GA) are used to explore both the techniques used to harden each task and the core assignment for each task and its replicas. The basic flow is shown in Figure~\ref{f:dse}. The Reliability Aware (RA) stage is responsible for assigning 
+	The mapping and scheduling algorithm follows the procedure used in \cite{bolchini2013reliability} and \cite{kang2014reliability}. Two stages of genetic algorithms (GA) are used to explore both the techniques used to harden each task and the core assignment for each task and its replicas. The basic flow is shown in Figure~\ref{f:dse}. The GA is implemented using \cite{jgap}  The Reliability Aware (RA) stage is responsible for mapping a fault tolerance mechanism to each task. The RA stage then generates a chromosome structure for the Mapping and Scheduling (MS) stage. The MS stage attempts to find an allocation for each task onto a core that maximizes the average QoS across all modes in the system using the response time anlaysis in Section~\ref{s:mcfts}.
 	
 \addfigure{0.6}{dse.pdf}{Overview of DSE workflow using nested genetic algorithm searches}{f:dse}
+	
+	The chromosome in the RA stage has one gene for each task and each gene is an integer whose values represent a fault tolerance mechanism being used in the system. For instance, consider a task set ${\tau_1,\tau_2,\tau_3}$ being mapped onto a platform that supports LS, DMR and TMR - the chromosome would consist of three genes each limited to integers in the range $[0,2]$. 
+	
+	The RA fitness function (FF) must determine the fitness (QoS) for each configuration represented by a chromosome. The FF creates a new task set using the transformations in Table~\ref{t:transform} as well as the necessary constraints. The FF then creates a chromosome template based on the transformed task set. Each task and replica in the task set must be represented by a gene. A list of cores that support the assigned FTM is built for each task and this provides the bound of the gene values in the chromosome. 
+	A unique MS stage is instantiated for each chromosome in the RA stage population. The MS stage receives a chromosome indicating the core assignment for each task as an index into the legal assignment list. The MS stage then checks if any constraints are violated and passes the task set on to the schedulability analysis. 
 	
 	
 \subsection{Performance Optimization}
 
-1 thread per MS stage
-\texttt{GABreeder}
+The performance overhead of nesting one lengthy search inside another is problematic. The performance impact was resolved by modifying the RA stage to request a new thread from a pool whenever calling the RA fitness function. Using 20 threads on a 30 core system resulted in significant speedups and makes this a much more practical implementation given sufficient computing resources. We furthermore implement early exiting if a solution is found with perfect QoS or the best QoS has not been improved in four generations.
+
+\subsection{Problems with Approach}
+
+	Any task set which cannot be scheduled in a lockstep system using two modes will also remain unschedulable in four modes and vice versa. 
+	If there are insufficient resources to support HI task execution than the QoS does not matter. 
+	Intuitively, a multicore system which uses ODR or combines ODR techniques with LS should see QoS improvements over a system that only uses LS. 
+	We also expect that the schedulability remain more or less the same since the system resources available to HI tasks remain largely unchanged.
+
+	Consider a system with four processing cores and only using DMR. 
+	The system should always be schedulable if a solution exists for a two core LS system because the number of cores doubles as does the number of tasks. 
+	That is, the available resources appears the same to a HI task since it will consume two processing cores or one LS core.
+
+	What we see in practice is that the two stage GA struggles to find solutions to problems with four cores using DMR that were easily found for LS on two cores.
+	One way to resolve this problem is to implement a greedy bin-packing heuristic \cite{al2015enhanced} to place the HI tasks and then use the GA to optimize only LO task placement. 
+	\todojc{Would be nice to have tried this out in time}
+	
+	
 
 % The initial scheduling algorithm will be taken from Bolchini and  Miele \cite{bolchini2013reliability}. A genetic algorithm (GA) is used to explore the design space. The general details that follow on genetic algorithms are based on the overview in \cite{geatbx}.
-% 
-% Figure \ref{f:ga_ov} shows an overview of how to implement a genetic algorithm. There are two stages of GA in the given process. First tasks must be organized into groups of tasks, and each group of tasks must be assigned a fault detection technique or fault tolerance technique. DMR Fingerprinting is an example of a detection mechanism. This work will remain agnostic about the method of implementation of fault tolerance. We assume that appropriate hardening measures are applied to a single core.
+%  There are two stages of GA in the given process. First tasks must be organized into groups of tasks, and each group of tasks must be assigned a fault detection technique or fault tolerance technique. DMR Fingerprinting is an example of a detection mechanism. This work will remain agnostic about the method of implementation of fault tolerance. We assume that appropriate hardening measures are applied to a single core.
 %  
-% \begin{figure}[h]
-% \centering
-% \includegraphics[width=12cm]{ga_ov}
-% \caption{The basic structure of a genetic algorithm \cite{geatbx}.} 
-% \label{f:ga_ov}
-% \end{figure}
+
 % 
 % Once a population of various groupings and associated fault-handling mechanisms has been generated it is necessary to test their fitness. This must be done by generating a system schedule for each member of the population. 
 % 

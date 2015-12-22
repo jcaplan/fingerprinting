@@ -343,7 +343,7 @@ public class GenCoreMon extends GenCore{
 				"			if (status.failed_reg & (mask = 1 << i)) {\n" + 
 				"				/* assume only one failure possible */\n" + 
 				"				failedTaskID = REPOSgetTaskID(mask);\n" + 
-				"				REPOSTaskReset(failedTaskID);" + 
+				"				REPOSTaskReset(failedTaskID);\n" + 
 				"				postDmaMessage(failedTaskID, true);\n" + 
 				"				break;\n" + 
 				"			}\n" + 

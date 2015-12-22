@@ -375,7 +375,7 @@ public class SchedAnalysis {
 			}
 		}
 		
-		double avg = 0;
+		double avg = 1;
 		for(int mode : modes){
 			results[mode] /= (double)numLoTasks;
 			avg += results[mode];
@@ -383,7 +383,7 @@ public class SchedAnalysis {
 //		System.out.println(String.format("OV: %f, TF: %f, HI: %f",results[modeOV],results[modeTF],
 //				results[modeHI]));
 		
-		return avg/3;
+		return avg/4;
 	}
 
 }
