@@ -147,7 +147,7 @@ under the constraints:
 \end{subequations}
 
 \subsection{Four Mode QoS Results for Single Core}
-
+\label{s:singlecore-results}
 	We defined QoS to be the percentage of LO criticality tasks not dropped in any given mode. The QoS for the LO mode is always 1. Random task sets were generated according to the UUnifast algorithm \cite{bini2005measuring} such that LO mode utilization is approximately 80\% on all cores. The ratio $C(HI)/C(LO)$ is determined randomly from the range $[1,2]$ and periods were chosen at random from the set ${10,20,40,50,100,200,400,500,1000}$. For each test, the average of 1000 systems is presented.
 
 \addfigure{0.6}{final-allModesNoF.pdf}{Modes OV and TF achieve better QoS than HI for all utilizations ($F$ not bounded).}{f:util_basic}
@@ -300,53 +300,86 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 	There is not a generally well defined methodology for selecting these parameters. These experiments will evolve a population of size 100 over 30 generations. 80\% of chromosomes are selected from the previous generation using tournament selection. The tournament selection itself passes on the best chromosomes with a probability of 80\%. The crossover rate is 40\% and the mutation rate is 50\%.
 
 \subsection{Two Stage GA}
-	The mapping and scheduling algorithm follows the procedure used in \cite{bolchini2013reliability} and \cite{kang2014reliability}. Two stages of genetic algorithms (GA) are used to explore both the techniques used to harden each task and the core assignment for each task and its replicas. The basic flow is shown in Figure~\ref{f:dse}. The GA is implemented using \cite{jgap}  The Reliability Aware (RA) stage is responsible for mapping a fault tolerance mechanism to each task. The RA stage then generates a chromosome structure for the Mapping and Scheduling (MS) stage. The MS stage attempts to find an allocation for each task onto a core that maximizes the average QoS across all modes in the system using the response time anlaysis in Section~\ref{s:mcfts}.
+	The mapping and scheduling algorithm follows the procedure used in \cite{bolchini2013reliability} and \cite{kang2014reliability}. 
+	Two stages of genetic algorithms (GA) are used to explore both the techniques used to harden each task and the core assignment for each task and its replicas. 
+	The basic flow is shown in Figure~\ref{f:dse}. 
+	The GA is implemented using \cite{jgap}.  
+	The Reliability Aware (RA) stage is responsible for mapping a fault tolerance mechanism to each task. 
+	The RA stage then generates a chromosome structure for the Mapping and Scheduling (MS) stage. 
+	The MS stage attempts to find an allocation for each task onto a core that maximizes the average QoS across all modes in the system using the response time anlaysis in Section~\ref{s:mcfts}.
 	
 \addfigure{0.6}{dse.pdf}{Overview of DSE workflow using nested genetic algorithm searches}{f:dse}
 	
-	The chromosome in the RA stage has one gene for each task and each gene is an integer whose values represent a fault tolerance mechanism being used in the system. For instance, consider a task set ${\tau_1,\tau_2,\tau_3}$ being mapped onto a platform that supports LS, DMR and TMR - the chromosome would consist of three genes each limited to integers in the range $[0,2]$. 
+	The chromosome in the RA stage has one gene for each task and each gene is an integer representing a fault tolerance mechanism being used in the system. 
+	For instance, consider a task set with three HI tasks ${\tau_1,\tau_2,\tau_3}$ being mapped onto a platform that supports LS, DMR and TMR - the chromosome would consist of three genes each limited to integers in the range $[0,2]$. 
 	
-	The RA fitness function (FF) must determine the fitness (QoS) for each configuration represented by a chromosome. The FF creates a new task set using the transformations in Table~\ref{t:transform} as well as the necessary constraints. The FF then creates a chromosome template based on the transformed task set. Each task and replica in the task set must be represented by a gene. A list of cores that support the assigned FTM is built for each task and this provides the bound of the gene values in the chromosome. 
-	A unique MS stage is instantiated for each chromosome in the RA stage population. The MS stage receives a chromosome indicating the core assignment for each task as an index into the legal assignment list. The MS stage then checks if any constraints are violated and passes the task set on to the schedulability analysis. 
+	The RA fitness function (FF) must determine the fitness (QoS) for each configuration of fault tolerance mechanisms. 
+	The FF creates a new task set using the transformations in Table~\ref{t:transform} as well as the necessary constraints. 
+	The FF then creates a chromosome template for the MS stage based on the transformed task set. 
+	Given the number of processors that a task can be mapped to, $n$, it is possible to determine for each FTM a mapping rule that generates a unique configuration from an integer. 
+	Each gene in the chromosome is an integer representing a unique allocation for a task and its replicas. 
+	It is important that the task and replicas are represented by a single gene or else most chromosomes will result in illegal configurations after mutation and crossover. 
+	Table~\ref{t:mschrom} shows the number of configurations for each type of FTM and how to derive a unique allocation as a function of the number of candidate cores ($n$) from a random integer $x$. 
+	The conversion rule provides an index into an ordered list of the cores. After each core is allocated it is removed from the list.
+	
+	For example, consider a task and two replicas using TMR in a sytem with 5 processing cores. 
+	All three tasks must go on different cores. 
+	The number of configurations is $5 \cdot 4 \cdot 3 = 60$. 
+	The GA will generate a random integer in the range $[0,59]$ representing a unique mapping of the three tasks onto the system, say 47. 
+	The number 47 is converted using the TMR rule to $(47/(4\cdot3),(47\bmod(4\cdot3))/3,47\bmod3) = (3,3,1)$. 
+	Suppose the core list is $\{\pi_1,\pi_2,\pi_3,\pi_4,\pi_5\}$. 
+	The first copy is allocated to $\pi_3$ and $\pi_3$ is then removed from the list. 
+	The next copy is assigned to $\pi_4$ (now at index 3) and the third copy is assigned to $\pi_1$. 
+	
+	\begin{table}
+\caption{Rules for generating unique MS configurations from an integer $x$ for $n$ cores}
+\label{t:mschrom}
+\centering
+	\begin{tabular}{@{}l|cc@{}}
+	\toprule
+	Technique & Configurations & Conversion Rule \\
+	\bottomrule
+	none & $n$ & $(x)$\\
+	LS & $n$ & $(x)$ \\
+	DMR & $n(n-1)$ & $(\frac{x}{x-1},x\bmod{x-1})$ \\
+	TMR & $n(n - 1)(n-2)$ & $(\frac{x}{(n - 1)(n - 2)}, \frac{x\bmod ((n-1)*(n-2))}{n-2}, x \bmod (n-2))$ \\
+	PR & $n^2 (n-1)$ & $(\frac{x}{n(n - 1)}, \frac{x \bmod (n*(n-1))}{n-1}, x \bmod (n-1))$ \\
+	\end{tabular}
+\end{table} 	
+
+	A unique MS stage is instantiated for each chromosome in the RA stage population. 
+	The MS stage creates a schedule based on the chromosome and passes it along to the schedulability analysis. 
 	
 	
 \subsection{Performance Optimization}
 
-The performance overhead of nesting one lengthy search inside another is problematic. The performance impact was resolved by modifying the RA stage to request a new thread from a pool whenever calling the RA fitness function. Using 20 threads on a 30 core system resulted in significant speedups and makes this a much more practical implementation given sufficient computing resources. We furthermore implement early exiting if a solution is found with perfect QoS or the best QoS has not been improved in four generations.
+	The performance overhead of nesting one lengthy search inside another is problematic. 
+	The performance impact was resolved by modifying the RA stage to request a new thread from a pool whenever calling the RA fitness function. 
+	Using 20 threads on a 30 core system resulted in significant speedups and makes this a much more practical implementation given sufficient computing resources. 
+	We furthermore implement early exiting if a solution is found with perfect QoS or the best QoS has not been improved in four generations.
 
-\subsection{Problems with Approach}
+\subsection{Results}
 
-	Any task set which cannot be scheduled in a lockstep system using two modes will also remain unschedulable in four modes and vice versa. 
-	If there are insufficient resources to support HI task execution than the QoS does not matter. 
-	Intuitively, a multicore system which uses ODR or combines ODR techniques with LS should see QoS improvements over a system that only uses LS. 
-	We also expect that the schedulability remain more or less the same since the system resources available to HI tasks remain largely unchanged.
 
-	Consider a system with four processing cores and only using DMR. 
-	The system should always be schedulable if a solution exists for a two core LS system because the number of cores doubles as does the number of tasks. 
-	That is, the available resources appears the same to a HI task since it will consume two processing cores or one LS core.
+	Three platforms were tested to verify the mapping: one system (ODR) with four cores using only DMR, the second (LS) with two lockstep cores, and the third (FP) using one lockstep core and two processing cores using DMR. 
+	The same task generation algorithm was used as in Section~\ref{s:singlecore-results}. 
+	The systems were tested with 100 task sets with between 20 and 40 tasks, half of which were HI, an average utilization of 80\%, and a maximum WCET factor ($C(HI)/C(LO)$) of 3. 
+	Note that for the ODR and LS systems, the RA stage could be skipped for efficiency purposes as there is only one available mechanism.
 
-	What we see in practice is that the two stage GA struggles to find solutions to problems with four cores using DMR that were easily found for LS on two cores.
-	One way to resolve this problem is to implement a greedy bin-packing heuristic \cite{al2015enhanced} to place the HI tasks and then use the GA to optimize only LO task placement. 
-	\todojc{Would be nice to have tried this out in time}
+	Any system that is schedulable for one system should be schedulable for all three. 
+	They should only differ (possibly) in the QoS of each mode. 
+	Furthermore, we expect the QoS of the ODR and FP systems to be higher than that of the LS.  
+
+	Figure~\ref{f:platform-sched} shows the schedulability results for the three platforms. 
+	The schedulability of ODR and LS were 69\% and 70\% respectivey. 
+	In three cases, the tool failed to find a solution with ODR for a system that passed with LS while only two cases occurred where a LS solution was not found for a system that passed with ODR. 
+	The schedulability for the FP platform was 31\% suggesting poor calibration of the GA stages. However, integration with a code generation tool would ideally allow for a very short run time which most recalibrations would significantly extend. 
+	Overall, this suggests that the use of genetic algorithms may be a useful starting point but that other semi-random unguided heuristics should also be explored in future work.
 	
+	Figure~\ref{f:platform-sched} shows the results for average QoS only for task sets successfully scheduled on all three platforms. 
+	Here we see that ODR does indeed provide better QoS compared to LS.
+	FP provides better QoS in the first three modes compared to LS but not in the HI mode.
 	
-
-% The initial scheduling algorithm will be taken from Bolchini and  Miele \cite{bolchini2013reliability}. A genetic algorithm (GA) is used to explore the design space. The general details that follow on genetic algorithms are based on the overview in \cite{geatbx}.
-%  There are two stages of GA in the given process. First tasks must be organized into groups of tasks, and each group of tasks must be assigned a fault detection technique or fault tolerance technique. DMR Fingerprinting is an example of a detection mechanism. This work will remain agnostic about the method of implementation of fault tolerance. We assume that appropriate hardening measures are applied to a single core.
-%  
-
-% 
-% Once a population of various groupings and associated fault-handling mechanisms has been generated it is necessary to test their fitness. This must be done by generating a system schedule for each member of the population. 
-% 
-% The generation of the schedule is itself done with a second round of GA. Each task is assigned to an appropriate core based on the fault-handling requirements of its group. The group adopts the most stringent requirements of any of its members. Various mappings are generated as the GA population. Then it is necessary to order the tasks on each core. This is complicated by the fact that there may be inter-core data dependencies. For now, we will neglect the overhead associated with data transfer between cores.
-% 
-% The implementation details of the genetic algorithm will be adopted from \cite{bolchini2013reliability}. Tournament selection and single-point crossover operator recombination will be used. Mutations will be applied randomly. There are four mutations at the task level: change the group of a task, split a group in two, join two groups, or change the fault-management technique applied to a group. The mutation for the mapping phase consists of switching a task to another processor that can meet the assigned fault-management requirements.
-% 
-% Tournament selection means choosing a subset of the population and selecting the most fit member. This is repeated as many times as necessary. Single-point crossover cuts two parent chromosomes into two pieces and then exchanges the second substrings between the chromosomes. 
-% 
-% The initial parameters for the GA will be the ones suggested in \cite{bolchini2010multi}. The crossover rate is 80\%, the mutation rate is 10\%. The program will run for 30 generations. The population size will be between one and two thousand.
-% 
-% The JGAP library \cite{jgap} is used to implement the genetic algorithm. 
-
-
+\addfigure{1}{platform-sched.pdf}{Schedulability results for three different platforms}{f:platform-sched}
+\addfigure{1}{platform-qos.pdf}{QoS of the four modes for three different platforms.}{f:platform-qos}
 

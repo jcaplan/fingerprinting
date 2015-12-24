@@ -3,9 +3,10 @@ package codegen.test;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 
+import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Random;
-
 
 import codegen.map.Application;
 import codegen.map.DMR;
@@ -117,18 +118,31 @@ public class PlatformTest {
 		random = new Random(randomSeed);
 		
 		ArrayList<Processor> lsList = addProcessors(0,2);
+		ArrayList<Processor> odrList = addProcessors(4,0);
 		ArrayList<Processor> fpList = addProcessors(2,1);
-
 		ArrayList<FaultMechanism> ls = new ArrayList<>();
 		ls.add(new Lockstep());
 		ArrayList<FaultMechanism> odr = new ArrayList<>();
 		odr.add(new DMR());
-		odr.add(new Lockstep());
+		ArrayList<FaultMechanism> fp = new ArrayList<>();
+		fp.add(new DMR());
+		fp.add(new Lockstep());
 		
 		
-		double[] sched = new double[2];
+		double[] sched = new double[3];
 		int LS = 0;
-		int FP = 1;
+		int ODR = 1;
+		int FP = 2;
+		
+
+		
+		File lsResults = new File("lsResults.csv");
+		File odrResults = new File("odrResults.csv");
+		File fpResults = new File("fpResults.csv");
+		PrintStream lsPS = new PrintStream(lsResults);
+		PrintStream odrPS = new PrintStream(odrResults);
+		PrintStream fpPS = new PrintStream(fpResults);
+		
 		for(int i = 0; i < iter; i++){
 			Application app = Application.generateRandomApplication(minNumTasks, minHiPercent, avgDefaultUtil,
 					2, 1, maxWcetFactor,random);
@@ -150,39 +164,83 @@ public class PlatformTest {
 			
 			mapper = new Mapper();
 			mapper.setApplication(app);
-			mapper.setProcList(fpList);
+			mapper.setProcList(odrList);
 			mapper.setFTMS(odr);
 			mapper.findSchedule();
-			Schedule fpSched = mapper.getBestSchedule();
-			if(fpSched != null){
-				sched[FP]++;
-				fpSched = mapper.getBestSchedule();
+			Schedule odrSched = mapper.getBestSchedule();
+			if(odrSched != null){
+				sched[ODR]++;
 				System.out.println("odr scheduled");
 			} else {
 				System.out.println("odr failed");
 			}
 			
+			mapper = new Mapper();
+			mapper.setApplication(app);
+			mapper.setProcList(fpList);
+			mapper.setFTMS(fp);
+			mapper.findSchedule();
+			Schedule fpSched = mapper.getBestSchedule();
+			if(fpSched != null){
+				sched[FP]++;
+				System.out.println("fp scheduled");
+			} else {
+				System.out.println("fp failed");
+			}
+			
+			boolean success = (lsSched != null) || (odrSched != null) || (fpSched != null);
 			if(lsSched != null){
 				double[] qos = lsSched.getQosPerMode();
 				System.out.println("ls qos [LO,TF,OV,HI]: ");
 				for(int j = 0; j < qos.length; j++){
 					System.out.println(qos[j] + ", ");
+					lsPS.print(qos[j] + ",");
 				}
+				lsPS.println("");
 				System.out.println(lsSched);
+			} else if(success){
+				lsPS.println("0,0,0,0");
+			}
+			if(odrSched != null){
+				double[] qos = odrSched.getQosPerMode();
+				System.out.println("odr qos [LO,TF,OV,HI]: ");
+				for(int j = 0; j < qos.length; j++){
+					System.out.println(qos[j] + ", ");
+					odrPS.print(qos[j] + ",");
+				}
+				odrPS.println("");
+				System.out.println(odrSched);
+			}  else if (success) {
+				odrPS.println("0,0,0,0");
 			}
 			if(fpSched != null){
 				double[] qos = fpSched.getQosPerMode();
 				System.out.println("fp qos [LO,TF,OV,HI]: ");
 				for(int j = 0; j < qos.length; j++){
 					System.out.println(qos[j] + ", ");
+					fpPS.print(qos[j] + ",");
 				}
-				System.out.println(fpSched);
-			}	
+				fpPS.println("");
+				System.out.println(odrSched);
+			} else if(success){
+				fpPS.println("0,0,0,0");
+			}
+			
 		}
+		
 		sched[LS] /= iter;
+		sched[ODR] /= iter;
 		sched[FP] /= iter;
 		
-		System.out.println("schedulability LS: " + sched[LS] + "FP: " + sched[FP]);
+		fpPS.println("schedulability: " + sched[FP]);
+		odrPS.println("schedulability: " + sched[ODR]);
+		lsPS.println("schedulability: " + sched[LS]);
+		
+		fpPS.close();
+		odrPS.close();
+		lsPS.close();
+		
+		System.out.println("schedulability LS: " + sched[LS] + "FP: " + sched[ODR]);
 	}
 
 

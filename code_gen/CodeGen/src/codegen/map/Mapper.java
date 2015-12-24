@@ -79,6 +79,44 @@ public class Mapper {
 			bestSchedule = msFF.getBestSchedule();
 			fitness = msEngine.getBestSolutionFitness();
 			bestTechniqueMap = null;
+		} else 	if (ftms.size() == 1 && ftms.get(0) instanceof DMR) {
+			// Skip the first stage, go around mapper
+			Map<Task, ArrayList<Processor>> legalMappings = new HashMap<>();
+			Map<Task, FaultMechanism> techniqueMap = new HashMap<>();
+			DMR dmr = new DMR();
+			for (Task t : app.getTaskList()) {
+				legalMappings.put(t, procList);
+				techniqueMap.put(t, dmr);
+			}
+			Map<Task,Task[]> replicas = new HashMap<>();
+			ArrayList<Task> taskList = (ArrayList<Task>) app.getTaskList().clone();
+			int numOriginalTasks = taskList.size();
+			for (int i = 0; i < numOriginalTasks; i++) {
+				Task t = taskList.get(i);
+				if (t.criticality == Task.HI) {
+					FaultMechanism mec = dmr;
+					mec.updateTaskList(taskList, i, replicas, techniqueMap);
+				}
+			}
+			MapConfiguration.reset();
+			MapConfiguration msConfig = new MapConfiguration("msEngine"
+					+ RAFitnessFunction.count++);
+			Chromosome sampleChromosome = null;			
+			try {
+				sampleChromosome = RAFitnessFunction.createMSChromosome(
+						msConfig, app.getTaskList(), legalMappings,techniqueMap);
+			} catch (InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+
+			MSFitnessFunction msFF = new MSFitnessFunction(app.getTaskList(),
+					replicas, techniqueMap, legalMappings, procList);
+			GAEngine msEngine = new GAEngine(msFF, msConfig, sampleChromosome,false,30);
+
+			msEngine.findSolution();
+			bestSchedule = msFF.getBestSchedule();
+			fitness = msEngine.getBestSolutionFitness();
+			bestTechniqueMap = null;
 		} else {
 			RAConfiguration.reset();
 			RAConfiguration reliabilityConfig = new RAConfiguration("raConfig" + count++);
@@ -90,7 +128,7 @@ public class Mapper {
 				e.printStackTrace();
 			}
 	
-			GAEngine raEngine = new GAEngine(raFF,reliabilityConfig,sampleChromosome,true,30);		
+			GAEngine raEngine = new GAEngine(raFF,reliabilityConfig,sampleChromosome,false,30);		
 			raEngine.findSolution();
 			bestSchedule = raFF.getBestSchedule();
 			fitness = raEngine.getBestSolutionFitness();
