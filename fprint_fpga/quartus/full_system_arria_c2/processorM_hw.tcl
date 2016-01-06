@@ -209,6 +209,8 @@ proc compose { } {
 
     add_instance reset_monitor_0 reset_monitor 1.0
 
+    add_instance nios_custom_instr_floating_point_2_0 altera_nios_custom_instr_floating_point_2 100.99.98.97
+
     # connections and connection parameters
     add_connection clk.clk cpuM.clk clock
 
@@ -327,6 +329,20 @@ proc compose { } {
 
     add_connection cpuM.d_irq reset_monitor_0.irq0 interrupt
     set_connection_parameter_value cpuM.d_irq/reset_monitor_0.irq0 irqNumber {13}
+
+    add_connection cpuM.custom_instruction_master nios_custom_instr_floating_point_2_0.s1 nios_custom_instruction
+    set_connection_parameter_value cpuM.custom_instruction_master/nios_custom_instr_floating_point_2_0.s1 CIName {nios_custom_instr_floating_point_2_0}
+    set_connection_parameter_value cpuM.custom_instruction_master/nios_custom_instr_floating_point_2_0.s1 CINameUpgrade {}
+    set_connection_parameter_value cpuM.custom_instruction_master/nios_custom_instr_floating_point_2_0.s1 arbitrationPriority {1}
+    set_connection_parameter_value cpuM.custom_instruction_master/nios_custom_instr_floating_point_2_0.s1 baseAddress {224.0}
+    set_connection_parameter_value cpuM.custom_instruction_master/nios_custom_instr_floating_point_2_0.s1 opcodeExtensionUpgrade {-1}
+
+    add_connection cpuM.custom_instruction_master nios_custom_instr_floating_point_2_0.s2 nios_custom_instruction
+    set_connection_parameter_value cpuM.custom_instruction_master/nios_custom_instr_floating_point_2_0.s2 CIName {nios_custom_instr_floating_point_2_0_1}
+    set_connection_parameter_value cpuM.custom_instruction_master/nios_custom_instr_floating_point_2_0.s2 CINameUpgrade {}
+    set_connection_parameter_value cpuM.custom_instruction_master/nios_custom_instr_floating_point_2_0.s2 arbitrationPriority {1}
+    set_connection_parameter_value cpuM.custom_instruction_master/nios_custom_instr_floating_point_2_0.s2 baseAddress {248.0}
+    set_connection_parameter_value cpuM.custom_instruction_master/nios_custom_instr_floating_point_2_0.s2 opcodeExtensionUpgrade {-1}
 
     # exported interfaces
     add_interface philosopher_clk_in clock sink

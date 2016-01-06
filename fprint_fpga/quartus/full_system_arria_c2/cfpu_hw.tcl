@@ -38,20 +38,22 @@ set_module_property ALLOW_GREYBOX_GENERATION false
 add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
 set_fileset_property QUARTUS_SYNTH TOP_LEVEL cfpu
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
-add_fileset_file cfpu.v VERILOG PATH ../../src/cfpu.v TOP_LEVEL_FILE
-add_fileset_file comp_registers.v VERILOG PATH ../../src/comp_registers.v
-add_fileset_file comparator.v VERILOG PATH ../../src/comparator.v
-add_fileset_file csr_registers.v VERILOG PATH ../../src/csr_registers.v
-add_fileset_file fprint_registers.v VERILOG PATH ../../src/fprint_registers.v
+add_fileset_file cfpu.v VERILOG PATH ../../src/new_design/comparator/cfpu.v TOP_LEVEL_FILE
+add_fileset_file comparator.v VERILOG PATH ../../src/new_design/comparator/comparator.v
+add_fileset_file csr_registers.v VERILOG PATH ../../src/new_design/comparator/csr_registers.v
+add_fileset_file fprint_registers.v VERILOG PATH ../../src/new_design/comparator/fprint_registers.v
+add_fileset_file fifo.v VERILOG PATH ../../src/new_design/comparator/fifo.v
+add_fileset_file checkpoint.v VERILOG PATH ../../src/new_design/comparator/checkpoint.v
 
 add_fileset SIM_VERILOG SIM_VERILOG "" ""
 set_fileset_property SIM_VERILOG TOP_LEVEL cfpu
 set_fileset_property SIM_VERILOG ENABLE_RELATIVE_INCLUDE_PATHS false
-add_fileset_file cfpu.v VERILOG PATH ../../src/cfpu.v
-add_fileset_file comp_registers.v VERILOG PATH ../../src/comp_registers.v
-add_fileset_file comparator.v VERILOG PATH ../../src/comparator.v
-add_fileset_file csr_registers.v VERILOG PATH ../../src/csr_registers.v
-add_fileset_file fprint_registers.v VERILOG PATH ../../src/fprint_registers.v
+add_fileset_file cfpu.v VERILOG PATH ../../src/new_design/comparator/cfpu.v 
+add_fileset_file comparator.v VERILOG PATH ../../src/new_design/comparator/comparator.v
+add_fileset_file csr_registers.v VERILOG PATH ../../src/new_design/comparator/csr_registers.v
+add_fileset_file fprint_registers.v VERILOG PATH ../../src/new_design/comparator/fprint_registers.v
+add_fileset_file fifo.v VERILOG PATH ../../src/new_design/comparator/fifo.v
+add_fileset_file checkpoint.v VERILOG PATH ../../src/new_design/comparator/checkpoint.v
 
 
 # 

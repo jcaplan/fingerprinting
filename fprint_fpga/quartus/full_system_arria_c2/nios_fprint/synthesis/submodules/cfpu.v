@@ -1,265 +1,177 @@
-`include "crc_defines.v"
+`include "defines.v"
 
 module cfpu(
-	input															clk,
-	input															reset,
+	input										clk,
+	input										reset,
 
-	input 		[(`COMPARATOR_ADDRESS_WIDTH-1):0]					fprint_address,
-	input															fprint_write,
-	input 		[(`NIOS_DATA_WIDTH-1):0]							fprint_writedata,
-	output															fprint_waitrequest,
-
-	input 		[(`COMP_CSR_WIDTH-1):0]								csr_address,
-	input															csr_read,
-	output wire [(`NIOS_DATA_WIDTH-1):0]							csr_readdata,
-	input															csr_write,
-	input 		[(`NIOS_DATA_WIDTH-1):0]							csr_writedata,
-	output wire														csr_waitrequest,
-    
-   	output										oflow_write,
-	output [`NIOS_DATA_WIDTH-1 : 0]		oflow_writedata,
-	output [`NIOS_ADDRESS_WIDTH-1 : 0]	oflow_address,
-	input											oflow_waitrequest,
+	input [(`COMP_CSR_WIDTH-1):0]				csr_address,
+	input										csr_read,
+	output [(`NIOS_DATA_WIDTH-1):0]				csr_readdata,
+	input										csr_write,
+	input [(`NIOS_DATA_WIDTH-1):0]				csr_writedata,
+	output										csr_waitrequest,
 	
-	output wire														irq
+	input [(`COMPARATOR_ADDRESS_WIDTH-1):0]		fprint_address,
+	input										fprint_write,
+	input [(`NIOS_DATA_WIDTH-1):0]				fprint_writedata,
+	output										fprint_waitrequest,
+    
+   	output										checkpoint_write,
+	output [`NIOS_DATA_WIDTH-1 : 0]				checkpoint_writedata,
+	output [`NIOS_ADDRESS_WIDTH-1 : 0]			checkpoint_address,
+	input										checkpoint_waitrequest,
+	
+	output										irq
 );
 
+	wire [(`CRC_KEY_WIDTH-1):0]			comparator_task_id;
+	wire [1:0]							comparator_logical_core_id;
+	wire								comparator_nmr;
+	wire[`CRC_RAM_ADDRESS_WIDTH-1 : 0]	csr_task_maxcount;
+	wire 								comparator_status_write;
+	wire 		 						comparator_mismatch_detected;
+	wire 								csr_status_ack;
+	wire [(`CRC_KEY_WIDTH-1):0]			fprint_task_id;
+	wire [(`CRC_KEY_WIDTH-1):0]			fprint_physical_core_id;
+	wire [1:0]							fprint_logical_core_id;
+	wire [(`CRC_KEY_SIZE-1):0]			fprint_nmr;
+	wire [1:0]							checkpoint_logical_core_id;
+	wire [(`CRC_KEY_WIDTH-1):0]			checkpoint_physical_core_id;
+	wire [`CRC_WIDTH - 1: 0]			fprint_0;
+	wire [`CRC_WIDTH - 1: 0]			fprint_1;
+	wire [`CRC_WIDTH - 1: 0]			fprint_2;
+	wire [(`CRC_KEY_SIZE-1):0]			fprint_checkin;
+	wire								fprint_reset_task;
+	wire								fprint_reset_task_ack;
+	wire								comparator_checkpoint;
+	wire								checkpoint_ack;
 
-wire	exception_reg_sel;
-wire	success_reg_sel;
-wire	fail_reg_sel;
-wire	start_p_sel;
-wire	end_p_sel;
-wire	core_assignment_sel;
-wire	[(`CRC_KEY_WIDTH-1):0] dir_pointer_offset;
-wire	[3:0] core_id;
-wire	[3:0] core_assignment_offset;
-wire    [3:0] core_assignment_data;
-wire 	core_a_ack;
+csr_registers csr_registers(
 
-
-wire  									comp_status_ack;
-wire [(`CRC_KEY_WIDTH-1):0]			    comp_task;
-
-
-
-wire[3:0] 									physical_core_id;
-wire[3:0]									fprint_task_id;
-wire 		 								logical_core_id;
-
-wire [`CRC_RAM_ADDRESS_WIDTH-1:0]     		head_tail_data;
-wire [(`CRC_KEY_WIDTH-1):0]           		head_tail_offset;
-wire 										set_head_tail;
-wire 										head_tail_ack;
-wire [`CRC_RAM_ADDRESS_WIDTH-1:0]     		fprint_head_pointer;
-
-
-wire 										increment_head_pointer;
-wire 										increment_hp_ack;
-
-
-wire [`CRC_RAM_ADDRESS_WIDTH-1:0]			start_pointer_ex;
-wire [`CRC_RAM_ADDRESS_WIDTH-1:0]  			end_pointer_ex;
-wire [`CRC_RAM_ADDRESS_WIDTH-1:0]			start_pointer_comp;
-wire [`CRC_RAM_ADDRESS_WIDTH-1:0]       	end_pointer_comp;
-
-
-
-wire  									head0_matches_head1;
-wire 									tail0_matches_head0;
-wire 									tail1_matches_head1;
-wire  [`CRC_RAM_ADDRESS_WIDTH-1:0]		comp_tail_pointer0;
-wire  [`CRC_RAM_ADDRESS_WIDTH-1:0] 		comp_tail_pointer1;
-wire  [`CRC_WIDTH - 1: 0] 				fprint0;
-wire  [`CRC_WIDTH - 1: 0]              	fprint1;
-wire  [(`CRC_KEY_SIZE-1):0]				fprints_ready;
-wire  [(`CRC_KEY_SIZE-1):0] 			fprint_checkin;
-wire  [(`CRC_KEY_SIZE-1):0] 			oflow_checkin;
-wire 									comp_increment_tail_pointer;
-wire 									comp_reset_fprint_ready;
-wire 									reset_fprint_ack;
-wire 									comp_task_verified;
-wire 									fprint_reg_ack;
-wire 									comp_mismatch_detected;
-wire 									comp_status_write;
-
-wire									csr_maxcount_write;
-wire [(`NIOS_DATA_WIDTH-1):0]			csr_maxcount_writedata;
-
-wire									comp_reset_task;
-wire									reset_task;
-
-csr_registers csr_register_block(
-	
-	//From processor
 	clk,
 	reset,	
+	
+	//processor
 	csr_address,
 	csr_read,
 	csr_readdata,
 	csr_write,
 	csr_writedata,
 	csr_waitrequest,
+
+	//comparator	
+	comparator_task_id,
+	comparator_logical_core_id,
 	
-	//From comparator
-	comp_status_write,
-	comp_status_ack,
-	comp_task,
-	comp_mismatch_detected,
+	comparator_nmr,
+	csr_task_maxcount,
 
+	comparator_status_write,
+	comparator_mismatch_detected,
+	csr_status_ack,
 
-
-	physical_core_id,
+	//fprint_registers	
 	fprint_task_id,
-	logical_core_id,
-    
-    csr_maxcount_write,
-    csr_maxcount_writedata,
+	fprint_physical_core_id,
+	fprint_logical_core_id,
+	
+	fprint_nmr,
 
-	head_tail_data,
-	head_tail_offset,
-	set_head_tail,
-	head_tail_ack,
-	start_pointer_ex,
-	end_pointer_ex,
-	start_pointer_comp,
-	end_pointer_comp,
+	//checkpoint
+	checkpoint_logical_core_id,
+	checkpoint_physical_core_id,
+
+	//irq
 	irq
 );
 
-fprint_registers fprint_reg(
+comparator comparator(
 
-	//From processor
+	clk,
+	reset,	
+
+	//global
+	comparator_task_id,
+	comparator_logical_core_id,
+
+	//csr_registers		
+	comparator_nmr,
+	csr_task_maxcount,
+
+	comparator_status_write,
+	comparator_mismatch_detected,
+	csr_status_ack,
+
+	
+	//fprint_registers
+	fprint_0,
+	fprint_1,
+	fprint_2,
+	
+	fprint_checkin,
+	
+	fprint_reset_task,
+	fprint_reset_task_ack,
+	
+	//checkpoint
+	comparator_checkpoint,
+	checkpoint_ack
+);
+
+
+fprint_registers fprint_registers(
+
 	clk,
 	reset,
+
+	//processors
 	fprint_address,
 	fprint_write,
 	fprint_writedata,
 	fprint_waitrequest,
 
-
-	//CORE ASSIGNMENT REGISTER USED HERE, STORED HERE
-	physical_core_id,
+	//csr_registers
 	fprint_task_id,
-	logical_core_id,
-
-	fprint_head_pointer,
-	increment_head_pointer,
-	increment_hp_ack,
-	fprint_checkin,
-
-	comp_tail_pointer0,
-	comp_tail_pointer1,
-	fprint0,
-	fprint1,
-	comp_task_verified,
-	fprint_reg_ack,
-	comp_task
-
-
-);
-
-oflow_registers oflow_reg(
-
-    clk,
-    reset,
-
-    oflow_write,
-    oflow_writedata,
-    oflow_address,
-    oflow_waitrequest,
-
-    //from CSR when setting max count
-    csr_maxcount_write,
-    csr_maxcount_writedata,
+	fprint_physical_core_id,
+	fprint_logical_core_id,
 	
-	fprint_checkin,
-	oflow_checkin,
+	fprint_nmr,
 
-    increment_hp_ack,
-    comp_increment_tail_pointer,
-
-    physical_core_id,
-
-    fprint_task_id,
-    comp_task,
-
-    logical_core_id,
-	reset_task
-);
-
-comp_registers comp_reg(
-
-	//From processor
-	//From processor
-	clk,
-	reset,
-
-	head_tail_data,
-	head_tail_offset,
-	set_head_tail,
-	head_tail_ack,
-
-	logical_core_id,
-	fprint_task_id,
-	fprint_head_pointer,
-	increment_head_pointer,
-	increment_hp_ack,
-	start_pointer_ex,
-	end_pointer_ex,
-	start_pointer_comp,
-	end_pointer_comp,
-
-
-	comp_task,
-	fprints_ready,
-	head0_matches_head1,
-	tail0_matches_head0,
-	tail1_matches_head1,
-	comp_tail_pointer0,
-	comp_tail_pointer1,
-	comp_increment_tail_pointer,
-	comp_reset_fprint_ready,
-	reset_fprint_ack,
-	comp_mismatch_detected,
+	//comparator
+	comparator_task_id,
 	
-	comp_reset_task,
-	reset_task
+	fprint_0,
+	fprint_1,
+	fprint_2,
+
+	fprint_checkin,
+	
+	fprint_reset_task,
+	fprint_reset_task_ack
 );
 
-
-
-comparator comparator(
+checkpoint checkpoint(
 
 	clk,
 	reset,
-
-	//to comp registers
-	comp_task, //0-15 tasks
-
-	//from comp registers
-	head0_matches_head1,
-	tail0_matches_head0,
-	tail1_matches_head1,
-	fprints_ready,
-
-	oflow_checkin,
 	
-	//from fprint reg
-	fprint0,
-	fprint1,
-	comp_increment_tail_pointer,
-	comp_reset_fprint_ready,
-	reset_fprint_ack,
-	comp_task_verified,
-	fprint_reg_ack,
-	comp_status_write,
-	comp_status_ack,
-	comp_mismatch_detected,
-	
-	comp_reset_task,
-	reset_task
+	//processors
+	checkpoint_write,
+	checkpoint_writedata,
+	checkpoint_address,
+	checkpoint_waitrequest,
 
+	//csr_registers
+	checkpoint_logical_core_id,
+	comparator_nmr,
+	
+	checkpoint_physical_core_id,	
+
+	//comparator
+	comparator_task_id,
+	comparator_checkpoint,
+	checkpoint_ack
 );
 
-	endmodule
+
+endmodule

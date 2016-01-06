@@ -1,100 +1,99 @@
-`include "crc_defines.v"
+`include "defines.v"
 
 module fprint_registers(
 
-	//From processor
 	input								    	clk,
 	input								    	reset,
+
+	//processors
 	input 	[(`COMPARATOR_ADDRESS_WIDTH-1):0]	fprint_address,
 	input										fprint_write,
 	input 	[(`NIOS_DATA_WIDTH-1):0]			fprint_writedata,
 	output										fprint_waitrequest,
 
-	//To CSR reg to get logical core id from physical
-	output[3:0] 								physical_core_id,
-	output[3:0] 								fprint_task_id,
-	input  										logical_core_id,
+	//csr_registers
+	output [(`CRC_KEY_WIDTH-1):0]				fprint_task_id,
+	output [(`CRC_KEY_WIDTH-1):0]				fprint_physical_core_id,
+	input [1:0]									fprint_logical_core_id,
+	
+	input [(`CRC_KEY_SIZE-1):0]					fprint_nmr,
 
-	//to comp registers to get head pointer 
-	//other signals covered above
-	input [`CRC_RAM_ADDRESS_WIDTH-1:0]     		fprint_head_pointer,
-	output 										increment_head_pointer,
-	input 										increment_hp_ack,
+	//comparator
+	input [(`CRC_KEY_WIDTH-1):0] 				comparator_task_id,
+	
+	output [`CRC_WIDTH - 1: 0] 					fprint_0,
+	output [`CRC_WIDTH - 1: 0]             		fprint_1,
+	output [`CRC_WIDTH - 1: 0]             		fprint_2,
 
-	output [(`CRC_KEY_SIZE-1):0]  				checkin_reg_out,
-
-	input [`CRC_RAM_ADDRESS_WIDTH-1:0] 			comp_tail_pointer0,
-	input [`CRC_RAM_ADDRESS_WIDTH-1:0] 			comp_tail_pointer1,
-	output [`CRC_WIDTH - 1: 0] 					fprint0,
-	output [`CRC_WIDTH - 1: 0]             		fprint1,
-	input 										comp_task_verified,
-	output 										fprint_reg_ack,
-	input [(`CRC_KEY_WIDTH-1):0] 				comp_task
-
+	output [(`CRC_KEY_SIZE-1):0]  				fprint_checkin,
+	
+	input 										fprint_reset_task,
+	output 										fprint_reset_task_ack
 );
 
+reg  [(`CRC_KEY_SIZE-1):0]                  checkout_reg[2:0];
+reg  [(`CRC_KEY_SIZE-1):0]                  checkin_reg[2:0];
 
-reg  [(`CRC_KEY_SIZE-1):0]                  checkout_reg[1:0];
-reg  [(`CRC_KEY_SIZE-1):0]                  checkin_reg[1:0];
-reg  [(`CRC_KEY_SIZE-1):0]                  pause_reg[1:0]; //deprecated
 //Need to do each half separately in Verilog...
-reg  [`CRC_WIDTH/2 - 1: 0] 					fprint_mem_0_0[`CRC_RAM_SIZE -1 :0];
-reg  [`CRC_WIDTH/2 - 1: 0] 					fprint_mem_0_1[`CRC_RAM_SIZE -1 :0];
-reg  [`CRC_WIDTH/2 - 1: 0] 					fprint_mem_1_0[`CRC_RAM_SIZE -1 :0];
-reg  [`CRC_WIDTH/2 - 1: 0] 					fprint_mem_1_1[`CRC_RAM_SIZE -1 :0];
+reg  [`CRC_WIDTH/2 - 1: 0] 					fprint_mem_0_0[`CRC_KEY_SIZE -1 :0];
+reg  [`CRC_WIDTH/2 - 1: 0] 					fprint_mem_0_1[`CRC_KEY_SIZE -1 :0];
+reg  [`CRC_WIDTH/2 - 1: 0] 					fprint_mem_1_0[`CRC_KEY_SIZE -1 :0];
+reg  [`CRC_WIDTH/2 - 1: 0] 					fprint_mem_1_1[`CRC_KEY_SIZE -1 :0];
+reg  [`CRC_WIDTH/2 - 1: 0] 					fprint_mem_2_0[`CRC_KEY_SIZE -1 :0];
+reg  [`CRC_WIDTH/2 - 1: 0] 					fprint_mem_2_1[`CRC_KEY_SIZE -1 :0];
 
-wire 										store_reg;
+reg [`CRC_WIDTH/2 - 1: 0] 					fprint_0_0;
+reg [`CRC_WIDTH/2 - 1: 0] 					fprint_0_1;
+reg [`CRC_WIDTH/2 - 1: 0] 					fprint_1_0;
+reg [`CRC_WIDTH/2 - 1: 0] 					fprint_1_1;
+reg [`CRC_WIDTH/2 - 1: 0] 					fprint_2_0;
+reg [`CRC_WIDTH/2 - 1: 0] 					fprint_2_1;
+
+wire [`CRC_WIDTH/2 - 1: 0] 					fprint_mem_data_in;
+
+wire 										fprint_regs_write;
+wire										fprint_mem_write;
 wire 										fprint_block;
+wire										comparator_regs_write;
 
-reg [`CRC_WIDTH/2 - 1: 0] 					fprint0_0;
-reg [`CRC_WIDTH/2 - 1: 0] 					fprint0_1;
-reg [`CRC_WIDTH/2 - 1: 0] 					fprint1_0;
-reg [`CRC_WIDTH/2 - 1: 0] 					fprint1_1;
+wire										fifo_rd_en;
+wire										fifo_wr_en;
+wire 										fifo_full;
+wire										fifo_empty;
+wire [29:0]									fifo_data_in;
+wire [29:0]									fifo_data_out;
 
-wire [`COMPARATOR_ADDRESS_WIDTH + `NIOS_DATA_WIDTH-1 : 0] fifo_data_in;
-wire fifo_rd_en;
-wire fifo_wr_en;
-wire [`COMPARATOR_ADDRESS_WIDTH + `NIOS_DATA_WIDTH-1 : 0] fifo_data_out;
-wire fifo_empty;
-wire fifo_full;
-
-reg 	[(`COMPARATOR_ADDRESS_WIDTH-1):0]	fprint_address_reg;
-reg 	[(`NIOS_DATA_WIDTH-1):0]			fprint_writedata_reg;
-
-wire 	[(`COMPARATOR_ADDRESS_WIDTH-1):0]	fifo_fprint_address;
-wire 	[(`NIOS_DATA_WIDTH-1):0]			fifo_fprint_writedata;
-
+integer i,j;
 /*************************************************************
 * Decode
 **************************************************************/
 wire checkout_sel;
 wire checkin_sel;
 wire fprint_sel;
-wire pause_sel;
-wire unpause_sel;
-assign physical_core_id			=	fifo_fprint_address[7:4];
-assign fprint_task_id			=	fifo_fprint_writedata[3:0];
-	
-assign checkout_sel				=	(fifo_fprint_address[3:0] == `COMPARATOR_CS_OFFSET) & fifo_fprint_writedata[`CRC_KEY_WIDTH]; 
-assign checkin_sel				=	(fifo_fprint_address[3:0] == `COMPARATOR_CS_OFFSET) & ~fifo_fprint_writedata[`CRC_KEY_WIDTH];
-assign fprint_sel				=	(fifo_fprint_address[3:0] == `COMPARATOR_CRC_OFFSET);
-	
-assign pause_sel				=	(fifo_fprint_address[3:0] == `COMPARATOR_PAUSE_OFFSET);
-assign unpause_sel				=	(fifo_fprint_address[3:0] == `COMPARATOR_UNPAUSE_OFFSET);
-	
-assign fprint_block				=	(fifo_fprint_writedata[5]);
-	
-assign fifo_data_in				=	{fprint_address_reg,fprint_writedata_reg};
-assign fifo_fprint_address		=	fifo_data_out[`COMPARATOR_ADDRESS_WIDTH+`NIOS_DATA_WIDTH-1 : `NIOS_DATA_WIDTH];
-assign fifo_fprint_writedata	=	fifo_data_out[`NIOS_DATA_WIDTH-1 : 0];
 
+assign fifo_data_in				=	{fprint_writedata[31:16],fprint_address[7:0],fprint_writedata[5:0]};
+
+assign fprint_mem_data_in		=	fifo_data_out[29:14];
+assign fprint_physical_core_id	=	fifo_data_out[13:10];
+assign fprint_task_id			=	fifo_data_out[3:0];
+	
+assign checkout_sel				=	(fifo_data_out[9:6] == `COMPARATOR_CS_OFFSET) & fifo_data_out[4];
+assign checkin_sel				=	(fifo_data_out[9:6] == `COMPARATOR_CS_OFFSET) & ~fifo_data_out[4];
+assign fprint_sel				=	(fifo_data_out[9:6] == `COMPARATOR_CRC_OFFSET);
+	
+assign fprint_block				=	(fifo_data_out[5]);
+
+assign fprint_0					=	{fprint_0_1,fprint_0_0};
+assign fprint_1					=	{fprint_1_1,fprint_1_0};
+assign fprint_2					=	{fprint_2_1,fprint_2_0};
 /*************************************************************
 * FIFO FSM
 **************************************************************/
 reg[3:0] FIFO_state;
 
 parameter idle 				= 0;
-parameter st_waitrequest    = 1;
+parameter st_fifo_wr_en		= 1;
+parameter st_waitrequest    = 2;
 
 always @(posedge clk or posedge reset)
 begin
@@ -104,7 +103,11 @@ begin
 		case(FIFO_state)
 			idle:
 				if(fprint_write & ~fifo_full)
-					FIFO_state = st_waitrequest;
+					FIFO_state = st_fifo_wr_en;
+					
+			st_fifo_wr_en:
+				FIFO_state = st_waitrequest;
+			
 			st_waitrequest:
 				FIFO_state = idle;	
 
@@ -115,13 +118,14 @@ end
 /*************************************************************
 * FIFO FSM outputs
 **************************************************************/
-assign fifo_wr_en           = (FIFO_state == st_waitrequest);
+assign fifo_wr_en           = (FIFO_state == st_fifo_wr_en);
 assign fprint_waitrequest   = ~(FIFO_state == st_waitrequest);
 
 /*************************************************************
 * FIFO
+
 **************************************************************/
-fifo #(`COMPARATOR_ADDRESS_WIDTH + `NIOS_DATA_WIDTH, 4) 
+fifo #(30, 4)
 fifo_block (
 clk,
 reset,
@@ -138,51 +142,51 @@ fifo_full
 **************************************************************/
 reg[3:0] state;
 
-parameter st_read_fifo 				= 1;
-parameter st_decode 				= 2;
-parameter st_reg_store 				= 3;
-parameter st_crc_store_0    		= 4;
-parameter st_crc_store_1    		= 5;
-parameter st_increment_head_pointer = 6;
-parameter st_task_verified			= 7;
+parameter st_comparator_regs_write		= 1;
+parameter st_fprint_reset_task_ack		= 2;
+parameter st_fifo_rd_en					= 3;
+parameter st_decode						= 4;
+parameter st_fprint_regs_write			= 5;
+parameter st_fprint_mem_write			= 6;
+
+
 always @(posedge clk or posedge reset)
 begin
 	if(reset)
 		state = idle;
 	else begin
 		case(state)
+
 			idle:
-				if(comp_task_verified)
-					state = st_task_verified;
+				if(fprint_reset_task)
+					state = st_comparator_regs_write;
 				else if(~fifo_empty)
-                    state = st_read_fifo;
-            st_read_fifo:
+                    state = st_fifo_rd_en;
+
+			st_comparator_regs_write:
+				state = st_fprint_reset_task_ack;
+								
+			st_fprint_reset_task_ack:
+				state = idle;
+			
+			st_fifo_rd_en:
                 state = st_decode;
-            st_decode:
-                if(~fprint_sel) 
-                    state = st_reg_store;
-				else if(fprint_sel) //If not checked out then don't store crc
-					state = st_crc_store_0;
-			st_reg_store:
+
+			st_decode:
+                if(fprint_sel) begin
+					if(checkout_reg[fprint_logical_core_id][fprint_task_id])
+						state = st_fprint_mem_write;
+					else 
+						state = idle;
+				end else if(~fprint_sel)
+                    state = st_fprint_regs_write;
+
+			st_fprint_regs_write:
 				state = idle;
-			st_crc_store_0:
-				if(checkout_reg[logical_core_id][fprint_task_id])
-					//wait for the head pointer
-					state = st_crc_store_1;
-				else 
-					state = idle;
-			st_crc_store_1:
-				//store the crc
-				//increment head pointer if both blocks have arrived:
-				if(fprint_block)
-					state = st_increment_head_pointer;
-				else 
-					state = idle;
-			st_increment_head_pointer:
-				if(increment_hp_ack)
-					state = idle;
-			st_task_verified:
+
+			st_fprint_mem_write:
 				state = idle;
+	
 		endcase
 	end
 end
@@ -190,90 +194,97 @@ end
 /*************************************************************
 * FSM outputs
 **************************************************************/
-assign fifo_rd_en           = (state == st_read_fifo);
-assign store_reg  			= (state == st_reg_store);
-assign increment_head_pointer = (state == st_increment_head_pointer);
-assign checkin_reg_out 		= checkin_reg[0] & checkin_reg[1];
-assign fprint_reg_ack       = (state == st_task_verified);
-assign fprint0 				= {fprint0_1,fprint0_0};
-assign fprint1 				= {fprint1_1,fprint1_0};
-assign store_fprint         = (state == st_crc_store_1);
+assign comparator_regs_write	= (state == st_comparator_regs_write);
+assign fprint_reset_task_ack	= (state == st_fprint_reset_task_ack);
+
+assign fifo_rd_en           	= (state == st_fifo_rd_en);
+assign fprint_regs_write  		= (state == st_fprint_regs_write);
+assign fprint_mem_write			= (state == st_fprint_mem_write);
+
 /*************************************************************
 * Registers
 **************************************************************/
 always @ (posedge clk or posedge reset)
 begin
 	if(reset)begin
-		checkout_reg[0] = 0;
-		checkin_reg[0] = 0;
-		pause_reg[0] = 0;
-		checkout_reg[1] = 0;
-		checkin_reg[1] = 0;
-		pause_reg[1] = 0;
-        fprint_address_reg = 0;
-        fprint_writedata_reg = 0;
-	end else begin			
-		if(state == st_task_verified)begin
-			checkout_reg[0][comp_task] = 0;
-			checkout_reg[1][comp_task] = 0;
-			checkin_reg[0][comp_task] = 0;
-			checkin_reg[1][comp_task] = 0;
-		end else if(store_reg)begin
-			if(checkout_sel)
-				checkout_reg[logical_core_id][fifo_fprint_writedata[`CRC_KEY_WIDTH-1:0]] = 1;
-			//If checkin occurs after a mismatch is detected but the monitor could not reset
-			//the affected core BEFORE the end of the faulty task then ignore checkin
-			//i.e. how are we checking in if we aren't checked out first?
-			//Comparator has already reset the checkout register.
-			if (checkin_sel & checkout_reg[logical_core_id][fifo_fprint_writedata[`CRC_KEY_WIDTH-1:0]])
-				checkin_reg[logical_core_id][fifo_fprint_writedata[`CRC_KEY_WIDTH-1:0]] = 1;
-
-			if(pause_sel)
-				pause_reg[logical_core_id][fifo_fprint_writedata[`CRC_KEY_WIDTH-1:0]] = 1;
-			
-			if(unpause_sel)
-				pause_reg[logical_core_id][fifo_fprint_writedata[`CRC_KEY_WIDTH-1:0]] = 0;
+	
+		for(i=0 ; i<3 ; i=i+1) begin
+			checkout_reg[i] = 0;
+			checkin_reg[i] = 0;
 		end
-        
-        fprint_address_reg = fprint_address;
-        fprint_writedata_reg = fprint_writedata;
+
+	end else begin			
+		
+		if(comparator_regs_write)begin
+		
+			for(i=0 ; i<3 ; i=i+1) begin
+				checkout_reg[i][comparator_task_id] = 0;
+				checkin_reg[i][comparator_task_id] = 0;
+			end
+		
+		end else if(fprint_regs_write)begin
+			
+			if(checkout_sel & ~(fprint_logical_core_id == 3))
+				checkout_reg[fprint_logical_core_id][fprint_task_id] = 1;
+
+			if (checkin_sel & checkout_reg[fprint_logical_core_id][fprint_task_id])
+				checkin_reg[fprint_logical_core_id][fprint_task_id] = 1;
+
+		end
 	end
 end
+
+assign fprint_checkin = checkin_reg[0] & checkin_reg[1] & (checkin_reg[2] | ~fprint_nmr);
 
 
 /*************************************************************
 * CRC
 **************************************************************/
-
 always @ (posedge clk)
 begin
-	fprint0_0 = fprint_mem_0_0[comp_tail_pointer0];
-	if(store_fprint & ~logical_core_id & ~fprint_block)begin
-		fprint_mem_0_0[fprint_head_pointer] = fifo_fprint_writedata[31:16]; 
+	fprint_0_0 = fprint_mem_0_0[fprint_task_id];
+	if(fprint_mem_write & (fprint_logical_core_id == 0) & ~fprint_block)begin
+		fprint_mem_0_0[fprint_task_id] = fprint_mem_data_in; 
 	end
 end
 
 always @ (posedge clk)
 begin
-	fprint0_1 = fprint_mem_0_1[comp_tail_pointer0];
-	if(store_fprint & ~logical_core_id & fprint_block)begin
-		fprint_mem_0_1[fprint_head_pointer] = fifo_fprint_writedata[31:16]; 
+	fprint_0_1 = fprint_mem_0_1[fprint_task_id];
+	if(fprint_mem_write & (fprint_logical_core_id == 0) & fprint_block)begin
+		fprint_mem_0_1[fprint_task_id] = fprint_mem_data_in; 
 	end
 end
 
 always @ (posedge clk)
 begin
-	fprint1_0 = fprint_mem_1_0[comp_tail_pointer1];
-	if(store_fprint & logical_core_id & ~fprint_block)begin
-		fprint_mem_1_0[fprint_head_pointer] = fifo_fprint_writedata[31:16]; 
+	fprint_1_0 = fprint_mem_1_0[fprint_task_id];
+	if(fprint_mem_write & (fprint_logical_core_id == 1) & ~fprint_block)begin
+		fprint_mem_1_0[fprint_task_id] = fprint_mem_data_in; 
 	end
 end
 
 always @ (posedge clk)
 begin
-	fprint1_1 = fprint_mem_1_1[comp_tail_pointer1];
-	if(store_fprint & logical_core_id & fprint_block)begin
-		fprint_mem_1_1[fprint_head_pointer] = fifo_fprint_writedata[31:16]; 
+	fprint_1_1 = fprint_mem_1_1[fprint_task_id];
+	if(fprint_mem_write & (fprint_logical_core_id == 1) & fprint_block)begin
+		fprint_mem_1_1[fprint_task_id] = fprint_mem_data_in; 
+	end
+end
+
+always @ (posedge clk)
+begin
+	fprint_2_0 = fprint_mem_2_0[fprint_task_id];
+	if(fprint_mem_write & (fprint_logical_core_id == 2) & ~fprint_block)begin
+		fprint_mem_2_0[fprint_task_id] = fprint_mem_data_in; 
+	end
+end
+
+always @ (posedge clk)
+begin
+	fprint_2_1 = fprint_mem_2_1[fprint_task_id];
+	if(fprint_mem_write & (fprint_logical_core_id == 2) & fprint_block)begin
+		fprint_mem_2_1[fprint_task_id] = fprint_mem_data_in; 
 	end
 end
 

@@ -1,93 +1,134 @@
-`include "crc_defines.v"
+`include "defines.v"
 module csr_registers(
 
-	//From processor
 	input										clk,
 	input										reset,	
-	input 	[(`COMP_CSR_WIDTH-1):0]				csr_address,
+	
+	//processor
+	input [(`COMP_CSR_WIDTH-1):0]				csr_address,
 	input										csr_read,
-	output [(`NIOS_DATA_WIDTH-1):0]				csr_readdata,
+	output reg [(`NIOS_DATA_WIDTH-1):0]			csr_readdata,
 	input										csr_write,
-	input 		[(`NIOS_DATA_WIDTH-1):0]		csr_writedata,
+	input [(`NIOS_DATA_WIDTH-1):0]				csr_writedata,
 	output 										csr_waitrequest,
 
-	//From comparator	
-	input 										comp_status_write,
-	output 										comp_status_ack,
-	input [(`CRC_KEY_WIDTH-1):0]				comp_task,
-	input 		 								comp_collision_detected,
-
-	//To fprint registers	
-	input[3:0] 									physical_core_id,
-	input[3:0]									fprint_task_id,
-	output 		 								logical_core_id,
-
-    output										csr_maxcount_write,
-	output [(`NIOS_DATA_WIDTH-1):0]				csr_maxcount_writedata,
+	//comparator	
+	input [(`CRC_KEY_WIDTH-1):0]				comparator_task_id,
+	input [1:0]									comparator_logical_core_id,
 	
-	//To comparator registers
+	output										comparator_nmr,
+	output [`CRC_RAM_ADDRESS_WIDTH-1 : 0]		csr_task_maxcount,
 
-	output [`CRC_RAM_ADDRESS_WIDTH-1:0]     	head_tail_data,
-	output [(`CRC_KEY_WIDTH-1):0]           	head_tail_offset,
-	output 										set_head_tail,
-	input 										head_tail_ack,
-	output reg[`CRC_RAM_ADDRESS_WIDTH-1:0]		start_pointer_ex,
-	output reg[`CRC_RAM_ADDRESS_WIDTH-1:0]  	end_pointer_ex,
-	output reg [`CRC_RAM_ADDRESS_WIDTH-1:0]		start_pointer_comp,
-	output reg [`CRC_RAM_ADDRESS_WIDTH-1:0] 	end_pointer_comp,
+	input 										comparator_status_write,
+	input 		 								comparator_mismatch_detected,
+	output 										csr_status_ack,
+
+	//fprint_registers	
+	input [(`CRC_KEY_WIDTH-1):0]				fprint_task_id,
+	input [(`CRC_KEY_WIDTH-1):0]				fprint_physical_core_id,
+	output [1:0]								fprint_logical_core_id,
+	
+	output [(`CRC_KEY_SIZE-1):0]				fprint_nmr,
+
+	//checkpoint
+	input [1:0]									checkpoint_logical_core_id,
+	output [(`CRC_KEY_WIDTH-1):0]				checkpoint_physical_core_id,
+
+	//irq
 	output 										irq
-
-
 );
 
+/*************************************************************
+* Internal registers
+**************************************************************/
 reg [(`COMPARATOR_EXCEPTION_REG_WIDTH-1):0] 	exception_reg;
 reg [(`CRC_KEY_SIZE-1):0] 						success_reg;
-reg [(`CRC_KEY_SIZE-1):0] 						fail_reg;
-reg [`CRC_RAM_ADDRESS_WIDTH-1:0] 				start_pointer_mem  	[(`CRC_KEY_SIZE-1):0];				//16 registers storing 10 bit pointers (RAM address size = 512), 1 per task 
-reg [`CRC_RAM_ADDRESS_WIDTH-1:0] 				end_pointer_mem		[(`CRC_KEY_SIZE-1):0];
-wire 											csr_write_reg;
+reg [1:0]				 						fail_reg[(`CRC_KEY_SIZE-1):0];
 
-reg  [(`CRC_KEY_WIDTH-1):0]               		core_assignment_reg	[1:0][(`CRC_KEY_SIZE-1):0]; 
+reg [`CRC_KEY_WIDTH-1:0]						cat_mem_0[`CRC_KEY_SIZE-1:0];
+reg [`CRC_KEY_WIDTH-1:0]						cat_mem_1[`CRC_KEY_SIZE-1:0];
+reg [`CRC_KEY_WIDTH-1:0]						cat_mem_2[`CRC_KEY_SIZE-1:0];
+reg [`CRC_RAM_ADDRESS_WIDTH-1 : 0]				task_maxcount_mem	[(`CRC_KEY_SIZE-1):0];
+reg [(`CRC_KEY_SIZE-1):0]						nmr_mem;
 
+wire											csr_regs_write;
+wire											csr_cat_write;
+wire											csr_task_maxcount_write;
+wire											csr_nmr_write;
+
+wire											comparator_regs_write;
+
+wire [`CRC_RAM_ADDRESS_WIDTH-1:0]				csr_task_maxcount_data;
+wire											csr_nmr_data;
+
+wire [(`CRC_KEY_WIDTH-1):0]						csr_task_id;
+wire [1:0]										csr_logical_core_id;
+wire [(`CRC_KEY_WIDTH-1):0]						csr_physical_core_id;
+
+
+integer i,j;
 /*************************************************************
 * Decode
 **************************************************************/
-wire 							exception_reg_sel;
-wire 							success_reg_sel;
-wire 							fail_reg_sel;
-wire 							maxcount_reg_sel;
-wire 							start_p_sel;
-wire 							end_p_sel;
-wire [(`CRC_KEY_WIDTH-1):0] 	dir_pointer_offset;
-wire [1:0]                      core_id;
-wire [3:0] 						core_assignment_offset;
-wire [3:0] 						core_assignment_data;
+wire 								exception_reg_sel;
+wire 								success_reg_sel;
+wire 								fail_reg_sel;
+wire								cat_sel;
+wire 								task_maxcount_reg_sel;
+wire								nmr_sel;
+	
+wire [`NIOS_DATA_WIDTH-1:0]			fail_reg_out;
 
-assign exception_reg_sel  		= (csr_address == `COMPARATOR_EXCEPTION_OFFSET);
-assign success_reg_sel    		= (csr_address == `COMPARATOR_SUCCESS_REG_OFFSET);
-assign fail_reg_sel       		= (csr_address == `COMPARATOR_FAIL_REG_OFFSET);
-assign start_p_sel   			= (csr_address[`DIRECTORY_BITS] == 4'h1);   
-assign end_p_sel     			= (csr_address[`DIRECTORY_BITS] == 4'h2); 
-assign maxcount_reg_sel			= (csr_address == `COMPARATOR_MAXCOUNT_REG_OFFSET);
-assign core_assignment_sel 		= (csr_address[5:0] == `COMPARATOR_CORE_ASSIGNMENT_OFFSET);
-assign dir_pointer_offset 		= csr_address[(`CRC_KEY_WIDTH-1):0];
-assign core_id 					= csr_address[7:6];
-assign core_assignment_offset 	= csr_writedata[7:4];
-assign core_assignment_data     = csr_writedata[3:0];
-assign irq 						= exception_reg[`EXCEPTION_REG_INTERRUPT_BIT];
+assign exception_reg_sel  			= (csr_address == `COMPARATOR_EXCEPTION_OFFSET);
+assign success_reg_sel    			= (csr_address == `COMPARATOR_SUCCESS_REG_OFFSET);
+assign fail_reg_sel       			= (csr_address == `COMPARATOR_FAIL_REG_OFFSET);
+assign task_maxcount_reg_sel		= (csr_address == `COMPARATOR_MAXCOUNT_REG_OFFSET);
+assign cat_sel			 			= (csr_address[5:0] == `COMPARATOR_CORE_ASSIGNMENT_OFFSET);
+assign nmr_sel						= (csr_address == `COMPARATOR_NMR_OFFSET);
+
+
+assign csr_task_id					= csr_writedata[19:16];
+assign csr_logical_core_id			= csr_writedata[25:24];
+assign csr_physical_core_id			= csr_writedata[3:0];
+
+assign csr_task_maxcount_data		= csr_writedata[`CRC_RAM_ADDRESS_WIDTH-1:0];
+
+assign csr_nmr_data					= csr_writedata[0];
+
+assign irq 							= exception_reg[`EXCEPTION_REG_INTERRUPT_BIT];
+assign fail_reg_out					=	{	fail_reg[15],
+											fail_reg[14],
+											fail_reg[13],
+											fail_reg[12],
+											fail_reg[11],
+											fail_reg[10],
+											fail_reg[9],
+											fail_reg[8],
+											fail_reg[7],
+											fail_reg[6],
+											fail_reg[5],
+											fail_reg[4],
+											fail_reg[3],
+											fail_reg[2],
+											fail_reg[1],
+											fail_reg[0]
+										};
 
 /*************************************************************
 * FSM
 **************************************************************/
 reg[3:0] state;
 
-parameter idle 				= 0;
-parameter st_csr_write 		= 1;
-parameter st_csr_read  		= 2;
-parameter st_waitrequest 	= 3;
-parameter st_comp_write     = 4;
-parameter st_comp_ack       = 5;
-parameter st_set_head_tail  = 6;
+parameter idle							= 0;
+parameter st_csr_regs_write				= 1;
+parameter st_csr_cat_write				= 2;
+parameter st_csr_task_maxcount_write	= 3;
+parameter st_csr_nmr_write				= 4;
+parameter st_csr_read					= 5;
+parameter st_waitrequest				= 6;
+parameter st_comparator_regs_write		= 7;
+parameter st_comparator_status_ack		= 8;
+
 always @(posedge clk or posedge reset)
 begin
 	if(reset)
@@ -95,30 +136,45 @@ begin
 	else begin
 		case(state)
 			idle:
-				if(csr_write)
-					state = st_csr_write;
-				else if(csr_read)
+				if(csr_write) begin
+					if(exception_reg_sel) begin
+						state = st_csr_regs_write;
+					end else if (cat_sel) begin
+						state = st_csr_cat_write;
+					end else if (task_maxcount_reg_sel) begin
+						state = st_csr_task_maxcount_write;
+					end else if (nmr_sel) begin
+						state = st_csr_nmr_write;
+					end
+				end else if(csr_read) begin
 					state = st_csr_read;
-				else if(comp_status_write & ~irq)
-					state = st_comp_write;
-			st_csr_write:
-				//After writing the start or end pointer
-				//Write the head and tail pointers:
-				if(start_p_sel)
-					state = st_set_head_tail;
-				else
+				end else if(comparator_status_write & ~irq) begin
+					state = st_comparator_regs_write;
+				end
+			
+			st_csr_regs_write:
+				state = st_waitrequest;
+					
+			st_csr_cat_write:
 					state = st_waitrequest;
+			
+			st_csr_task_maxcount_write:
+					state = st_waitrequest;
+			
+			st_csr_nmr_write:
+				state = st_waitrequest;
+				
 			st_csr_read:
 				state = st_waitrequest;
+			
 			st_waitrequest:
 				state = idle;
-			st_comp_write:
-				state = st_comp_ack;
-			st_comp_ack:
+			
+			st_comparator_regs_write:
+				state = st_comparator_status_ack;
+			
+			st_comparator_status_ack:
 				state = idle;
-			st_set_head_tail:
-				if(head_tail_ack)
-					state = st_waitrequest;
 		endcase
 	end
 end
@@ -126,17 +182,33 @@ end
 /*************************************************************
 * FSM outputs
 **************************************************************/
-assign csr_waitrequest 	= ~(state == st_waitrequest); //asserts low
-assign csr_write_reg 	= (state == st_csr_write);
-assign csr_readdata 	= exception_reg_sel ? exception_reg : success_reg_sel ? success_reg :
-							fail_reg_sel ? fail_reg : 0; 
-assign comp_reg_write 	= (state == st_comp_write);
-assign comp_status_ack  = (state == st_comp_ack);
-assign set_head_tail    = (state == st_set_head_tail);
-assign head_tail_offset = dir_pointer_offset;
-assign head_tail_data   = csr_writedata[`CRC_RAM_ADDRESS_WIDTH-1:0];
-assign csr_maxcount_write 	= (state == st_csr_write) & maxcount_reg_sel;
-assign csr_maxcount_writedata = ((state == st_csr_write) & maxcount_reg_sel) ? csr_writedata : 0;
+// output signals
+assign csr_regs_write			=	(state == st_csr_regs_write);
+assign csr_cat_write			=	(state == st_csr_cat_write);
+assign csr_task_maxcount_write	=	(state == st_csr_task_maxcount_write);
+assign csr_nmr_write			=	(state == st_csr_nmr_write);
+assign csr_waitrequest			=	~(state == st_waitrequest);
+
+assign csr_status_ack			=	(state == st_comparator_status_ack);
+
+// internal signals
+assign comparator_regs_write	=	(state == st_comparator_regs_write);
+								
+/*************************************************************
+* csr readdata register
+**************************************************************/
+always @(posedge clk or posedge reset)
+begin
+	if(reset)begin
+		csr_readdata = 0;
+	end else begin
+		if(state == st_csr_read)begin
+			csr_readdata = exception_reg_sel ? exception_reg : success_reg_sel ? success_reg :
+									fail_reg_sel ? fail_reg_out : 0; 
+		end 
+	end
+end
+
 /*************************************************************
 * Registers
 **************************************************************/
@@ -145,56 +217,95 @@ begin
 	if(reset)begin
 		exception_reg = 0;
 		success_reg = 0;
-		fail_reg = 0;
+		for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
+			fail_reg[i] = 3;
+		end
 	end else begin
-		if(csr_write_reg & exception_reg_sel)begin
+		if(csr_regs_write)begin
 			success_reg = 0;
-			fail_reg = 0;
+			for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
+				fail_reg[i] = 3;
+			end
 			exception_reg = csr_writedata;
-		end else if(comp_reg_write)begin
+		end else if(comparator_regs_write)begin
 			exception_reg[`EXCEPTION_REG_INTERRUPT_BIT] = 1;
-			exception_reg[`EXCEPTION_REG_TASK_BITS] = comp_task;
-			exception_reg[`EXCEPTION_REG_EX_BIT] = comp_collision_detected;
-			success_reg[comp_task] = ~comp_collision_detected;
-			fail_reg[comp_task]    = comp_collision_detected;
+			exception_reg[`EXCEPTION_REG_TASK_BITS] = comparator_task_id;
+			exception_reg[`EXCEPTION_REG_EX_BIT] = comparator_mismatch_detected;
+			success_reg[comparator_task_id] = ~comparator_mismatch_detected;
+			if(comparator_mismatch_detected) begin
+				fail_reg[comparator_task_id] = comparator_logical_core_id;
+			end
 		end
 	end
 end
 
 /*************************************************************
-* Start and End pointers
-**************************************************************/
-always @ (posedge clk)
-begin
-	if(csr_write_reg & start_p_sel)
-		start_pointer_mem[dir_pointer_offset] = csr_writedata[`CRC_RAM_ADDRESS_WIDTH-1:0];
-	//Dual port read...
-	start_pointer_ex = start_pointer_mem[fprint_task_id];
-	start_pointer_comp = start_pointer_mem[comp_task];
-	
-end						
-
-always @ (posedge clk)
-begin
-	if(csr_write_reg & end_p_sel)
-		end_pointer_mem[dir_pointer_offset] = csr_writedata[`CRC_RAM_ADDRESS_WIDTH-1:0];
-
-	//Dual port read...
-	end_pointer_ex = end_pointer_mem[fprint_task_id];
-	end_pointer_comp = end_pointer_mem[comp_task];	
-end	
-
-/*************************************************************
 * Core assignment table
 **************************************************************/
-
-always @ (posedge clk)
-begin
-	if(csr_write_reg & core_assignment_sel)begin
-			core_assignment_reg[core_id][core_assignment_offset] = core_assignment_data[3:0];
+initial begin
+	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
+		cat_mem_0[i] = 0;
+		cat_mem_1[i] = 0;
+		cat_mem_2[i] = 0;
 	end
 end
 
-assign logical_core_id = (core_assignment_reg[1][fprint_task_id] == physical_core_id) ? 1 : 0;
+
+always @ (posedge clk) begin
+	
+	if(csr_cat_write & (csr_logical_core_id == 0)) begin
+		cat_mem_0[csr_task_id] = csr_physical_core_id;
+	end
+	
+	if(csr_cat_write & (csr_logical_core_id == 1)) begin
+		cat_mem_1[csr_task_id] = csr_physical_core_id;
+	end
+	
+	if(csr_cat_write & (csr_logical_core_id == 2)) begin
+		cat_mem_2[csr_task_id] = csr_physical_core_id;
+	end
+	
+end
+
+// asynchronous for now
+assign fprint_logical_core_id	=	cat_mem_0[fprint_task_id] == fprint_physical_core_id ? 0 :
+									cat_mem_1[fprint_task_id] == fprint_physical_core_id ? 1 :
+									cat_mem_2[fprint_task_id] == fprint_physical_core_id ? 2 :
+									3;
+
+assign checkpoint_physical_core_id	=	checkpoint_logical_core_id == 0 ? cat_mem_0[comparator_task_id] :
+										checkpoint_logical_core_id == 1 ? cat_mem_1[comparator_task_id] :
+										checkpoint_logical_core_id == 2 ? cat_mem_2[comparator_task_id] :
+										0;
+/*************************************************************
+max count register
+**************************************************************/
+initial begin
+	for(i=0 ; i<`CRC_KEY_SIZE ; i=i+1) begin
+		task_maxcount_mem[i] = 0;
+	end
+end
+
+always @ (posedge clk)
+begin
+	if(csr_task_maxcount_write) begin
+		task_maxcount_mem[csr_task_id] = csr_task_maxcount_data;
+	end
+end
+
+assign csr_task_maxcount = task_maxcount_mem[comparator_task_id];
+
+/*************************************************************
+* NMR
+**************************************************************/
+always @ (posedge clk or posedge reset) begin
+	if(reset)
+		nmr_mem = 0;
+	else if(csr_nmr_write)
+		nmr_mem[csr_task_id] = csr_nmr_data;
+end
+
+assign comparator_nmr	=	nmr_mem[comparator_task_id];
+assign fprint_nmr		=	nmr_mem;
 
 endmodule

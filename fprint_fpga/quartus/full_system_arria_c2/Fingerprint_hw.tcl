@@ -36,30 +36,28 @@ set_module_property ALLOW_GREYBOX_GENERATION false
 # file sets
 # 
 add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
-set_fileset_property QUARTUS_SYNTH TOP_LEVEL crc_fingerprint
+set_fileset_property QUARTUS_SYNTH TOP_LEVEL fingerprint
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
-add_fileset_file crc_fingerprint.v VERILOG PATH ../../src/crc_fingerprint.v TOP_LEVEL_FILE
-add_fileset_file crc_counter.v VERILOG PATH ../../src/crc_counter.v
-add_fileset_file crc_fsm_rtla.v VERILOG PATH ../../src/crc_fsm_rtla.v
-add_fileset_file crc_rtla.v VERILOG PATH ../../src/crc_rtla.v
-add_fileset_file crc_sb_fsm.v VERILOG PATH ../../src/crc_sb_fsm.v
-add_fileset_file crc_store_buffer.v VERILOG PATH ../../src/crc_store_buffer.v
-add_fileset_file fifo.v VERILOG PATH ../../src/fifo.v
-add_fileset_file crc_pause.v VERILOG PATH ../../src/crc_pause.v
-add_fileset_file lifo.v VERILOG PATH ../../src/lifo.v
+add_fileset_file fingerprint.v VERILOG PATH ../../src/new_design/fprint/fingerprint.v TOP_LEVEL_FILE
+add_fileset_file counter.v VERILOG PATH ../../src/new_design/fprint/counter.v
+add_fileset_file fsm_rtla.v VERILOG PATH ../../src/new_design/fprint/fsm_rtla.v
+add_fileset_file rtla.v VERILOG PATH ../../src/new_design/fprint/rtla.v
+add_fileset_file sb_fsm.v VERILOG PATH ../../src/new_design/fprint/sb_fsm.v
+add_fileset_file store_buffer.v VERILOG PATH ../../src/new_design/fprint/store_buffer.v
+add_fileset_file pause.v VERILOG PATH ../../src/new_design/fprint/pause.v
+add_fileset_file lifo.v VERILOG PATH ../../src/new_design/fprint/lifo.v
 
 add_fileset SIM_VERILOG SIM_VERILOG "" ""
-set_fileset_property SIM_VERILOG TOP_LEVEL crc_fingerprint
+set_fileset_property SIM_VERILOG TOP_LEVEL fingerprint
 set_fileset_property SIM_VERILOG ENABLE_RELATIVE_INCLUDE_PATHS false
-add_fileset_file crc_fingerprint.v VERILOG PATH ../../src/crc_fingerprint.v
-add_fileset_file crc_counter.v VERILOG PATH ../../src/crc_counter.v
-add_fileset_file crc_fsm_rtla.v VERILOG PATH ../../src/crc_fsm_rtla.v
-add_fileset_file crc_rtla.v VERILOG PATH ../../src/crc_rtla.v
-add_fileset_file crc_sb_fsm.v VERILOG PATH ../../src/crc_sb_fsm.v
-add_fileset_file crc_store_buffer.v VERILOG PATH ../../src/crc_store_buffer.v
-add_fileset_file fifo.v VERILOG PATH ../../src/fifo.v
-add_fileset_file crc_pause.v VERILOG PATH ../../src/crc_pause.v
-add_fileset_file lifo.v VERILOG PATH ../../src/lifo.v
+add_fileset_file fingerprint.v VERILOG PATH ../../src/new_design/fprint/fingerprint.v TOP_LEVEL_FILE
+add_fileset_file counter.v VERILOG PATH ../../src/new_design/fprint/counter.v
+add_fileset_file fsm_rtla.v VERILOG PATH ../../src/new_design/fprint/fsm_rtla.v
+add_fileset_file rtla.v VERILOG PATH ../../src/new_design/fprint/rtla.v
+add_fileset_file sb_fsm.v VERILOG PATH ../../src/new_design/fprint/sb_fsm.v
+add_fileset_file store_buffer.v VERILOG PATH ../../src/new_design/fprint/store_buffer.v
+add_fileset_file pause.v VERILOG PATH ../../src/new_design/fprint/pause.v
+add_fileset_file lifo.v VERILOG PATH ../../src/new_design/fprint/lifo.v
 
 
 # 
