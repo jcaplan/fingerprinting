@@ -17,7 +17,7 @@ void rtMonitorUpdateTime(void){
 				printf("time to drop low criticality task because of overrun: %s\n",task->name); 
 				rtMonitorDropLowTasks();
 			} else {
-				printf("task %s runtime %llu\n",task->name,task->counter);
+				// printf("task %s runtime %llu\n",task->name,task->counter);
 			}
 		}
 	}

@@ -107,6 +107,10 @@ ELF_PATCH_FLAG  += --thread_model ucosii
 ALT_CPPFLAGS += -D__hal__
 BSP_TYPE := ucosii
 
+# Compile Newlib 
+# setting COMPILE_NEWLIB is 1
+COMPILE_NEWLIB = 1
+
 # CPU Name 
 # setting CPU_NAME is processorM_0_cpuM
 CPU_NAME = processorM_0_cpuM
@@ -152,9 +156,9 @@ SOPC_SYSID_FLAG += --sidp=0x1001020
 ELF_PATCH_FLAG  += --sidp 0x1001020
 
 # The SOPC Timestamp 
-# setting SOPC_TIMESTAMP is 1437413716
-SOPC_SYSID_FLAG += --timestamp=1437413716
-ELF_PATCH_FLAG  += --timestamp 1437413716
+# setting SOPC_TIMESTAMP is 1452117268
+SOPC_SYSID_FLAG += --timestamp=1452117268
+ELF_PATCH_FLAG  += --timestamp 1452117268
 
 # Enable JTAG UART driver to recover when host is inactive causing buffer to 
 # full without returning error. Printf will not fail with this recovery. none 
@@ -345,6 +349,26 @@ ALT_INCLUDE_DIRS += $(ALT_LIBRARY_ROOT_DIR)/HAL/inc
 #------------------------------------------------------------------------------
 
 ALT_CPPFLAGS += -D__ucosii__
+
+#------------------------------------------------------------------------------
+#        SOFTWARE COMPONENT & DRIVER PRODUCED ALT_CFLAGS ADDITIONS
+#------------------------------------------------------------------------------
+
+ALT_CFLAGS += -fno-math-errno
+ALT_CFLAGS += -mcustom-fabss=224
+ALT_CFLAGS += -mcustom-fadds=253
+ALT_CFLAGS += -mcustom-fcmpeqs=227
+ALT_CFLAGS += -mcustom-fcmpges=228
+ALT_CFLAGS += -mcustom-fcmpgts=229
+ALT_CFLAGS += -mcustom-fcmples=230
+ALT_CFLAGS += -mcustom-fcmplts=231
+ALT_CFLAGS += -mcustom-fcmpnes=226
+ALT_CFLAGS += -mcustom-fdivs=255
+ALT_CFLAGS += -mcustom-fixsi=249
+ALT_CFLAGS += -mcustom-floatis=250
+ALT_CFLAGS += -mcustom-fmuls=252
+ALT_CFLAGS += -mcustom-fnegs=225
+ALT_CFLAGS += -mcustom-fsubs=254
 
 #END MANAGED
 

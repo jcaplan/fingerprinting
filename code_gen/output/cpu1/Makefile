@@ -142,7 +142,6 @@ ACDS_VERSION := 13.1
 ELF := cpu1.elf
 
 # Paths to C, C++, and assembly source files.
-C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/RadarTracker.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/cpu1.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/critical.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu1/for_loop_100000_0.c

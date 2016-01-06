@@ -4,7 +4,7 @@
  * Machine generated for CPU 'processor0_0_cpu0' in SOPC Builder design 'nios_fprint'
  * SOPC Builder design path: /home/jonah/fingerprinting/code_gen/platform/nios_fprint.sopcinfo
  *
- * Generated: Mon Jan 04 19:22:56 EST 2016
+ * Generated: Wed Jan 06 17:02:13 EST 2016
  */
 
 /*
@@ -535,7 +535,7 @@
 #define SYS_ID_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define SYS_ID_NAME "/dev/sys_id"
 #define SYS_ID_SPAN 8
-#define SYS_ID_TIMESTAMP 1437413716
+#define SYS_ID_TIMESTAMP 1452117268
 #define SYS_ID_TYPE "altera_avalon_sysid_qsys"
 
 

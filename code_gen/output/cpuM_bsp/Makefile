@@ -316,6 +316,10 @@ fingerprint_ASM_LIB_SRCS := \
 	$(fingerprint_SRCS_ROOT)/src/context_switch.S \
 	$(fingerprint_SRCS_ROOT)/src/gp.S
 
+# fpoint2_driver sources root 
+fpoint2_driver_SRCS_ROOT := drivers
+
+# fpoint2_driver sources 
 # hal sources root 
 hal_SRCS_ROOT := HAL
 
