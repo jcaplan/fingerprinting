@@ -121,9 +121,9 @@ public class GenStackBin {
 		for(int i = 0; i < stackBins.size(); i++){
 			StackBin sb = stackBins.get(i);
 			Core c = platform.getCore("cpu0");
-			sb.startAddress[0] = c.mainMemStartAddressOffset+c.mainMemSize - (i*StackBin.size);
+			sb.startAddress[0] = c.mainMemStartAddressOffset+c.mainMemSize - ((i+1)*StackBin.size);
 			c = platform.getCore("cpu1");
-			sb.startAddress[1] = c.mainMemStartAddressOffset+c.mainMemSize - (i*StackBin.size);
+			sb.startAddress[1] = c.mainMemStartAddressOffset+c.mainMemSize - ((i+1)*StackBin.size);
 		}
 
 		updateMainMemorySize();
@@ -134,9 +134,9 @@ public class GenStackBin {
 	 */
 	private void updateMainMemorySize() {
 		Core c = platform.getCore("cpu0");
-		c.mainMemSize -= (stackBins.size() - 1) * StackBin.size;
+		c.mainMemSize -= stackBins.size() * StackBin.size;
 		c = platform.getCore("cpu1");
-		c.mainMemSize -= (stackBins.size()-1) * StackBin.size;
+		c.mainMemSize -= stackBins.size() * StackBin.size;
 		
 	}
 	

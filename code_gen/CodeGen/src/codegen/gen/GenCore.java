@@ -385,8 +385,8 @@ public class GenCore {
 					if(core.index == 0){
 						partner = 1;
 					} 
-					s +=	"	int partnerCore = " + partner + "; /* static variable */\n"+
-							"\n";
+//					s +=	"	int partnerCore = " + partner + "; /* static variable */\n"+
+//							"\n";
 					
 					s += "	while (1) {\n"+
 							"		INT8U perr;\n"+
@@ -394,30 +394,32 @@ public class GenCore {
 							"\n"+
 							"		rtMonitorStartTask(" + f.getRuntimeIndexString() + ");\n"+
 							"\n"+
-							"		waitForPartnerCore(partnerCore);\n"+
+//							"		waitForPartnerCore(partnerCore);\n"+
 							"		//Context switch is necessary to clear the callee saved registers\n"+
 							"		long registers[8];\n"+
 							"		context_switch(registers);\n"+
 							"\n"+
-							"		//Do the derivative part\n"+
-							"\n"+
-							"		int priority = critFuncData->priority;\n"+
+							"		int fprintID = critFuncData->fprintID;\n"+
 							"\n"+
 							"		//set the flag for the OS context switch\n"+
 							"		FprintActive = 1;\n"+
-							"		FprintTaskIDCurrent = priority;\n"+
+							"		FprintTaskIDCurrent = fprintID;\n"+
 							"\n"+
 							"		//Retrieve the arguments before changing the GP\n"+
 							"\n"+
 							"		void *args = functionTable[" + f.getTableIndexString() + "].args;\n"+
-							"		//Set the global pointer in case of compilation issues related\n"+
-							"		//to global variables\n"+
-							"		set_gp(gp);\n"+
+//							"		//Set the global pointer in case of compilation issues related\n"+
+//							"		//to global variables\n"+
+//							"		set_gp(gp);\n"+
 							"\n"+
-							"		" + f + "Func(priority, args);\n"+
+							"		" + f + "Func(fprintID, args);\n"+
 							"		//call the critical task\n"+
-							"		//restore the original global pointer\n"+
-							"		restore_gp();\n"+
+							
+
+							"		context_restore(registers);\n"+
+							"\n"+
+//							"		//restore the original global pointer\n"+
+//							"		restore_gp();\n"+
 							"\n"+
 							"		//set the flag for the OS context switch\n"+
 							"		FprintActive = 0;\n"+
@@ -561,7 +563,7 @@ public class GenCore {
 				"		region[index].index = index;\n"+
 				"		region[index].mask = 0x2000000;\n"+
 				"		region[index].c = 0;\n"+
-				"		region[index].perm = MPU_INST_PERM_SUPER_EXEC_USER_EXEC; //No access for user and supervisor\n"+
+				"		region[index].perm = MPU_INST_PERM_SUPER_EXEC_USER_EXEC;\n"+
 				"	}\n"+
 				"\n"+
 				"	nios2_mpu_load_region(region, NIOS2_MPU_NUM_INST_REGIONS, INST_REGION);\n"+
@@ -611,16 +613,29 @@ public class GenCore {
 						"	region[3].base = 0x4200000 / 64;\n" + 
 						"	region[3].mask = 0x4208000 / 64;\n" + 
 						"	region[3].c = 0;\n" + 
-						"	region[3].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;\n\n"+
+						"	region[3].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;\n"+
+				"\n"+
+				"	//no more critical stack access\n" + 
+				"	region[4].index = 0x4;\n" + 
+				"	region[4].base = 0x" +  
+					Integer.toHexString(platform.mainMemoryBase + core.mainMemStartAddressOffset 
+							+ core.mainMemSize) 
+					+ " / 64;\n" + //start address of first stack
+				"	region[4].mask = 0x"+
+					Integer.toHexString(platform.mainMemoryBase + core.mainMemStartAddressOffset 
+							+ core.getMemSizeWithStackBins()) +
+					" / 64;\n" + //end
+				"	region[4].c = 0;\n" + 
 				
-						
+				"	region[4].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;\n\n"+		
+				
 				"	int index;\n"+
-				"	for (index = 4; index < NIOS2_MPU_NUM_DATA_REGIONS; index++) {\n"+
-				"		region[index].base = 0x0;\n"+
+				"	for (index = 5; index < NIOS2_MPU_NUM_DATA_REGIONS; index++) {\n"+
 				"		region[index].index = index;\n"+
+				"		region[index].base = 0x0;\n"+
 				"		region[index].mask = 0x2000000;\n"+
 				"		region[index].c = 0;\n"+
-				"		region[index].perm = MPU_DATA_PERM_SUPER_RW_USER_RW; //No access for user and supervisor\n"+
+				"		region[index].perm = MPU_DATA_PERM_SUPER_RW_USER_RW; \n"+
 				"	}\n"+
 				"\n"+
 				"	nios2_mpu_load_region(region, NIOS2_MPU_NUM_DATA_REGIONS, DATA_REGION);\n"+
@@ -695,7 +710,6 @@ public class GenCore {
 				"	// Initialize and start the MPU.\n"+
 				"	nios2_mpu_data_init();\n"+
 				"	nios2_mpu_inst_init();\n"+
-				"	nios2_mpu_enable();\n"+
 				"\n"+
 				"	//Start up the software memory manager\n"+
 				"	mem_manager_init();\n\n";
@@ -704,7 +718,8 @@ public class GenCore {
 				"	// ---------------------------------\n" + 
 				"	rtMonitorInit(&rtMonTaskTable[0],NUM_TASKS);\n\n";
 		
-		s += 	"	// Declare the OS tasks\n"+
+		s += 	"	// Declare the OS tasks\n"+ 
+				"	// Depending on optimizations order is not guaranteed, use hardcoded pointers.\n"+
 				"	// -------------------\n\n"+
 				"	INT8U perr;";
 		
@@ -732,7 +747,7 @@ public class GenCore {
 		s += "\n";
 		
 		s += "	resetMonitorCoreReg(CORE_ID);\n"+
-				"\n"+
+				"	nios2_mpu_enable();\n"+
 				"	OSStart();\n"+
 				"	return 0;\n"+
 				"}\n"+

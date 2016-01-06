@@ -14,6 +14,7 @@
 #include "reset_monitor.h"
 #include "runtimeMonitor.h"
 #include "repos.h"
+#include "critical.h"
 #include "for_loop_100000_0.h"
 
 
@@ -156,7 +157,8 @@ static void handleComp(void* context) {
 			if (status.failed_reg & (mask = 1 << i)) {
 				/* assume only one failure possible */
 				failedTaskID = REPOSgetTaskID(mask);
-				REPOSTaskReset(failedTaskID);				postDmaMessage(failedTaskID, true);
+				REPOSTaskReset(failedTaskID);
+				postDmaMessage(failedTaskID, true);
 				break;
 			}
 		}

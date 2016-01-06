@@ -380,8 +380,8 @@ Figure~\ref{f:ipetresults} shows the WCET calculated using IPET normalized to th
 
 This result has motivated the inclusion of FPUs in the cores. The FPU provided by Altera executes single precision operations using the custom instruction interface to the Nios II. Each instruction has a known execution time in clock cycles which eliminates the pessimism in calculating floating point operations. It is possible to force Simulink to generate code using only single precision variables and operations. There is a resulting tradeoff between the accuracy of the WCET estimation, the size of the core (inclusion of an FPU), and limiting calculations to single-precision. The FPU will also remove thousands of instructions from the critical function and reduce the interference due to instruction loads from main memory as well as lower execution time considerably. Future work on michro-architectural modelling may extend this analysis to several physical processors. Existing work on multicore WCET estimation is quite promising~\cite{chattopadhyay2014unified}.
 
-\subsection{Stack Analysis}
-It is possible to start analysis once the parser has built the CFG. Stack analysis is quite straightforward. Each basic block in a function is checked for instructions that increase the stack size. Note that stack instructions should not occur in a loop. If a basic block calls a function, then that function is also checked for stack instructions and then this result is added on to the original calculation. Recursive functions are not supported.
+\section{Stack Analysis}
+It is possible to start analysis once the parser has built the CFG. Stack analysis is quite straightforward. Each basic block in a function is checked for instructions that increase the stack size. Note that stack instructions should not occur in a loop. If a basic block calls a function, then that function is also checked for stack instructions and then this result is added on to the original calculation. Recursive functions are not supported. Future work could analyze interrupt handlers as well to statically determine the maximum overhead due to interrupt handling.
 
 
 \section{Library functions}

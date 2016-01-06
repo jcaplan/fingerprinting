@@ -17,8 +17,8 @@ public class Platform {
 	public Platform(Configuration config){
 		this.config = config;
 		coreList = new Core[3];
-		coreList[0] = new Core("cpu0",false,0x64020,0x30fe0,0);
-		coreList[1] = new Core("cpu1",false,0x32020,0x30fe0,1);
+		coreList[0] = new Core("cpu0",false,0x64020,0x31fe0,0);
+		coreList[1] = new Core("cpu1",false,0x32020,0x31fe0,1);
 		coreList[2] = new Core("cpuM",true,0x20,0x30fe0,2);
 	}
 	

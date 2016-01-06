@@ -10,10 +10,12 @@
 # -S for stacksize, if S is not present then assume profiler was used
 # 	if profiler was used: should have a profile.log file in the function folders
 <FUNCTIONLIST>
--rootdir /home/jonah/fingerprinting/automotive_control/CompiledC/for_loops
-#-name for_loop_100000_0    -subdir for_loop_100000_0           -T  30  -clo 15  -chi 20 -c   -Priority 2
+-rootdir /home/jonah/fingerprinting/automotive_control/CompiledC/
+
 -name RadarTracker         -subdir RadarTracker_ert_rtw        -T  300 -c -Priority 2	
--name for_loop_50000_50000 -subdir for_loop_50000_50000		   -T  30  -clo 10       -Priority 1 -printRuntime -addPreamble preamble.txt
+
+-name for_loop_50000_50000 -subdir for_loops/for_loop_50000_50000		   -T  60       -Priority 1 -printRuntime -addPreamble preamble.txt
+
 </FUNCTIONLIST>
 
 #preamble -> in subdir folder, contains code to go before while loop in task, used for threadsafe newlib config, should not have extension .c or .h
@@ -28,12 +30,19 @@
 </PLATFORM>
 
 <MAPPING>
-for_loop_100000_0 cpu0 cpu1
+RadarTracker cpu0 cpu1
 for_loop_50000_50000 cpu0
 </MAPPING>
 
-
+#optional - skip stack profiling if included
 <STACK_PROFILE>
-for_loop_100000_0 80
+RadarTracker 80
 for_loop_50000_50000 80
 </STACK_PROFILE>
+
+
+#optional - skip wcet profiling if included
+<WCET_PROFILE>
+for_loop_50000_50000 1600035
+RadarTracker 1600004 2400006
+</WCET_PROFILE>

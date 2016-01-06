@@ -4,7 +4,7 @@
  * Machine generated for CPU 'processor0_0_cpu0' in SOPC Builder design 'nios_fprint'
  * SOPC Builder design path: /home/jonah/fingerprinting/code_gen/platform/nios_fprint.sopcinfo
  *
- * Generated: Tue Aug 25 13:41:44 EDT 2015
+ * Generated: Mon Jan 04 19:22:56 EST 2016
  */
 
 /*
@@ -52,8 +52,7 @@ MEMORY
 {
     memory_0_onchip_memoryMain_BEFORE_RESET : ORIGIN = 0x400000, LENGTH = 204800
     reset : ORIGIN = 0x464000, LENGTH = 32
-    memory_0_onchip_memoryMain : ORIGIN = 0x464020, LENGTH = 196576
-    stack_bin_1 : ORIGIN = 0x494000, LENGTH = 4096
+    memory_0_onchip_memoryMain : ORIGIN = 0x464020, LENGTH = 200672
     stack_bin_0 : ORIGIN = 0x495000, LENGTH = 4096
     shared_memory : ORIGIN = 0x2500000, LENGTH = 1024
     processor0_0_scratchpad_0 : ORIGIN = 0x4200000, LENGTH = 16384
@@ -131,14 +130,6 @@ SECTIONS
         . = ALIGN(4);
         PROVIDE (_alt_partition_stack_bin_0_end = ABSOLUTE(.));
     } > stack_bin_0
-
-    .stack_bin_1 :
-    {
-        PROVIDE (_alt_partition_stack_bin_1_start = ABSOLUTE(.));
-        *(.stack_bin_1 .stack_bin_1.*)
-        . = ALIGN(4);
-        PROVIDE (_alt_partition_stack_bin_1_end = ABSOLUTE(.));
-    } > stack_bin_1
 
     .text :
     {
@@ -443,7 +434,7 @@ SECTIONS
 /*
  * Don't override this, override the __alt_stack_* symbols instead.
  */
-__alt_data_end = 0x494000;
+__alt_data_end = 0x495000;
 
 /*
  * The next two symbols define the location of the default stack.  You can
@@ -459,4 +450,4 @@ PROVIDE( __alt_stack_limit   = __alt_stack_base );
  * Override this symbol to put the heap in a different memory.
  */
 PROVIDE( __alt_heap_start    = end );
-PROVIDE( __alt_heap_limit    = 0x494000 );
+PROVIDE( __alt_heap_limit    = 0x495000 );

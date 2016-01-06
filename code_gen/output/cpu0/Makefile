@@ -142,14 +142,9 @@ ACDS_VERSION := 13.1
 ELF := cpu0.elf
 
 # Paths to C, C++, and assembly source files.
-C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/AirbagModel.c
-C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/CruiseControlSystem.c
-C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/FuelSensor.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/RadarTracker.c
-C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/TransmissionControl.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/cpu0.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/critical.c
-C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/for_loop.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/for_loop_100000_0.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output/cpu0/for_loop_50000_50000.c
 CXX_SRCS :=

@@ -18,9 +18,13 @@
  *****************************************************************************/
 #define STACKSIZE_MINOFFSET                       316
 #define STACKSIZE_MARGINERROR                     150
+#define FOR_LOOP_50000_50000_STACKSIZE            (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
+#define FOR_LOOP_100000_0_STACKSIZE               (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 /*****************************************************************************
  * Task Priorities
  *****************************************************************************/
+#define FOR_LOOP_50000_50000_PRIORITY             1
+#define FOR_LOOP_100000_0_PRIORITY                2
 /*****************************************************************************
  * Task Table indices
  *****************************************************************************/
@@ -28,13 +32,16 @@
 /*****************************************************************************
  * Task Periods
  *****************************************************************************/
-#define NUM_TASKS                                 1
+#define NUM_TASKS                                 2
+#define FOR_LOOP_50000_50000_PERIOD               60
 #define FOR_LOOP_100000_0_PERIOD                  60
 /*****************************************************************************
  * Runtime monitor table index
  *****************************************************************************/
-#define FOR_LOOP_100000_0_RT_PRIO                 0
+#define FOR_LOOP_50000_50000_RT_PRIO              0
+#define FOR_LOOP_100000_0_RT_PRIO                 1
 /*****************************************************************************
  * Execution time lower bounds
  *****************************************************************************/
+#define FOR_LOOP_50000_50000_WCET_LOWERBOUND      1600035
 #define FOR_LOOP_100000_0_WCET_LOWERBOUND         1600004

@@ -4,76 +4,61 @@ $end
 $comment imperas platform FprintPlatform $end
 $comment imperas cpu FprintPlatform/cpu0 $end
 $timescale 8ns $end
-$scope module 7_uC/OS-II_Idle $end
- $var wire 1 % 7_uC/OS-II_Idle $end
-$upscope $end
 $scope module 4_for_loop_50000_50000 $end
  $var wire 1 ! 4_for_loop_50000_50000 $end
+$upscope $end
+$scope module 6_uC/OS-II_Stat $end
+ $var wire 1 $ 6_uC/OS-II_Stat $end
 $upscope $end
 $scope module 5_for_loop_100000_0 $end
  $var wire 1 # 5_for_loop_100000_0 $end
 $upscope $end
-$scope module 6_uC/OS-II_Stat $end
- $var wire 1 $ 6_uC/OS-II_Stat $end
+$scope module 7_uC/OS-II_Idle $end
+ $var wire 1 % 7_uC/OS-II_Idle $end
 $upscope $end
 $scope module 0_None $end
  $var wire 1 " 0_None $end
 $upscope $end
 $enddefinitions $end
 #0
-x%
 x!
-x#
 x$
+x#
+x%
 x"
-#110537
+#110536
 1!
 z"
-#1324380
+#1227281
 1#
 z!
-#3124467
+#2865236
 1$
 z#
-#3125022
+#2865791
 1%
 z$
-#3984628
+#7734571
 1#
 z%
-#4980247
+#8719404
 1!
 z#
-#6244959
+#10327858
 1#
 z!
-#7038403
+#10984633
 1%
 z#
-#7734622
+#15234573
 1#
 z%
-#9522726
+#16872673
 1%
 z#
-#11484636
-1#
+#17717119
+1!
 z%
-#13272864
+#18613787
 1%
-z#
-#15234629
-1#
-z%
-#17022733
-1%
-z#
-#18984619
-1#
-z%
-#20772902
-1%
-z#
-#22734633
-1#
-z%
+z!

@@ -68,11 +68,12 @@ public class CodeGen {
 				System.out.println("");
 			}
 		}
-		
+
+		platform.addFunctionsToCores();
 		getFprintList();
-		sa.doSourceParsing();
 		
 		new GenCriticalLibrary(config, funcList, fprintList).generateCriticalLibrary();
+		sa.doSourceParsing();
 		new GenScripts(config).generateScripts();
 		new GenStackBin(stackBins,fprintList,platform,config).genStackBins(); 
 	
@@ -137,7 +138,6 @@ public class CodeGen {
 				}
 			}
 
-			platform.addFunctionsToCores();
 		
 	}
 

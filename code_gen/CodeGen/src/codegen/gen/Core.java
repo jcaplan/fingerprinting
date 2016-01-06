@@ -15,6 +15,7 @@ public class Core {
 	public String bspDir;
 	int mainMemStartAddressOffset;
 	int mainMemSize;
+	int totalMemSize;
 	int index;
 	boolean requiresCriticalHeader = false;
 	
@@ -44,6 +45,7 @@ public class Core {
 		this.isMonitor = isMonitor;
 		this.mainMemStartAddressOffset = memStartAddress;
 		this.mainMemSize = memSize;
+		this.totalMemSize = memSize;
 		funcList = new ArrayList<>();
 		includes = new ArrayList<>();
 	}
@@ -121,6 +123,10 @@ public class Core {
 		}
 		return s;
 		
+	}
+	
+	public int getMemSizeWithStackBins(){
+		return totalMemSize;
 	}
 	
 }

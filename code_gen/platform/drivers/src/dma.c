@@ -97,8 +97,8 @@ void dma_TASK(void* pdata) {
 			/* now start the task */
 			for (i = 0; i < 2; i++) {
 				core = task->core[i];
-				critFuncData[core].priority = task->fprintID;
-				if (critFuncData[core].priority < 0) {
+				critFuncData[core].fprintID = task->fprintID;
+				if (critFuncData[core].fprintID < 0) {
 					printf("big problem no free taskIDs!!!!!!!!!\n");
 				}
 				critFuncData[core].tableIndex = taskID;

@@ -10,13 +10,6 @@
 
 #define NUMCORES 2
 
-//The table is determined statically by the generation tool
-//It needs to be initialized at runtime but its size is known in advance.
-//Declared in monitor main
-
-#define DERIVATIVE_FUNC_TABLE_INDEX 0
-#define AIRBAGMODEL_FUNC_TABLE_INDEX 1
-
 
 typedef struct SharedMemorySymbolTable {
 	struct FunctionTable *ftable;
@@ -40,7 +33,7 @@ typedef struct FunctionTable {
 //The format for the runtime message passed from monitor to cores
 typedef struct CriticalFunctionData{
 	//Priority of the critical task
-	unsigned int priority;
+	unsigned int fprintID;
 
 	//The identity of the function is retrieved from the functionTable
 	unsigned int tableIndex;
