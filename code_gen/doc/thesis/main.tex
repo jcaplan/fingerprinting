@@ -26,7 +26,7 @@
 12pt, % The default document font size, options: 10pt, 11pt, 12pt
 oneside, % Two side (alternating margins) for binding by default, uncomment to switch to one side
 english, % ngerman for German
-onehalfspacing, % Single line spacing, alternatives: onehalfspacing or doublespacing
+doublespacing, % Single line spacing, alternatives: onehalfspacing or doublespacing
 %draft, % Uncomment to enable draft mode (no pictures, no links, overfull hboxes indicated)
 %nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
 %liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
@@ -60,13 +60,18 @@ onehalfspacing, % Single line spacing, alternatives: onehalfspacing or doublespa
 \usepackage{lastpage} % Required to determine the last page for the footer
 \usepackage{courier}
 \usepackage{textcomp}
-\usepackage{algorithm2e}
+\usepackage[linesnumbered]{algorithm2e}
 \usepackage{setspace}
 \usepackage{listings}
 \AtBeginDocument{\DeclareCaptionSubType{lstlisting}}
 \usepackage[centerlast,small,sc]{caption}
 \usepackage{subcaption}
 \setlength{\captionmargin}{50pt}
+
+\DontPrintSemicolon
+\SetKwIF{Upon}{}{}{Upon}{do}{}{}{end}
+
+
 
 \AtBeginDocument{\renewcommand{\bibname}{References}}
 \usepackage{todonotes}
@@ -106,7 +111,6 @@ onehalfspacing, % Single line spacing, alternatives: onehalfspacing or doublespa
   moredelim=**[is][\color{red}]{@!}{@!},
   lineskip={-1.5pt}
 }
-
 
 
 \newcommand{\includecode}[4]{\lstinputlisting[captionpos=t,language=#4,caption={#3},label={#2}]{code/#1}}
@@ -175,8 +179,24 @@ onehalfspacing, % Single line spacing, alternatives: onehalfspacing or doublespa
 \begin{titlepage}
 \begin{center}
 
-\textsc{\LARGE \univname}\\[1.5cm] % University name
-\textsc{\Large Masters Thesis}\\[0.5cm] % Thesis type
+
+\begin{minipage}{0.2\textwidth}
+\begin{flushleft} 
+\includegraphics[scale=0.25]{Figures/McGillLogo.png}
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+    \begin{center}
+	\textsc{\LARGE \univname}\\[1.5cm] % University name
+	\textsc{\Large Masters Thesis}\\[0.5cm] % Thesis type
+        \end{center} 
+\end{minipage}
+\begin{minipage}{0.2\textwidth}
+\begin{flushright}
+\includegraphics[scale=0.25]{Figures/McGillLogo.png}
+\end{flushright}
+\end{minipage}
+\vspace{1cm}
 
 \HRule \\[0.4cm] % Horizontal line
 {\huge \bfseries \ttitle}\\[0.4cm] % Thesis title
@@ -336,8 +356,8 @@ The Thesis Abstract is written here (and usually kept to just this page). The pa
 % \input{Chapters/tool-arch}
 % \input{Chapters/prof}
 % \input{Chapters/map-sched}
-\input{Chapters/soft-impl}
-% \input{Chapters/code-gen}
+% \input{Chapters/soft-impl}
+\input{Chapters/code-gen}
 % \input{Chapters/results}
 % \input{Chapters/related}
 % \input{Chapters/concl} 
