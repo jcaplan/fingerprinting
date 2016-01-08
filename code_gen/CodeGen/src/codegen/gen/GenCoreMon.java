@@ -504,6 +504,10 @@ public class GenCoreMon extends GenCore{
 				"	while (!coresReady)\n"+
 				"		;\n"+
 				"\n"+
+				"	//Let task wrappers warm up\n"+
+				"	//-------------------------\n"+
+				"	ALT_USLEEP(" + getLongestPeriodUS() + ");\n"+
+				"\n"+
 				"	//Start the OS\n"+
 				"	//------------\n"+
 				"	OSStart();\n"+
@@ -515,6 +519,17 @@ public class GenCoreMon extends GenCore{
 				"\n";
 		
 		return s;
+	}
+
+	private int getLongestPeriodUS() {
+		int period = 0;
+		for(Function f : funcList){
+			if(f.period > period){
+				period = f.period;
+			}
+		}
+		//period is in ms, add 50% safety margin
+		return period * 1500;
 	}
 
 	/**

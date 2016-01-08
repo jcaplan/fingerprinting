@@ -137,8 +137,6 @@ public class CodeGen {
 					f.cores.add(p.getName());
 				}
 			}
-
-		
 	}
 
 	/**
@@ -183,7 +181,7 @@ public class CodeGen {
 	}
 
 	public void printWcetResults() {
-		System.out.println("\n#WCET results (in clockcycles):");
+		System.out.println("\n#WCET results (in ms):");
 		System.out.println("<WCET_PROFILE>");
 		for (Function f : funcList) {
 			System.out.print(f.name + " " + f.wcetLowerBound);

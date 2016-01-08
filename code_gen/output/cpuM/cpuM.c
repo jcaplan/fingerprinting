@@ -2,6 +2,7 @@
  * Includes
  **********************************/
 #include <stdio.h>
+#include <string.h>
 #include <stddef.h>
 #include <stdbool.h>
 #include "includes.h"
@@ -14,6 +15,7 @@
 #include "reset_monitor.h"
 #include "runtimeMonitor.h"
 #include "repos.h"
+#include "os/alt_syscall.h"
 #include "critical.h"
 #include "for_loop_100000_0.h"
 
@@ -121,7 +123,7 @@ static void handleResetMonitor(void* context) {
 	if (taskFailed) {
 		taskFailed = false;
 
-		postDmaMessage(failedTaskID, true);
+		postDmaMessage(failedTaskID, true,true);
 
 	}
 }
@@ -158,7 +160,7 @@ static void handleComp(void* context) {
 				/* assume only one failure possible */
 				failedTaskID = REPOSgetTaskID(mask);
 				REPOSTaskReset(failedTaskID);
-				postDmaMessage(failedTaskID, true);
+				postDmaMessage(failedTaskID, true,true);
 				break;
 			}
 		}
@@ -181,7 +183,7 @@ static void handleComp(void* context) {
 				if (!taskFailed || (taskFailed && taskID != failedTaskID)) { /*function can be decomposed into several chunks, so could be both cases */
 					REPOSTaskTable[taskID].funcCompleteCount = 0;
 					REPOSTaskComplete(taskID);
-					postDmaMessage(taskID, false);
+					postDmaMessage(taskID, false,false);
 				}
 			}
 		}
@@ -204,7 +206,7 @@ static void initCompIsr(void) {
  *****************************************************************************/
 
  void startHook(void *args) {
-	postDmaMessage((int)args,true);
+	postDmaMessage((int)args,true,false);
 }
 
 
@@ -384,6 +386,8 @@ int main(void) {
 	//----------------------------------------------------------------------------
 	while (!coresReady)
 		;
+
+	ALT_USLEEP(90000);
 
 	//Start the OS
 	//------------

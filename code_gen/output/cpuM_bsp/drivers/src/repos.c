@@ -10,6 +10,10 @@
 
 
 void REPOSUpdateTime(void) {
+	//wait until OS is running
+	if((OSRunning == OS_FALSE)){
+		return;
+	}
 
 	int i;
 	for(i = 0; i < OS_MAX_TASKS; i++){

@@ -46,7 +46,7 @@ typedef struct CriticalFunctionData{
 	void *tlbStackAddressVirt;
 	int partnerCore;
 	int checkout;
-
+	int modeChange;
 
 }CriticalFunctionData;
 

@@ -70,7 +70,7 @@ doublespacing, % Single line spacing, alternatives: onehalfspacing or doublespac
 
 \DontPrintSemicolon
 \SetKwIF{Upon}{}{}{Upon}{do}{}{}{end}
-
+\SetKwProg{Fn}{Function}{}{end}
 
 
 \AtBeginDocument{\renewcommand{\bibname}{References}}
@@ -351,16 +351,15 @@ The Thesis Abstract is written here (and usually kept to just this page). The pa
 
 % 
 
-% \input{Chapters/intro}
-% \input{Chapters/background}
-% \input{Chapters/tool-arch}
-% \input{Chapters/prof}
-% \input{Chapters/map-sched}
-% \input{Chapters/soft-impl}
+\input{Chapters/intro}
+\input{Chapters/background}
+\input{Chapters/tool-arch}
+\input{Chapters/prof}
+\input{Chapters/map-sched}
+\input{Chapters/soft-impl}
 \input{Chapters/code-gen}
-% \input{Chapters/results}
 % \input{Chapters/related}
-% \input{Chapters/concl} 
+\input{Chapters/concl}
 
 
 
@@ -373,10 +372,10 @@ The Thesis Abstract is written here (and usually kept to just this page). The pa
 % Include the appendices of the thesis as separate files from the Appendices folder
 % Uncomment the lines as you write the Appendices
 
-% \input{Appendices/AppConfigFile}
+\input{Appendices/AppConfigFile}
 % \input{Appendices/AppWcetBench}
-%\input{Appendices/AppendixC}
-
+\input{Appendices/AppScripts}
+\input{Appendices/AppMonCode}
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------

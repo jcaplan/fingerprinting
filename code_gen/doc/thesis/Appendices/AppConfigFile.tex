@@ -11,53 +11,6 @@ First, the functions must be specified. Each function must have a root name, a d
 
 The configuration file will be specified through examples. First, the function declarations:
 
-\begin{lstlisting}[caption={Function configuration syntax},label=l:config-function,language=bash]
-#periodic tasks, some are critical, all independent (no dataflow between tasks)
-
-
-#function list must come first!!
-
-#Comments start with #
-# -c for critical task
-# -T for task period in ms
-# -E for event driven, runs when all the inputs are available
-# -S for stacksize, if S is not present then assume profiler was used
-# 	if profiler was used: should have a profile.log file in the function folders
-<FUNCTIONLIST>
--rootdir /home/jonah/fingerprinting/automotive_control/CompiledC/for_loops
--name for_loop_100000_0    -subdir for_loop_100000_0           -T  30   -c  -Priority 2	
--name for_loop_50000_50000 -subdir for_loop_50000_50000		   -T  30       -Priority 1 -printRuntime -addPreamble preamble.txt
-</FUNCTIONLIST>
-
-#preamble -> in subdir folder, contains code to go before while loop in task, used for threadsafe newlib config, should not have extension .c or .h
-#printRuntime adds diagnostic printf run time for the given task
-
-<DATAFLOW>
-</DATAFLOW>
-
-
-<PLATFORM>
--usedefault
-</PLATFORM>
-
-<MAPPING>
-for_loop_100000_0 cpu0 cpu1
-for_loop_50000_50000 cpu0
-</MAPPING>
-
-#optional - skip stack profiling if included
-<STACK_PROFILE>
-for_loop_100000_0 80
-for_loop_50000_50000 80
-</STACK_PROFILE>
-
-
-#optional - skip wcet profiling if included
-<WCET_PROFILE>
-for_loop_50000_50000 1600035
-for_loop_100000_0 1600004 2400006
-</WCET_PROFILE>
-\end{lstlisting}
-
+\includecode{configfile.sh}{l:config-function}{Configuration file example}{bash}
 
 Whitespace is ignored except for line breaks. Each top level function must have a unique name and only be instantiated once.

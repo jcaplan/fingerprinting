@@ -151,6 +151,7 @@ public class SourceAnalysis {
 
 		c = platform.getCore("cpuM");
 		c.addHeader("<stdio.h>");
+		c.addHeader("<string.h>");
 		c.addHeader("<stddef.h>");
 		c.addHeader("<stdbool.h>");
 		c.addHeader("includes.h");
@@ -163,6 +164,8 @@ public class SourceAnalysis {
 		c.addHeader("reset_monitor.h");
 		c.addHeader("runtimeMonitor.h");
 		c.addHeader("repos.h");
+		c.addHeader("os/alt_syscall.h");
+		
 		if (c.requiresCriticalHeader) {
 			c.addHeader("critical.h");
 		}

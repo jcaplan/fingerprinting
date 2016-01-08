@@ -86,6 +86,11 @@ SharedMemorySymbolTable *stab;
  *****************************************************************************/
 static void handleCPU(void* context) {
 	int taskIndex = critFuncData[CORE_ID].tableIndex;
+	
+	if(critFuncData[CORE_ID].modeChange){
+		rtMonitorDropLowTasks();
+	}
+
 	updateMemoryManagerTable(taskIndex,
 			&critFuncData[CORE_ID]);
 
