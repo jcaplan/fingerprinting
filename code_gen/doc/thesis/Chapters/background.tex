@@ -82,8 +82,21 @@ where $hp(i)$ is the set of tasks with higher priority than $\tau_i$, $hpH(i)$ i
 	Figure~\ref{f:odr} shows how LO tasks are no longer forced to execute on two cores, thus freeing up resources to execute more tasks on the same platform.
 
 
-\addfigure{0.7}{lockstep.pdf}{Example of a multicore system with lockstep execution}{f:lockstep}
-\addfigure{0.7}{odr.pdf}{Example of multicore system with on-demand redundancy}{f:odr}
+\begin{figure}
+\captionsetup[subfigure]{singlelinecheck=false}
+\centering
+\subcaptionbox{Lockstep execution \label{f:lockstep}}[0.45\textwidth]
+{
+    \includegraphics[width=0.42\textwidth]{lockstep.pdf}
+}%
+\hfill
+\subcaptionbox[]{On-demand redundancy \label{f:odr}}[0.45\textwidth]
+{
+    \includegraphics[width=0.42\textwidth]{odr.pdf}
+}%
+\caption[Short Caption]{Different architectures for multicore fault-tolerant systems.}
+\label{f:ft-arch}
+\end{figure}
 
 
 \section{Fingerprinting with Nios Cores}

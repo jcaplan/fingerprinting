@@ -49,7 +49,7 @@
 
 % \addfigure{0.6}{sor.pdf}{The memory architecture and the sphere of replication.}{f:sor}
 	The shared memory is a region of fast on-chip memory used by the monitor and processing cores to communicate using a simple protocol of fixed message types. 
-	All data in shared memory is write only for only one core to simplify concurrent data accesses. 
+	All data in shared memory is written by only one core to simplify concurrent data accesses. 
 	The monitor core is responsible for initializing the shared data. % (see Section~\ref{s:inter-core}). 
 
 	The physical address space is partitioned in order to support a simple virtual memory scheme. 
@@ -76,7 +76,7 @@
 	The linker script exerpt in Listing~\ref{l:virt-mem-link} shows the main memory region of a core has been shortened by 8kB and two 4kB regions called \texttt{stack\_bin\_x} have been added. 
 	Listing~\ref{l:virt-mem-init} shows a condensed version of the relevant startup procedure. 
 	First, the stack is declared statically and assigned to the stack bin (line 1). 
-	The virtual address for the stack is then set up using the uTLB (liens 4-9). 
+	The virtual address for the stack is then set up using the uTLB (lines 4-9). 
 	Finally, when creating the task (line 11), the virtual address is used. 
 	All references by the RTOS to the stack of this function will use the virtual address. 
 	When the monitor signals that the core should begin execution, the interrupt handler will retrieve the runtime information from shared memory and update the memory tables before signalling that the task is ready (Listing~\ref{l:cpu-irq}).
@@ -323,6 +323,9 @@ The data container ensures that all data is located in a contiguous region of me
 	However, the current model assumes that it will only be necessary to restart a task.
 	The comparator is a hardware module capable of sending an interrupt to the monitor. 
 	If a task has failed in the comparison stage then the monitor resets the state for that task and resends the data and stack to the scratchpad.
+
+	The method is sufficient because the error is assumed not to affect the RTOS kernel which implies that execution will successfully wind back up the call stack to the top level and reach the same wait point in its loop regardless of the error.
+	Watchdog timers and memory exception prototcols would need to be implemented in order to tolerate more severe types of errors (null pointers or other access exceptions and infinite loops).
 
 % \subsection{Fingerprint Management}
 

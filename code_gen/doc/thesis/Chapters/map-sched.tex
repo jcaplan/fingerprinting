@@ -9,8 +9,8 @@
 %----------------------------------------------------------------------------------------
 
 	The two mode AMC response time analysis for mixed criticality systems was presented in Section~\ref{s:mixedcriticality}. 
-	We have shown that it is advantageous to consider a four mode model when both transient faults and execution time overruns are possible in a single lockstep-core mixed criticality fault tolerant system (MCFTS) \cite{albayati2016modes}. 
-	This chapter will review the four mode analysis and initial single core results on improved quality of service (QoS) and then extend it to include several ODR strategies in multicore systems. 
+	This chapter presents a four mode model that is advantageous for quality of service when both transient faults and execution time overruns are possible in a single lockstep-core mixed criticality fault tolerant system (MCFTS) \cite{albayati2016modes}. 
+	A discussion of the four mode analysis and initial single core results on improved quality of service (QoS) will be followed by an extension of the technique to multicore systems and ODR strategies. 
 	A DSE mapping algorithm that uses the new analysis will then be presented.
 
 \section{Four Mode MCFTS Model}
@@ -19,6 +19,7 @@
 	A runtime mechanism must be available to monitor the execution time of tasks in the system.
 	Some or all LO tasks must be dropped from the system when a any task overruns its optimistic execution time budget.
 	In order to accomodate fault tolerance, we extend the analysis to scenarios where a task may also execute more than once in case of failure.
+	In this work we assume that the OS kernel does not fail (is perhaps protected through some other strictly software based mechanism that would cause unreasonable delays if applied to the whole program such as \cite{reis2005swift}).
 	
 	Initial work on AMC assumed that all LO tasks are dropped during a mode change. 
 	Current work in MCS aims to reduce the amount of LO criticality tasks that must be dropped through migration in multicore systems \cite{al2015enhanced} and designer specified importance \cite{fleming2014incorporating}. 
@@ -139,7 +140,7 @@ under the constraints:
 \begin{subequations}
 %\small
 \begin{equation}
-1+f_i \le n_i, \ \ fi \ge 0 \,  \forall \tau_i
+0 < f_i \le n_i - 1,  \forall \tau_i
 \end{equation}
 \begin{equation}
 \sum_i{f_i} \le F.
@@ -167,10 +168,10 @@ under the constraints:
 	We will extend the analysis on lockstep (LS) to support three types of ODR. The four scenarios are shown in Figure~\ref{f:ftm}. 
 	In (a), LS execution occurs when a node has internal mechanisms for detecting but not correcting errors. 
 	An error simply results in a re-execution on that node, as previously discussed. 	
-	In (b), dual modular redundancy (DMR) replicates a thread on two cores that cannot detect errors. 
-	The task must be re-executed if the task executions are found not to match by some external comparison and voting mechanism.
+	In (b), dual modular redundancy (DMR) replicates a thread on two cores that cannot detect errors by themselves. 
+	The task must be re-executed if the executions do not match according to some external comparison or voting mechanism.
 	In (c), triple modular redundancy (TMR) replicates a thread on three cores that cannot detect errors. 
-	If an error occurs, the majority answer is taken from the three replicas and no re-execution is required.
+	If an error occurs, the majority answer is taken from the three replicas and no re-execution is required (the system assumes only one replica may fail at a time).
 	Finally, in (d), passive replication is similar to TMR but the final replica does not execute if the first two copies return the same result. 
 
 
@@ -303,10 +304,10 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 	The mapping and scheduling algorithm follows the procedure used in \cite{bolchini2013reliability} and \cite{kang2014reliability}. 
 	Two stages of genetic algorithms (GA) are used to explore both the techniques used to harden each task and the core assignment for each task and its replicas. 
 	The basic flow is shown in Figure~\ref{f:dse}. 
-	The GA is implemented using \cite{jgap}.  
+	The GA is implemented using JGAP \cite{jgap}.  
 	The Reliability Aware (RA) stage is responsible for mapping a fault tolerance mechanism to each task. 
 	The RA stage then generates a chromosome structure for the Mapping and Scheduling (MS) stage. 
-	The MS stage attempts to find an allocation for each task onto a core that maximizes the average QoS across all modes in the system using the response time anlaysis in Section~\ref{s:mcfts}.
+	The MS stage attempts to find an allocation for each task onto a core that maximizes the average QoS across all modes in the system using the response time analysis from Section~\ref{s:mcfts}.
 	
 \addfigure{0.6}{dse.pdf}{Overview of DSE workflow using nested genetic algorithm searches}{f:dse}
 	
@@ -319,7 +320,7 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 	Given the number of processors that a task can be mapped to, $n$, it is possible to determine for each FTM a mapping rule that generates a unique configuration from an integer. 
 	Each gene in the chromosome is an integer representing a unique allocation for a task and its replicas. 
 	It is important that the task and replicas are represented by a single gene or else most chromosomes will result in illegal configurations after mutation and crossover. 
-	Table~\ref{t:mschrom} shows the number of configurations for each type of FTM and how to derive a unique allocation as a function of the number of candidate cores ($n$) from a random integer $x$. 
+	Table~\ref{t:mschrom} shows the number of configurations for each type of FTM and how to derive a unique allocation as a function of the number of candidate cores ($n$) from a random integer $x < n$. 
 	The conversion rule provides an index into an ordered list of the cores. After each core is allocated it is removed from the list.
 	
 	For example, consider a task and two replicas using TMR in a sytem with 5 processing cores. 
@@ -348,7 +349,9 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 \end{table} 	
 
 	A unique MS stage is instantiated for each chromosome in the RA stage population. 
-	The MS stage creates a schedule based on the chromosome and passes it along to the schedulability analysis. 
+	The MS stage converts the chromosme into a schedule and passes it along to the schedulability analysis. 
+	If the system is schedulable then the chromosome is assigned a fitness value equal to the average QoS across all four modes (defined as percentage of LO tasks that have not been dropped).
+	If the analysis fails then the chromosome is assigned a fitness value of 0.
 	
 	
 \subsection{Performance Optimization}

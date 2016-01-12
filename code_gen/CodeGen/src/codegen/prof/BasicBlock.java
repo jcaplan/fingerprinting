@@ -204,11 +204,12 @@ public class BasicBlock {
 			//If it has been seen on a different path through the tree,
 			//then the oldest age wins
 			if( !bbList.contains(succ) && succ.age < this.age){
-				ArrayList<BasicBlock> newList = new ArrayList<>(bbList);
+				bbList.add(succ);
 				succ.age = age;
 				//Add the successor to the list of seen blocks and repeat
-				newList.add(succ);
-				succ.setSuccessorAges(age+1,newList);
+
+				succ.setSuccessorAges(age+1,bbList);
+				bbList.remove(succ);
 			}
 		}
 		

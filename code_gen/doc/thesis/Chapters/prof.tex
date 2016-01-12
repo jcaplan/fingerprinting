@@ -8,8 +8,7 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 \section{IPET Analysis}
-The WCET for a function is calculated using implicit path enumeration technique (IPET) \cite{li1995performance}. IPET is a method of pessimistically determining the WCET of a
-program without actually identifying the worst-case path. The first step is to convert the CFG into an integer linear program (ILP) and the second step is to determine the cost of each basic block using microarchitectural modelling and/or dataflow analysis. 
+The WCET for a function is calculated using implicit path enumeration technique (IPET) \cite{li1995performance}. IPET is a method of pessimistically determining the longest execution path of a program without having to enumerate all paths. The first step is to convert the control flow graph (CFG) of a program into an integer linear program (ILP) and the second step is to approximate the cost (i.e. execution time) of each basic block using microarchitectural modelling and/or dataflow analysis. 
 
 The goal of the ILP is to maximize the objective function:
 
@@ -50,7 +49,7 @@ Loops require an additional constraint on the maximum number of iterations. Ther
 \end{figure}
 
 
-Function calls are handled quite simply. The entry-point to the top-level function simply equals 1. For all other functions, the entry-point equals the sum of all the edges leaving basic blocks that call that function. In Figure~\ref{f:function-ipet}, the result is: $e_2+e_3-e_4 = 0$.
+The entry-point for function calls equals the sum of all the edges leaving basic blocks that call that function. In Figure~\ref{f:function-ipet}, the result is: $e_2+e_3-e_4 = 0$. 
 
 \begin{figure}[h]
 \centering
@@ -60,16 +59,112 @@ Function calls are handled quite simply. The entry-point to the top-level functi
 \end{figure}
  
 
+\section{Building CFG and Loop Detection}
+	Inspired by Heptane \cite{heptane}, the tool uses \texttt{objdump} to disassemble the compiled elf file for analysis. 
+	The initial parsing phase examines each instruction to categorize each line of assembly code (e.g. store, branch). 
+	First, a list of functions and their contained code is built. Second, the code is divided into a list of basic blocks (i.e. block of code with one entry point and one exit point). 
+	Branches, jumps, and call instructions are used as endpoints of a basic block. 
+	The destinations of branches and calls are then identified to split basic blocks containing destination points into two separate blocks. 
+	Each basic block object has references to its successor and predecessor blocks.
 
-\section{Solution Strategy and Implementation}
+	Loop detection takes place once the CFG is constructed. 
+	First, the \emph{rank} of each basic block is determined using Algorithm~\ref{a:rank}. 
+	Loops are then detected by identifying a backwards edge between basic blocks. 
+	The predecessor of a backwards edge has a higher rank than the successor.
 
-The pre-existing IR is a basic control flow graph (CFG) constructed from the assembly code. The structure of the IR and tools is shown in Figure~\ref{f:class}. Basic blocks have been identified and the instruction types have been roughly categorized (e.g. branch, binary operation). However, the operation and operands are still in unparsed string form. Before loop analysis can be done, several steps must be taken to create a more meaningful IR for the code within basic blocks.
+\begin{algorithm}
 
-\addfigure{0.55}{class.pdf}{Class diagram of profiling tool}{f:class}
+\SetKwFunction{setRank}{setRank}
+
+root.age $\leftarrow$ 1\;
+mark root as seen\;
+bbList $\leftarrow$ list of basic blocks\;
+bbList.add(root);
+setRank(2,root,bbList)\;
+
+\Fn{\setRank{int rank,BasicBlock bb, list bbList}}{
+	\For{all successor $b_s$ of bb}{
+		\If{bbList does not contain $b_s$ and $b_s.rank < bb.rank$}{
+			$b_s.rank$ = rank\;
+			bbList.add($b_s$)\;
+			setRank(rank+1,bbList)\;
+			bbList.remove($b_s$)\;
+		}
+	}
+}
+\caption{Basic block rank calculation for CFG}
+\label{a:rank}
+\end{algorithm}
+
+Annotations on maximum loop iterations can be embedded in the binary using the following macro \cite{heptane}:
+
+\includecode{annot.h}{l:annot}{C macro to include loop annotations in program binary}{C}
+
+	Inline assembly supports labels assigned only number names that do not have to be unique in the program (but do have to be unique to the inlined code). 
+	References to the label must indicate whether they are forwards (f) or backwards (b). 
+	This code defines a label, and then writes a reference to that label (address) and the number 1 to the section \texttt{.wcet\_annot}. 
+	The contents of the annotation section can be extracted and parsed with \texttt{objdump} as well.
+
+
+
+% 
+% The pre-existing intermediate representation (IR) is a basic control flow graph (CFG) constructed from the assembly code. The structure of the IR and tools is shown in Figure~\ref{f:class}. Basic blocks have been identified and the instruction types have been roughly categorized (e.g. branch, binary operation). However, the operation and operands are still in unparsed string form. Before loop analysis can be done, several steps must be taken to create a more meaningful IR for the code within basic blocks.
+
+% \addfigure{0.55}{class.pdf}{Class diagram of profiling tool}{f:class}
+
+\section{Static Analysis}
+
+\subsection{Analysis Framework}
+
+	Typical program analyses is implemented using an iterative fixed point procedure. 
+	The analysis will propagate information through the CFG until a fixed point is reached. Each analysis can be defined in terms of several general patterns, coloquially referred to as ``Laurie's six steps'' \cite{lauriesteps}. 
+	First, the approximation produced by an analysis must be well defined. 
+	Second, an analysis is defined as either \emph{forwards}, where information is propagated down through the CFG from predecessor to successor, and \emph{backwards} analysis, where information is propagated from successor to predecessor. 
+	Third, a merge operation must be defined for join points in the CFG. 
+	Fourth, the behaviour of the analysis must be defined for each type program statement in terms of the in-set and out-set of each basic block. Generally, the analysis will remove (kill) some members of the inset and add some new members to the out-set(gen). The gen and kill for each program statement will depend on the in set as well as the type of statement. 
+	Finally, the starting values for either the in or out set of every basic block must be defined (depending on whether the analysis is forwards or backwards). Generally, the in values are the same for all nodes except, possibly, for the start node.
+
+	A framework architecture is used to define a generic \emph{forward analysis} procedure that is extended to implement specific analyses. The framework is currently limited to intraprocedural analysis. The framework implements a worklist based approach for fixed point flow analysis \cite{andrew2002modern}.
 
 \addfigure{0.6}{stages.pdf}{Stages of loop analysis}{f:stages}
-Building the new IR requires several stages, shown in Figure~\ref{f:stages}. The goal of these analyses is to transform the representation of the program from a list of \texttt{Code} objects into a list of available expressions at each program point, represented as trees with the \texttt{Expression} class. Furthermore, static single assignment (SSA) is used to ensure that the correct version of each variable is being referenced in the loop analysis. Not much will be said about the conversion to SSA form except that it follows the technique found in Appel~\cite{andrew2002modern}. A sample input and output are shown in Listing~\ref{l:ssa-example}. One detail worth mentioning is that function calls cause an increment to the counter of the return registers $r_2$ and $r_3$.
+	We wish to use static analysis to automatically generate constraints on the program without the use of source code annotations.
+	The CFG described above is not sufficient to do static analysis on the program. 
+	The assembly representation of the basic blocks must be transformed into a higher level intermediate representation (IR). 
+	Standard compiler techniques \cite{andrew2002modern} are used to build larger expressions out of the assembly instructions, perform substitutions, and simplify expressions in order to determine properties of the program semantics. 
 
+	The analysis stages are shown in Figure~\ref{f:stages}. 
+	The first three stages (dominance frontier, phi insertion and variable renaming) are standard steps in transforming code into static single assignment (SSA) form. 
+	SSA form creates a new variable name every time a new value is assigned rather than reuse the same variable names. 
+	Therefore, each variable in the program only has one definition which simplifies many analyses.
+	
+	
+	After transforming the program into SSA form, Reaching expressions analysis, loop analysis, and branch analysis are used to automatically generate constraints for IPET analysis. 
+	Reaching expression analysis builds a list of available expressions at each program point p and automatically substitutes any variables with unambiguous values. 
+	Afterwards, loop analysis determines the loop induction variable and the maximum number of iterations for a loop. 
+	Branch analysis determines the maximum number of times a branch within a loop may execute if its condition depends on the induction variable.
+
+\subsection{Static Single Assignment}
+	
+	The first step in transforming the program into SSA is to compute the dominance frontier. 
+	A node $d$ strictly dominates another node $n$ if all paths from the start node to $n$ go through $d$. 
+	An immediate dominator \emph{idom} of a node n is the \emph{unique} node that dominates $n$ but does not dominate any of the other dominator nodes of $n$. 
+	The dominance frontier of node $d$ is the set of nodes $n$ where $d$ dominates an immediate predecessor of $n$ but does not strictly dominate $n$. 
+	
+	The second step in transforming the program into SSA is to insert $\phi$ functions. A $\phi$ function explicitly represents a merge operation for different values a variable may have when a basic block has several successors. For instance, consider the following code:
+	
+	\begin{lstlisting}
+	if(x > 0) y = 5;
+	else y = 100;
+	//program point p
+	\end{lstlisting}
+	
+	In SSA form there two possible reaching definitions of the variable \texttt{y} to consider at program point p. 
+	To resolve this conflict, a \texttt{phi} function is inserted that represents the merge of the values ($y_3 = \phi(y_1,y_2)$).
+
+	Finally, the variables are renamed by assigning an increasing number to each definition of a variable. 
+	A sample input and output are shown in Listing~\ref{l:ssa-example}. One detail worth mentioning is that function calls cause an increment to the counter of the return registers $r_2$ and $r_3$.
+	Algorithmic details are provided in \cite{andrew2002modern}.
+	
 
 \begin{figure}[h]
 \captionsetup{type=lstlisting}
@@ -90,7 +185,7 @@ Building the new IR requires several stages, shown in Figure~\ref{f:stages}. The
 
 \subsection{Reaching Expression Analysis}
 
-The reaching expression analysis combines elements of reaching defintion analysis, constant propagation and copy propagation. This analysis, like the normal reaching definition analysis, is a \textit{may} analysis. The use of SSA form simplifies the analysis compared to previous iterations because the $\phi$ function eliminates the need for explicit representation of undefined paths (this will be discussed in more detail later).
+The reaching expression analysis combines elements of reaching defintion analysis, constant propagation and copy propagation. The analysis is defined by the following six properties:
 
 \begin{enumerate}
   \item The analysis approximates lists of expressions that may be available on the stack or in registers.
@@ -109,7 +204,7 @@ The reaching expression analysis combines elements of reaching defintion analysi
   
   \textbf{conditional branches}: The expression evaluated by conditional branches are useful state to propagate for the loop analysis but is not stored on the stack or in a register. The expression is placed in the out set at a key corresponding to the instruction address.
   
-  \textbf{$\phi$ function}: The merge operation combines sets of expressions from different branches. The $\phi$ function explicitly handles the merges of different versions of the same variable. For example $\phi(a_3) \leftarrow a_2,a_1$ generates the set $\{a_3, \{in(a_2) \cup in(a_1)\}\}$. The $\phi$ function kills the sets for $a_2$ or $a_1$.
+  \textbf{$\phi$ function}: The merge operation combines sets of expressions from different branches. The $\phi$ function explicitly handles the merges of different versions of the same variable. For example $\phi(a_3) \leftarrow a_2,a_1$ generates the set $\{a_3, \{in(a_2) \cup in(a_1)\}\}$. The $\phi$ function kills the sets for $a_2$ and $a_1$.
   
   All other expressions have no effect at the current time. Support for more statement types will be added as necessary. Function calls do not currently kill the values of return registers however they do increment the counter of the return registers in the variable renaming stage. The flow contains a few extra terms due to this limitation.
   
@@ -144,7 +239,7 @@ out: {r3_3=[((0) << (16)) + (9248), (r3_3) + (24), (((0) << (16)) + (9248)) + (2
 
 \end{lstlisting} 
 
-\section{Loop Analysis}
+\subsection{Loop Analysis}
 
 Algorithm~\ref{a:analysis} shows how the loop is characterized. Note that nested loops do not break the condition that only one backwards edge can exist because a backwards edge is defined as going back to the \textit{head} of the loop. 
 

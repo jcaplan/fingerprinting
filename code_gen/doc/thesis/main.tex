@@ -116,7 +116,7 @@ doublespacing, % Single line spacing, alternatives: onehalfspacing or doublespac
 \newcommand{\includecode}[4]{\lstinputlisting[captionpos=t,language=#4,caption={#3},label={#2}]{code/#1}}
 
 \newcommand{\addfigure}[4]{
-\begin{figure}[h]
+\begin{figure}[fh]
 	\centering
 	\includegraphics[scale=#1]{#2}
 	\caption{#3}
@@ -147,7 +147,7 @@ doublespacing, % Single line spacing, alternatives: onehalfspacing or doublespac
 %	THESIS INFORMATION
 %----------------------------------------------------------------------------------------
 
-\thesistitle{Thesis Title} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
+\thesistitle{Analysis and Code Generation for Multicore Fault Tolerant Mixed Criticality Embedded Systems} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
 \supervisor{Brett H. \textsc{Meyer}} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
 \examiner{} % Your examiner's name, this is not currently used anywhere in the template, print it elsewhere with \examname
 \degree{Master of Engineering} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
@@ -217,9 +217,9 @@ doublespacing, % Single line spacing, alternatives: onehalfspacing or doublespac
  
 \large \textit{A thesis submitted in partial fulfilment of the requirements\\ for the degree of \degreename}\\[0.3cm] % University requirement text
 \textit{in the}\\[0.4cm]
-\groupname\\\deptname\\[2cm] % Research group name and department name
+\groupname\\\deptname\\[1cm] % Research group name and department name
  
-{\large \today}\\[4cm] % Date
+{\large \today}\\[1cm] % Date
 %\includegraphics{Logo} % University/department logo - uncomment to place it
  
 \vfill
@@ -280,7 +280,9 @@ The Thesis Abstract is written here (and usually kept to just this page). The pa
 \begin{acknowledgements}
 \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
 
-% Parents: Michael and Wendy Caplan
+Thanks to Zaid Al-Bayati,Harsh Aurora, Ataiais Reis, Mojing Liu, and Georgi Kostadinov, and Professor Haibo Zeng for their collaborations on various aspects of this project both prior to and during completion of this thesis,
+my supervisor Brett H. Meyer for giving me the freedom to make big plans and for letting me take the time to learn things the hard way,
+and professors Laurie Hendren, Jeremy Cooperstock, and Gunter Mussbacher for providing opportunities in their courses to work both directly and indirectly on material for this thesis.
 % Collaborators: Zaid Al-Bayati, Harsh Aurora, Ataias, Mojing, Georgi
 % Supervisor: Brett H. Meyer
 % Rest of my family and friends: few, proud, patient
@@ -336,7 +338,7 @@ The Thesis Abstract is written here (and usually kept to just this page). The pa
 %	DEDICATION
 %----------------------------------------------------------------------------------------
 
-% \dedicatory{For/Dedicated to/To my\ldots}  
+\dedicatory{To my parents}
 
 %----------------------------------------------------------------------------------------
 %	THESIS CONTENT - CHAPTERS
@@ -358,7 +360,7 @@ The Thesis Abstract is written here (and usually kept to just this page). The pa
 \input{Chapters/map-sched}
 \input{Chapters/soft-impl}
 \input{Chapters/code-gen}
-% \input{Chapters/related}
+\input{Chapters/related}
 \input{Chapters/concl}
 
 
