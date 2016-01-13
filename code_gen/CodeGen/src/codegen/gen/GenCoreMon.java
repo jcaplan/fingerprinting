@@ -199,7 +199,7 @@ public class GenCoreMon extends GenCore{
 		Function dmaFunction = new Function();
 		dmaFunction.codeDirectory = null;
 		dmaFunction.critical = false; /* evade special treatment */
-		dmaFunction.cores.add("cpuM");
+		dmaFunction.cores.add(platform.getCore("cpuM"));
 		dmaFunction.name = "dma";
 		dmaFunction.type = Type.eventDriven;
 		

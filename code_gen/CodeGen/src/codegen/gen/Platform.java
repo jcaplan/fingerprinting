@@ -9,19 +9,33 @@ public class Platform {
 	Configuration config;
 	Core[] coreList;
 	
+	int[] startAddresses = {
+			0x64020,
+			0x32020,
+			0x96000,
+			0xc8000
+	};
+	int memSize = 0x31fe0;
+	int numProcessingCores = 0;
 	int mainMemoryBase = 0x400000;
 	/**
 	 * Build platform from configuration
 	 * @param config
 	 */
-	public Platform(Configuration config){
+	public Platform(Configuration config,int numProcessingCores){
 		this.config = config;
-		coreList = new Core[3];
-		coreList[0] = new Core("cpu0",false,0x64020,0x31fe0,0);
-		coreList[1] = new Core("cpu1",false,0x32020,0x31fe0,1);
-		coreList[2] = new Core("cpuM",true,0x20,0x30fe0,2);
+		this.numProcessingCores = numProcessingCores;
+		addCores(numProcessingCores);
 	}
 	
+	private void addCores(int numProcessingCores) {
+		coreList = new Core[numProcessingCores + 1];
+		for(int i = 0; i < numProcessingCores; i++){
+			coreList[i] = new Core("cpu" + i, false, startAddresses[i],memSize,i);
+		}
+		coreList[numProcessingCores] = new Core("cpuM",true,0x20,memSize,numProcessingCores);
+	}
+
 	/**
 	 * Builds list of functions for each core
 	 */
@@ -33,7 +47,6 @@ public class Platform {
 				}
 			}
 		}
-		
 	}
 	
 	/**
@@ -58,6 +71,10 @@ public class Platform {
 			coreList[i].bspDir = config.outputDir + "/" + coreList[i].name + "_bsp";
 		}
 		coreList[coreList.length-1].bspDir = config.outputDir + "/cpuM_bsp";
+	}
+
+	public int getNumProcessingCores() {
+		return numProcessingCores;
 	}
 	
 }

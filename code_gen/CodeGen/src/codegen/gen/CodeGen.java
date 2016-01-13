@@ -62,7 +62,7 @@ public class CodeGen {
 			System.out.println("finished mapping");
 			for(Function f : funcList){
 				System.out.print(f + ": ");
-				for(String c : f.cores){
+				for(Core c : f.cores){
 					System.out.print(c + ",");
 				}
 				System.out.println("");
@@ -134,7 +134,7 @@ public class CodeGen {
 				Task t = app.getTask(f.name);
 				f.priority = sched.getPriority(t) + 1; //DMA gets 0
 				for(Processor p : sched.getProcessorsForAllPreplicas(t)){
-					f.cores.add(p.getName());
+					f.cores.add(platform.getCore(p.getName()));
 				}
 			}
 	}
@@ -196,12 +196,12 @@ public class CodeGen {
 		
 	}
 
-	public void printMapingResults() {
+	public void printMappingResults() {
 		System.out.println("\n#Mapping results");
 		System.out.println("<MAPPING>");
 		for (Function f : funcList){
 			System.out.print(f + " ");
-			for(String c : f.cores){
+			for(Core c : f.cores){
 				System.out.print(c + " ");
 			}
 			System.out.println("");

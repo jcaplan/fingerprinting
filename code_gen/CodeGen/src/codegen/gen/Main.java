@@ -106,7 +106,7 @@ public class Main {
 		gen.generateCores();
 		gen.printStackResults();
 		gen.printWcetResults();
-		gen.printMapingResults();
+		gen.printMappingResults();
 
 
 	}

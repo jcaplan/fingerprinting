@@ -11,14 +11,14 @@
 	The implementation details will then be provided for the embedded C code templates. 
 	The chapter starts with an overview of the main interactions between the system level components. 
 	Each interaction will then be decomposed until the low level behaviour of is exposed. While hardware exists to support TMR, only DMR code generation has currently been implemented at this time. 
-	As a general comment on notation, sequence diagrams will be used to depict interactions between physical components in the system. They do not in any way represent an object oriented software implementation. 
+% 	As a general comment on notation, sequence diagrams will be used to depict interactions between physical components in the system. They do not in any way represent an object oriented software implementation. 
 
 	
 \section{System Level Control Flow}
 		
 	Figure~\ref{f:correct-op} shows the system level control flow for a correct execution of a DMR replicated task.
-	The main components in the system that interact in order to implement ODR are the monitor core (FTC), the processing core, the fingerprint (FP) unit, and the comparator. 
-	The following interactions when distributed redundant copies of critical tasks are correctly executed in the system. 
+	The monitor core (FTC), the processing core, the fingerprint (FP) unit, and the comparator are the main components in the system that implement ODR. 
+% 	The following interactions when distributed redundant copies of critical tasks are correctly executed in the system. 
 	First the monitor configures the comparator. 
 	Then the monitor prepares and sends the data and stack to the scratchpads (SPM) of both processing cores. 
 	The monitor then notifies the cores to begin execution of the critical task. 
@@ -61,9 +61,9 @@
 \subsection{Virtual Memory Management}
 \label{s:virt-mem}
 	Fingerprinting requires the address and data to match for all store instructions which in turn requires that the stack pointer be identical on both cores throughout the execution of the task. 
-	The uTLB translates the virtual address into the physical address and is programmed by each core according to runtime information provided by the monitor. 		
 	Deterministic behaviour is guaranteed by fingerprinting the virtual address and ensuring that both cores use the same virtual address. 
-
+	The uTLB translates the virtual address into the physical address and is programmed by each core according to runtime information provided by the monitor. 		
+	
 	The virtual memory management divides each scratchpad into bins according to the page size used by the uTLB. 
 	The uTLB page size is programmable at hardware compiled time and is currently set to 4kB. 
 	A 16kB scrachpad, for example, contains four bins.  
@@ -275,8 +275,7 @@ The data container ensures that all data is located in a contiguous region of me
 	First, a scratchpad $S_j$ must be selected that does not hold the data for a currently executing task. 
 	A page $P_k$ is then selected from $S_j$ that has either not been used (invalid) or holds data for the lowest priority task.
 
-	If a task has been preempted (is still active but not currently executing) then its data may not be evicted under the current implementation.
-	This effectively limits the well defined behaviour of the system to four critical tasks per core (two scratchpads with four pages each).
+	If a task has been preempted (is still active but not currently executing) then its data may not be evicted under the current implementation, effectively limiting the well defined behaviour of the system to four critical tasks per core (two scratchpads with four pages each).
 	Future work could explore the performance of different replacement policies as well as well as more robust mechanisms to support more critical tasks per core.
 	
 \begin{algorithm}
@@ -360,7 +359,11 @@ The data container ensures that all data is located in a contiguous region of me
 
 	The runtime monitor must be notified at the beginning and end of each iteration for each task (shown in Listing~\ref{l:crit-task-wrapper} lines 9 and 23). 
 	The RTOS kernel must also be modified to update the runtime monitor tables when a context switch occurs. 
-	The runtime monitors uses a dedicated timer rather than rely on the OS software clock to improve precision.
+	The runtime monitor uses a hardware timer rather than rely on the OS software clock to improve precision.
+	
+	Algorithm~\ref{a:run-mon} shows how the runtime monitor keeps track of each task.
+	A single timer is reset when a task starts or a context switch occurs.
+	The value of the hardware timer is added to a counter for each task at every clock tick and when a task is preempted.
 
 \begin{algorithm}
 	\Upon{Start task $T_i$}{

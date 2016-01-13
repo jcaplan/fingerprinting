@@ -302,26 +302,26 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 
 \subsection{Two Stage GA}
 	The mapping and scheduling algorithm follows the procedure used in \cite{bolchini2013reliability} and \cite{kang2014reliability}. 
-	Two stages of genetic algorithms (GA) are used to explore both the techniques used to harden each task and the core assignment for each task and its replicas. 
+	Two stages of genetic algorithms (GA), implemented using JGAP \cite{jgap}, are used to explore both the techniques used to harden each task and the core assignment for each task and its replicas. 
 	The basic flow is shown in Figure~\ref{f:dse}. 
-	The GA is implemented using JGAP \cite{jgap}.  
 	The Reliability Aware (RA) stage is responsible for mapping a fault tolerance mechanism to each task. 
 	The RA stage then generates a chromosome structure for the Mapping and Scheduling (MS) stage. 
 	The MS stage attempts to find an allocation for each task onto a core that maximizes the average QoS across all modes in the system using the response time analysis from Section~\ref{s:mcfts}.
+	It is necessary to define the problem in terms of a chromosome for each stage.
 	
 \addfigure{0.6}{dse.pdf}{Overview of DSE workflow using nested genetic algorithm searches}{f:dse}
 	
-	The chromosome in the RA stage has one gene for each task and each gene is an integer representing a fault tolerance mechanism being used in the system. 
-	For instance, consider a task set with three HI tasks ${\tau_1,\tau_2,\tau_3}$ being mapped onto a platform that supports LS, DMR and TMR - the chromosome would consist of three genes each limited to integers in the range $[0,2]$. 
+	The chromosome in the RA stage has one integer gene for each task representing a fault tolerance mechanism. 
+	For instance, consider a task set with two HI tasks ${\tau_1,\tau_2}$ being mapped onto a platform that supports LS, DMR and TMR - the chromosome would consist of two genes each limited to integers in the range $[0,2]$. 
 	
 	The RA fitness function (FF) must determine the fitness (QoS) for each configuration of fault tolerance mechanisms. 
 	The FF creates a new task set using the transformations in Table~\ref{t:transform} as well as the necessary constraints. 
 	The FF then creates a chromosome template for the MS stage based on the transformed task set. 
 	Given the number of processors that a task can be mapped to, $n$, it is possible to determine for each FTM a mapping rule that generates a unique configuration from an integer. 
-	Each gene in the chromosome is an integer representing a unique allocation for a task and its replicas. 
+% 	Each gene in the chromosome is an integer representing a unique allocation for a task and its replicas. 
 	It is important that the task and replicas are represented by a single gene or else most chromosomes will result in illegal configurations after mutation and crossover. 
 	Table~\ref{t:mschrom} shows the number of configurations for each type of FTM and how to derive a unique allocation as a function of the number of candidate cores ($n$) from a random integer $x < n$. 
-	The conversion rule provides an index into an ordered list of the cores. After each core is allocated it is removed from the list.
+	The conversion rule provides an index into an ordered list of the cores. A core is removed from the list once it is allocated.
 	
 	For example, consider a task and two replicas using TMR in a sytem with 5 processing cores. 
 	All three tasks must go on different cores. 
@@ -349,7 +349,8 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 \end{table} 	
 
 	A unique MS stage is instantiated for each chromosome in the RA stage population. 
-	The MS stage converts the chromosme into a schedule and passes it along to the schedulability analysis. 
+	The MS stage generates a population based on the chromosome built by the RAFF. 
+	The MSFF builds each chromosome into a schedule and passes it along to the schedulability analysis. 
 	If the system is schedulable then the chromosome is assigned a fitness value equal to the average QoS across all four modes (defined as percentage of LO tasks that have not been dropped).
 	If the analysis fails then the chromosome is assigned a fitness value of 0.
 	
@@ -376,8 +377,11 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 	Figure~\ref{f:platform-sched} shows the schedulability results for the three platforms. 
 	The schedulability of ODR and LS were 69\% and 70\% respectivey. 
 	In three cases, the tool failed to find a solution with ODR for a system that passed with LS while only two cases occurred where a LS solution was not found for a system that passed with ODR. 
-	The schedulability for the FP platform was 31\% suggesting poor calibration of the GA stages. However, integration with a code generation tool would ideally allow for a very short run time which most recalibrations would significantly extend. 
-	Overall, this suggests that the use of genetic algorithms may be a useful starting point but that other semi-random unguided heuristics should also be explored in future work.
+	The schedulability for the FP platform was 31\% which is problematic. 
+	The GA finds solutions for less than half of the schedulable systems on the other platforms.
+	It is possible that the GA would produce better results given longer search times and optimizing the schedulability computations. 
+	However, integration with a code generation tool for rapid prototyping makes increasing the runtime impractical. 
+	Overall, this result suggests that the use of genetic algorithms may be a useful starting point but that other semi-random unguided heuristics should also be explored in future work.
 	
 	Figure~\ref{f:platform-sched} shows the results for average QoS only for task sets successfully scheduled on all three platforms. 
 	Here we see that ODR does indeed provide better QoS compared to LS.

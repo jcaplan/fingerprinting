@@ -110,43 +110,27 @@ public class SourceAnalysis {
 	 */
 	private void initHeaders() {
 
-		Core c = platform.getCore("cpu0");
-
-		c.addHeader("<stdio.h>");
-		c.addHeader("<stddef.h>");
-		c.addHeader("includes.h");
-		c.addHeader("shared_mem.h");
-		c.addHeader("fingerprint.h");
-		c.addHeader("gp.h");
-		c.addHeader("context_switch.h");
-		c.addHeader("tlb.h");
-		c.addHeader("mpu_utils.h");
-		c.addHeader("priv/alt_exception_handler_registry.h");
-		c.addHeader("mem_manager.h");
-		c.addHeader("cpu0.h");
-		c.addHeader("reset_monitor.h");
-		c.addHeader("runtimeMonitor.h");
-		if (c.requiresCriticalHeader) {
-			c.addHeader("critical.h");
-		}
-
-		c = platform.getCore("cpu1");
-		c.addHeader("<stdio.h>");
-		c.addHeader("<stddef.h>");
-		c.addHeader("includes.h");
-		c.addHeader("shared_mem.h");
-		c.addHeader("fingerprint.h");
-		c.addHeader("gp.h");
-		c.addHeader("context_switch.h");
-		c.addHeader("tlb.h");
-		c.addHeader("mpu_utils.h");
-		c.addHeader("priv/alt_exception_handler_registry.h");
-		c.addHeader("mem_manager.h");
-		c.addHeader("cpu1.h");
-		c.addHeader("reset_monitor.h");
-		c.addHeader("runtimeMonitor.h");
-		if (c.requiresCriticalHeader) {
-			c.addHeader("critical.h");
+		Core c;
+		for(int i = 0; i < platform.getNumProcessingCores();i++){
+			String name = "cpu" + i;
+			c = platform.getCore(name);
+			c.addHeader("<stdio.h>");
+			c.addHeader("<stddef.h>");
+			c.addHeader("includes.h");
+			c.addHeader("shared_mem.h");
+			c.addHeader("fingerprint.h");
+			c.addHeader("gp.h");
+			c.addHeader("context_switch.h");
+			c.addHeader("tlb.h");
+			c.addHeader("mpu_utils.h");
+			c.addHeader("priv/alt_exception_handler_registry.h");
+			c.addHeader("mem_manager.h");
+			c.addHeader(name + ".h");
+			c.addHeader("reset_monitor.h");
+			c.addHeader("runtimeMonitor.h");
+			if (c.requiresCriticalHeader) {
+				c.addHeader("critical.h");
+			}
 		}
 
 		c = platform.getCore("cpuM");
@@ -173,7 +157,7 @@ public class SourceAnalysis {
 		findFunctionHeaders();
 
 		for (Function f : funcList) {
-			c = platform.getCore(f.cores.get(0));
+			c = f.cores.get(0);
 			c.addHeader(f + ".h");
 		}
 

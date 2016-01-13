@@ -24,6 +24,7 @@ public class Configuration {
 	String outputDir;
 	public boolean wcetProfilingRequired = true;
 	public boolean mappingRequired = true;
+	public int numProcessingCores;
 
 	/**
 	 * 
@@ -213,18 +214,20 @@ public class Configuration {
 
 				if (func.critical) {
 					if (tokens.length == 3) {
-						if (!(tokens[1].equals("cpu0") || tokens[1]
-								.equals("cpu1"))
-								|| !(tokens[2].equals("cpu0") || tokens[2]
-										.equals("cpu1"))) {
-							throwConfigError("invalid mapping for task "
-									+ funcName);
+						//try to assign to the cores... catch exception
+						for(int i = 1; i < 3; i++){
+							Core c = platform.getCore(tokens[i]);
+							if(c == null){
+								throwConfigError("##MAPPING ERROR: " + tokens[i] + "does not exist");
+							}
+							func.cores.add(platform.getCore(tokens[i]));	
 						}
 					} else if (tokens.length == 2) {
 						if (!tokens[1].equals("cpuM")) {
 							throwConfigError("invalid mapping for task "
 									+ funcName);
 						}
+						func.cores.add(platform.getCore("cpuM"));
 					} else {
 						throwConfigError("invalid mapping for task " + funcName);
 					}
@@ -232,13 +235,8 @@ public class Configuration {
 					if (tokens.length != 2) {
 						throwConfigError("invalid mapping for task " + funcName);
 					}
+					func.cores.add(platform.getCore(tokens[1]));
 				}
-
-				/* all the assignments are legal */
-				for (int i = 1; i < tokens.length; i++) {
-					func.cores.add(tokens[i]);
-				}
-
 			}
 		}
 		lineCount++; /* final line */
@@ -251,17 +249,15 @@ public class Configuration {
 	 */
 	private void parsePlatform() throws IOException, ConfigurationException {
 		String line = "";
-		platform = new Platform(this);
 		while (!(line = reader.readLine()).equals("</PLATFORM>")) {
 			lineCount++;
 			line = line.trim();
 			if (!(line.startsWith("#") || line.isEmpty())) {
 				String[] tokens = line.split("[\\s]+");
-				Core core = null;
 				for (int i = 0; i < tokens.length; i++) {
 					String token = tokens[i];
 					switch (token) {
-					case "-name":
+					case "-numPcores":
 						if (i == tokens.length - 1) {
 							throwConfigError("-name expects value");
 						}
@@ -269,26 +265,9 @@ public class Configuration {
 						if (arg.startsWith("-")) {
 							throwConfigError("-name expects value");
 						}
-						core = platform.getCore(arg);
-						i++;
-						break;
-					case "-bsp-dir":
-						if(sopcinfoFilename != null){
-							throwConfigError("Should not set bspdir when using sopcinfo option");
-						}
-						if (i == tokens.length - 1) {
-							throwConfigError("-name expects value");
-						}
-						arg = tokens[i + 1];
-						if (arg.startsWith("-")) {
-							throwConfigError("-name expects value");
-						}
-						core.bspDir = arg;
-						i++;
-						break;
-					case "-usedefault":
-						sopcinfoFilename =  "${NIOS_CODEGEN_ROOT}/platform/nios_fprint.sopcinfo";
+						platform = new Platform(this,Integer.parseInt(arg));
 						platform.useDefaultBSPs();
+						i++;
 						break;
 					default:
 						//TODO error?
@@ -521,7 +500,7 @@ public class Configuration {
 	 * Pring an ArrayList<String>
 	 * @param array
 	 */
-	private void printStringArray(ArrayList<String> array) {
+	private void printStringArray(ArrayList<Core> array) {
 		for (int i = 0; i < array.size() - 1; i++) {
 			System.out.print(array.get(i) + ", ");
 		}

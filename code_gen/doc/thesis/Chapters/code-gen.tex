@@ -91,7 +91,7 @@ The application Makefile can be generated using Nios SBT after all the source co
 	Generate initializion code for the execution time monitor\;
 	Generate interrupt handlers\;
 	Generate task wrappers\;
-	Generate initializion code for memory manager.
+	Generate initializion code for memory manager\;
 	Generate MPU initialization code\;
 	Generate main function\;
 }
@@ -129,7 +129,7 @@ The application Makefile can be generated using Nios SBT after all the source co
 	The two copies of the HI task execute in parallel. The LO task interrupts the HI task on cpu0 however the response time remains under 30ms.
 \addfigure{0.44}{sim1.png}{Simulation of sample program}{f:sim1}
 	
-	The LO task has been configured to run between 8-12 ms. We can observe a mode change by setting C(LO) to 12 ms. 
+	We can observe a mode change by setting C(LO) to 12 ms for the LO task because it has been configured to run between 8-12 ms. 
 	Figure~\ref{f:sim2} shows that once the LO task executes for 12 ms it is dropped while the HI task continues to run.
 	 
 \addfigure{0.42}{sim2.png}{LO task is dropped after $C > C(LO)$}{f:sim2}

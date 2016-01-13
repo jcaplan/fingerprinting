@@ -21,7 +21,7 @@ public class Function implements Comparable<Function>{
 	int deadline;
 	boolean critical;
 	ArrayList<Dataflow> dataflowList;
-	ArrayList<String> cores;
+	ArrayList<Core> cores;
 	enum Type{periodic,eventDriven};
 	Type type;
 	int priority;

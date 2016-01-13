@@ -26,7 +26,7 @@
 
 
 <PLATFORM>
--usedefault
+-numPcores 2
 </PLATFORM>
 
 <MAPPING>

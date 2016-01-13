@@ -123,7 +123,7 @@ static void handleResetMonitor(void* context) {
 	if (taskFailed) {
 		taskFailed = false;
 
-		postDmaMessage(failedTaskID, true,true);
+		postDmaMessage(failedTaskID, true);
 
 	}
 }
@@ -160,7 +160,7 @@ static void handleComp(void* context) {
 				/* assume only one failure possible */
 				failedTaskID = REPOSgetTaskID(mask);
 				REPOSTaskReset(failedTaskID);
-				postDmaMessage(failedTaskID, true,true);
+				postDmaMessage(failedTaskID, true);
 				break;
 			}
 		}
@@ -183,7 +183,7 @@ static void handleComp(void* context) {
 				if (!taskFailed || (taskFailed && taskID != failedTaskID)) { /*function can be decomposed into several chunks, so could be both cases */
 					REPOSTaskTable[taskID].funcCompleteCount = 0;
 					REPOSTaskComplete(taskID);
-					postDmaMessage(taskID, false,false);
+					postDmaMessage(taskID, false);
 				}
 			}
 		}
@@ -206,7 +206,7 @@ static void initCompIsr(void) {
  *****************************************************************************/
 
  void startHook(void *args) {
-	postDmaMessage((int)args,true,false);
+	postDmaMessage((int)args,true);
 }
 
 
@@ -387,6 +387,8 @@ int main(void) {
 	while (!coresReady)
 		;
 
+	//Let task wrappers warm up
+	//-------------------------
 	ALT_USLEEP(90000);
 
 	//Start the OS
