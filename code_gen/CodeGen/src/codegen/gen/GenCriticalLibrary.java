@@ -197,8 +197,6 @@ public class GenCriticalLibrary {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		/* need fprint in cpu0 also */
-		
 	}
 	
 	

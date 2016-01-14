@@ -151,22 +151,6 @@ public class CodeGen {
 		}
 	}
 
-	/**
-	 * Returns name of a core corresponding to integer index
-	 * @param core	index of core
-	 * @return		string for core name
-	 */
-	public String getCoreName(int core) {
-		String name = "";
-		if (core == 0) {
-			name = "cpu0";
-		} else if (core == 1) {
-			name = "cpu1";
-		} else if (core == 2) {
-			name = "cpuM";
-		}
-		return name;
-	}
 
 	/**
 	 * Shows results of stack analysis

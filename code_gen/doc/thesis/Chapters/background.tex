@@ -143,7 +143,7 @@ where $hp(i)$ is the set of tasks with higher priority than $\tau_i$, $hpH(i)$ i
 	We also replicate and restore data at the granularity of a single task execution and are only concerned with the worst case timing.
 	Only one fingerprint is necessary per task per period because enough resources must be allocated to handle the worst case latency (which occurs when a task fails near the end of its execution). 
 		
-	Figures~\ref{f:qsort} and \ref{f:qsort-d} show the average hamming distance (HD) and cumulative HD respectively for the qsort benchmark from the MiBench suite~\cite{guthaus2001mibench}. 
+	Figures~\ref{f:qsort-d} and \ref{f:qsort} show the average hamming distance (HD) and cumulative HD respectively for the qsort benchmark from the MiBench suite~\cite{guthaus2001mibench}. 
 	The results were previously compiled using one and two bit fault injection on an instruction accurate simulation of the PowerPC architecture. 
 	The figures show that the majority of errors with HD less than 10 bits are 1 or 2 bit errors and that the majority of errors result in HDs over 100. 
 	We argue that aliasing should not be considered a critical design point since register errors either tend not to propagate or propagate well past the point where lower block sizes can decrease the likelihood of aliasing.
@@ -151,21 +151,20 @@ where $hp(i)$ is the set of tasks with higher priority than $\tau_i$, $hpH(i)$ i
 	
 	
 \begin{figure}
-\captionsetup[subfigure]{singlelinecheck=false}
+% \captionsetup[subfigure]{}
 \centering
-\subcaptionbox{Average HD frequency \label{f:qsort}}[0.45\textwidth]
-{
-    \includegraphics[width=0.42\textwidth]{qsort.pdf}
+\subcaptionbox{Average HD frequency \label{f:qsort-d}}[0.45\textwidth]
+{	
+    \includegraphics[width=0.45\textwidth]{qsort_d.pdf}
 }%
 \hfill
-\subcaptionbox[]{Cumulative HD frequency \label{f:qsort-d}}[0.45\textwidth]
+\subcaptionbox[]{Cumulative HD frequency \label{f:qsort}}[0.45\textwidth]
 {
-    \includegraphics[width=0.42\textwidth]{qsort_d.pdf}
+    \includegraphics[width=0.45\textwidth]{qsort_nolegend.pdf}
 }%
 \caption{Fault injection results for qsort on PowerPC architecture}
 \label{f:ft-arch}
 \end{figure}
-
 \section{Virtual Platform Model}
 
 	This thesis is primarily concerned with the design and automatic generation of mixed-criticality software that runs on the proposed architecture. 

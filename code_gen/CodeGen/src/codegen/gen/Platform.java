@@ -12,10 +12,10 @@ public class Platform {
 	int[] startAddresses = {
 			0x64020,
 			0x32020,
-			0x96000,
-			0xc8000
+			0x96020,
+			0xc8020
 	};
-	int memSize = 0x31fe0;
+	int memSize = 0x30fe0; //auto-include 0x1000 for sp bin or global data bin
 	int numProcessingCores = 0;
 	int mainMemoryBase = 0x400000;
 	/**
