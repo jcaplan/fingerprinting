@@ -24,7 +24,6 @@ public class Configuration {
 	String outputDir;
 	public boolean wcetProfilingRequired = true;
 	public boolean mappingRequired = true;
-	public int numProcessingCores;
 
 	/**
 	 * 
@@ -288,6 +287,7 @@ public class Configuration {
 	private void parseFunctionList() throws IOException, ConfigurationException {
 		String line = "";
 		String rootdir = "";
+		int funcCount = 0;
 		while (!(line = reader.readLine()).equals("</FUNCTIONLIST>")) {
 			lineCount++;
 			if (!(line.startsWith("#") || line.isEmpty())) {
@@ -433,12 +433,13 @@ public class Configuration {
 					if(f.wcetUpperBound == 0){
 						f.wcetUpperBound = f.wcetLowerBound;
 					}
+					f.funcID = funcList.size();
 					funcList.add(f);
+					
 				}
 			}
 		}
 		lineCount++; /* final line */
-
 	}
 
 	/**

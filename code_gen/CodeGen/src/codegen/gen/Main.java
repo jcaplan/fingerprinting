@@ -32,7 +32,7 @@ public class Main {
 		longopts[2] = new LongOpt("nios2-cmd-dir", LongOpt.REQUIRED_ARGUMENT,
 				null, 2);
 		longopts[3] = new LongOpt("output-dir", LongOpt.REQUIRED_ARGUMENT, null, 3);
-		longopts[4] = new LongOpt("sopcinfo", LongOpt.OPTIONAL_ARGUMENT, null,4);
+		longopts[4] = new LongOpt("sopcinfo", LongOpt.REQUIRED_ARGUMENT, null,4);
 
 		// One colon: required
 		// Two colons: optional

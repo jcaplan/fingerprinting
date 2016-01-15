@@ -9,64 +9,64 @@ benches = ["adpcm_encode","adpcm_decode","basicmath","bf_decode","bf_encode","bi
 blocksizes = [748,1496,2044,2992,4088,4092,5724,8184,8176,11448,16368,16384,22896,32768]
 
 
-# # do the densities for 1-10
-# for bench in benches:
-# #	for each blocksize need an array and to count 
-# 	path = "abridged/" + bench + "_abridged.csv"
-# 	print path
-# 	f = open(path,'r',1)
+# do the densities for 1-10
+for bench in benches:
+#	for each blocksize need an array and to count 
+	path = "abridged/" + bench + "_abridged.csv"
+	print path
+	f = open(path,'r',1)
 
-# 	hammingDistances = [{},{},{},{},{},{},{},{},{},{},{},{},{},{}]
-# 	trace = []
-# 	lineCount = 0
-# 	for line in f:
-# 		tokens = line.split(",")
-# 		count = 0;
-# 		for blocksize in blocksizes:
-# 			hd = tokens[count].rstrip()
-# 			if(hd.isdigit()):
-# 				hd = int(hd)
-# 				if(hammingDistances[count].has_key(hd)):
-# 					oldFreq = hammingDistances[count].get(hd)
-# 					newFreq = oldFreq + 1
-# 					hammingDistances[count][hd] = newFreq 
-# 				else:
-# 					hammingDistances[count][hd] = 1
+	hammingDistances = [{},{},{},{},{},{},{},{},{},{},{},{},{},{}]
+	trace = []
+	lineCount = 0
+	for line in f:
+		tokens = line.split(",")
+		count = 0;
+		for blocksize in blocksizes:
+			hd = tokens[count].rstrip()
+			if(hd.isdigit()):
+				hd = int(hd)
+				if(hammingDistances[count].has_key(hd)):
+					oldFreq = hammingDistances[count].get(hd)
+					newFreq = oldFreq + 1
+					hammingDistances[count][hd] = newFreq 
+				else:
+					hammingDistances[count][hd] = 1
 
 
-# 			count += 1
-# 		lineCount += 1
+			count += 1
+		lineCount += 1
 
-# 	#start with 748 as an example
-# 	# print hammingDistances
+	#start with 748 as an example
+	# print hammingDistances
 
-# 	for index in xrange(6,14):
-# 		frequencies = hammingDistances[index].items()
-# 		frequencies.sort()
-# 		data_x = []
-# 		data_y = []
+	for index in xrange(6,14):
+		frequencies = hammingDistances[index].items()
+		frequencies.sort()
+		data_x = []
+		data_y = []
 		
-# 		for i in xrange(0,11):
+		for i in xrange(0,11):
 			
-# 			f = (frequencies[i][0],frequencies[i][1]/lineCount)
-# 			frequencies[i] = f
-# 			data_x.append(f[0])
-# 			data_y.append(f[1])
+			f = (frequencies[i][0],frequencies[i][1]/lineCount)
+			frequencies[i] = f
+			data_x.append(f[0])
+			data_y.append(f[1])
 		
-# 		trace.append(go.Scatter(
-# 			x = data_x,
-# 			y = data_y,
-# 			mode = 'lines',
-# 			name = str(blocksizes[index]) + "B"
-# 			)
-# 		)
+		trace.append(go.Scatter(
+			x = data_x,
+			y = data_y,
+			mode = 'lines',
+			name = str(blocksizes[index]) + "B"
+			)
+		)
 
-# 	layout = dict(xaxis = dict(title = 'Hamming Distance'),
-# 				  yaxis = dict(title = 'Frequency'))
-# 	fig = dict(data=trace, layout=layout)
-# 	# py.iplot(fig, filename='hd_d/' + bench + '_d')
-# 	py.iplot(fig, filename=bench + '_d')
-# 	print "done " + bench
+	layout = dict(xaxis = dict(title = 'Hamming Distance'),
+				  yaxis = dict(title = 'Frequency'))
+	fig = dict(data=trace, layout=layout)
+	# py.iplot(fig, filename='hd_d/' + bench + '_d')
+	py.iplot(fig, filename=bench + '_d')
+	print "done " + bench
 
 for bench in benches:
 	print bench

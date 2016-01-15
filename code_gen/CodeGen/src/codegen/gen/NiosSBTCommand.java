@@ -73,23 +73,23 @@ public class NiosSBTCommand {
 	 * @param coreID	The Core ID number
 	 * @param sbList	The list of stack bins
 	 */
-	public void updateBspStackBins(int numBins, Core core, int coreID,
-			ArrayList<StackBin> sbList) {
+	public void updateBspStackBins(Core core) {
 		// first shrink size of mainMemory
 		// then add more stack regions
 		// each function should get a stack region
 		String bspSettings = core.bspDir + "/settings.bsp";
+		ArrayList<StackBin> sbList = core.stackbins;
 		for (int i = 1; i < sbList.size(); i++) {
 			StackBin sb = sbList.get(i);
 			try {
 				if(sb.existsInSettings(bspSettings)){
-					if(!sb.matchesSettings(bspSettings,coreID)){
+					if(!sb.matchesSettings(bspSettings)){
 						ResizeMainMem(bspSettings, core.mainMemStartAddressOffset, core.mainMemSize);
-						updateStackBins(bspSettings, sb.startAddress[coreID], sb.name);
+						updateStackBins(bspSettings, sb.startAddress, sb.name);
 					}
 				} else {
 					ResizeMainMem(bspSettings, core.mainMemStartAddressOffset, core.mainMemSize);
-					addStackBins(bspSettings, sb.startAddress[coreID], sb.name);
+					addStackBins(bspSettings, sb.startAddress, sb.name);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -108,7 +108,7 @@ public class NiosSBTCommand {
 				"--settings", bspSettings, "--cmd", "update_memory_region", name,
 				"memory_0_onchip_memoryMain",
 				"0x" + Integer.toString(binStartAddress, 16),
-				"0x" + Integer.toString(StackBin.size, 16)
+				"0x" + Integer.toString(StackBin.SIZE, 16)
 		};
 		runCommand(cmd);
 		
@@ -126,7 +126,7 @@ public class NiosSBTCommand {
 				"--settings", bspSettings, "--cmd", "add_memory_region", name,
 				"memory_0_onchip_memoryMain",
 				"0x" + Integer.toString(binStartAddress, 16),
-				"0x" + Integer.toString(StackBin.size, 16)/*
+				"0x" + Integer.toString(StackBin.SIZE, 16)/*
 														 * 1 bin already
 														 * accounted for
 														 */, "--cmd",

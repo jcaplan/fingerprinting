@@ -14,13 +14,14 @@ import org.apache.commons.io.FileUtils;
 public class GenBSP {
 	
 	Configuration config;
-	
+	Platform platform;
 	/**
 	 * Constructor
 	 * @param config
 	 */
-	public GenBSP(Configuration config){
+	public GenBSP(Configuration config,Platform platform){
 		this.config = config;
+		this.platform = platform;
 	}
 
 	/**
@@ -50,7 +51,10 @@ public class GenBSP {
 				"OS_DIR=${NIOS_CODEGEN_ROOT}/platform/micrium_uc_osii\n"+
 				"\n"+
 				"\n"+
-				"for i in {0..1} M\n"+
+				"for i in {0..";
+				s += platform.numProcessingCores - 1;
+				s+= 				
+				"} M\n"+
 				"do\n"+
 				"	cp -f ${BSPMOD_DIR}/os_cpu_c.c            ${OUTPUT_DIR}/cpu${i}_bsp/HAL/src/\n"+
 				"	cp -f ${OS_DIR}/inc/os_cfg.h              ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/inc/\n"+
@@ -69,13 +73,18 @@ public class GenBSP {
 				"	cp -f ${OS_DIR}/src/os_sem.c              ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/\n"+
 				"done\n"+
 				"\n"+
-				"cp -f ${BSPMOD_DIR}/alt_exception_entry_gp.S ${OUTPUT_DIR}/cpu0_bsp/HAL/src/alt_exception_entry.S\n"+
-				"cp -f ${BSPMOD_DIR}/alt_exception_entry_gp.S ${OUTPUT_DIR}/cpu1_bsp/HAL/src/alt_exception_entry.S\n"+
-				"cp -f ${BSPMOD_DIR}/os_core.c                ${OUTPUT_DIR}/cpu0_bsp/UCOSII/src/\n"+
-				"cp -f ${BSPMOD_DIR}/os_core.c                ${OUTPUT_DIR}/cpu1_bsp/UCOSII/src/\n"+
-				"cp -f ${BSPMOD_DIR}/ucos_ii.h                ${OUTPUT_DIR}/cpu0_bsp/UCOSII/inc/\n"+
-				"cp -f ${BSPMOD_DIR}/ucos_ii.h                ${OUTPUT_DIR}/cpu1_bsp/UCOSII/inc/\n"+
-				"cp -f ${BSPMOD_DIR}/os_cpu_c_MON.c           ${OUTPUT_DIR}/cpuM_bsp/HAL/src/os_cpu_c.c\n"+
+				"for i in {0..";
+				s += platform.numProcessingCores - 1;		
+				s+= 				
+				"}\n"+
+				"do\n"+
+				"	cp -f ${BSPMOD_DIR}/alt_exception_entry_gp.S ${OUTPUT_DIR}/cpu${i}_bsp/HAL/src/alt_exception_entry.S\n"+
+				"	cp -f ${BSPMOD_DIR}/os_core.c                ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/\n"+
+				"	cp -f ${BSPMOD_DIR}/ucos_ii.h                ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/inc/\n"+
+				"done\n"+
+				"\n";
+				
+				s += "cp -f ${BSPMOD_DIR}/os_cpu_c_MON.c           ${OUTPUT_DIR}/cpuM_bsp/HAL/src/os_cpu_c.c\n"+
 				"\n"+
 				"\n"+
 				"# update system.h for monitor bsp\n"+
@@ -91,7 +100,10 @@ public class GenBSP {
 				"cp $DIR/test.x ${OUTPUT_DIR}/cpuM_bsp/system.h\n"+
 				"\n"+
 				"#update the Monitor dma interrupts file for all\n"+
-				"for i in {0..1}\n"+
+				"for i in {0..";
+				s += platform.numProcessingCores - 1;
+				s+= 				
+				"}\n"+
 				"do\n"+
 				"	irq=$(expr $i + 5)\n"+
 				"	sed -r -e \"s/(PROCESSOR${i}_0_DMA_0_IRQ) (-*[0-9]+)/\\1 ${irq}/\" \\\n"+
@@ -128,7 +140,10 @@ public class GenBSP {
 				"SOPC_LOCATION=" + config.sopcinfoFilename + "\n"+
 				"OUTPUT_DIR=" + config.outputDir + "\n"+
 				"\n"+
-				"for i in {0..1} M\n"+
+				"for i in {0..";
+				s += platform.numProcessingCores - 1;
+				s+= 				
+				"} M\n"+
 				"do\n"+
 				"	${NIOS2COMMANDSHELL} nios2-bsp ucosii ${OUTPUT_DIR}/cpu${i}_bsp ${SOPC_LOCATION} \\\n"+
 				"	--cpu-name processor${i}_0_cpu${i}\n"+
@@ -151,43 +166,44 @@ public class GenBSP {
 				"# # <offset>                String with the byte offset of the memory region from\n"+
 				"# #                         the memory device base address.\n"+
 				"# # <span>                  String with the span of the memory region in bytes.\n"+
-				"\n"+
-				"# cpu0\n"+
-				"${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpu0_bsp/settings.bsp \\\n" + 
-				"--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x64020 0x30fe0 \\\n" + 
-				"--cmd add_memory_region stack_bin_0 memory_0_onchip_memoryMain 0x95000 0x1000 \\\n" + 
-				"--cmd add_section_mapping .stack_bin_0 stack_bin_0 \\\n" + 
-				"--cmd enable_sw_package mem_manager \\\n" + 
-				"--cmd enable_sw_package mpu_utils \\\n" + 
-				"--cmd enable_sw_package fingerprint \\\n" + 
-				"--cmd enable_sw_package reset_monitor \\\n" + 
-				"--cmd enable_sw_package runtime_monitor \\\n" + 
-				"--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer \\\n" + 
-				"--cmd set_setting hal.timestamp_timer processor0_0_timestamp\n" + 
-				"\n" + 
-				"# cpu1\n" + 
-				"${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpu1_bsp/settings.bsp \\\n" + 
-				"--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x32020 0x30fe0 \\\n" + 
-				"--cmd add_memory_region stack_bin_0 memory_0_onchip_memoryMain 0x63000 0x1000 \\\n" + 
-				"--cmd add_section_mapping .stack_bin_0 stack_bin_0 \\\n" + 
-				"--cmd update_section_mapping .bss memory_0_onchip_memoryMain \\\n" + 
-				"--cmd update_section_mapping .text memory_0_onchip_memoryMain \\\n" + 
-				"--cmd update_section_mapping .stack memory_0_onchip_memoryMain \\\n" + 
-				"--cmd update_section_mapping .heap memory_0_onchip_memoryMain \\\n" + 
-				"--cmd update_section_mapping .rodata memory_0_onchip_memoryMain \\\n" + 
-				"--cmd update_section_mapping .rwdata memory_0_onchip_memoryMain \\\n" + 
-				"--cmd enable_sw_package mem_manager \\\n" + 
-				"--cmd enable_sw_package mpu_utils \\\n" + 
-				"--cmd enable_sw_package fingerprint \\\n" + 
-				"--cmd enable_sw_package reset_monitor \\\n" + 
-				"--cmd enable_sw_package runtime_monitor \\\n" + 
-				"--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer \\\n" + 
-				"--cmd set_setting hal.timestamp_timer processor1_0_timestamp\n" + 
-				"\n" + 
+				"\n";
+				
+				for(int i = 0; i < platform.numProcessingCores; i++){
+					String name = "cpu" + i;
+					Core c = platform.getCore(name);
+					String startAddress = "0x" + Integer.toHexString(c.mainMemStartAddressOffset);
+					String endAddress = "0x" + Integer.toHexString(c.mainMemStartAddressOffset
+							+ c.mainMemSize - 0x1000);
+					s +=
+					"# " + name + "\n"+
+					"${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/" + name + "_bsp/settings.bsp \\\n" + 
+					"--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain " + startAddress + " 0x30fe0 \\\n" + 
+					"--cmd add_memory_region stack_bin_0 memory_0_onchip_memoryMain " + endAddress + " 0x1000 \\\n" + 
+					"--cmd add_section_mapping .stack_bin_0 stack_bin_0 \\\n" + 
+					"--cmd update_section_mapping .bss memory_0_onchip_memoryMain \\\n" + 
+					"--cmd update_section_mapping .text memory_0_onchip_memoryMain \\\n" + 
+					"--cmd update_section_mapping .stack memory_0_onchip_memoryMain \\\n" + 
+					"--cmd update_section_mapping .heap memory_0_onchip_memoryMain \\\n" + 
+					"--cmd update_section_mapping .rodata memory_0_onchip_memoryMain \\\n" + 
+					"--cmd update_section_mapping .rwdata memory_0_onchip_memoryMain \\\n" + 
+					"--cmd enable_sw_package mem_manager \\\n" + 
+					"--cmd enable_sw_package mpu_utils \\\n" + 
+					"--cmd enable_sw_package fingerprint \\\n" + 
+					"--cmd enable_sw_package reset_monitor \\\n" + 
+					"--cmd enable_sw_package runtime_monitor \\\n" + 
+					"--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer \\\n" + 
+					"--cmd set_setting hal.timestamp_timer processor" + i + "_0_timestamp\n" + 
+					"\n";
+				}
+				Core c = platform.getCore("cpuM");
+				String startAddress = "0x" + Integer.toHexString(c.mainMemStartAddressOffset);
+				String endAddress = "0x" + Integer.toHexString(c.mainMemStartAddressOffset
+						+ c.mainMemSize);
+				s += 
 				"# cpuM\n" + 
 				"${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpuM_bsp/settings.bsp \\\n" + 
-				"--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x20 0x30fe0 \\\n" + 
-				"--cmd add_memory_region global_data memory_0_onchip_memoryMain 0x31000 0x1000 \\\n" + 
+				"--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain " + startAddress + " 0x30fe0 \\\n" + 
+				"--cmd add_memory_region global_data memory_0_onchip_memoryMain " + endAddress + " 0x1000 \\\n" + 
 				"--cmd add_section_mapping .global_data global_data \\\n" + 
 				"--cmd add_section_mapping .critical processorM_0_scratchpad \\\n" + 
 				"--cmd add_section_mapping .shared shared_memory \\\n" + 
@@ -201,7 +217,10 @@ public class GenBSP {
 				"--cmd set_setting hal.timestamp_timer processorM_0_timestamp"+
 				"\n"+
 				"\n"+
-				"for i in {0..1} M\n"+
+				"for i in {0..";
+				s += platform.numProcessingCores - 1;
+				s+= 				
+				"} M\n"+
 				"do\n"+
 				"	 ${NIOS2COMMANDSHELL} nios2-bsp-generate-files --bsp-dir ${OUTPUT_DIR}/cpu${i}_bsp \\\n"+
 				"	 --settings ${OUTPUT_DIR}/cpu${i}_bsp/settings.bsp \n"+

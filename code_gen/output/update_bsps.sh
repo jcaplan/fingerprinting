@@ -30,12 +30,13 @@ do
 	cp -f ${OS_DIR}/src/os_sem.c              ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/
 done
 
-cp -f ${BSPMOD_DIR}/alt_exception_entry_gp.S ${OUTPUT_DIR}/cpu0_bsp/HAL/src/alt_exception_entry.S
-cp -f ${BSPMOD_DIR}/alt_exception_entry_gp.S ${OUTPUT_DIR}/cpu1_bsp/HAL/src/alt_exception_entry.S
-cp -f ${BSPMOD_DIR}/os_core.c                ${OUTPUT_DIR}/cpu0_bsp/UCOSII/src/
-cp -f ${BSPMOD_DIR}/os_core.c                ${OUTPUT_DIR}/cpu1_bsp/UCOSII/src/
-cp -f ${BSPMOD_DIR}/ucos_ii.h                ${OUTPUT_DIR}/cpu0_bsp/UCOSII/inc/
-cp -f ${BSPMOD_DIR}/ucos_ii.h                ${OUTPUT_DIR}/cpu1_bsp/UCOSII/inc/
+for i in {0..1}
+do
+	cp -f ${BSPMOD_DIR}/alt_exception_entry_gp.S ${OUTPUT_DIR}/cpu${i}_bsp/HAL/src/alt_exception_entry.S
+	cp -f ${BSPMOD_DIR}/os_core.c                ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/
+	cp -f ${BSPMOD_DIR}/ucos_ii.h                ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/inc/
+done
+
 cp -f ${BSPMOD_DIR}/os_cpu_c_MON.c           ${OUTPUT_DIR}/cpuM_bsp/HAL/src/os_cpu_c.c
 
 

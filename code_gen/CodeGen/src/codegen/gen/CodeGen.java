@@ -24,7 +24,6 @@ public class CodeGen {
 	Platform platform;
 	ArrayList<Function> funcList;
 	ArrayList<Function> fprintList;
-	ArrayList<StackBin> stackBins;
 	/**
 	 * The index of the monitor core
 	 */
@@ -52,7 +51,7 @@ public class CodeGen {
 		
 		//Generate necessary scripts and SBT files
 		if(config.generateBSPRequired()){
-			new GenBSP(config).generateBSPs();
+			new GenBSP(config,platform).generateBSPs();
 		}
 		SourceAnalysis sa = new SourceAnalysis(platform, funcList, config,fprintList);
 		sa.doSourceProfiling();
@@ -75,7 +74,7 @@ public class CodeGen {
 		new GenCriticalLibrary(config, funcList, fprintList).generateCriticalLibrary();
 		sa.doSourceParsing();
 		new GenScripts(config).generateScripts();
-		new GenStackBin(stackBins,fprintList,platform,config).genStackBins(); 
+		new GenStackBin(fprintList,platform,config).genStackBins(); 
 	
 		
 		//static analysis complete

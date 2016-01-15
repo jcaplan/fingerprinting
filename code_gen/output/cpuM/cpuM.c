@@ -18,6 +18,8 @@
 #include "os/alt_syscall.h"
 #include "critical.h"
 #include "for_loop_100000_0.h"
+#include "for_loop_90000_0.h"
+#include "for_loop_80000_0.h"
 
 
 
@@ -32,6 +34,22 @@ typedef struct {
 } DMA_for_loop_100000_0PackageStruct;
 
 DMA_for_loop_100000_0PackageStruct for_loop_100000_0PackageStruct __attribute__ ((section (".global_data")));
+
+
+
+typedef struct {
+	for_loop_90000_0Struct for_loop_90000_0_STRUCT;
+} DMA_for_loop_90000_0PackageStruct;
+
+DMA_for_loop_90000_0PackageStruct for_loop_90000_0PackageStruct __attribute__ ((section (".global_data")));
+
+
+
+typedef struct {
+	for_loop_80000_0Struct for_loop_80000_0_STRUCT;
+} DMA_for_loop_80000_0PackageStruct;
+
+DMA_for_loop_80000_0PackageStruct for_loop_80000_0PackageStruct __attribute__ ((section (".global_data")));
 
 
 
@@ -71,7 +89,7 @@ alt_mutex_dev* mutex;
  * Task control flow conditions
  *****************************************************************************/
 
-#define NUM_CRITICAL_TASKS 						1
+#define NUM_CRITICAL_TASKS 						3
 
 bool coresReady = false;
 bool taskFailed = false;
@@ -98,6 +116,12 @@ CriticalFunctionData critFuncData[NUMCORES] __attribute__ ((section (".shared"))
  * Pointer relocation functions
  *****************************************************************************/
 void for_loop_100000_0UpdatePointers(INT32U baseAddress, RT_MODEL_for_loop_100000_0_T *for_loop_100000_0_M){
+}
+
+void for_loop_90000_0UpdatePointers(INT32U baseAddress, RT_MODEL_for_loop_90000_0_T *for_loop_90000_0_M){
+}
+
+void for_loop_80000_0UpdatePointers(INT32U baseAddress, RT_MODEL_for_loop_80000_0_T *for_loop_80000_0_M){
 }
 
 
@@ -220,11 +244,37 @@ void initializeTaskTable(void) {
 	task->stackAddressPhys[0] = (void *) (0x495000);
 	task->stackAddressPhys[1] = (void *) (0x463000);
 
-	task->stackAddressVirt[0] = (void *) (0x63000);
-	task->stackAddressVirt[1] = (void *) (0x63000);
+	task->stackAddressVirt[0] = (void *) (0x32000);
+	task->stackAddressVirt[1] = (void *) (0x32000);
 
 	task->dataSize = sizeof(for_loop_100000_0PackageStruct);
 	task->stackSize = (FOR_LOOP_100000_0_STACKSIZE * 4);
+
+	task = &REPOSTaskTable[FOR_LOOP_90000_0_TABLE_INDEX];
+
+	task->dataAddressPhys = &for_loop_90000_0PackageStruct;
+	task->dataAddressVirt = (void *)((int)&for_loop_90000_0PackageStruct & 0x3FFFFF);
+	task->stackAddressPhys[0] = (void *) (0x494000);
+	task->stackAddressPhys[1] = (void *) (0x462000);
+
+	task->stackAddressVirt[0] = (void *) (0x33000);
+	task->stackAddressVirt[1] = (void *) (0x33000);
+
+	task->dataSize = sizeof(for_loop_90000_0PackageStruct);
+	task->stackSize = (FOR_LOOP_90000_0_STACKSIZE * 4);
+
+	task = &REPOSTaskTable[FOR_LOOP_80000_0_TABLE_INDEX];
+
+	task->dataAddressPhys = &for_loop_80000_0PackageStruct;
+	task->dataAddressVirt = (void *)((int)&for_loop_80000_0PackageStruct & 0x3FFFFF);
+	task->stackAddressPhys[0] = (void *) (0x493000);
+	task->stackAddressPhys[1] = (void *) (0x461000);
+
+	task->stackAddressVirt[0] = (void *) (0x34000);
+	task->stackAddressVirt[1] = (void *) (0x34000);
+
+	task->dataSize = sizeof(for_loop_80000_0PackageStruct);
+	task->stackSize = (FOR_LOOP_80000_0_STACKSIZE * 4);
 
 }
 
@@ -247,6 +297,34 @@ void REPOSInit(void) {
 	task->taskID = FOR_LOOP_100000_0_TABLE_INDEX;
 	task->startHook = startHook;
 	task->startHookArgs = (void*)FOR_LOOP_100000_0_TABLE_INDEX;
+
+	task = &REPOSTaskTable[FOR_LOOP_90000_0_TABLE_INDEX];
+	task->taskRunning = false;
+	task->kind = PERIODIC_K;
+	task->data.periodic.period = FOR_LOOP_90000_0_PERIOD;
+	task->data.periodic.countdown = FOR_LOOP_90000_0_PERIOD;
+	task->data.periodic.deadline = FOR_LOOP_90000_0_PERIOD; /* Deadline not specified, assume deadline = period */
+	task->core[0] = 0;
+	task->core[1] = 1;
+	task->numFuncs = 1;
+	task->funcTableFirstIndex = 0;
+	task->taskID = FOR_LOOP_90000_0_TABLE_INDEX;
+	task->startHook = startHook;
+	task->startHookArgs = (void*)FOR_LOOP_90000_0_TABLE_INDEX;
+
+	task = &REPOSTaskTable[FOR_LOOP_80000_0_TABLE_INDEX];
+	task->taskRunning = false;
+	task->kind = PERIODIC_K;
+	task->data.periodic.period = FOR_LOOP_80000_0_PERIOD;
+	task->data.periodic.countdown = FOR_LOOP_80000_0_PERIOD;
+	task->data.periodic.deadline = FOR_LOOP_80000_0_PERIOD; /* Deadline not specified, assume deadline = period */
+	task->core[0] = 0;
+	task->core[1] = 1;
+	task->numFuncs = 1;
+	task->funcTableFirstIndex = 0;
+	task->taskID = FOR_LOOP_80000_0_TABLE_INDEX;
+	task->startHook = startHook;
+	task->startHookArgs = (void*)FOR_LOOP_80000_0_TABLE_INDEX;
 
 
 	fprintIDFreeList = 0xFFFF;
@@ -307,6 +385,10 @@ int main(void) {
 	//-----------------------------
 	functionTable[FOR_LOOP_100000_0_TABLE_INDEX].args =  (void *)((int)&for_loop_100000_0PackageStruct & 0x3FFFFF);
 	functionTable[FOR_LOOP_100000_0_TABLE_INDEX].blocksize = 0xfff;
+	functionTable[FOR_LOOP_90000_0_TABLE_INDEX].args =  (void *)((int)&for_loop_90000_0PackageStruct & 0x3FFFFF);
+	functionTable[FOR_LOOP_90000_0_TABLE_INDEX].blocksize = 0xfff;
+	functionTable[FOR_LOOP_80000_0_TABLE_INDEX].args =  (void *)((int)&for_loop_80000_0PackageStruct & 0x3FFFFF);
+	functionTable[FOR_LOOP_80000_0_TABLE_INDEX].blocksize = 0xfff;
 	//Initialize the runtime interface
 	REPOSInit();
 
@@ -365,6 +447,26 @@ int main(void) {
 	for_loop_100000_0_initialize(for_loop_100000_0_M);
 	for_loop_100000_0UpdatePointers((INT32U)&for_loop_100000_0PackageStruct & 0x3FFFFF, for_loop_100000_0_M);
 
+	RT_MODEL_for_loop_90000_0_T *for_loop_90000_0_M =
+			&for_loop_90000_0PackageStruct.for_loop_90000_0_STRUCT.for_loop_90000_0_M;
+	ExtU_for_loop_90000_0_T *for_loop_90000_0_U =
+			&for_loop_90000_0PackageStruct.for_loop_90000_0_STRUCT.for_loop_90000_0_U;
+	ExtY_for_loop_90000_0_T *for_loop_90000_0_Y =
+			&for_loop_90000_0PackageStruct.for_loop_90000_0_STRUCT.for_loop_90000_0_Y;
+	for_loop_90000_0UpdatePointers((INT32U)&for_loop_90000_0PackageStruct, for_loop_90000_0_M);
+	for_loop_90000_0_initialize(for_loop_90000_0_M);
+	for_loop_90000_0UpdatePointers((INT32U)&for_loop_90000_0PackageStruct & 0x3FFFFF, for_loop_90000_0_M);
+
+	RT_MODEL_for_loop_80000_0_T *for_loop_80000_0_M =
+			&for_loop_80000_0PackageStruct.for_loop_80000_0_STRUCT.for_loop_80000_0_M;
+	ExtU_for_loop_80000_0_T *for_loop_80000_0_U =
+			&for_loop_80000_0PackageStruct.for_loop_80000_0_STRUCT.for_loop_80000_0_U;
+	ExtY_for_loop_80000_0_T *for_loop_80000_0_Y =
+			&for_loop_80000_0PackageStruct.for_loop_80000_0_STRUCT.for_loop_80000_0_Y;
+	for_loop_80000_0UpdatePointers((INT32U)&for_loop_80000_0PackageStruct, for_loop_80000_0_M);
+	for_loop_80000_0_initialize(for_loop_80000_0_M);
+	for_loop_80000_0UpdatePointers((INT32U)&for_loop_80000_0PackageStruct & 0x3FFFFF, for_loop_80000_0_M);
+
 	//-------------------------------------------
 	INT8U perr;
 	dmaReadyFlag = OSFlagCreate(0, &perr); /* 0x3 = both cores are ready */
@@ -389,7 +491,7 @@ int main(void) {
 
 	//Let task wrappers warm up
 	//-------------------------
-	ALT_USLEEP(90000);
+	ALT_USLEEP(225000);
 
 	//Start the OS
 	//------------

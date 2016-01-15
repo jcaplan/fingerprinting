@@ -18,7 +18,7 @@ public class Core {
 	int totalMemSize;
 	int index;
 	boolean requiresCriticalHeader = false;
-	
+	ArrayList<StackBin> stackbins;
 	/**
 	 * Constructor
 	 * @param name	Each core requires a unique string name
@@ -30,6 +30,7 @@ public class Core {
 	public Core(String name, boolean isMonitor, int memStartAddress, int memSize, int index){
 		this(name,isMonitor,memStartAddress,memSize);
 		this.index = index;
+		this.stackbins = new ArrayList<>();
 	}
 	
 	/**
@@ -128,5 +129,22 @@ public class Core {
 	public int getMemSizeWithStackBins(){
 		return totalMemSize;
 	}
+	
+	public ArrayList<StackBin> getStackbins(){
+		return stackbins;
+	}
+	
+	public void addStackbin(StackBin bin){
+		stackbins.add(bin);
+	}
+	
+	public StackBin getLastStackBin(){
+		return stackbins.get(stackbins.size()-1);
+	}
+	
+	public void setStackbinFunc(int index, Function f){
+		
+	}
+	
 	
 }

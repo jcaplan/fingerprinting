@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 
 import codegen.prof.IpetAnalysis;
 
@@ -29,7 +30,8 @@ public class Function implements Comparable<Function>{
 	ArrayList<String> varDeclarations;
 	ArrayList<String> initialization;
 	public int stackSize;
-	StackBin stackBin;
+	HashMap<Integer,StackBin> stackBin; //coreId,stackBin
+	int funcID;
 	
 	boolean printRuntimes;
 	boolean hasState;
@@ -60,7 +62,7 @@ public class Function implements Comparable<Function>{
 		includeFiles = new ArrayList<>();
 		varDeclarations = new ArrayList<>();
 		initialization = new ArrayList<>();
-		
+		stackBin = new HashMap<>();
 		hasState = false;
 		hasDefaultParameters = false;
 		printRuntimes = false;
@@ -180,7 +182,7 @@ public class Function implements Comparable<Function>{
 	 * @return	the end address of the stack for this function on this core
 	 */
 	public int getStackEnd(int core) {
-		return stackBin.getStackEnd(this,core);
+		return stackBin.get(core).getStackEnd(this);
 	}
 
 
@@ -189,7 +191,7 @@ public class Function implements Comparable<Function>{
 	 * @return	the start address of the stack for this function on this core
 	 */
 	public int getStackStart(int core) {
-		return stackBin.getStackStart(this,core);
+		return stackBin.get(core).getStackStart(this);
 	}
 
 	public String getPreambleString() {
@@ -255,6 +257,16 @@ public class Function implements Comparable<Function>{
 
 	public double getCloMS() {
 		return wcetLowerBound * 1000 / Configuration.CLOCK_FREQUENCY;
+	}
+
+	public int getVirtualStackStart() {
+		return 0x32000 + (StackBin.SIZE * funcID);
+	}
+
+	public int getVirtualStackEnd() {
+	
+		return getVirtualStackStart() + stackSize + StackBin.STACKSIZE_MARGINERROR 
+				+ StackBin.STACKSIZE_MINOFFSET;
 	}
 	
 }

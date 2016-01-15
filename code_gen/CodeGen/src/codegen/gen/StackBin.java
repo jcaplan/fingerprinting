@@ -10,13 +10,15 @@ import java.util.regex.*;
 public class StackBin {
 
 	
-	Function[] bin = new Function[2];
-	int[] startAddress = new int[2];
+	Function function;
+	int startAddress;
 	public String name;
+	int numFunctions = 0;
+	Core core;
 	/**
 	 * The size of a stack bin. Currently set to 4kB.
 	 */
-	public static final int size = 0x1000;
+	public static final int SIZE = 0x1000;
 	/**
 	 * The minimum offset for a stack (account for exception offsets
 	 */
@@ -26,31 +28,20 @@ public class StackBin {
 	 */
 	public static final int STACKSIZE_MARGINERROR = 600;
 	
-	public StackBin(){
-		
+	public StackBin(Core c, int index){
+		core = c;
+		name = "stack_bin_" + index;
 	}
 	
-	/**
-	 * 
-	 * @return The array of functions stored in the bin
-	 */
-	Function[] getBin(){
-		return bin;
-	}
+
 
 	/**
 	 * @param f	The function. Assumed that check for function in stack has already been done.
 	 * @param coreID	The desired core.
 	 * @return	The end address for the stack of a function on a given core
 	 */
-	public int getStackEnd(Function f, int coreID) {
-		int stackEnd = f.stackSize + STACKSIZE_MARGINERROR + STACKSIZE_MINOFFSET;
-		int funcIndex = getFuncIndex(f);
-		if(funcIndex == 1){
-			stackEnd += getStackEnd(bin[0],coreID)+4;
-		}
-		
-		return stackEnd - 4;
+	public int getStackEnd(Function f) {
+		return SIZE - 4;
 	}
 	
 
@@ -59,33 +50,11 @@ public class StackBin {
 	 * @param coreID	The desired core.
 	 * @return	The start address for the stack of a function on a given core
 	 */
-	public int getStackStart(Function f, int coreID) {
-		int stackStart = 0;
-		int funcIndex = getFuncIndex(f);
-		if(funcIndex == 1){
-			stackStart = getStackEnd(bin[0],coreID)+4;
-		} else if (funcIndex == 0){ 
-			stackStart = 0;
-		} else {
-			stackStart = -1;
-		}
-		return stackStart;
-		
+	public int getStackStart(Function f) {
+		return 0;
 	}
 
-	/**
-	 * Checks if function is first or second in the bin
-	 * @param f
-	 * @return -1 if fail
-	 */
-	private int getFuncIndex(Function f) {
-		for(int i = 0 ; i < 2; i++){
-		if (bin[i].equals(f)){
-			return i;
-		}
-	}
-		return -1;
-	}
+
 
 	/**
 	 * Checks that stack bin name is in BSP settings
@@ -121,7 +90,7 @@ public class StackBin {
 	 * @return	true if the settings are up to date for the given core
 	 * @throws IOException
 	 */
-	public boolean matchesSettings(String bspSettings, int core) throws IOException {
+	public boolean matchesSettings(String bspSettings) throws IOException {
 		File settings = new File(bspSettings);
 		FileReader fr = new FileReader(settings);
 		BufferedReader reader = new BufferedReader(fr);
@@ -136,7 +105,7 @@ public class StackBin {
 					Pattern p = Pattern.compile("-?\\d+");
 					Matcher m = p.matcher(line);
 					if (m.find()) {
-						if(Integer.parseInt(m.group()) == startAddress[core]){
+						if(Integer.parseInt(m.group()) == startAddress){
 							reader.close();
 							return true;
 						}
@@ -151,5 +120,11 @@ public class StackBin {
 		reader.close();
 		return false;
 	}
-
+	
+	public void setFunction(Function f){
+		function = f;
+		f.stackBin.put(core.index,this);
+	}
+	
+	
 }

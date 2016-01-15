@@ -240,7 +240,9 @@ public class GenCore {
 			s += "OS_STK " + f + "_STACK[" + f.getStackSizeString() + "]";
 			
 			if( f.critical){
-				s += " __attribute__ ((section (\"." + f.stackBin.name + "\")))";
+				//put in stack bin and make sure it is aligned to 2kB page
+//				s += " __attribute__ ((section (\"." + f.stackBin.get(core.index).name + "\"), aligned (0x800)))";
+				s += " __attribute__ ((section (\"." + f.stackBin.get(core.index).name + "\")))";
 			}
 			
 			s += ";\n";
@@ -490,28 +492,28 @@ public class GenCore {
 		int tlbStackLine = 1;
 		for(Function f : core.funcList){
 			if(f.critical){
-			s += "	// " + f + "\n" +
-			"	entry = &memoryManagerTable[" + f.getTableIndexString() + "];\n"+
-			"	entry->disablePending = false;\n"+
-			"	entry->disablePendSource = 0;\n"+
-			"	entry->taskPriority = " + f.getPriorityString() +";\n"+
-			"	entry->tlbDataLine = " + tlbDataLine + ";\n"+
-			"	entry->tlbStackLine = " + tlbStackLine + ";\n"+
-			"	entry->stackPhysicalAddress = (void*)0x" +
-			Integer.toHexString(f.stackBin.startAddress[core.index] + platform.mainMemoryBase) + ";\n"+
-			"	entry->stackVirtualAddress = (void*)0x";
-			
-
-				s += Integer.toHexString(f.stackBin.startAddress[1]);
-
-			s +=";\n"+
-			"	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/\n"+
-			"	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/\n"+
-			"\n"+
-			"	managerEnableTask(entry);\n";
-			
-			tlbDataLine += 2;
-			tlbStackLine += 2;
+				s += "	// " + f + "\n" +
+				"	entry = &memoryManagerTable[" + f.getTableIndexString() + "];\n"+
+				"	entry->disablePending = false;\n"+
+				"	entry->disablePendSource = 0;\n"+
+				"	entry->taskPriority = " + f.getPriorityString() +";\n"+
+				"	entry->tlbDataLine = " + tlbDataLine + ";\n"+
+				"	entry->tlbStackLine = " + tlbStackLine + ";\n"+
+				"	entry->stackPhysicalAddress = (void*)0x" +
+				Integer.toHexString(f.stackBin.get(core.index).startAddress + platform.mainMemoryBase) + ";\n"+
+				"	entry->stackVirtualAddress = (void*)0x";
+				
+					//always take the first entry
+					s += Integer.toHexString(f.getVirtualStackStart());
+	
+				s +=";\n"+
+				"	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/\n"+
+				"	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/\n"+
+				"\n"+
+				"	managerEnableTask(entry);\n";
+				
+				tlbDataLine += 2;
+				tlbStackLine += 2;
 			}
 		}
 		s += "}\n";
@@ -687,7 +689,7 @@ public class GenCore {
 				s += "	functionTable[" + f.getTableIndexString() + 
 						"].stackAddress[CORE_ID] = &" +
 						f + "_STACK;\n";
-				if(f.cores.get(0).equals(core.name)){
+				if(f.cores.get(0).equals(core)){
 					s += "	functionTable[" + f.getTableIndexString() + 
 						"].address = " + f + "_CT;\n";
 						;
@@ -721,15 +723,16 @@ public class GenCore {
 		s += 	"	// Declare the OS tasks\n"+ 
 				"	// Depending on optimizations order is not guaranteed, use hardcoded pointers.\n"+
 				"	// -------------------\n\n"+
-				"	INT8U perr;";
+				"	INT8U perr;\n";
 		
 		for(Function f : core.funcList){
 			if(f.critical){
 				/* task stacks are given virtual pointers with the MSB set to 0 (432000 -> 32000) */
+				
 				s += "	OSTaskCreateExt(" + f + "_TASK, NULL,\n"+
-						"			(OS_STK *)0x"+ Integer.toHexString(getStackEnd(f,1) & 0x3FFFFF) +",\n"+
+						"			(OS_STK *)0x"+ Integer.toHexString(f.getVirtualStackEnd()) +",\n"+
 						"			" + f.getPriorityString() + ", " + f.getPriorityString() + ",\n"+
-						"			(OS_STK *)0x" + Integer.toHexString(getStackStart(f,1) & 0x3FFFFF) +", " 
+						"			(OS_STK *)0x" + Integer.toHexString(f.getVirtualStackStart()) +", " 
 						+ f.getStackSizeString() + ", NULL,\n"+
 						"			OS_TASK_OPT_STK_CLR);\n";
 				
@@ -779,8 +782,9 @@ public class GenCore {
 	 * @return address of start of function stack
 	 */
 	protected int getStackStart(Function f, int coreID) {
-		return platform.mainMemoryBase + f.stackBin.startAddress[coreID] +  f.getStackStart(coreID);
+		return platform.mainMemoryBase + f.stackBin.get(coreID).startAddress +  f.getStackStart(coreID);
 	}
+	
 
 	/**
 	 * Get the end of a stack for a function on a core
@@ -789,7 +793,7 @@ public class GenCore {
 	 * @return address of end of function stack.
 	 */
 	private int getStackEnd(Function f, int coreID) {
-		 return platform.mainMemoryBase + f.stackBin.startAddress[coreID] + f.getStackEnd(coreID);
+		 return platform.mainMemoryBase + f.stackBin.get(coreID).startAddress + f.getStackEnd(coreID);
 	}
 
 	

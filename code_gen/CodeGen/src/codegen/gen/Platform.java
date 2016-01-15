@@ -15,7 +15,7 @@ public class Platform {
 			0x96020,
 			0xc8020
 	};
-	int memSize = 0x30fe0; //auto-include 0x1000 for sp bin or global data bin
+	int memSize = 0x31fe0; //auto-include 0x1000 for sp bin or global data bin
 	int numProcessingCores = 0;
 	int mainMemoryBase = 0x400000;
 	/**
@@ -28,12 +28,15 @@ public class Platform {
 		addCores(numProcessingCores);
 	}
 	
+	
+
 	private void addCores(int numProcessingCores) {
 		coreList = new Core[numProcessingCores + 1];
 		for(int i = 0; i < numProcessingCores; i++){
 			coreList[i] = new Core("cpu" + i, false, startAddresses[i],memSize,i);
 		}
-		coreList[numProcessingCores] = new Core("cpuM",true,0x20,memSize,numProcessingCores);
+		//global data section consumes 4kB on monitor
+		coreList[numProcessingCores] = new Core("cpuM",true,0x20,memSize - 0x1000,numProcessingCores);
 	}
 
 	/**
@@ -42,7 +45,7 @@ public class Platform {
 	void addFunctionsToCores() {
 		for(Core c : coreList){
 			for(Function f : config.funcList){
-				if(f.cores.contains(c.name)){
+				if(f.cores.contains(c)){
 					c.funcList.add(f);
 				}
 			}
@@ -61,6 +64,10 @@ public class Platform {
 			}
 		}
 		return null;
+	}
+	
+	public Core getCore(int index){
+		return coreList[index];
 	}
 	
 	/**

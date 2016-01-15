@@ -105,8 +105,8 @@ public class GenCoreMon extends GenCore{
 			//TODO hard coded!!!
 			String core0PhysSP = Integer.toHexString(getStackStart(f,0));
 			String core1PhysSP = Integer.toHexString(getStackStart(f,1));
-			String core0VirtSp = Integer.toHexString(getStackStart(f,1) & 0x3FFFFF);
-			String core1VirtSP = Integer.toHexString(getStackStart(f,1) & 0x3FFFFF);
+			String core0VirtSp = Integer.toHexString(f.getVirtualStackStart());
+			String core1VirtSP = Integer.toHexString(f.getVirtualStackStart());
 			s+= "	task = &REPOSTaskTable[" + f.getTableIndexString() + "];\n"+
 					"\n"+
 					"	task->dataAddressPhys = &" + f + "PackageStruct;\n"+
