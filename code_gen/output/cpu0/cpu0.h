@@ -40,9 +40,9 @@
  *****************************************************************************/
 #define NUM_TASKS                                 4
 #define FOR_LOOP_50000_50000_PERIOD               60
-#define FOR_LOOP_100000_0_PERIOD                  150
-#define FOR_LOOP_90000_0_PERIOD                   150
-#define FOR_LOOP_80000_0_PERIOD                   150
+#define FOR_LOOP_100000_0_PERIOD                  90
+#define FOR_LOOP_90000_0_PERIOD                   90
+#define FOR_LOOP_80000_0_PERIOD                   90
 /*****************************************************************************
  * Runtime monitor table index
  *****************************************************************************/

@@ -426,8 +426,6 @@ int main(void) {
 			ca.table[i][j] = i;
 		}
 	}
-	ca.table[0][0] = 0;
-	ca.table[1][0] = 1;
 	comp_set_core_assignment_table(&ca);
 
 	initCompIsr();
@@ -491,7 +489,7 @@ int main(void) {
 
 	//Let task wrappers warm up
 	//-------------------------
-	ALT_USLEEP(225000);
+	ALT_USLEEP(135000);
 
 	//Start the OS
 	//------------

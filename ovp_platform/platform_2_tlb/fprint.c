@@ -29,10 +29,9 @@ typedef struct {
 } fprintStruct;
 
 fprintStruct fprint[NUMCORES];
-
 	
 void enableFingerprinting(Uns32 coreID, Uns32 taskID){
-
+	
 
 	fprintStruct *fp = &fprint[coreID];
 
@@ -49,10 +48,12 @@ void enableFingerprinting(Uns32 coreID, Uns32 taskID){
 void disableFingerprinting(Uns32 coreID, Uns32 taskID){
 	fprintStruct *fp = &fprint[coreID];
 	fp->currentTask = taskID & 0xf;
-	fp->fprintEnabled = false;
+	fp->fprintEnabled = false;;
 
 	Uns32 address;
 	Uns32 data;
+	vmiPrintf("INTERCEPT:disable fingerprinting\n");
+	vmiPrintf("pause index: %d, currentTask %d\n", fp->pause_index, fp->currentTask);
 	address = COMPARATOR_BASE_ADDRESS + 0x4;
 	data = ((fp->fprint[fp->pause_index] & 0xFFFF) << 16) | (coreID << 4) | taskID;
 	vmiPrintf("INTERCEPT: sending to comparator: %x, %x\n",address,data);
@@ -129,7 +130,7 @@ void fprintReset(Uns32 coreID){
 void fprintPauseStrobe(int coreID) {
 	fprintStruct *fp = &fprint[coreID];
 	if(fp->fprintEnabled){
-		if(diagnosticLevel > 1){
+		if(diagnosticLevel > 0){
 			vmiPrintf("pause %d!\n",coreID);
 		}
 		fp->fprint[fp->pause_index] = fp->fprint_old;
@@ -144,9 +145,10 @@ void fprintPauseStrobe(int coreID) {
 void fprintUnpauseStrobe(int coreID) {
 	fprintStruct *fp = &fprint[coreID];
 	//~pause_task_reg[paused_cs_tos]
-	if(diagnosticLevel > 1){
-		vmiPrintf("unpause %d, index %d, pauseReg %d, currentState[pauseindex-1] %d!\n",
-			coreID,fp->pause_index,fp->pauseReg,fp->currentState[0]);	
+	if(diagnosticLevel > 0){
+		vmiPrintf("unpause %d, index %d, pauseReg %d, currentState[pauseindex-1] %d\n",
+			coreID,fp->pause_index,fp->pauseReg,fp->currentState[fp->pause_index - 
+				(fp->pause_index > 0 ? 1 : 0)]);	
 	}
 	if(fp->pause_index > 0 && !(fp->pauseReg & (1 << fp->currentState[fp->pause_index-1]))){
 
@@ -157,5 +159,12 @@ void fprintUnpauseStrobe(int coreID) {
 }
 
 void setPauseReg(Uns32 coreID, Uns32 writeData){
+	if(diagnosticLevel > 0){
+		vmiPrintf("set pause reg: %d, %d\n",coreID,writeData);
+	}
 	fprint[coreID].pauseReg = writeData;
+}
+
+Uns32 getPauseReg(Uns32 coreID){
+	return fprint[coreID].pauseReg;
 }

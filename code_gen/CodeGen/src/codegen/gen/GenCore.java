@@ -295,7 +295,7 @@ public class GenCore {
 			}
 		}
 		s2 += "OS_EVENT *critical_SEM[" + count+"];\n";
-		
+		s2 += "int fID[" + count + "];\n";
 		
 		
 
@@ -333,6 +333,7 @@ public class GenCore {
 		"	int taskIndex = critFuncData[CORE_ID].tableIndex;\n"+
 		"	updateMemoryManagerTable(taskIndex,\n"+
 		"			&critFuncData[CORE_ID]);\n"+
+		"	fID[taskIndex] = critFuncData->fprintID;"+
 		"\n"+
 		"	int *" + cpuName + "_IRQ = (int *) " + cpuName + "_0_CPU_IRQ_0_BASE;\n"+
 		"	*" + cpuName + "_IRQ = 0;\n"+
@@ -401,7 +402,7 @@ public class GenCore {
 							"		long registers[8];\n"+
 							"		context_switch(registers);\n"+
 							"\n"+
-							"		int fprintID = critFuncData->fprintID;\n"+
+							"		int fprintID = fID[" + f.getTableIndexString() + "];\n"+
 							"\n"+
 							"		//set the flag for the OS context switch\n"+
 							"		FprintActive = 1;\n"+

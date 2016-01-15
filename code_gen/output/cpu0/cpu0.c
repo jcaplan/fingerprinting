@@ -75,6 +75,7 @@ rtMonitor_task rtMonTaskTable[NUM_TASKS] = {
  * Control Flow declarations
  *****************************************************************************/
 OS_EVENT *critical_SEM[3];
+int fID[3];
 
 
 
@@ -98,7 +99,7 @@ static void handleCPU(void* context) {
 	int taskIndex = critFuncData[CORE_ID].tableIndex;
 	updateMemoryManagerTable(taskIndex,
 			&critFuncData[CORE_ID]);
-
+	fID[taskIndex] = critFuncData->fprintID;
 	int *PROCESSOR0_IRQ = (int *) PROCESSOR0_0_CPU_IRQ_0_BASE;
 	*PROCESSOR0_IRQ = 0;
 	OSSemPost(critical_SEM[taskIndex]);
@@ -163,7 +164,7 @@ void for_loop_100000_0_TASK(void* pdata) {
 		long registers[8];
 		context_switch(registers);
 
-		int fprintID = critFuncData->fprintID;
+		int fprintID = fID[FOR_LOOP_100000_0_TABLE_INDEX];
 
 		//set the flag for the OS context switch
 		FprintActive = 1;
@@ -203,7 +204,7 @@ void for_loop_90000_0_TASK(void* pdata) {
 		long registers[8];
 		context_switch(registers);
 
-		int fprintID = critFuncData->fprintID;
+		int fprintID = fID[FOR_LOOP_90000_0_TABLE_INDEX];
 
 		//set the flag for the OS context switch
 		FprintActive = 1;
@@ -243,7 +244,7 @@ void for_loop_80000_0_TASK(void* pdata) {
 		long registers[8];
 		context_switch(registers);
 
-		int fprintID = critFuncData->fprintID;
+		int fprintID = fID[FOR_LOOP_80000_0_TABLE_INDEX];
 
 		//set the flag for the OS context switch
 		FprintActive = 1;

@@ -457,8 +457,6 @@ public class GenCoreMon extends GenCore{
 				"			ca.table[i][j] = i;\n"+
 				"		}\n"+
 				"	}\n"+
-				"	ca.table[0][0] = 0;\n"+
-				"	ca.table[1][0] = 1;\n"+
 				"	comp_set_core_assignment_table(&ca);\n"+
 				"\n"+
 				"	initCompIsr();\n"+

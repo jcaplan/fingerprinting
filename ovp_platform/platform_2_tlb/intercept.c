@@ -119,6 +119,7 @@ static VMI_MEM_WATCH_FN(readCB) {
             fprintUnpauseStrobe(coreID);
             break;
         case PAUSE_REG:
+            *(Uns32 *)value = getPauseReg(coreID);
             break;
         default:
             break;

@@ -30,3 +30,4 @@ void fprintReset(Uns32 coreID);
 void fprintPauseStrobe(int coreID);
 void fprintUnpauseStrobe(int coreID);
 void setPauseReg(Uns32 coreID, Uns32 writeData);
+Uns32 getPauseReg(Uns32 coreID);
