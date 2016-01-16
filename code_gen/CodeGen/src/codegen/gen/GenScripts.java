@@ -14,13 +14,14 @@ import java.io.PrintWriter;
 public class GenScripts {
 
 	Configuration config;
-	
+	int numProcessingCores;
 	/**
 	 * Constructor
 	 * @param config
 	 */
-	public GenScripts(Configuration config){
+	public GenScripts(Configuration config, int numProcessingCores){
 		this.config = config;
+		this.numProcessingCores = numProcessingCores;
 	}
 	
 	/**
@@ -69,7 +70,10 @@ public class GenScripts {
 				"NIOS2COMMANDSHELL=" + config.niosSBT.sbtLocation + "\n"+
 				"\n"+
 				"\n"+
-				"for i in {0..1} M\n"+
+				"for i in {0..";
+				s += numProcessingCores - 1;
+				s+= 				
+				"} M\n"+
 				"do\n"+
 				"	bsp_dir=${OUTPUT_DIR}/cpu${i}_bsp\n"+
 				"    ${NIOS2COMMANDSHELL} nios2-bsp-generate-files --settings=${bsp_dir}/settings.bsp --bsp-dir=${bsp_dir}\n"+
@@ -119,7 +123,10 @@ public class GenScripts {
 				"NIOS2COMMANDSHELL=" + config.niosSBT.sbtLocation + "\n"+
 				"\n"+
 				"\n"+
-				"for i in {0..1} M\n"+
+				"for i in {0..";
+				s += numProcessingCores - 1;
+				s+= 				
+				"} M\n"+
 				"do\n"+
 				"	BSPDIR=${OUTPUT_DIR}/cpu${i}_bsp\n"+
 				"	APPDIR=${OUTPUT_DIR}/cpu${i}\n"+
@@ -153,7 +160,10 @@ public class GenScripts {
 				"\n"+
 				"NIOS2COMMANDSHELL=" + config.niosSBT.sbtLocation + "\n"+
 				"\n"+
-				"for i in {0..1} M\n"+
+				"for i in {0..";
+				s += numProcessingCores - 1;
+				s+= 				
+				"} M\n"+
 				"do\n"+
 				"    pushd cpu${i}\n"+
 				"    ${NIOS2COMMANDSHELL} make all\n"+

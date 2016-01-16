@@ -93,7 +93,8 @@ def getSignals(lines,name):
 		line = line.strip()
 		if(line.startswith("$var")):
 			line = line.split(" ")
-			signals[name + "_" + re.sub(r'[0-9]+_',"",line[4],0)] = line[3]
+			# signals[name + "_" + re.sub(r'[0-9]+_',"",line[4],0)] = line[3]
+			signals[name + "_" + line[4]] = line[3]
 	return signals
 
 def getTimes(lines):

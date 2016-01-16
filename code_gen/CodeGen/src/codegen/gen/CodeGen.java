@@ -73,7 +73,7 @@ public class CodeGen {
 		
 		new GenCriticalLibrary(config, funcList, fprintList).generateCriticalLibrary();
 		sa.doSourceParsing();
-		new GenScripts(config).generateScripts();
+		new GenScripts(config,platform.numProcessingCores).generateScripts();
 		new GenStackBin(fprintList,platform,config).genStackBins(); 
 	
 		

@@ -31,6 +31,7 @@ public class GenCoreMon extends GenCore{
 			new GenString() { public String action(Core core) { return getMiscDeclString(core); } },
 			new GenString() { public String action(Core core) { return getSharedMemoryDeclarationString(core); } },
 			new GenString() { public String action(Core core) { return getTaskRelocationString(core); } },
+			new GenString() { public String action(Core core) { return getDMAInitString(core); } },
 			new GenString() { public String action(Core core) { return getResetMonitorString(core); } },
 			new GenString() { public String action(Core core) { return getComparatorString(core); } },
 			new GenString() { public String action(Core core) { return getReposString(core); } },
@@ -51,6 +52,7 @@ public class GenCoreMon extends GenCore{
 		this.funcList = funcList;
 	}
 	
+
 	/**
 	 * The method for generating a core.
 	 * Creates DMA function, then generates cpuM.c and cpuM.h
@@ -146,8 +148,8 @@ public class GenCoreMon extends GenCore{
 				s += "	task->data.periodic.deadline = " + f.getDeadlineString() + ";\n";
 			}
 			
-			s += "	task->core[0] = 0;\n"+
-			"	task->core[1] = 1;\n"+
+			s += "	task->core[0] = " + f.cores.get(0).index + ";\n"+
+			"	task->core[1] = " + f.cores.get(1).index + ";\n"+
 			"	task->numFuncs = 1;\n"+
 			"	task->funcTableFirstIndex = 0;\n"+
 			"	task->taskID = " + f.getTableIndexString() + ";\n"+
@@ -251,8 +253,11 @@ public class GenCoreMon extends GenCore{
 		" * Pointers to interrupt other cores\n"+
 		" *****************************************************************************/\n"+
 		"\n"+
-		"int *core_IRQ[NUMCORES] = { (int *) PROCESSOR0_0_CPU_IRQ_0_BASE,\n"+
-		"		(int *) PROCESSOR1_0_CPU_IRQ_0_BASE };\n"+
+		"int *core_IRQ[" + platform.numProcessingCores + "] = { \n";
+		for(int i = 0; i < platform.numProcessingCores; i++){
+			s += "	(int *) PROCESSOR" + i + "_0_CPU_IRQ_0_BASE,\n";
+		}
+		s += "};\n"+
 		"\n"+
 		"/*****************************************************************************\n"+
 		" * Hardware mutex\n"+
@@ -274,6 +279,35 @@ public class GenCoreMon extends GenCore{
 		return s;
 	}
 	
+	protected String getDMAInitString(Core core) {
+		String s = "";
+		s += "/*****************************************************************************\n" + 
+				" * DMA startup\n" + 
+				" *****************************************************************************/\n" + 
+				"void initDMA(void) {\n";
+		for(int i = 0; i < platform.numProcessingCores; i++){
+			s += 
+				"	txchan[" + i + "] = alt_dma_txchan_open(\"/dev/processor" + i + "_0_dma_0\");\n" + 
+				"	rxchan[" + i + "] = alt_dma_rxchan_open(\"/dev/processor" + i + "_0_dma_0\");\n" +
+				"\n";
+		}
+				
+		s += "}\n" + 
+		"\n";
+		
+		s +=	"void resetDMA(){\n";
+		
+		for(int i = 0; i < platform.numProcessingCores; i++){
+			s += 
+				"	alt_avalon_dma_init (&txchan[" + i + "], &rxchan[" + i + "], (void*) PROCESSOR" + i + "_0_DMA_0_BASE,        \n" + 
+				"		PROCESSOR" + i + "_0_DMA_0_IRQ_INTERRUPT_CONTROLLER_ID, PROCESSOR" + i + "_0_DMA_0_IRQ);  \n";
+		}		
+		s +=	"}\n";
+		
+		return s;
+	}
+
+	
 	/**
 	 * 
 	 * @param core
@@ -286,12 +320,12 @@ public class GenCoreMon extends GenCore{
 		s += "/*****************************************************************************\n" + 
 				" * Reset monitor interface\n" + 
 				" *****************************************************************************/\n" + 
-				"void resetCores(void) {\n" + 
-				"	int* cpu0_reset = (int*) PROCESSOR0_0_SW_RESET_0_BASE;\n" + 
-				"	int* cpu1_reset = (int*) PROCESSOR1_0_SW_RESET_0_BASE;\n" + 
-				"	*cpu0_reset = 1;\n" + 
-				"	*cpu1_reset = 1;\n" + 
-				"	coresReady = false;\n" + 
+				"void resetCores(void) {\n";
+		for(int i = 0; i < platform.numProcessingCores; i++){
+			s += "	int* cpu" + i + "_reset = (int*) PROCESSOR" + i + "_0_SW_RESET_0_BASE;\n" +
+				"	cpu" + i + "_reset = 1;\n";
+		}
+		s +=		"	coresReady = false;\n" + 
 				"	taskFailed = true;\n" + 
 				"	resetMonitorEnable();\n" + 
 				"}\n" + 
@@ -422,7 +456,7 @@ public class GenCoreMon extends GenCore{
 				"	REPOSInit();\n"+
 				"\n"+
 				"	// Initialize the reset monitor\n"+
-				"	resetMonitorMonReg(3);\n"+
+				"	resetMonitorMonReg(" + ((1 << platform.numProcessingCores) - 1) + ");\n"+
 				"	resetMonitorEnable();\n"+
 				"	initResetMonitorIsr();\n"+
 				"\n"+

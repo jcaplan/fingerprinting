@@ -12,8 +12,8 @@
 <FUNCTIONLIST>
 -rootdir /home/jonah/fingerprinting/automotive_control/CompiledC/for_loops
 -name for_loop_100000_0    -subdir for_loop_100000_0           -T  90   -c  -Priority 2	
--name for_loop_90000_0    -subdir for_loop_90000_0           -T  90   -c  -Priority 3	
--name for_loop_80000_0    -subdir for_loop_80000_0           -T  90   -c  -Priority 4	
+-name for_loop_90000_0    -subdir for_loop_90000_0           -T  150   -c  -Priority 3	
+-name for_loop_80000_0    -subdir for_loop_80000_0           -T  75   -c  -Priority 4	
 
 -name for_loop_50000_50000 -subdir for_loop_50000_50000		   -T  60       -Priority 1 -printRuntime -addPreamble preamble.txt
 </FUNCTIONLIST>

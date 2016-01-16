@@ -12,15 +12,6 @@
  * DMA functions
  *****************************************************************************/
 
-void initDMA(void) {
-
-	txchan[0] = alt_dma_txchan_open("/dev/processor0_0_dma_0");
-	rxchan[0] = alt_dma_rxchan_open("/dev/processor0_0_dma_0");
-
-	txchan[1] = alt_dma_txchan_open("/dev/processor1_0_dma_0");
-	rxchan[1] = alt_dma_rxchan_open("/dev/processor1_0_dma_0");
-
-}
 
 void postDmaMessage(INT32U task, bool start) {
 	INT32U message = task;
@@ -157,14 +148,4 @@ void sendDMA(void* sourceAddress, void* destAddress, int size, void *handle) {
 			handle)) < 0) {
 		//Failure
 	}
-}
-
-void resetDMA(){
-	
-	alt_avalon_dma_init (&txchan[0], &rxchan[0], (void*) PROCESSOR0_0_DMA_0_BASE,        
-		PROCESSOR0_0_DMA_0_IRQ_INTERRUPT_CONTROLLER_ID, PROCESSOR0_0_DMA_0_IRQ);  
-	alt_avalon_dma_init (&txchan[1], &rxchan[1], (void*) PROCESSOR1_0_DMA_0_BASE,        
-		PROCESSOR1_0_DMA_0_IRQ_INTERRUPT_CONTROLLER_ID, PROCESSOR1_0_DMA_0_IRQ);  
-	
-	
 }

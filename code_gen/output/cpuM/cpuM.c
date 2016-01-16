@@ -77,8 +77,10 @@ OS_STK dma_STACK[DMA_STACKSIZE] __attribute__ ((section (".critical")));
  * Pointers to interrupt other cores
  *****************************************************************************/
 
-int *core_IRQ[NUMCORES] = { (int *) PROCESSOR0_0_CPU_IRQ_0_BASE,
-		(int *) PROCESSOR1_0_CPU_IRQ_0_BASE };
+int *core_IRQ[2] = { 
+	(int *) PROCESSOR0_0_CPU_IRQ_0_BASE,
+	(int *) PROCESSOR1_0_CPU_IRQ_0_BASE,
+};
 
 /*****************************************************************************
  * Hardware mutex
@@ -130,13 +132,36 @@ void for_loop_80000_0UpdatePointers(INT32U baseAddress, RT_MODEL_for_loop_80000_
 
 
 /*****************************************************************************
+ * DMA startup
+ *****************************************************************************/
+void initDMA(void) {
+	txchan[0] = alt_dma_txchan_open("/dev/processor0_0_dma_0");
+	rxchan[0] = alt_dma_rxchan_open("/dev/processor0_0_dma_0");
+
+	txchan[1] = alt_dma_txchan_open("/dev/processor1_0_dma_0");
+	rxchan[1] = alt_dma_rxchan_open("/dev/processor1_0_dma_0");
+
+}
+
+void resetDMA(){
+	alt_avalon_dma_init (&txchan[0], &rxchan[0], (void*) PROCESSOR0_0_DMA_0_BASE,        
+		PROCESSOR0_0_DMA_0_IRQ_INTERRUPT_CONTROLLER_ID, PROCESSOR0_0_DMA_0_IRQ);  
+	alt_avalon_dma_init (&txchan[1], &rxchan[1], (void*) PROCESSOR1_0_DMA_0_BASE,        
+		PROCESSOR1_0_DMA_0_IRQ_INTERRUPT_CONTROLLER_ID, PROCESSOR1_0_DMA_0_IRQ);  
+}
+
+
+
+
+
+/*****************************************************************************
  * Reset monitor interface
  *****************************************************************************/
 void resetCores(void) {
 	int* cpu0_reset = (int*) PROCESSOR0_0_SW_RESET_0_BASE;
+	cpu0_reset = 1;
 	int* cpu1_reset = (int*) PROCESSOR1_0_SW_RESET_0_BASE;
-	*cpu0_reset = 1;
-	*cpu1_reset = 1;
+	cpu1_reset = 1;
 	coresReady = false;
 	taskFailed = true;
 	resetMonitorEnable();
@@ -489,7 +514,7 @@ int main(void) {
 
 	//Let task wrappers warm up
 	//-------------------------
-	ALT_USLEEP(135000);
+	ALT_USLEEP(225000);
 
 	//Start the OS
 	//------------
