@@ -140,19 +140,19 @@
          type = "String";
       }
    }
-   element timestamp.s1
-   {
-      datum baseAddress
-      {
-         value = "134217728";
-         type = "String";
-      }
-   }
    element scratchpad_0.s1
    {
       datum baseAddress
       {
          value = "69206016";
+         type = "String";
+      }
+   }
+   element timestamp.s1
+   {
+      datum baseAddress
+      {
+         value = "134217728";
          type = "String";
       }
    }
@@ -332,8 +332,8 @@
   <parameter name="debug_jtagInstanceID" value="0" />
   <parameter name="resetOffset" value="5013504" />
   <parameter name="exceptionOffset" value="5013536" />
-  <parameter name="cpuID" value="1" />
-  <parameter name="cpuID_stored" value="1" />
+  <parameter name="cpuID" value="4" />
+  <parameter name="cpuID_stored" value="4" />
   <parameter name="breakOffset" value="32" />
   <parameter name="userDefinedSettings" value="" />
   <parameter name="resetSlave" value="Absolute" />

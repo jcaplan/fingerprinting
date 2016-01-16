@@ -124,11 +124,11 @@
          type = "String";
       }
    }
-   element scratchpad_1.s1
+   element timestamp.s1
    {
       datum baseAddress
       {
-         value = "69222400";
+         value = "134217728";
          type = "String";
       }
    }
@@ -140,11 +140,11 @@
          type = "String";
       }
    }
-   element timestamp.s1
+   element button_pio.s1
    {
       datum baseAddress
       {
-         value = "134217728";
+         value = "134225920";
          type = "String";
       }
    }
@@ -156,11 +156,11 @@
          type = "String";
       }
    }
-   element button_pio.s1
+   element scratchpad_1.s1
    {
       datum baseAddress
       {
-         value = "134225920";
+         value = "69222400";
          type = "String";
       }
    }
@@ -332,8 +332,8 @@
   <parameter name="debug_jtagInstanceID" value="0" />
   <parameter name="resetOffset" value="4808704" />
   <parameter name="exceptionOffset" value="4808736" />
-  <parameter name="cpuID" value="1" />
-  <parameter name="cpuID_stored" value="1" />
+  <parameter name="cpuID" value="3" />
+  <parameter name="cpuID_stored" value="3" />
   <parameter name="breakOffset" value="32" />
   <parameter name="userDefinedSettings" value="" />
   <parameter name="resetSlave" value="Absolute" />

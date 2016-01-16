@@ -74,8 +74,8 @@ proc compose { } {
     set_instance_parameter_value cpu2 {debug_jtagInstanceID} {0}
     set_instance_parameter_value cpu2 {resetOffset} {4808704}
     set_instance_parameter_value cpu2 {exceptionOffset} {4808736}
-    set_instance_parameter_value cpu2 {cpuID} {1}
-    set_instance_parameter_value cpu2 {cpuID_stored} {1}
+    set_instance_parameter_value cpu2 {cpuID} {3}
+    set_instance_parameter_value cpu2 {cpuID_stored} {3}
     set_instance_parameter_value cpu2 {breakOffset} {32}
     set_instance_parameter_value cpu2 {userDefinedSettings} {}
     set_instance_parameter_value cpu2 {resetSlave} {Absolute}
