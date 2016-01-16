@@ -44,7 +44,7 @@
 
 module nios_fprint_mm_interconnect_1_addr_router_006_default_decode
   #(
-     parameter DEFAULT_CHANNEL = 0,
+     parameter DEFAULT_CHANNEL = 2,
                DEFAULT_WR_CHANNEL = -1,
                DEFAULT_RD_CHANNEL = -1,
                DEFAULT_DESTID = 1 
@@ -137,21 +137,31 @@ module nios_fprint_mm_interconnect_1_addr_router_006
     // during address decoding
     // -------------------------------------------------------
     localparam PAD0 = log2ceil(64'h2000000 - 64'h0); 
+    localparam PAD1 = log2ceil(64'h2200c00 - 64'h2200800); 
+    localparam PAD2 = log2ceil(64'h2201400 - 64'h2201000); 
+    localparam PAD3 = log2ceil(64'h2300008 - 64'h2300000); 
+    localparam PAD4 = log2ceil(64'h2500400 - 64'h2500000); 
+    localparam PAD5 = log2ceil(64'h2800400 - 64'h2800000); 
     // -------------------------------------------------------
     // Work out which address bits are significant based on the
     // address range of the slaves. If the required width is too
     // large or too small, we use the address field width instead.
     // -------------------------------------------------------
-    localparam ADDR_RANGE = 64'h2000000;
+    localparam ADDR_RANGE = 64'h2800400;
     localparam RANGE_ADDR_WIDTH = log2ceil(ADDR_RANGE);
     localparam OPTIMIZED_ADDR_H = (RANGE_ADDR_WIDTH > PKT_ADDR_W) ||
                                   (RANGE_ADDR_WIDTH == 0) ?
                                         PKT_ADDR_H :
                                         PKT_ADDR_L + RANGE_ADDR_WIDTH - 1;
 
-    localparam RG = RANGE_ADDR_WIDTH;
+    localparam RG = RANGE_ADDR_WIDTH-1;
     localparam REAL_ADDRESS_RANGE = OPTIMIZED_ADDR_H - PKT_ADDR_L;
 
+      reg [PKT_ADDR_W-1 : 0] address;
+      always @* begin
+        address = {PKT_ADDR_W{1'b0}};
+        address [REAL_ADDRESS_RANGE:0] = sink_data[OPTIMIZED_ADDR_H : PKT_ADDR_L];
+      end   
 
     // -------------------------------------------------------
     // Pass almost everything through, untouched
@@ -166,6 +176,11 @@ module nios_fprint_mm_interconnect_1_addr_router_006
 
 
 
+    // -------------------------------------------------------
+    // Write and read transaction signals
+    // -------------------------------------------------------
+    wire write_transaction;
+    assign write_transaction = sink_data[PKT_TRANS_WRITE];
 
 
     nios_fprint_mm_interconnect_1_addr_router_006_default_decode the_default_decode(
@@ -184,13 +199,42 @@ module nios_fprint_mm_interconnect_1_addr_router_006
         // Address Decoder
         // Sets the channel and destination ID based on the address
         // --------------------------------------------------
-           
-         
-          // ( 0 .. 2000000 )
-          src_channel = 18'b1;
-          src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 1;
-	     
-        
+
+    // ( 0x0 .. 0x2000000 )
+    if ( {address[RG:PAD0],{PAD0{1'b0}}} == 26'h0   ) begin
+            src_channel = 18'b000100;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 1;
+    end
+
+    // ( 0x2200800 .. 0x2200c00 )
+    if ( {address[RG:PAD1],{PAD1{1'b0}}} == 26'h2200800  && write_transaction  ) begin
+            src_channel = 18'b001000;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 15;
+    end
+
+    // ( 0x2201000 .. 0x2201400 )
+    if ( {address[RG:PAD2],{PAD2{1'b0}}} == 26'h2201000  && write_transaction  ) begin
+            src_channel = 18'b100000;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 12;
+    end
+
+    // ( 0x2300000 .. 0x2300008 )
+    if ( {address[RG:PAD3],{PAD3{1'b0}}} == 26'h2300000   ) begin
+            src_channel = 18'b000001;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 2;
+    end
+
+    // ( 0x2500000 .. 0x2500400 )
+    if ( {address[RG:PAD4],{PAD4{1'b0}}} == 26'h2500000   ) begin
+            src_channel = 18'b000010;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 17;
+    end
+
+    // ( 0x2800000 .. 0x2800400 )
+    if ( {address[RG:PAD5],{PAD5{1'b0}}} == 26'h2800000   ) begin
+            src_channel = 18'b010000;
+            src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 16;
+    end
 
 end
 

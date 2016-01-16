@@ -1097,6 +1097,24 @@
    version="13.1"
    start="processor3_0.sw_reset_0_reset_source"
    end="processor3_0.reset" />
+ <connection
+   kind="avalon"
+   version="13.1"
+   start="processorM_0.outgoing_master"
+   end="processor2_0.cpu_irq_0_s0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x02200c00" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="13.1"
+   start="processorM_0.outgoing_master"
+   end="processor3_0.cpu_irq_0_s0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x02201000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
 </system>

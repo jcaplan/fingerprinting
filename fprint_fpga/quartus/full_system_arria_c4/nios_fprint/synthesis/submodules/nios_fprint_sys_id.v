@@ -36,7 +36,7 @@ module nios_fprint_sys_id (
 
   wire    [ 31: 0] readdata;
   //control_slave, which is an e_avalon_slave
-  assign readdata = address ? 1452977040 : 0;
+  assign readdata = address ? 1452982730 : 0;
 
 endmodule
 

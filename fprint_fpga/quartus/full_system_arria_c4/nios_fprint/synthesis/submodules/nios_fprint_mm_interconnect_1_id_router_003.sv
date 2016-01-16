@@ -198,19 +198,19 @@ module nios_fprint_mm_interconnect_1_id_router_003
             src_channel = 18'b000000100;
         end
 
-        if (destid == 7 ) begin
+        if (destid == 8 ) begin
             src_channel = 18'b000001000;
         end
 
-        if (destid == 8 ) begin
+        if (destid == 6 ) begin
             src_channel = 18'b000010000;
         end
 
-        if (destid == 6 ) begin
+        if (destid == 2 ) begin
             src_channel = 18'b000100000;
         end
 
-        if (destid == 2 ) begin
+        if (destid == 7 ) begin
             src_channel = 18'b001000000;
         end
 

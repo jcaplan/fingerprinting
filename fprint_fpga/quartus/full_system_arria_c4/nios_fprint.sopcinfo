@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="nios_fprint" kind="nios_fprint" version="1.0" fabric="QSYS">
  <!-- Format version 13.1 162 (Future versions may contain additional information.) -->
- <!-- 2016.01.16.15:44:01 -->
+ <!-- 2016.01.16.17:18:50 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1452977040</value>
+  <value>1452982730</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -840,7 +840,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.CMacro.TIMESTAMP</name>
-   <value>1452977040</value>
+   <value>1452982730</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.compatible</name>
@@ -860,7 +860,7 @@ the requested settings for a module instance. -->
   </assignment>
   <assignment>
    <name>embeddedsw.dts.params.timestamp</name>
-   <value>1452977040</value>
+   <value>1452982730</value>
   </assignment>
   <assignment>
    <name>embeddedsw.dts.vendor</name>
@@ -876,7 +876,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="timestamp">
    <type>int</type>
-   <value>1452977040</value>
+   <value>1452982730</value>
    <derived>false</derived>
    <enabled>false</enabled>
    <visible>false</visible>
@@ -3609,7 +3609,7 @@ parameters are a RESULT of the module parameters. -->
 the requested settings for a module instance. -->
   <parameter name="AUTO_GENERATION_ID">
    <type>java.lang.Integer</type>
-   <value>1452977040</value>
+   <value>1452982730</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -7199,7 +7199,7 @@ parameters are a RESULT of the module parameters. -->
 the requested settings for a module instance. -->
   <parameter name="AUTO_GENERATION_ID">
    <type>java.lang.Integer</type>
-   <value>1452977040</value>
+   <value>1452982730</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -24190,7 +24190,7 @@ parameters are a RESULT of the module parameters. -->
 the requested settings for a module instance. -->
   <parameter name="AUTO_GENERATION_ID">
    <type>java.lang.Integer</type>
-   <value>1452977040</value>
+   <value>1452982730</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -41181,7 +41181,7 @@ parameters are a RESULT of the module parameters. -->
 the requested settings for a module instance. -->
   <parameter name="AUTO_GENERATION_ID">
    <type>java.lang.Integer</type>
-   <value>1452977040</value>
+   <value>1452982730</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -41797,6 +41797,22 @@ parameters are a RESULT of the module parameters. -->
     <name>processor3_0_dma_0.control_port_slave</name>
     <baseAddress>34799616</baseAddress>
     <span>32</span>
+   </memoryBlock>
+   <memoryBlock>
+    <isBridge>false</isBridge>
+    <moduleName>processor2_0_cpu_irq_0</moduleName>
+    <slaveName>s0</slaveName>
+    <name>processor2_0_cpu_irq_0.s0</name>
+    <baseAddress>35654656</baseAddress>
+    <span>1024</span>
+   </memoryBlock>
+   <memoryBlock>
+    <isBridge>false</isBridge>
+    <moduleName>processor3_0_cpu_irq_0</moduleName>
+    <slaveName>s0</slaveName>
+    <name>processor3_0_cpu_irq_0.s0</name>
+    <baseAddress>35655680</baseAddress>
+    <span>1024</span>
    </memoryBlock>
   </interface>
   <interface
@@ -45075,6 +45091,22 @@ parameters are a RESULT of the module parameters. -->
    </memoryBlock>
    <memoryBlock>
     <isBridge>false</isBridge>
+    <moduleName>processor2_0_cpu_irq_0</moduleName>
+    <slaveName>s0</slaveName>
+    <name>processor2_0_cpu_irq_0.s0</name>
+    <baseAddress>35654656</baseAddress>
+    <span>1024</span>
+   </memoryBlock>
+   <memoryBlock>
+    <isBridge>false</isBridge>
+    <moduleName>processor3_0_cpu_irq_0</moduleName>
+    <slaveName>s0</slaveName>
+    <name>processor3_0_cpu_irq_0.s0</name>
+    <baseAddress>35655680</baseAddress>
+    <span>1024</span>
+   </memoryBlock>
+   <memoryBlock>
+    <isBridge>false</isBridge>
     <moduleName>processorM_0_cpuM</moduleName>
     <slaveName>jtag_debug_module</slaveName>
     <name>processorM_0_cpuM.jtag_debug_module</name>
@@ -45581,6 +45613,22 @@ parameters are a RESULT of the module parameters. -->
     <name>processor3_0_dma_0.control_port_slave</name>
     <baseAddress>34799616</baseAddress>
     <span>32</span>
+   </memoryBlock>
+   <memoryBlock>
+    <isBridge>false</isBridge>
+    <moduleName>processor2_0_cpu_irq_0</moduleName>
+    <slaveName>s0</slaveName>
+    <name>processor2_0_cpu_irq_0.s0</name>
+    <baseAddress>35654656</baseAddress>
+    <span>1024</span>
+   </memoryBlock>
+   <memoryBlock>
+    <isBridge>false</isBridge>
+    <moduleName>processor3_0_cpu_irq_0</moduleName>
+    <slaveName>s0</slaveName>
+    <name>processor3_0_cpu_irq_0.s0</name>
+    <baseAddress>35655680</baseAddress>
+    <span>1024</span>
    </memoryBlock>
    <memoryBlock>
     <isBridge>false</isBridge>
@@ -47522,6 +47570,22 @@ parameters are a RESULT of the module parameters. -->
     <name>processor3_0_dma_0.control_port_slave</name>
     <baseAddress>34799616</baseAddress>
     <span>32</span>
+   </memoryBlock>
+   <memoryBlock>
+    <isBridge>false</isBridge>
+    <moduleName>processor2_0_cpu_irq_0</moduleName>
+    <slaveName>s0</slaveName>
+    <name>processor2_0_cpu_irq_0.s0</name>
+    <baseAddress>35654656</baseAddress>
+    <span>1024</span>
+   </memoryBlock>
+   <memoryBlock>
+    <isBridge>false</isBridge>
+    <moduleName>processor3_0_cpu_irq_0</moduleName>
+    <slaveName>s0</slaveName>
+    <name>processor3_0_cpu_irq_0.s0</name>
+    <baseAddress>35655680</baseAddress>
+    <span>1024</span>
    </memoryBlock>
   </interface>
  </module>
@@ -53672,7 +53736,7 @@ parameters are a RESULT of the module parameters. -->
 the requested settings for a module instance. -->
   <parameter name="AUTO_GENERATION_ID">
    <type>java.lang.Integer</type>
-   <value>1452977040</value>
+   <value>1452982730</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -70663,7 +70727,7 @@ parameters are a RESULT of the module parameters. -->
 the requested settings for a module instance. -->
   <parameter name="AUTO_GENERATION_ID">
    <type>java.lang.Integer</type>
-   <value>1452977040</value>
+   <value>1452982730</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -101034,6 +101098,108 @@ parameters are a RESULT of the module parameters. -->
   <endModule>processor3_0_clk</endModule>
   <endConnectionPoint>clk_in_reset</endConnectionPoint>
  </connection>
+ <connection
+   name="processorM_0_out_system_bridge.m0/processor2_0_cpu_irq_0.s0"
+   kind="avalon"
+   version="13.1"
+   start="processorM_0_out_system_bridge.m0"
+   end="processor2_0_cpu_irq_0.s0">
+  <parameter name="arbitrationPriority">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="baseAddress">
+   <type>java.math.BigInteger</type>
+   <value>0x02200c00</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="defaultConnection">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>processorM_0_out_system_bridge</startModule>
+  <startConnectionPoint>m0</startConnectionPoint>
+  <endModule>processor2_0_cpu_irq_0</endModule>
+  <endConnectionPoint>s0</endConnectionPoint>
+ </connection>
+ <connection
+   name="processorM_0_out_system_bridge.m0/processor3_0_cpu_irq_0.s0"
+   kind="avalon"
+   version="13.1"
+   start="processorM_0_out_system_bridge.m0"
+   end="processor3_0_cpu_irq_0.s0">
+  <parameter name="arbitrationPriority">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="baseAddress">
+   <type>java.math.BigInteger</type>
+   <value>0x02201000</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="defaultConnection">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>processorM_0_out_system_bridge</startModule>
+  <startConnectionPoint>m0</startConnectionPoint>
+  <endModule>processor3_0_cpu_irq_0</endModule>
+  <endConnectionPoint>s0</endConnectionPoint>
+ </connection>
  <plugin>
   <instanceCount>1</instanceCount>
   <name>processor0</name>
@@ -101243,7 +101409,7 @@ parameters are a RESULT of the module parameters. -->
   <version>4.2</version>
  </plugin>
  <plugin>
-  <instanceCount>142</instanceCount>
+  <instanceCount>144</instanceCount>
   <name>avalon</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IConnection</subtype>
