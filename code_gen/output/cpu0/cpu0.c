@@ -64,7 +64,9 @@ rtMonitor_task rtMonTaskTable[NUM_TASKS] = {
 	{ FOR_LOOP_50000_50000_PRIORITY, 0, FOR_LOOP_50000_50000_WCET_LOWERBOUND, false, false, "for_loop_50000_50000" },
 	{ FOR_LOOP_100000_0_PRIORITY, 0, FOR_LOOP_100000_0_WCET_LOWERBOUND, false, true, "for_loop_100000_0" },
 	{ FOR_LOOP_90000_0_PRIORITY, 0, FOR_LOOP_90000_0_WCET_LOWERBOUND, false, true, "for_loop_90000_0" },
-	{ FOR_LOOP_80000_0_PRIORITY, 0, FOR_LOOP_80000_0_WCET_LOWERBOUND, false, true, "for_loop_80000_0" }
+	{ FOR_LOOP_80000_0_PRIORITY, 0, FOR_LOOP_80000_0_WCET_LOWERBOUND, false, true, "for_loop_80000_0" },
+	{ FOR_LOOP_70000_0_PRIORITY, 0, FOR_LOOP_70000_0_WCET_LOWERBOUND, false, true, "for_loop_70000_0" },
+	{ FOR_LOOP_60000_0_PRIORITY, 0, FOR_LOOP_60000_0_WCET_LOWERBOUND, false, true, "for_loop_60000_0" }
 };
 
 
@@ -74,8 +76,8 @@ rtMonitor_task rtMonTaskTable[NUM_TASKS] = {
 /*****************************************************************************
  * Control Flow declarations
  *****************************************************************************/
-OS_EVENT *critical_SEM[3];
-int fID[3];
+OS_EVENT *critical_SEM[5];
+int fID[5];
 
 
 
@@ -458,6 +460,8 @@ int main() {
 	critical_SEM[0] = OSSemCreate(0);
 	critical_SEM[1] = OSSemCreate(0);
 	critical_SEM[2] = OSSemCreate(0);
+	critical_SEM[3] = OSSemCreate(0);
+	critical_SEM[4] = OSSemCreate(0);
 	//Start up the MPU
 	//----------------
 

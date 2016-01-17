@@ -8,10 +8,10 @@ fi
 
 NIOS2COMMANDSHELL=/home/jonah/altera/13.1/nios2eds/nios2_command_shell.sh
 SOPC_BUILDER_PATH=${NIOS_CODEGEN_ROOT}/drivers
-SOPC_LOCATION=/home/jonah/fingerprinting/code_gen/platform/nios_fprint.sopcinfo
+SOPC_LOCATION=/home/jonah/fingerprinting/code_gen/platform/nios_fprint_4.sopcinfo
 OUTPUT_DIR=/home/jonah/fingerprinting/code_gen/output
 
-for i in {0..1} M
+for i in {0..3} M
 do
 	${NIOS2COMMANDSHELL} nios2-bsp ucosii ${OUTPUT_DIR}/cpu${i}_bsp ${SOPC_LOCATION} \
 	--cpu-name processor${i}_0_cpu${i}
@@ -73,6 +73,44 @@ ${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpu1_bs
 --cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer \
 --cmd set_setting hal.timestamp_timer processor1_0_timestamp
 
+# cpu2
+${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpu2_bsp/settings.bsp \
+--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x96020 0x30fe0 \
+--cmd add_memory_region stack_bin_0 memory_0_onchip_memoryMain 0xc7000 0x1000 \
+--cmd add_section_mapping .stack_bin_0 stack_bin_0 \
+--cmd update_section_mapping .bss memory_0_onchip_memoryMain \
+--cmd update_section_mapping .text memory_0_onchip_memoryMain \
+--cmd update_section_mapping .stack memory_0_onchip_memoryMain \
+--cmd update_section_mapping .heap memory_0_onchip_memoryMain \
+--cmd update_section_mapping .rodata memory_0_onchip_memoryMain \
+--cmd update_section_mapping .rwdata memory_0_onchip_memoryMain \
+--cmd enable_sw_package mem_manager \
+--cmd enable_sw_package mpu_utils \
+--cmd enable_sw_package fingerprint \
+--cmd enable_sw_package reset_monitor \
+--cmd enable_sw_package runtime_monitor \
+--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer \
+--cmd set_setting hal.timestamp_timer processor2_0_timestamp
+
+# cpu3
+${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpu3_bsp/settings.bsp \
+--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0xc8020 0x30fe0 \
+--cmd add_memory_region stack_bin_0 memory_0_onchip_memoryMain 0xf9000 0x1000 \
+--cmd add_section_mapping .stack_bin_0 stack_bin_0 \
+--cmd update_section_mapping .bss memory_0_onchip_memoryMain \
+--cmd update_section_mapping .text memory_0_onchip_memoryMain \
+--cmd update_section_mapping .stack memory_0_onchip_memoryMain \
+--cmd update_section_mapping .heap memory_0_onchip_memoryMain \
+--cmd update_section_mapping .rodata memory_0_onchip_memoryMain \
+--cmd update_section_mapping .rwdata memory_0_onchip_memoryMain \
+--cmd enable_sw_package mem_manager \
+--cmd enable_sw_package mpu_utils \
+--cmd enable_sw_package fingerprint \
+--cmd enable_sw_package reset_monitor \
+--cmd enable_sw_package runtime_monitor \
+--cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer \
+--cmd set_setting hal.timestamp_timer processor3_0_timestamp
+
 # cpuM
 ${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpuM_bsp/settings.bsp \
 --cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x20 0x30fe0 \
@@ -89,7 +127,7 @@ ${NIOS2COMMANDSHELL} nios2-bsp-update-settings  --settings ${OUTPUT_DIR}/cpuM_bs
 --cmd set_setting hal.make.bsp_cflags_user_flags -fomit-frame-pointer \
 --cmd set_setting hal.timestamp_timer processorM_0_timestamp
 
-for i in {0..1} M
+for i in {0..3} M
 do
 	 ${NIOS2COMMANDSHELL} nios2-bsp-generate-files --bsp-dir ${OUTPUT_DIR}/cpu${i}_bsp \
 	 --settings ${OUTPUT_DIR}/cpu${i}_bsp/settings.bsp 

@@ -97,13 +97,13 @@ struct REPOS_core {
 	int preemptedIndex;
 
 };
-REPOS_core REPOSCoreTable[NUMCORES];
+REPOS_core *REPOSCoreTableP;
 
 extern void initializeTaskTable(void);
 void REPOSUpdateTime(void);
 extern void REPOSInit(void);
 void REPOS_sendDMA(INT32U message);
-void REPOSgetScratchpadPage(int coreID,REPOS_task *task);
+void REPOSgetScratchpadPage(int coreID, int logicalCoreID, REPOS_task *task);
 void REPOSTaskComplete(int taskID);
 void REPOSTaskReset(int taskID);
 

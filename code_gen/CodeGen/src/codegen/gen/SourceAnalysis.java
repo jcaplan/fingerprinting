@@ -138,8 +138,10 @@ public class SourceAnalysis {
 		c.addHeader("<string.h>");
 		c.addHeader("<stddef.h>");
 		c.addHeader("<stdbool.h>");
+		c.addHeader("<unistd.h>");
 		c.addHeader("includes.h");
 		c.addHeader("dma.h");
+		c.addHeader("<altera_avalon_dma.h>");
 		c.addHeader("<altera_avalon_mutex.h>");
 		c.addHeader("shared_mem.h");
 		c.addHeader("fingerprint.h");

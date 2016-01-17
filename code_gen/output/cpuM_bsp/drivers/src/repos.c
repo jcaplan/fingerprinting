@@ -36,14 +36,14 @@ void REPOSUpdateTime(void) {
 
 
 
-void REPOSgetScratchpadPage(int coreID,REPOS_task *task) {
+void REPOSgetScratchpadPage(int coreID, int logicalCoreID, REPOS_task *task) {
 	// 1. Choose a scratchpad.
 	// 	a. If a task is running then must be the other scratchpad
 	//  b. Otherwise consider both scratchpads
 	//  c. Use any invalid pages
 	//  d. if all pages have been used , choose the least recently used page
 
-	REPOS_core *core = &REPOSCoreTable[coreID];
+	REPOS_core *core = &REPOSCoreTableP[coreID];
 	int bin = -1, sp = -1;
 	int i;
 	bool invalidLine = false;
@@ -88,8 +88,8 @@ void REPOSgetScratchpadPage(int coreID,REPOS_task *task) {
 
 
 	int tableIndex = bin*2;
-	task->dataAddressSP[coreID] = (void *)(((int)task->dataAddressPhys & 0xFFF) | pageTable[sp][tableIndex]);
-	task->stackAddressSP[coreID] = (void *)(((int)task->stackAddressPhys[coreID] & 0xFFF) | pageTable[sp][tableIndex+1]);
+	task->dataAddressSP[logicalCoreID] = (void *)(((int)task->dataAddressPhys & 0xFFF) | pageTable[sp][tableIndex]);
+	task->stackAddressSP[logicalCoreID] = (void *)(((int)task->stackAddressPhys[logicalCoreID] & 0xFFF) | pageTable[sp][tableIndex+1]);
 	core->scratchpadTask[sp][bin] = task->taskID;
 	core->scratchpadActive[sp][bin] = true;
 	core->currentScratchpad = sp;
@@ -104,10 +104,10 @@ bool REPOSAlreadyInScratchpad(REPOS_task *task, INT8U core) {
 	int i;
 	bool core_has_task = false;
 	for (i = 0; i < 2; i++) {
-		if ((REPOSCoreTable[core].scratchpadValid[0][i]
-				&& REPOSCoreTable[core].scratchpadTask[0][i] == task->taskID)
-				|| (REPOSCoreTable[core].scratchpadValid[1][i]
-						&& REPOSCoreTable[core].scratchpadTask[1][i]
+		if ((REPOSCoreTableP[core].scratchpadValid[0][i]
+				&& REPOSCoreTableP[core].scratchpadTask[0][i] == task->taskID)
+				|| (REPOSCoreTableP[core].scratchpadValid[1][i]
+						&& REPOSCoreTableP[core].scratchpadTask[1][i]
 								== task->taskID)) {
 			core_has_task = true;
 		}
@@ -121,7 +121,7 @@ void REPOSTaskComplete(int taskID){
 
 	int i;
 	for (i = 0; i < 2; i++){
-		REPOS_core *core = &REPOSCoreTable[task->core[i]];
+		REPOS_core *core = &REPOSCoreTableP[task->core[i]];
 		core->coreRunningCriticalTask = false;
 		int j;
 		//NEED A MASK HERE??
@@ -146,16 +146,21 @@ void REPOSTaskComplete(int taskID){
 
 int REPOSgetFreeFprintID(REPOS_task *task) {
 	int i;
+	int freeID = -1;
+	OS_CPU_SR  cpu_sr = 0u;
+	OS_ENTER_CRITICAL();
 	for(i = 0; i < 16; i++){
 		INT32U mask = 0;
 		if(fprintIDFreeList & (mask = 1 << i)){
 			fprintIDFreeList &= ~(mask);
 			task->fprintIDMask = mask;
 			task->fprintID = i;
-			return i;
+			freeID = i;
+			break;
 		}
 	}
-	return -1;
+	OS_EXIT_CRITICAL();
+	return freeID;
 }
 
 int REPOSgetTaskID(int fprintIDMask){
@@ -172,7 +177,7 @@ int REPOSgetTaskID(int fprintIDMask){
 void REPOSBeginTask(REPOS_task *task){
 	int i;
 	for(i = 0; i < 2; i++){
-		REPOS_core *core = &REPOSCoreTable[i];
+		REPOS_core *core = &REPOSCoreTableP[i];
 		core->coreRunningCriticalTask=true;
 		core->currentTaskID = task->taskID;
 		core->currentScratchpad = task->currentSP;
@@ -184,7 +189,7 @@ void REPOSBeginTask(REPOS_task *task){
 }
 
 void REPOSCheckPreemption(int coreID, int newTask) {
-	REPOS_core *core = &REPOSCoreTable[coreID];
+	REPOS_core *core = &REPOSCoreTableP[coreID];
 	if (core->coreRunningCriticalTask) { /* task is being preempted */
 		if(core->currentTaskID == newTask){
 			printf("bad news!!! task %d overrun!!!\n",newTask);
@@ -206,7 +211,7 @@ void REPOSTaskReset(int taskID){
 	REPOSTaskComplete(taskID);
 	int i, j;
 	for (i = 0; i < 2; i++){
-		REPOS_core *core = &REPOSCoreTable[i];
+		REPOS_core *core = &REPOSCoreTableP[i];
 		for(j = 0; j < 2; j++){
 			if(core->scratchpadValid[i][j]
 				&& core->scratchpadTask[i][j] == taskID){

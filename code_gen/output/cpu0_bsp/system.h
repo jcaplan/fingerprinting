@@ -2,9 +2,9 @@
  * system.h - SOPC Builder system and BSP software package information
  *
  * Machine generated for CPU 'processor0_0_cpu0' in SOPC Builder design 'nios_fprint'
- * SOPC Builder design path: /home/jonah/fingerprinting/code_gen/platform/nios_fprint.sopcinfo
+ * SOPC Builder design path: /home/jonah/fingerprinting/code_gen/platform/nios_fprint_4.sopcinfo
  *
- * Generated: Fri Jan 15 22:35:27 EST 2016
+ * Generated: Sat Jan 16 18:32:44 EST 2016
  */
 
 /*
@@ -467,6 +467,34 @@
 
 
 /*
+ * processor2_0_cpu_irq_0 configuration
+ *
+ */
+
+#define ALT_MODULE_CLASS_processor2_0_cpu_irq_0 cpu_irq
+#define PROCESSOR2_0_CPU_IRQ_0_BASE 0x2200c00
+#define PROCESSOR2_0_CPU_IRQ_0_IRQ -1
+#define PROCESSOR2_0_CPU_IRQ_0_IRQ_INTERRUPT_CONTROLLER_ID -1
+#define PROCESSOR2_0_CPU_IRQ_0_NAME "/dev/processor2_0_cpu_irq_0"
+#define PROCESSOR2_0_CPU_IRQ_0_SPAN 1024
+#define PROCESSOR2_0_CPU_IRQ_0_TYPE "cpu_irq"
+
+
+/*
+ * processor3_0_cpu_irq_0 configuration
+ *
+ */
+
+#define ALT_MODULE_CLASS_processor3_0_cpu_irq_0 cpu_irq
+#define PROCESSOR3_0_CPU_IRQ_0_BASE 0x2201000
+#define PROCESSOR3_0_CPU_IRQ_0_IRQ -1
+#define PROCESSOR3_0_CPU_IRQ_0_IRQ_INTERRUPT_CONTROLLER_ID -1
+#define PROCESSOR3_0_CPU_IRQ_0_NAME "/dev/processor3_0_cpu_irq_0"
+#define PROCESSOR3_0_CPU_IRQ_0_SPAN 1024
+#define PROCESSOR3_0_CPU_IRQ_0_TYPE "cpu_irq"
+
+
+/*
  * processorM_0_cpu_irq_0 configuration
  *
  */
@@ -535,7 +563,7 @@
 #define SYS_ID_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define SYS_ID_NAME "/dev/sys_id"
 #define SYS_ID_SPAN 8
-#define SYS_ID_TIMESTAMP 1452117268
+#define SYS_ID_TIMESTAMP 1452986838
 #define SYS_ID_TYPE "altera_avalon_sysid_qsys"
 
 

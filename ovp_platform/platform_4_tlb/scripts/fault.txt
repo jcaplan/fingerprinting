@@ -1,0 +1,7 @@
+proc cpu0
+b *0x464a44
+continue
+proc cpu0
+disable 1
+set extreg R2 0xffffe9
+continue

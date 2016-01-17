@@ -2,9 +2,9 @@
  * linker.h - Linker script mapping information
  *
  * Machine generated for CPU 'processor1_0_cpu1' in SOPC Builder design 'nios_fprint'
- * SOPC Builder design path: /home/jonah/fingerprinting/code_gen/platform/nios_fprint.sopcinfo
+ * SOPC Builder design path: /home/jonah/fingerprinting/code_gen/platform/nios_fprint_4.sopcinfo
  *
- * Generated: Fri Jan 15 22:36:35 EST 2016
+ * Generated: Sat Jan 16 16:04:34 EST 2016
  */
 
 /*
@@ -68,7 +68,7 @@
 #define MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_BASE 0x400000
 #define MEMORY_0_ONCHIP_MEMORYMAIN_BEFORE_RESET_REGION_SPAN 204800
 #define MEMORY_0_ONCHIP_MEMORYMAIN_REGION_BASE 0x432020
-#define MEMORY_0_ONCHIP_MEMORYMAIN_REGION_SPAN 192480
+#define MEMORY_0_ONCHIP_MEMORYMAIN_REGION_SPAN 188384
 #define PROCESSOR1_0_SCRATCHPAD_0_REGION_BASE 0x4200000
 #define PROCESSOR1_0_SCRATCHPAD_0_REGION_SPAN 16384
 #define PROCESSOR1_0_SCRATCHPAD_1_REGION_BASE 0x4204000
@@ -83,6 +83,8 @@
 #define STACK_BIN_1_REGION_SPAN 4096
 #define STACK_BIN_2_REGION_BASE 0x461000
 #define STACK_BIN_2_REGION_SPAN 4096
+#define STACK_BIN_3_REGION_BASE 0x460000
+#define STACK_BIN_3_REGION_SPAN 4096
 
 
 /*

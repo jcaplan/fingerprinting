@@ -1,0 +1,4 @@
+proc cpum
+b handleCompISR
+b handleDMA
+continue

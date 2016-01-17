@@ -23,7 +23,7 @@ ${NIOS2COMMANDSHELL} nios2-bsp-update-settings \
 
 ${NIOS2COMMANDSHELL} nios2-bsp-update-settings \
 --settings ${OUTPUT_DIR}/cpu1_bsp/settings.bsp \
---cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x32020 0x2efe0
+--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x32020 0x2dfe0
 
 ${NIOS2COMMANDSHELL} nios2-bsp-update-settings \
 --settings ${OUTPUT_DIR}/cpu1_bsp/settings.bsp \
@@ -32,10 +32,28 @@ ${NIOS2COMMANDSHELL} nios2-bsp-update-settings \
 
 ${NIOS2COMMANDSHELL} nios2-bsp-update-settings \
 --settings ${OUTPUT_DIR}/cpu1_bsp/settings.bsp \
---cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x32020 0x2efe0
+--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x32020 0x2dfe0
 
 ${NIOS2COMMANDSHELL} nios2-bsp-update-settings \
 --settings ${OUTPUT_DIR}/cpu1_bsp/settings.bsp \
 --cmd add_memory_region stack_bin_2 memory_0_onchip_memoryMain 0x61000 0x1000 \
 --cmd add_section_mapping .stack_bin_2 stack_bin_2
+
+${NIOS2COMMANDSHELL} nios2-bsp-update-settings \
+--settings ${OUTPUT_DIR}/cpu1_bsp/settings.bsp \
+--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0x32020 0x2dfe0
+
+${NIOS2COMMANDSHELL} nios2-bsp-update-settings \
+--settings ${OUTPUT_DIR}/cpu1_bsp/settings.bsp \
+--cmd add_memory_region stack_bin_3 memory_0_onchip_memoryMain 0x60000 0x1000 \
+--cmd add_section_mapping .stack_bin_3 stack_bin_3
+
+${NIOS2COMMANDSHELL} nios2-bsp-update-settings \
+--settings ${OUTPUT_DIR}/cpu3_bsp/settings.bsp \
+--cmd update_memory_region memory_0_onchip_memoryMain memory_0_onchip_memoryMain 0xc8020 0x2ffe0
+
+${NIOS2COMMANDSHELL} nios2-bsp-update-settings \
+--settings ${OUTPUT_DIR}/cpu3_bsp/settings.bsp \
+--cmd add_memory_region stack_bin_1 memory_0_onchip_memoryMain 0xf8000 0x1000 \
+--cmd add_section_mapping .stack_bin_1 stack_bin_1
 

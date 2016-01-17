@@ -94,6 +94,7 @@ public class GenCoreMon extends GenCore{
 		s += "/*****************************************************************************\n"+
 				" * REPOS configuration functions\n"+
 				" *****************************************************************************/\n"+
+				"REPOS_core REPOSCoreTable[" + fprintList.size() + "];\n" +
 				"\n"+
 				" void startHook(void *args) {\n"+
 				"	postDmaMessage((int)args,true);\n"+
@@ -105,8 +106,8 @@ public class GenCoreMon extends GenCore{
 				"\n";
 		for(Function f : fprintList){
 			//TODO hard coded!!!
-			String core0PhysSP = Integer.toHexString(getStackStart(f,0));
-			String core1PhysSP = Integer.toHexString(getStackStart(f,1));
+			String core0PhysSP = Integer.toHexString(getStackStart(f,f.cores.get(0).index));
+			String core1PhysSP = Integer.toHexString(getStackStart(f,f.cores.get(1).index));
 			String core0VirtSp = Integer.toHexString(f.getVirtualStackStart());
 			String core1VirtSP = Integer.toHexString(f.getVirtualStackStart());
 			s+= "	task = &REPOSTaskTable[" + f.getTableIndexString() + "];\n"+
@@ -129,7 +130,7 @@ public class GenCoreMon extends GenCore{
 						
 		s += "void REPOSInit(void) {\n"+
 				"\n"+
-				"	memset(REPOSCoreTable, 0, NUMCORES * sizeof(REPOS_core));\n"+
+				"	memset(REPOSCoreTable, 0, " + fprintList.size() + " * sizeof(REPOS_core));\n"+
 				"	memset(REPOSTaskTable, 0, OS_MAX_TASKS * sizeof(REPOS_task));\n"+
 				"\n";
 		
@@ -187,6 +188,7 @@ public class GenCoreMon extends GenCore{
 				"	 */\n"+
 				"\n"+
 				"	initializeTaskTable();\n"+
+				"	REPOSCoreTableP = REPOSCoreTable;\n"+
 				"}\n"+
 				"\n";	
 	
@@ -284,17 +286,23 @@ public class GenCoreMon extends GenCore{
 		s += "/*****************************************************************************\n" + 
 				" * DMA startup\n" + 
 				" *****************************************************************************/\n" + 
+				"alt_dma_txchan txchan[" + platform.numProcessingCores + "];\n" + 
+				"alt_dma_rxchan rxchan[" + platform.numProcessingCores + "];\n" +
 				"void initDMA(void) {\n";
 		for(int i = 0; i < platform.numProcessingCores; i++){
 			s += 
 				"	txchan[" + i + "] = alt_dma_txchan_open(\"/dev/processor" + i + "_0_dma_0\");\n" + 
 				"	rxchan[" + i + "] = alt_dma_rxchan_open(\"/dev/processor" + i + "_0_dma_0\");\n" +
 				"\n";
+			
 		}
-				
+		s += 
+				"	dma_setTxRxPointers(txchan,rxchan);\n" + 
+				"	dma_setCoreIRQPointers(core_IRQ);\n" +
+				"	dma_setCritFuncDataPointer(critFuncData);\n";
 		s += "}\n" + 
 		"\n";
-		
+		s += 	"//BROKEN!!!!!!!!!!!!\n";
 		s +=	"void resetDMA(){\n";
 		
 		for(int i = 0; i < platform.numProcessingCores; i++){
@@ -305,6 +313,18 @@ public class GenCoreMon extends GenCore{
 		s +=	"}\n";
 		
 		return s;
+	}
+	
+	@Override
+	protected ArrayList<Function> getMergedFuncFprintList(Core core) {
+		@SuppressWarnings("unchecked")
+		ArrayList<Function> mergeList = (ArrayList<Function>) core.funcList.clone();
+		for (Function f : fprintList){
+			if (!mergeList.contains(f)){
+				mergeList.add(f);
+			}
+		}	
+		return mergeList;
 	}
 
 	
@@ -323,7 +343,7 @@ public class GenCoreMon extends GenCore{
 				"void resetCores(void) {\n";
 		for(int i = 0; i < platform.numProcessingCores; i++){
 			s += "	int* cpu" + i + "_reset = (int*) PROCESSOR" + i + "_0_SW_RESET_0_BASE;\n" +
-				"	cpu" + i + "_reset = 1;\n";
+				"	*cpu" + i + "_reset = 1;\n";
 		}
 		s +=		"	coresReady = false;\n" + 
 				"	taskFailed = true;\n" + 
@@ -635,7 +655,7 @@ public class GenCoreMon extends GenCore{
 				" *****************************************************************************/\n"+
 				"SharedMemorySymbolTable shared_stab __attribute__ ((section (\".shared\")));\n"+
 				"FunctionTable functionTable[NUM_CRITICAL_TASKS] __attribute__ ((section (\".shared\")));\n"+
-				"CriticalFunctionData critFuncData[NUMCORES] __attribute__ ((section (\".shared\")));\n"+
+				"CriticalFunctionData critFuncData[" + platform.numProcessingCores + "] __attribute__ ((section (\".shared\")));\n"+
 				"\n";
 		
 		return s;

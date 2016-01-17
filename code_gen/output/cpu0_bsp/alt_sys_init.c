@@ -2,9 +2,9 @@
  * alt_sys_init.c - HAL initialization source
  *
  * Machine generated for CPU 'processor0_0_cpu0' in SOPC Builder design 'nios_fprint'
- * SOPC Builder design path: /home/jonah/fingerprinting/code_gen/platform/nios_fprint.sopcinfo
+ * SOPC Builder design path: /home/jonah/fingerprinting/code_gen/platform/nios_fprint_4.sopcinfo
  *
- * Generated: Fri Jan 15 22:35:00 EST 2016
+ * Generated: Sat Jan 16 15:51:11 EST 2016
  */
 
 /*

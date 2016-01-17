@@ -103,7 +103,7 @@ ACDS_VERSION := 13.1
 # BUILD_NUMBER: 162
 
 SETTINGS_FILE := settings.bsp
-SOPC_FILE := /home/jonah/fingerprinting/code_gen/platform/nios_fprint.sopcinfo
+SOPC_FILE := /home/jonah/fingerprinting/code_gen/platform/nios_fprint_4.sopcinfo
 
 #-------------------------------------------------------------------------------
 #                             TOOL & COMMAND DEFINITIONS

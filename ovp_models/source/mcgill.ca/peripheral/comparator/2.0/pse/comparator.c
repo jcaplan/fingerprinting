@@ -130,6 +130,7 @@ PPM_REG_WRITE_CB(catRegWrite) {
     unsigned taskID = catRegData->catReg.bits.taskID;
     unsigned catData   = catRegData->catReg.bits.data;
     assignment[coreID][taskID] = catData;
+    bhmPrintf("COMP:: writing cat: logical core %d, task %d, core %d",coreID,taskID,catData);
 }
 
 PPM_REG_READ_CB(csrRd32) {

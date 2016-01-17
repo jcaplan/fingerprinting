@@ -1,0 +1,9 @@
+tcl source scripts/icount.tcl
+proc cpu0
+b *0x466828
+b *0x466908
+
+tclcallback 1 myCallback
+tclcallback 2 myCallback
+
+continue

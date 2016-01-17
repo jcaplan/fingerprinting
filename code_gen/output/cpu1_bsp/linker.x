@@ -2,9 +2,9 @@
  * linker.x - Linker script
  *
  * Machine generated for CPU 'processor1_0_cpu1' in SOPC Builder design 'nios_fprint'
- * SOPC Builder design path: /home/jonah/fingerprinting/code_gen/platform/nios_fprint.sopcinfo
+ * SOPC Builder design path: /home/jonah/fingerprinting/code_gen/platform/nios_fprint_4.sopcinfo
  *
- * Generated: Fri Jan 15 22:36:35 EST 2016
+ * Generated: Sat Jan 16 16:04:34 EST 2016
  */
 
 /*
@@ -52,7 +52,8 @@ MEMORY
 {
     memory_0_onchip_memoryMain_BEFORE_RESET : ORIGIN = 0x400000, LENGTH = 204800
     reset : ORIGIN = 0x432000, LENGTH = 32
-    memory_0_onchip_memoryMain : ORIGIN = 0x432020, LENGTH = 192480
+    memory_0_onchip_memoryMain : ORIGIN = 0x432020, LENGTH = 188384
+    stack_bin_3 : ORIGIN = 0x460000, LENGTH = 4096
     stack_bin_2 : ORIGIN = 0x461000, LENGTH = 4096
     stack_bin_1 : ORIGIN = 0x462000, LENGTH = 4096
     stack_bin_0 : ORIGIN = 0x463000, LENGTH = 4096
@@ -148,6 +149,14 @@ SECTIONS
         . = ALIGN(4);
         PROVIDE (_alt_partition_stack_bin_2_end = ABSOLUTE(.));
     } > stack_bin_2
+
+    .stack_bin_3 :
+    {
+        PROVIDE (_alt_partition_stack_bin_3_start = ABSOLUTE(.));
+        *(.stack_bin_3 .stack_bin_3.*)
+        . = ALIGN(4);
+        PROVIDE (_alt_partition_stack_bin_3_end = ABSOLUTE(.));
+    } > stack_bin_3
 
     .text :
     {
@@ -452,7 +461,7 @@ SECTIONS
 /*
  * Don't override this, override the __alt_stack_* symbols instead.
  */
-__alt_data_end = 0x461000;
+__alt_data_end = 0x460000;
 
 /*
  * The next two symbols define the location of the default stack.  You can
@@ -468,4 +477,4 @@ PROVIDE( __alt_stack_limit   = __alt_stack_base );
  * Override this symbol to put the heap in a different memory.
  */
 PROVIDE( __alt_heap_start    = end );
-PROVIDE( __alt_heap_limit    = 0x461000 );
+PROVIDE( __alt_heap_limit    = 0x460000 );

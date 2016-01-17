@@ -1,0 +1,39 @@
+$version
+Imperas Tools
+$end
+$comment imperas platform FprintPlatform $end
+$comment imperas cpu FprintPlatform/cpum $end
+$timescale 8ns $end
+$scope module 3_dma $end
+ $var wire 1 ! 3_dma $end
+$upscope $end
+$scope module 5_uC/OS-II_Idle $end
+ $var wire 1 $ 5_uC/OS-II_Idle $end
+$upscope $end
+$scope module 4_uC/OS-II_Stat $end
+ $var wire 1 # 4_uC/OS-II_Stat $end
+$upscope $end
+$scope module 0_None $end
+ $var wire 1 " 0_None $end
+$upscope $end
+$enddefinitions $end
+#0
+x!
+x$
+x#
+x"
+#7332304
+1!
+z"
+#7332570
+1#
+z!
+#7332760
+1$
+z#
+#7350255
+1!
+z$
+#7429239
+1$
+z!

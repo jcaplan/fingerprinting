@@ -2,9 +2,9 @@
  * alt_sys_init.c - HAL initialization source
  *
  * Machine generated for CPU 'processorM_0_cpuM' in SOPC Builder design 'nios_fprint'
- * SOPC Builder design path: /home/jonah/fingerprinting/code_gen/platform/nios_fprint.sopcinfo
+ * SOPC Builder design path: /home/jonah/fingerprinting/code_gen/platform/nios_fprint_4.sopcinfo
  *
- * Generated: Fri Jan 15 22:35:08 EST 2016
+ * Generated: Sat Jan 16 15:51:29 EST 2016
  */
 
 /*
@@ -72,6 +72,8 @@
 ALTERA_NIOS2_QSYS_IRQ_INSTANCE ( PROCESSORM_0_CPUM, processorM_0_cpuM);
 ALTERA_AVALON_DMA_INSTANCE ( PROCESSOR0_0_DMA_0, processor0_0_dma_0);
 ALTERA_AVALON_DMA_INSTANCE ( PROCESSOR1_0_DMA_0, processor1_0_dma_0);
+ALTERA_AVALON_DMA_INSTANCE ( PROCESSOR2_0_DMA_0, processor2_0_dma_0);
+ALTERA_AVALON_DMA_INSTANCE ( PROCESSOR3_0_DMA_0, processor3_0_dma_0);
 ALTERA_AVALON_JTAG_UART_INSTANCE ( PROCESSORM_0_JTAG_UART, processorM_0_jtag_uart);
 ALTERA_AVALON_MUTEX_INSTANCE ( MUTEX_0, mutex_0);
 ALTERA_AVALON_SYSID_QSYS_INSTANCE ( SYS_ID, sys_id);
@@ -103,6 +105,8 @@ void alt_sys_init( void )
     ALTERA_AVALON_TIMER_INIT ( PROCESSORM_0_TIMESTAMP, processorM_0_timestamp);
     ALTERA_AVALON_DMA_INIT ( PROCESSOR0_0_DMA_0, processor0_0_dma_0);
     ALTERA_AVALON_DMA_INIT ( PROCESSOR1_0_DMA_0, processor1_0_dma_0);
+    ALTERA_AVALON_DMA_INIT ( PROCESSOR2_0_DMA_0, processor2_0_dma_0);
+    ALTERA_AVALON_DMA_INIT ( PROCESSOR3_0_DMA_0, processor3_0_dma_0);
     ALTERA_AVALON_JTAG_UART_INIT ( PROCESSORM_0_JTAG_UART, processorM_0_jtag_uart);
     ALTERA_AVALON_MUTEX_INIT ( MUTEX_0, mutex_0);
     ALTERA_AVALON_SYSID_QSYS_INIT ( SYS_ID, sys_id);

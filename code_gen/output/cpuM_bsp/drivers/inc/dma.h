@@ -16,14 +16,11 @@
 /*****************************************************************************
  * DMA channels for each core
  *****************************************************************************/
-alt_dma_txchan txchan[NUMCORES];
-alt_dma_rxchan rxchan[NUMCORES];
 
 
 extern OS_EVENT *dmaQ;
 extern OS_FLAG_GRP *dmaReadyFlag;
-extern CriticalFunctionData critFuncData[NUMCORES];
-extern int *core_IRQ[NUMCORES];
+
 extern bool taskFailed;
 
 void sendDMA(void* sourceAddress, void* destAddress, int size, void *handle) ;
@@ -32,4 +29,7 @@ void handleDMA(void* handle, void* data);
 void postDmaMessage(INT32U task, bool start);
 void initDMA(void);
 void resetDMA(void);
+void dma_setTxRxPointers(alt_dma_txchan *txp, alt_dma_rxchan *rxp);
+void dma_setCoreIRQPointers(int **p);
+void dma_setCritFuncDataPointer(CriticalFunctionData *p);
 #endif /* DMA_H_ */

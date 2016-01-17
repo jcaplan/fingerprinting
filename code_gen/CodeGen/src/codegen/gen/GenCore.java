@@ -17,7 +17,6 @@ public class GenCore {
 	Configuration config;
 	ArrayList<Function> fprintList;
 	Platform platform;
-	
 	/**
 	 * Action interface for generation of different sections
 	 */
@@ -116,12 +115,12 @@ public class GenCore {
 		
 		s += getStackSizes(core);
 		
-		
+		ArrayList<Function> mergeList = getMergedFuncFprintList(core);
 		s += "/*****************************************************************************\n" +
 			 " * Task Priorities\n" + 
 			 " *****************************************************************************/\n";
 		
-		for (Function f : core.funcList){
+		for (Function f : mergeList){
 			s += String.format("%-50s%d\n","#define " + f.getPriorityString(),f.priority); 
 		}
 		
@@ -137,7 +136,7 @@ public class GenCore {
 			s += "/*****************************************************************************\n" +
 					 " * Task Periods\n" + 
 					 " *****************************************************************************/\n";
-			ArrayList<Function> mergeList = getMergedFuncFprintList(core);
+			
 			
 			s += String.format("%-50s%d\n","#define NUM_TASKS", mergeList.size()); 			
 			for (Function f : mergeList){
@@ -165,7 +164,7 @@ public class GenCore {
 	}
 	
 
-	private ArrayList<Function> getMergedFuncFprintList(Core core) {
+	protected ArrayList<Function> getMergedFuncFprintList(Core core) {
 
 		@SuppressWarnings("unchecked")
 		ArrayList<Function> mergeList = (ArrayList<Function>) core.funcList.clone();
@@ -176,6 +175,7 @@ public class GenCore {
 		}
 		
 		return mergeList;
+//		return core.funcList;
 	}
 
 	/**
@@ -294,8 +294,8 @@ public class GenCore {
 				count++;
 			}
 		}
-		s2 += "OS_EVENT *critical_SEM[" + count+"];\n";
-		s2 += "int fID[" + count + "];\n";
+		s2 += "OS_EVENT *critical_SEM[" + fprintList.size() +"];\n";
+		s2 += "int fID[" + fprintList.size() + "];\n";
 		
 		
 

@@ -1,0 +1,27 @@
+proc cpu0
+b *0x4668b4
+b handleCPU
+continue
+print *0x63000@1000
+print *0x00063360
+b *0x47fef8
+b *0x47ff80
+continue
+set itrace change
+continue
+set itrace off
+disable 3
+disable 4
+continue
+proc cpu0
+disable 1
+set extreg R2 0xffffe9
+proc cpum
+b dma.c:121
+continue
+print *0x63000@1000
+print *0x000632e4
+proc cpu0
+# b alt_exception
+# set itrace change
+continue

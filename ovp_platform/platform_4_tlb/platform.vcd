@@ -1,0 +1,168 @@
+$version
+Imperas Tools
+$end
+$comment merged vcds for all cores $end
+$timescale 8ns $end
+$scope module platform $end
+ $var wire 1 ! cpu0_7_for_loop_100000_0 $end
+ $var wire 1 " cpu0_9_for_loop_80000_0 $end
+ $var wire 1 # cpu0_0_None $end
+ $var wire 1 $ cpu0_11_uC/OS-II_Idle $end
+ $var wire 1 % cpu0_6_for_loop_50000_50000 $end
+ $var wire 1 & cpu0_10_uC/OS-II_Stat $end
+ $var wire 1 ' cpu0_8_for_loop_90000_0 $end
+ $var wire 1 ( cpu1_0_None $end
+ $var wire 1 ) cpu1_9_for_loop_60000_0 $end
+ $var wire 1 * cpu1_8_for_loop_80000_0 $end
+ $var wire 1 + cpu1_6_for_loop_100000_0 $end
+ $var wire 1 , cpu1_7_for_loop_90000_0 $end
+ $var wire 1 - cpu1_10_uC/OS-II_Stat $end
+ $var wire 1 . cpu1_11_uC/OS-II_Idle $end
+ $var wire 1 / cpum_3_dma $end
+ $var wire 1 0 cpum_0_None $end
+ $var wire 1 1 cpum_5_uC/OS-II_Idle $end
+ $var wire 1 2 cpum_4_uC/OS-II_Stat $end
+$upscope $end
+$enddefinitions $end
+#0
+x%
+x!
+x&
+x$
+x"
+x'
+x#
+x*
+x+
+x)
+x,
+x-
+x.
+x(
+x2
+x1
+x/
+x0
+#115419
+1%
+z#
+#115504
+1+
+z(
+#115947
+1,
+z+
+#116408
+1*
+z,
+#116914
+1)
+z*
+#117461
+1-
+z)
+#118016
+1.
+z-
+#1212004
+1!
+z%
+#1212434
+1'
+z!
+#1212895
+1"
+z'
+#1213412
+1&
+z"
+#1213967
+1$
+z&
+#7332199
+1/
+z0
+#7332465
+12
+z/
+#7332655
+11
+z2
+#7350242
+1/
+z1
+#7365822
+1+
+z.
+#7365833
+1!
+z$
+#7429226
+11
+z/
+#8592279
+1%
+z!
+#8977739
+1,
+z+
+#10148215
+1!
+z%
+#10426876
+1*
+z,
+#10534021
+1'
+z!
+#10534703
+1/
+z1
+#10540650
+11
+z/
+#11715269
+1.
+z*
+#11983996
+1"
+z'
+#11984762
+1/
+z1
+#11990715
+11
+z/
+#13272469
+1$
+z"
+#13273533
+1/
+z1
+#13279491
+11
+z/
+#16735649
+1/
+z1
+#16749383
+11
+z/
+#16749602
+1*
+z.
+#16749615
+1"
+z$
+#17592309
+1%
+z"
+#18037955
+1.
+z*
+#18475082
+1"
+z%
+#18610516
+1/
+z1

@@ -6,7 +6,7 @@ OUTPUT_DIR=/home/jonah/fingerprinting/code_gen/output
 NIOS2COMMANDSHELL=/home/jonah/altera/13.1/nios2eds/nios2_command_shell.sh
 
 
-for i in {0..1} M
+for i in {0..3} M
 do
 	BSPDIR=${OUTPUT_DIR}/cpu${i}_bsp
 	APPDIR=${OUTPUT_DIR}/cpu${i}

@@ -1,0 +1,57 @@
+$version
+Imperas Tools
+$end
+$comment imperas platform FprintPlatform $end
+$comment imperas cpu FprintPlatform/cpu0 $end
+$timescale 8ns $end
+$scope module 10_uC/OS-II_Stat $end
+ $var wire 1 & 10_uC/OS-II_Stat $end
+$upscope $end
+$scope module 7_for_loop_100000_0 $end
+ $var wire 1 # 7_for_loop_100000_0 $end
+$upscope $end
+$scope module 8_for_loop_90000_0 $end
+ $var wire 1 $ 8_for_loop_90000_0 $end
+$upscope $end
+$scope module 11_uC/OS-II_Idle $end
+ $var wire 1 ' 11_uC/OS-II_Idle $end
+$upscope $end
+$scope module 6_for_loop_50000_50000 $end
+ $var wire 1 ! 6_for_loop_50000_50000 $end
+$upscope $end
+$scope module 9_for_loop_80000_0 $end
+ $var wire 1 % 9_for_loop_80000_0 $end
+$upscope $end
+$scope module 0_None $end
+ $var wire 1 " 0_None $end
+$upscope $end
+$enddefinitions $end
+#0
+x&
+x#
+x$
+x'
+x!
+x%
+x"
+#115419
+1!
+z"
+#1212244
+1#
+z!
+#1212674
+1$
+z#
+#1213135
+1%
+z$
+#1213652
+1&
+z%
+#1214207
+1'
+z&
+#7365833
+1#
+z'

@@ -29,20 +29,26 @@
 #define FOR_LOOP_100000_0_PRIORITY                2
 #define FOR_LOOP_90000_0_PRIORITY                 3
 #define FOR_LOOP_80000_0_PRIORITY                 4
+#define FOR_LOOP_70000_0_PRIORITY                 5
+#define FOR_LOOP_60000_0_PRIORITY                 6
 /*****************************************************************************
  * Task Table indices
  *****************************************************************************/
 #define FOR_LOOP_100000_0_TABLE_INDEX             0
 #define FOR_LOOP_90000_0_TABLE_INDEX              1
 #define FOR_LOOP_80000_0_TABLE_INDEX              2
+#define FOR_LOOP_70000_0_TABLE_INDEX              3
+#define FOR_LOOP_60000_0_TABLE_INDEX              4
 /*****************************************************************************
  * Task Periods
  *****************************************************************************/
-#define NUM_TASKS                                 4
+#define NUM_TASKS                                 6
 #define FOR_LOOP_50000_50000_PERIOD               60
 #define FOR_LOOP_100000_0_PERIOD                  90
 #define FOR_LOOP_90000_0_PERIOD                   150
 #define FOR_LOOP_80000_0_PERIOD                   75
+#define FOR_LOOP_70000_0_PERIOD                   75
+#define FOR_LOOP_60000_0_PERIOD                   75
 /*****************************************************************************
  * Runtime monitor table index
  *****************************************************************************/
@@ -50,6 +56,8 @@
 #define FOR_LOOP_100000_0_RT_PRIO                 1
 #define FOR_LOOP_90000_0_RT_PRIO                  2
 #define FOR_LOOP_80000_0_RT_PRIO                  3
+#define FOR_LOOP_70000_0_RT_PRIO                  4
+#define FOR_LOOP_60000_0_RT_PRIO                  5
 /*****************************************************************************
  * Execution time lower bounds
  *****************************************************************************/
@@ -57,3 +65,5 @@
 #define FOR_LOOP_100000_0_WCET_LOWERBOUND         1600004
 #define FOR_LOOP_90000_0_WCET_LOWERBOUND          1600004
 #define FOR_LOOP_80000_0_WCET_LOWERBOUND          1600004
+#define FOR_LOOP_70000_0_WCET_LOWERBOUND          1600004
+#define FOR_LOOP_60000_0_WCET_LOWERBOUND          1600004

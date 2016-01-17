@@ -1,0 +1,21 @@
+tcl source scripts/muldf3callback.tcl
+
+proc cpu0
+
+#breakpoint 1
+b __muldf3
+
+#start of the loop:
+#b *0x004
+
+#end of the function
+b *0x4645ac
+b *0x4645d8
+
+
+tclcallback 1 funcStart
+#tclcallback 2 loopEntry
+tclcallback 2 funcEnd
+tclcallback 3 funcEnd
+
+continue

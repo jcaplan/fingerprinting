@@ -2,11 +2,11 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>15-Jan-2016 10:36:34 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1452915394899</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>16-Jan-2016 8:18:51 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1452993531355</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>/home/jonah/fingerprinting/code_gen/output/cpu1_bsp</BspGeneratedLocation>
         <BspSettingsFile>/home/jonah/fingerprinting/code_gen/output/cpu1_bsp/settings.bsp</BspSettingsFile>
-        <SopcDesignFile>/home/jonah/fingerprinting/code_gen/platform/nios_fprint.sopcinfo</SopcDesignFile>
+        <SopcDesignFile>/home/jonah/fingerprinting/code_gen/platform/nios_fprint_4.sopcinfo</SopcDesignFile>
         <JdiFile>default</JdiFile>
         <Cpu>processor1_0_cpu1</Cpu>
         <SchemaVersion>1.9</SchemaVersion>
@@ -1722,9 +1722,17 @@
                 <regionName>memory_0_onchip_memoryMain</regionName>
                 <memoryName>memory_0_onchip_memoryMain</memoryName>
                 <offset>204832</offset>
-                <size>192480</size>
+                <size>188384</size>
                 <baseAddress>0x432020</baseAddress>
-                <addressRange>0x00432020 - 0x00460FFF</addressRange>
+                <addressRange>0x00432020 - 0x0045FFFF</addressRange>
+        </LinkerRegion>
+        <LinkerRegion>
+                <regionName>stack_bin_3</regionName>
+                <memoryName>memory_0_onchip_memoryMain</memoryName>
+                <offset>393216</offset>
+                <size>4096</size>
+                <baseAddress>0x460000</baseAddress>
+                <addressRange>0x00460000 - 0x00460FFF</addressRange>
         </LinkerRegion>
         <LinkerRegion>
                 <regionName>stack_bin_2</regionName>
@@ -1807,6 +1815,18 @@
         <MemoryMap>
                 <slaveDescriptor>processorM_0_cpu_irq_0</slaveDescriptor>
                 <addressRange>0x02200800 - 0x02200BFF</addressRange>
+                <addressSpan>1024</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>processor2_0_cpu_irq_0</slaveDescriptor>
+                <addressRange>0x02200C00 - 0x02200FFF</addressRange>
+                <addressSpan>1024</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>processor3_0_cpu_irq_0</slaveDescriptor>
+                <addressRange>0x02201000 - 0x022013FF</addressRange>
                 <addressSpan>1024</addressSpan>
                 <attributes/>
         </MemoryMap>
@@ -1905,6 +1925,10 @@
         <LinkerSection>
                 <sectionName>.stack_bin_2</sectionName>
                 <regionName>stack_bin_2</regionName>
+        </LinkerSection>
+        <LinkerSection>
+                <sectionName>.stack_bin_3</sectionName>
+                <regionName>stack_bin_3</regionName>
         </LinkerSection>
         <SoftwarePackageInfo>
                 <name>runtime_monitor</name>
