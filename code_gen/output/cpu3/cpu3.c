@@ -87,7 +87,7 @@ static void handleCPU(void* context) {
 	int taskIndex = critFuncData[CORE_ID].tableIndex;
 	updateMemoryManagerTable(taskIndex,
 			&critFuncData[CORE_ID]);
-	fID[taskIndex] = critFuncData->fprintID;
+	fID[taskIndex] = critFuncData[CORE_ID].fprintID;
 	int *PROCESSOR3_IRQ = (int *) PROCESSOR3_0_CPU_IRQ_0_BASE;
 	*PROCESSOR3_IRQ = 0;
 	OSSemPost(critical_SEM[taskIndex]);
@@ -363,8 +363,8 @@ int main() {
 
 	//Put the location of the stack for the task in shared memory
 	//-----------------------------------------------------------
-	functionTable[FOR_LOOP_70000_0_TABLE_INDEX].stackAddress[CORE_ID] = &for_loop_70000_0_STACK;
-	functionTable[FOR_LOOP_60000_0_TABLE_INDEX].stackAddress[CORE_ID] = &for_loop_60000_0_STACK;
+	functionTable[FOR_LOOP_70000_0_TABLE_INDEX].stackAddress[1] = &for_loop_70000_0_STACK;
+	functionTable[FOR_LOOP_60000_0_TABLE_INDEX].stackAddress[0] = &for_loop_60000_0_STACK;
 	functionTable[FOR_LOOP_60000_0_TABLE_INDEX].address = for_loop_60000_0_CT;
 
 	critical_SEM[0] = OSSemCreate(0);

@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>ucosii</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>16-Jan-2016 8:18:51 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1452993531355</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>17-Jan-2016 2:34:39 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1453059279284</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>/home/jonah/fingerprinting/code_gen/output/cpu1_bsp</BspGeneratedLocation>
         <BspSettingsFile>/home/jonah/fingerprinting/code_gen/output/cpu1_bsp/settings.bsp</BspSettingsFile>
         <SopcDesignFile>/home/jonah/fingerprinting/code_gen/platform/nios_fprint_4.sopcinfo</SopcDesignFile>
@@ -1722,17 +1722,9 @@
                 <regionName>memory_0_onchip_memoryMain</regionName>
                 <memoryName>memory_0_onchip_memoryMain</memoryName>
                 <offset>204832</offset>
-                <size>188384</size>
+                <size>192480</size>
                 <baseAddress>0x432020</baseAddress>
-                <addressRange>0x00432020 - 0x0045FFFF</addressRange>
-        </LinkerRegion>
-        <LinkerRegion>
-                <regionName>stack_bin_3</regionName>
-                <memoryName>memory_0_onchip_memoryMain</memoryName>
-                <offset>393216</offset>
-                <size>4096</size>
-                <baseAddress>0x460000</baseAddress>
-                <addressRange>0x00460000 - 0x00460FFF</addressRange>
+                <addressRange>0x00432020 - 0x00460FFF</addressRange>
         </LinkerRegion>
         <LinkerRegion>
                 <regionName>stack_bin_2</regionName>
@@ -1925,10 +1917,6 @@
         <LinkerSection>
                 <sectionName>.stack_bin_2</sectionName>
                 <regionName>stack_bin_2</regionName>
-        </LinkerSection>
-        <LinkerSection>
-                <sectionName>.stack_bin_3</sectionName>
-                <regionName>stack_bin_3</regionName>
         </LinkerSection>
         <SoftwarePackageInfo>
                 <name>runtime_monitor</name>

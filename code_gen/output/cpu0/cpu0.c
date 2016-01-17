@@ -101,7 +101,7 @@ static void handleCPU(void* context) {
 	int taskIndex = critFuncData[CORE_ID].tableIndex;
 	updateMemoryManagerTable(taskIndex,
 			&critFuncData[CORE_ID]);
-	fID[taskIndex] = critFuncData->fprintID;
+	fID[taskIndex] = critFuncData[CORE_ID].fprintID;
 	int *PROCESSOR0_IRQ = (int *) PROCESSOR0_0_CPU_IRQ_0_BASE;
 	*PROCESSOR0_IRQ = 0;
 	OSSemPost(critical_SEM[taskIndex]);
@@ -447,11 +447,11 @@ int main() {
 
 	//Put the location of the stack for the task in shared memory
 	//-----------------------------------------------------------
-	functionTable[FOR_LOOP_100000_0_TABLE_INDEX].stackAddress[CORE_ID] = &for_loop_100000_0_STACK;
+	functionTable[FOR_LOOP_100000_0_TABLE_INDEX].stackAddress[0] = &for_loop_100000_0_STACK;
 	functionTable[FOR_LOOP_100000_0_TABLE_INDEX].address = for_loop_100000_0_CT;
-	functionTable[FOR_LOOP_90000_0_TABLE_INDEX].stackAddress[CORE_ID] = &for_loop_90000_0_STACK;
+	functionTable[FOR_LOOP_90000_0_TABLE_INDEX].stackAddress[0] = &for_loop_90000_0_STACK;
 	functionTable[FOR_LOOP_90000_0_TABLE_INDEX].address = for_loop_90000_0_CT;
-	functionTable[FOR_LOOP_80000_0_TABLE_INDEX].stackAddress[CORE_ID] = &for_loop_80000_0_STACK;
+	functionTable[FOR_LOOP_80000_0_TABLE_INDEX].stackAddress[0] = &for_loop_80000_0_STACK;
 	functionTable[FOR_LOOP_80000_0_TABLE_INDEX].address = for_loop_80000_0_CT;
 
 	for_loop_50000_50000_initialize(for_loop_50000_50000_M);

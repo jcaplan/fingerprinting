@@ -24,6 +24,19 @@ int successCounterReg[16];
 int taskCounter[16];
 // exception_reg exception;
 
+    
+int getLogicalCoreID(int task, int coreID){
+    int id = -1;
+    if(assignment[0][task] == coreID){
+        id = 0;
+    } else if (assignment[1][task] == coreID){
+        id = 1;
+    } else if (assignment[2][task] == coreID){
+        id = 2;
+    }
+    return id;
+}
+
 void writeSuccessReg(){
    COMP_CSR_SLAVE_ab32_data.successReg.value = successReg;
 }
@@ -96,9 +109,7 @@ void do_comparison(void){
         } else {
             if(diagnosticLevel == 3){
                 bhmPrintf("task %d fprint %x and %x match\n",task,fprint[0][task],fprint[1][task]);
-            }
-            fprintsReady[0][task] = 0;
-            fprintsReady[0][task] = 0;       
+            }  
         }
     }
 }
@@ -130,7 +141,7 @@ PPM_REG_WRITE_CB(catRegWrite) {
     unsigned taskID = catRegData->catReg.bits.taskID;
     unsigned catData   = catRegData->catReg.bits.data;
     assignment[coreID][taskID] = catData;
-    bhmPrintf("COMP:: writing cat: logical core %d, task %d, core %d",coreID,taskID,catData);
+    bhmPrintf("COMP:: writing cat: logical core %d, task %d, core %d\n",coreID,taskID,catData);
 }
 
 PPM_REG_READ_CB(csrRd32) {
@@ -143,15 +154,17 @@ PPM_REG_WRITE_CB(currentStateWrite) {
     COMP_FPRINT_SLAVE_ab32_dataTP fprintData =  handles.COMP_FPRINT_SLAVE;
     unsigned coreID = fprintData->currentState.bits.coreID;
     unsigned taskID = fprintData->currentState.bits.taskID;
+    int id = getLogicalCoreID(taskID,coreID);
+
     switch(fprintData->currentState.bits.enable){        
     case 0:
-        if(checkout[coreID][taskID]){
-            checkin[coreID][taskID] = 1;
+        if(checkout[id][taskID]){
+            checkin[id][taskID] = 1;
             checkTaskComplete(taskID);
         }
         break;
     case 1:
-        checkout[coreID][taskID] = 1;
+        checkout[id][taskID] = 1;
         break;
     }
 }
@@ -171,18 +184,19 @@ PPM_REG_WRITE_CB(fprintWrite) {
     unsigned coreID = fprintData->fprint.bits.coreID;
     unsigned messageID = fprintData->fprint.bits.messageID;
     unsigned fprintBlock = fprintData->fprint.bits.fprint;
+    int id = getLogicalCoreID(taskID,coreID);
 
     bhmPrintf("COMP: data %x, messageID %d, coreID %d, taskID %d, fprintBlock %d\n",
         data,messageID,coreID,taskID,fprintBlock);
     switch(messageID){
     case 0:
         bhmPrintf("COMP: comparator receives block 0\n");
-        fprint[coreID][taskID] = fprintBlock;
+        fprint[id][taskID] = fprintBlock;
         break;
     case 1:
         bhmPrintf("COMP: comparator receives block 1\n");
-        fprint[coreID][taskID] |= fprintBlock << 16;
-        fprintsReady[coreID][taskID] = 1;
+        fprint[id][taskID] |= fprintBlock << 16;
+        fprintsReady[id][taskID] = 1;
         do_comparison();
         break;
     }

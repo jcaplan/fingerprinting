@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.58 (w)1999-2014 BSI
-[*] Sun Jan 17 20:02:13 2016
+[*] Sun Jan 17 20:15:53 2016
 [*]
 [dumpfile] "/home/jonah/fingerprinting/ovp_platform/platform_4_tlb/platform.vcd"
-[dumpfile_mtime] "Sun Jan 17 19:59:43 2016"
+[dumpfile_mtime] "Sun Jan 17 20:15:10 2016"
 [dumpfile_size] 6006
-[savefile] "/home/jonah/fingerprinting/ovp_platform/platform_4_tlb/platform.sav"
+[savefile] "/home/jonah/fingerprinting/ovp_platform/platform_4_tlb/platform_ref.sav"
 [timestart] 0
 [size] 1319 722
 [pos] -1 -1
-*-27.328293 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-27.328293 149100000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [sst_width] 223
 [signals_width] 222
 [sst_expanded] 1
@@ -17,10 +17,10 @@
 @800200
 -cpu0
 @28
-platform.cpu0_7_for_loop_100000_0
-platform.cpu0_9_for_loop_80000_0
 platform.cpu0_6_for_loop_50000_50000
+platform.cpu0_7_for_loop_100000_0
 platform.cpu0_8_for_loop_90000_0
+platform.cpu0_9_for_loop_80000_0
 @1000200
 -cpu0
 @800200
@@ -41,16 +41,15 @@ platform.cpu2_5_for_loop_70000_0
 @800200
 -cpu3
 @28
-platform.cpu3_5_for_loop_60000_0
 platform.cpu3_4_for_loop_70000_0
+platform.cpu3_5_for_loop_60000_0
 @1000200
 -cpu3
 @800201
 -cpum
-@28
+@29
 platform.cpum_3_dma
 @1000201
 -cpum
 [pattern_trace] 1
 [pattern_trace] 0
-@800200

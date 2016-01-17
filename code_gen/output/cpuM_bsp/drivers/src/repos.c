@@ -146,21 +146,16 @@ void REPOSTaskComplete(int taskID){
 
 int REPOSgetFreeFprintID(REPOS_task *task) {
 	int i;
-	int freeID = -1;
-	OS_CPU_SR  cpu_sr = 0u;
-	OS_ENTER_CRITICAL();
 	for(i = 0; i < 16; i++){
 		INT32U mask = 0;
 		if(fprintIDFreeList & (mask = 1 << i)){
 			fprintIDFreeList &= ~(mask);
 			task->fprintIDMask = mask;
 			task->fprintID = i;
-			freeID = i;
-			break;
+			return i;
 		}
 	}
-	OS_EXIT_CRITICAL();
-	return freeID;
+	return -1;
 }
 
 int REPOSgetTaskID(int fprintIDMask){
@@ -182,8 +177,8 @@ void REPOSBeginTask(REPOS_task *task){
 		core->currentTaskID = task->taskID;
 		core->currentScratchpad = task->currentSP;
 		core->scratchpadActive[core->currentScratchpad][task->currentSPbin] = true;
-		comp_set_core_assignment(0,task->core[0],task->taskID);
-		comp_set_core_assignment(1,task->core[1],task->taskID);	
+		comp_set_core_assignment(0,task->core[0],task->fprintID);
+		comp_set_core_assignment(1,task->core[1],task->fprintID);	
 	}
 	task->taskRunning = true;
 }

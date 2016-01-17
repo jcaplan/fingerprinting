@@ -342,7 +342,7 @@ void initializeTaskTable(void) {
 	task->dataAddressPhys = &for_loop_80000_0PackageStruct;
 	task->dataAddressVirt = (void *)((int)&for_loop_80000_0PackageStruct & 0x3FFFFF);
 	task->stackAddressPhys[0] = (void *) (0x493000);
-	task->stackAddressPhys[1] = (void *) (0x461000);
+	task->stackAddressPhys[1] = (void *) (0x4c7000);
 
 	task->stackAddressVirt[0] = (void *) (0x34000);
 	task->stackAddressVirt[1] = (void *) (0x34000);
@@ -354,7 +354,7 @@ void initializeTaskTable(void) {
 
 	task->dataAddressPhys = &for_loop_70000_0PackageStruct;
 	task->dataAddressVirt = (void *)((int)&for_loop_70000_0PackageStruct & 0x3FFFFF);
-	task->stackAddressPhys[0] = (void *) (0x4c7000);
+	task->stackAddressPhys[0] = (void *) (0x4c6000);
 	task->stackAddressPhys[1] = (void *) (0x4f9000);
 
 	task->stackAddressVirt[0] = (void *) (0x35000);
@@ -368,7 +368,7 @@ void initializeTaskTable(void) {
 	task->dataAddressPhys = &for_loop_60000_0PackageStruct;
 	task->dataAddressVirt = (void *)((int)&for_loop_60000_0PackageStruct & 0x3FFFFF);
 	task->stackAddressPhys[0] = (void *) (0x4f8000);
-	task->stackAddressPhys[1] = (void *) (0x460000);
+	task->stackAddressPhys[1] = (void *) (0x461000);
 
 	task->stackAddressVirt[0] = (void *) (0x36000);
 	task->stackAddressVirt[1] = (void *) (0x36000);
@@ -419,7 +419,7 @@ void REPOSInit(void) {
 	task->data.periodic.countdown = FOR_LOOP_80000_0_PERIOD;
 	task->data.periodic.deadline = FOR_LOOP_80000_0_PERIOD; /* Deadline not specified, assume deadline = period */
 	task->core[0] = 0;
-	task->core[1] = 1;
+	task->core[1] = 2;
 	task->numFuncs = 1;
 	task->funcTableFirstIndex = 0;
 	task->taskID = FOR_LOOP_80000_0_TABLE_INDEX;

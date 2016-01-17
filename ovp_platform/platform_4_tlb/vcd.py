@@ -8,11 +8,11 @@ comments = []
 timescale = []
 signals = []
 times = []
-
+coreNames = ["cpu0","cpu1","cpu2","cpu3","cpum"]
+	
 def main(argv):
 
 	i = 0
-	coreNames = ["cpu0","cpu1","cpum"]
 	for name in coreNames:
 		f = open("output/" + name + ".ivcd", 'r')
 		lines = f.readlines()
@@ -23,10 +23,10 @@ def main(argv):
 		signals.append(getSignals(lines,name))
 		times.append(getTimes(lines))
 		f.close()
-	
 	#update the symbols
 	newSignalDic,newSignals = formatSignals()
 	updatedTimes = updateTimes(newSignalDic)
+	
 	#sort by timestamp
 	updatedTimes.sort(key=lambda x: x[0])	
 	mergedTimes = mergeTimeList(updatedTimes)
@@ -52,8 +52,53 @@ def main(argv):
 			f.write(event + "\n")
 	f.close()
 
+	printGtk()
 
+def printGtk():
+	f = open("platform.sav",'w')
 
+	front = """[*]
+[*] GTKWave Analyzer v3.3.58 (w)1999-2014 BSI
+[*] Sun Jan 17 20:02:13 2016
+[*]
+[dumpfile] "/home/jonah/fingerprinting/ovp_platform/platform_4_tlb/platform.vcd"
+[dumpfile_mtime] "Sun Jan 17 19:59:43 2016"
+[dumpfile_size] 6006
+[savefile] "/home/jonah/fingerprinting/ovp_platform/platform_4_tlb/platform.sav"
+[timestart] 0
+[size] 1319 722
+[pos] -1 -1
+*-27.328293 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 223
+[signals_width] 222
+[sst_expanded] 1
+[sst_vpaned_height] 211
+"""
+	f.write(front)
+
+	for i in xrange(len(coreNames)):
+		if(i == len(coreNames) - 1):
+			f.write('@800201\n')
+		else:
+			f.write('@800200\n')
+		f.write('-' + coreNames[i] + '\n')
+		f.write('@28\n')
+		
+		exclude = ['None','Idle','Stat']	
+		filter_func = lambda s: not any(x in s for x in exclude)
+		
+		for signal in filter(filter_func,signals[i]):
+			f.write('platform.' + signal + '\n')
+		if(i == len(coreNames) - 1):
+			f.write('@1000201\n')
+		else:
+			f.write('@1000200\n')
+		f.write('-' + coreNames[i] + '\n')
+
+	f.write('[pattern_trace] 1\n')
+	f.write('[pattern_trace] 0\n')
+	f.write('@800200')
+	f.close()
 
 def getVersion(lines):
 	for i in xrange(len(lines)):
@@ -154,7 +199,11 @@ def updateTimes(newSignalDic):
 				newEvents.append(event.replace(event[1],newSignalDic[i][event[1]]))
 			
 			times[i][j] = (time[0],newEvents)	
-	return times[0] + times[1] + times[2]
+
+	result = [];
+	for time in times:
+		result += time
+	return result
 
 
 def mergeTimeList(allTimes):

@@ -268,5 +268,16 @@ public class Function implements Comparable<Function>{
 		return getVirtualStackStart() + stackSize + StackBin.STACKSIZE_MARGINERROR 
 				+ StackBin.STACKSIZE_MINOFFSET;
 	}
+
+	public int getLogicalID(Core core) {
+		int id = -1;
+		for(int i = 0; i < cores.size(); i++){
+			if(cores.get(i).equals(core)){
+				id = i;
+				break;
+			}
+		}
+		return id;
+	}
 	
 }

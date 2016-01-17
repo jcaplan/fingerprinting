@@ -4,7 +4,7 @@
  * Machine generated for CPU 'processor1_0_cpu1' in SOPC Builder design 'nios_fprint'
  * SOPC Builder design path: /home/jonah/fingerprinting/code_gen/platform/nios_fprint_4.sopcinfo
  *
- * Generated: Sat Jan 16 15:51:15 EST 2016
+ * Generated: Sun Jan 17 14:31:57 EST 2016
  */
 
 /*

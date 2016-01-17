@@ -333,7 +333,7 @@ public class GenCore {
 		"	int taskIndex = critFuncData[CORE_ID].tableIndex;\n"+
 		"	updateMemoryManagerTable(taskIndex,\n"+
 		"			&critFuncData[CORE_ID]);\n"+
-		"	fID[taskIndex] = critFuncData->fprintID;"+
+		"	fID[taskIndex] = critFuncData[CORE_ID].fprintID;"+
 		"\n"+
 		"	int *" + cpuName + "_IRQ = (int *) " + cpuName + "_0_CPU_IRQ_0_BASE;\n"+
 		"	*" + cpuName + "_IRQ = 0;\n"+
@@ -686,9 +686,9 @@ public class GenCore {
 
 		for(Function f : core.funcList){
 			if(f.critical){
-
+				
 				s += "	functionTable[" + f.getTableIndexString() + 
-						"].stackAddress[CORE_ID] = &" +
+						"].stackAddress[" + f.getLogicalID(core) + "] = &" +
 						f + "_STACK;\n";
 				if(f.cores.get(0).equals(core)){
 					s += "	functionTable[" + f.getTableIndexString() + 

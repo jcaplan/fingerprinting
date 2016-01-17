@@ -34,7 +34,7 @@
 <MAPPING>
 for_loop_100000_0 cpu0 cpu1
 for_loop_90000_0 cpu0 cpu1
-for_loop_80000_0 cpu0 cpu1
+for_loop_80000_0 cpu0 cpu2
 for_loop_70000_0 cpu2 cpu3
 for_loop_60000_0 cpu3 cpu1
 
