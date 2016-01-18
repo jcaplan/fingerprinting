@@ -161,8 +161,12 @@ Uns64 clocksRemaining () {
     // Is this counting up or down
     //
     Uns64 value;
-    remain = (start + timeout) - now;
-
+    double diff = start - now;
+    if (diff > -100){
+        diff = -100;
+    }
+    remain = timeout + diff;
+    
     value = remain * freq_mhz;
 
     return value;

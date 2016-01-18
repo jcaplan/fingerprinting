@@ -39,11 +39,14 @@ void rtMonitorEndTask(int taskID){
 void rtMonitorPauseTask(int priority){
 		rtMonitor_task *task = rtMonitorGetTask(priority);
 		if(task != NULL && task->running){
-				task->counter += alt_timestamp();
+			task->running = false;
+			task->counter += alt_timestamp();
 		}
 }
 
 void rtMonitorUnpauseTask(int priority){
+	rtMonitor_task *task = rtMonitorGetTask(priority);
+	task->running = true;
 	alt_timestamp_start();
 }
 
