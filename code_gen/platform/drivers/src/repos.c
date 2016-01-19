@@ -177,8 +177,8 @@ void REPOSBeginTask(REPOS_task *task){
 		core->currentScratchpad = task->currentSP;
 		core->scratchpadActive[core->currentScratchpad][task->currentSPbin] = true;
 		comp_set_core_assignment(i,task->core[i],task->fprintID);
-		comp_set_nmr(i,task->tmr);	
 	}
+	comp_set_nmr(task->fprintID,task->tmr);	
 	task->taskRunning = true;
 }
 
