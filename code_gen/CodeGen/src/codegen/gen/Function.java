@@ -39,6 +39,7 @@ public class Function implements Comparable<Function>{
 	String preambleFileName;
 	public int wcetLowerBound;
 	public int wcetUpperBound;
+	public boolean tmr = false;
 	
 	/**
 	 * When doing work on stack analysis, it is convenient to arrange functions in order of maximum stack size.

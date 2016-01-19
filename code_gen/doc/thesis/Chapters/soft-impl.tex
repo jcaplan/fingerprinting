@@ -7,14 +7,16 @@
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
-	This chapter will review the semantics of the fingerprint based multicore architecture in Figure~\ref{f:platform-arch}. 
-	The implementation details will then be provided for the embedded C code templates. 
-	The chapter starts with an overview of the main interactions between the system level components. 
-	Each interaction will then be decomposed until the low level behaviour of is exposed. While hardware exists to support TMR, only DMR code generation has currently been implemented at this time. 
-% 	As a general comment on notation, sequence diagrams will be used to depict interactions between physical components in the system. They do not in any way represent an object oriented software implementation. 
-
+	This chapter will give a detailed view of the semantics of the fingerprint based multicore architecture in Figure~\ref{f:platform-arch}.
+	The target architecture provides hardware mechanisms for support of on-demand redundancy. 		
+	Errors are detected in replicated threads using fingerprinting hardware to monitor bus traffic. 	
+	Checksums based on the execution stream are compared to ensure correct operation.
+	Local scratchpads are used in combination with memory protection and memory virtualization to ensure that data is quarantined within the sphere of replication until the results have been verified.
+	A trusted monitor is responsible for data management and replication across the entire system.
+	While hardware exists to support TMR, only DMR code generation has currently been implemented at this time. 
 	
-\section{System Level Control Flow}
+	Code generation (Chapter~\ref{c:code-gen}) requires well defined protocols for the monitor and processing core that can be translated into C templates. 
+	Several issues must be addressed for correct operation: deterministic thread execution, fault containment, execution time monitoring, data transfer, and task re-execution in case of fault. 
 		
 	Figure~\ref{f:correct-op} shows the system level control flow for a correct execution of a DMR replicated task.
 	The monitor core (FTC), the processing core, the fingerprint (FP) unit, and the comparator are the main components in the system that implement ODR. 
@@ -48,15 +50,20 @@
 \addfigure{0.6}{mem-part.pdf}{Memory partition of local and global data space.}{f:mem-part}
 
 % \addfigure{0.6}{sor.pdf}{The memory architecture and the sphere of replication.}{f:sor}
-	The shared memory is a region of fast on-chip memory used by the monitor and processing cores to communicate using a simple protocol of fixed message types. 
+	The shared memory is a region of fast on-chip memory used for inter-core communication. 
+	The monitor must pass some information to the processing cores at each task execution such as fingerprint ID (see \cite{ugthesis} for details) and the scratchpad pages allocated to the task (discussed below).
 	All data in shared memory is written by only one core to simplify concurrent data accesses. 
-	The monitor core is responsible for initializing the shared data. % (see Section~\ref{s:inter-core}). 
+% 	The monitor core is responsible for initializing the shared data. % (see Section~\ref{s:inter-core}). 
 
 	The physical address space is partitioned in order to support a simple virtual memory scheme. 
-	The scratchpad of each core has the same local address. 
-	The monitor software running on the FTC sends commands to the local DMA of each core when copying data from main memory to the scratchpads. 
-	Each DMA is only connected to one local scratchpad. 
-	There is no ambiguity as each DMA command port has a unique address in the global space. 
+	The monitor is responsible for copying critical data into the scratchpads and back to main memory using a DMA module connected to each scratchpad.
+% 	Each DMA is only connected to one local scratchpad. 
+% 	There is no ambiguity as each DMA command port has a unique address in the global space. 
+
+
+% 	On a general note, simplicity has been prioritized over scalability. 
+% 	This system sits awkwardly as a demonstration platform as significantly more human resources would be required to complete a robust system. 
+% 	As a result, some features are implemented in great detail to highlight specific aspects of design space while others are lacking. 
 
 \subsection{Virtual Memory Management}
 \label{s:virt-mem}
@@ -64,16 +71,30 @@
 	Deterministic behaviour is guaranteed by fingerprinting the virtual address and ensuring that both cores use the same virtual address. 
 	The uTLB translates the virtual address into the physical address and is programmed by each core according to runtime information provided by the monitor. 		
 	
-	The virtual memory management divides each scratchpad into bins according to the page size used by the uTLB. 
-	The uTLB page size is programmable at hardware compiled time and is currently set to 4kB. 
-	A 16kB scrachpad, for example, contains four bins.  
+	The uTLB translates addresses in the typical fashion with a table of the upper bits of physical and virtual addresses.
+% 	Only the upper bits of the address are compared and replaced. 
+	The memory space is separated into pages aligned to the first bit that may be translated.
+% 	The uTLB page size is programmable at hardware compile time and is currently set to 4kB. 
+	The uTLB setup requires that virtual memory management be handled entirely in software as there are no complex data structures such as page tables or MMU to consult them in the background. 
+	
+	Several assumptions are enforced by the virtual memory protocol in order to simplify the implementation. 
+	Every task has a stack and global data that each consume one 4kB page.
+	The uTLB page size is 4kB and each line is statically assigned to translation of the data or stack of a single task.
+	The scratchpad is divided evenly into 4kB pages which are dynamically allocated to a task, thus requiring dynamic updating of the translation table values.
+% 	These assumptions limit the scalability of the solution insofar as they are not yet reflected in the response time analysis. 
+
+	
+	The virtual memory protocol divides each scratchpad into bins according to the page size used by the uTLB. 
+	A 16kB scrachpad, for example, contains four bins of 4kB pages.  
 	The linker script for each core is updated to reserve one page in main memory for the global data (currently one 4kB page is reserved for \emph{all} global data of fingerprinted tasks rather than on a per-task basis) and one for the stack of each task. 
 	The stack size of each task is known statically using profiling information and adding an offset to account for the overhead of context switching and interrupt handling. 
 	The virtual address for each stack is assigned statically at design time. 
-	The physical address may change at runtime. 
-	The virtual addresses of all stacks point to an unused section of the address space.
-
-	The linker script exerpt in Listing~\ref{l:virt-mem-link} shows the main memory region of a core has been shortened by 8kB and two 4kB regions called \texttt{stack\_bin\_x} have been added. 
+	The physical address may changes at runtime as the scratchpad location is dynamically assigned and may change as required to support preemption (Section~\ref{s:scratchpad}). 
+	The virtual addresses of all stacks point to an unused section of the address space to ensure that no data is corrupted if translation malfunctions or is accidentally turned off.
+	
+	Each core is initially assigned 200kB of main memory. 
+	The stack bins are removed from the end of the main memory allocation by modifying the linker script.
+	Listing~\ref{l:virt-mem-link} shows the main memory region of a core has been shortened by 8kB (from 204768 to 196576 on line 5) and two 4kB regions called \texttt{stack\_bin\_x} have been added. 
 	Listing~\ref{l:virt-mem-init} shows a condensed version of the relevant startup procedure. 
 	First, the stack is declared statically and assigned to the stack bin (line 1). 
 	The virtual address for the stack is then set up using the uTLB (lines 4-9). 
@@ -87,7 +108,7 @@
 \includecode{cpu-irq.c}{l:cpu-irq}{Handling an interrupt from the monitor to start task execution}{C}
 
 	The RTOS kernel has also been modified to support virtual memory management during context switching (Algorithm~\ref{a:mem-manager}). 
-	Translation is only enabled for the active task in order to reduce possible sources of error. 
+	Translation is only enabled for the active task in order to reduce possible sources of error (a higher priority line may have had a conflicting translation in previous iterations). 
 	The translation for the starting task $T_i$ is enabled upon entering a context switch for the task being preempted ($T_k$). 
 	The translation for $T_k$ cannot be disabled until after the context switch occurs or else an MPU exception will be triggered. 
 	The translation is managed such that $T_i$ and $T_k$ will not clash when both are active at the same time.
@@ -138,10 +159,10 @@
 
 \subsection{Replication Services}
 	The primary responsibility of the monitor core is to initiate execution of critical tasks on the processing cores and to take action in case a fault is detected on either core. 
-	The current implementation only supports periodic tasks (cannot be triggered by an external interrupt). 
+	The current implementation only supports tasks that execute on a regular period. 
 	
 	Task start times are tracked with a software timer provided by the RTOS. 
-	The monitor calls Algorithm~\ref{a:repos-start} on each clock tick which checks a table containing information on all critical tasks that are mapped to processing cores and use fingerprinting. 
+	Every time the system clock triggers an interrupt, the monitor updates and checks a table containing information on all critical tasks that require fingerprinting and takes appropriate action (Algorithm~\ref{a:repos-start}).
 	Each task has a statically defined period and a counter associated with it. 
 	The counter is incremented every millisecond and the task is started when the counter reaches the task period.
 
@@ -165,12 +186,12 @@
 \label{a:repos-start}
 \end{algorithm}	
 
-	\emph{Hooks} are a commonly used technique to implement behaviour somewhat similar to an abstract method in object oriented programming. 
-	Hooks are special purpose functions that are placed in library code at strategic locations with well defined purposes. 
-	Users can replace empty hooks with their own code to add extra functionality to the library without modifying the complicated library code directly. 
 	The data structure for each task contains a pointer to a \emph{start hook} that allows the user to define a custom startup routine for each critical task.
+% 	\emph{Hooks} are a commonly used technique to implement behaviour somewhat similar to an abstract method in object oriented programming. 
+% 	(hooks are user provided functions that are called from library code at strategic locations with well defined purposes). 
+	Users can replace empty hooks with their own code to add extra functionality to the library without modifying the complicated library code directly. 
 	The default start hook initiates DMA transfer from main memory to the processing core scratchpads and updates the state of the monitors internal data structures.
-	
+	A future addition to a start hook might include retrieving data from a sensor and updating the task data before initiating DMA transfer.		
 
 
 
@@ -178,7 +199,9 @@
 \label{s:dma-trans}
 	The default start hook called by the replication services upates internal state and initiates DMA transfer to each core. 
 	Algorithm~\ref{a:dma} runs from a high priority thread in the monitor to initiate DMA transfers of critical data to and from processing core scratchpads.
-	The DMA thread uses a message queue rather than a semaphore to ensure that only one task can trigger the thread at a time (useful for future expansion to non-timer starting events).
+	The DMA thread uses a message queue rather than a semaphore to ensure that only one task can trigger the thread at a time.
+	Future work on FPGA development should include the implementation of a coarse grained time triggered network protocol. 
+	The monitor does not initiate more than one DMA transfer at a time to minimize interference with the aim of simplifying future expansion to the response time analysis and to facilitate integration of a time triggered communication layer.
 
 \begin{algorithm}
 
@@ -203,75 +226,14 @@ DMA transfers are simplified by placing all global data and input arguments requ
 The data container ensures that all data is located in a contiguous region of memory and simplifies the implementation of generic DMA functions that only require the task index in the critical table as input.
 
 
-% \subsection{Initializing Data Structures}
-% 
-% The code generation stage assumes that all task computations are encapsulated in functions which take as parameters pointers to any global data used in the computation (no direct reference to global data).
-% 
-% 
-% \subsection{Inter-Core Communication}
-% \label{s:inter-core}
-% 	The contents of the \texttt{SharedMemorySymbolTable} and \texttt{CriticalFunctionData} in Listings~\ref{l:shared-mem-init} are given by Tables \ref{t:stab} and \ref{t:crit-data}, respectively.
-% 	
-% 	% 	space using two data structures: the \texttt{SharedMemorySymbolTable} and \texttt{CriticalFunctionData}
-% % 
-% % \includecode{shared-mem-init.c}{l:shared-mem-init}{Shared memory data structures for inter-core communication.}{C}
-% 
-% 	
-% \begin{table}[h]
-% \caption{Example Task Set}
-% \centering
-% 	\begin{tabular}{@{}lcccc@{}}
-% 	\toprule
-% 	& $C(LO)$ & $C(HI)$ & T=D & L 	 \\
-% 	\bottomrule
-% 	$\tau_1$ & 3 & 4 & 12 & HI  \\
-% 	$\tau_2$ & 4 & - & 12 & LO  \\
-% 	$\tau_3$ & 4 & - & 12 & LO  \\
-% 	$\tau_4$ & 1 & - & 12 & LO  \\
-% 	\end{tabular}
-% 
-% \label{t:stab}
-% \end{table}
-% 	
-% 
-% \begin{table}[h]
-% \caption{Example Task Set}
-% \centering
-% 
-% 	\begin{tabular}{@{}lcccc@{}}
-% 	\toprule
-% 	& $C(LO)$ & $C(HI)$ & T=D & L 	 \\
-% 	\bottomrule
-% 	$\tau_1$ & 3 & 4 & 12 & HI  \\
-% 	$\tau_2$ & 4 & - & 12 & LO  \\
-% 	$\tau_3$ & 4 & - & 12 & LO  \\
-% 	$\tau_4$ & 1 & - & 12 & LO  \\
-% 	\end{tabular}
-% 
-% \label{t:crit-data}
-% \end{table}
-% 	
-% 	
-% 	
-% Pointers must also be updated when transferring data to the scratchpads if they are relative to the start address\ldots
-% \todojc{generate example with functions that use state}
-
-% 
-% \begin{lstlisting}
-% /********************************************
-%  * Pointer relocation functions
-%  ********************************************/
-% void RadarTrackerUpdatePointers(INT32U baseAddress, RT_MODEL_RadarTracker_T *RadarTracker_M){
-% 	RadarTracker_M->ModelData.dwork = (DW_RadarTracker_T *)(baseAddress + sizeof(RadarTrackerStruct));
-% }
-% \end{lstlisting}	
-
 \subsection{Scratchpad Management}
+\label{s:scratchpad}
 
+	A centralized runtime mechanism has been implemented in the monitor to manage dynamic scratchpad allocation for critical tasks.
 	The scratchpad allocation can not be determined statically because of the dynamic preemptive RMS scheduling. 
 	The scratchpad is in fact partitioned into two physical sections to prevent DMA traffic for the \emph{next} task from interfering with the execution of the current task. 
 	
-	A centralized runtime mechanism, shown in Algorithm~\ref{a:scratchpad}, has been implemented in the monitor to manage dynamic scratchpad allocation for critical tasks.
+	Algorithm~\ref{a:scratchpad} shows the steps taken during scratchpad allocation. 
 	First, a scratchpad $S_j$ must be selected that does not hold the data for a currently executing task. 
 	A page $P_k$ is then selected from $S_j$ that has either not been used (invalid) or holds data for the lowest priority task.
 
@@ -322,7 +284,6 @@ The data container ensures that all data is located in a contiguous region of me
 	However, the current model assumes that it will only be necessary to restart a task.
 	The comparator is a hardware module capable of sending an interrupt to the monitor. 
 	If a task has failed in the comparison stage then the monitor resets the state for that task and resends the data and stack to the scratchpad.
-
 	The method is sufficient because the error is assumed not to affect the RTOS kernel which implies that execution will successfully wind back up the call stack to the top level and reach the same wait point in its loop regardless of the error.
 	Watchdog timers and memory exception prototcols would need to be implemented in order to tolerate more severe types of errors (null pointers or other access exceptions and infinite loops).
 
@@ -343,19 +304,21 @@ The data container ensures that all data is located in a contiguous region of me
 
 \includecode{crit-task-wrapper.c}{l:crit-task-wrapper}{Example wrapper function for critical task}{C}
 
-	The Nios II architecture includes a global pointer similar to MIPS. 
 	Both cores must execute the same critical code since the return addresses will be pushed onto the stack and must match in order for fingerprints to match. 
+	However, virtual memory has not yet been implemented for the instruction bus. 
+	As a result, critical code is compiled only for one processing core and this core must pass the function pointer to the other core so that they both execute the same code. 
+	One small problem arises because the Nios II architecture includes a global pointer similar to MIPS which raises a potential p.
 	The Nios compiler does not guarantee that compiled code does not use the global pointer (the option is specified but unimplemented). 
-	However, shared code using Matlabs reusable function option should not generate global pointer references as there are no direct references to static objects. 
+	However, shared code using Matlab's reusable function option should not generate global pointer references as there are no direct references to static objects. 
 	It is possible to temporarily change the global pointer of one core to match anothers as discussed in prior work \cite{ugthesis}.
 
 
 \subsection{Runtime Monitor}
 
-	AMC response time analysis assumes that some runtime monitoring facilities exist to catch when a task exceeds its $C(LO)$ (Section~\ref{s:mcfts}). 
 	The runtime monitor maintains a an execution time counter for each execution of all tasks on every core and is responsible for the mode change in case of an overrun.
+	AMC response time analysis assumes that some runtime monitoring facilities exist to catch when a task exceeds its $C(LO)$ (Section~\ref{s:mcfts}). 
 	Only the simple two mode behaviour has been implemented and all LO criticality tasks are dropped at the mode change. 
-	Reverse mode changes (restarting the LO tasks) has also been omitted.
+	Reverse mode changes (restarting the LO tasks) have also been omitted.
 
 	The runtime monitor must be notified at the beginning and end of each iteration for each task (shown in Listing~\ref{l:crit-task-wrapper} lines 9 and 23). 
 	The RTOS kernel must also be modified to update the runtime monitor tables when a context switch occurs. 

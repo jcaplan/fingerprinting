@@ -94,10 +94,10 @@ public class GenCoreMon extends GenCore{
 		s += "/*****************************************************************************\n"+
 				" * REPOS configuration functions\n"+
 				" *****************************************************************************/\n"+
-				"REPOS_core REPOSCoreTable[" + fprintList.size() + "];\n" +
+				"REPOS_core REPOSCoreTable[" + platform.numProcessingCores + "];\n" +
 				"\n"+
 				" void startHook(void *args) {\n"+
-				"	postDmaMessage((int)args,true);\n"+
+				"	postDmaMessage((int)args,true,false);\n"+
 				"}\n"+
 				"\n"+
 				"\n"+
@@ -105,23 +105,19 @@ public class GenCoreMon extends GenCore{
 				s += "	REPOS_task *task;\n"+
 				"\n";
 		for(Function f : fprintList){
-			//TODO hard coded!!!
-			String core0PhysSP = Integer.toHexString(getStackStart(f,f.cores.get(0).index));
-			String core1PhysSP = Integer.toHexString(getStackStart(f,f.cores.get(1).index));
-			String core0VirtSp = Integer.toHexString(f.getVirtualStackStart());
-			String core1VirtSP = Integer.toHexString(f.getVirtualStackStart());
-			s+= "	task = &REPOSTaskTable[" + f.getTableIndexString() + "];\n"+
+			s += "	task = &REPOSTaskTable[" + f.getTableIndexString() + "];\n" +
 					"\n"+
 					"	task->dataAddressPhys = &" + f + "PackageStruct;\n"+
-					"	task->dataAddressVirt = (void *)((int)&" + f + "PackageStruct & 0x3FFFFF);"+
-					"\n"+
-					"	task->stackAddressPhys[0] = (void *) (0x" + core0PhysSP + ");\n"+
-					"	task->stackAddressPhys[1] = (void *) (0x" + core1PhysSP + ");\n"+
-					"\n"+
-					"	task->stackAddressVirt[0] = (void *) (0x" + core0VirtSp  + ");\n"+
-					"	task->stackAddressVirt[1] = (void *) (0x" + core1VirtSP + ");\n"+
-					"\n"+
-					"	task->dataSize = sizeof(" + f + "PackageStruct" + ");\n"+
+					"	task->dataAddressVirt = (void *)((int)&" + f + "PackageStruct & 0x3FFFFF);\n";
+					
+			for(int i = 0; i < f.cores.size(); i++){
+				String corePhysSP = Integer.toHexString(getStackStart(f,f.cores.get(i).index));
+				String coreVirtSP = Integer.toHexString(f.getVirtualStackStart());
+				s += "	task->stackAddressPhys[" + i + "] = (void *) (0x" + corePhysSP + ");\n"+
+				"	task->stackAddressVirt[" + i + "] = (void *) (0x" + coreVirtSP  + ");\n";
+				
+			}
+			s += 	"	task->dataSize = sizeof(" + f + "PackageStruct" + ");\n"+
 					"	task->stackSize = (" + f.getStackSizeString() + "" + " * 4);\n"+
 					"\n";
 		}
@@ -148,9 +144,16 @@ public class GenCoreMon extends GenCore{
 			} else {
 				s += "	task->data.periodic.deadline = " + f.getDeadlineString() + ";\n";
 			}
-			
-			s += "	task->core[0] = " + f.cores.get(0).index + ";\n"+
-			"	task->core[1] = " + f.cores.get(1).index + ";\n"+
+			if(f.tmr){
+				s += "	task->tmr = true;";
+			} else {
+				s += "	task->tmr = false;";
+			}
+			s += "\n";
+			for(int i = 0; i < f.cores.size(); i++){
+				s += "	task->core[" + i + "] = " + f.cores.get(i).index + ";\n";
+			}
+			s +=
 			"	task->numFuncs = 1;\n"+
 			"	task->funcTableFirstIndex = 0;\n"+
 			"	task->taskID = " + f.getTableIndexString() + ";\n"+
@@ -355,7 +358,7 @@ public class GenCoreMon extends GenCore{
 				"	if (taskFailed) {\n" + 
 				"		taskFailed = false;\n" + 
 				"\n" + 
-				"		postDmaMessage(failedTaskID, true);\n" + 
+				"		postDmaMessage(failedTaskID, true,false);\n" + 
 				"\n" + 
 				"	}\n" + 
 				"}\n" + 
@@ -396,9 +399,9 @@ public class GenCoreMon extends GenCore{
 				"			INT32U mask;\n" + 
 				"			if (status.failed_reg & (mask = 1 << i)) {\n" + 
 				"				/* assume only one failure possible */\n" + 
-				"				failedTaskID = REPOSgetTaskID(mask);\n" + 
+				"				failedTaskID = REPOSgetTaskID(i);\n" + 
 				"				REPOSTaskReset(failedTaskID);\n" + 
-				"				postDmaMessage(failedTaskID, true);\n" + 
+				"				postDmaMessage(failedTaskID, true,false);\n" + 
 				"				break;\n" + 
 				"			}\n" + 
 				"		}\n" + 
@@ -411,10 +414,10 @@ public class GenCoreMon extends GenCore{
 				"		//figure out what task is complete\n"+
 				"		int i;\n"+
 				"		int taskID = -1;\n"+
-				"		for (i = 0; i < 16; i++) {\n"+
+				"		for (i = 0; i < 32; i+=2) {\n"+
 				"			INT32U mask;\n"+
-				"			if (result & (mask = 1 << i)) {\n"+
-				"				taskID = REPOSgetTaskID(mask);\n"+
+				"			if (result & (mask = 3 << i)) {\n"+
+				"				taskID = REPOSgetTaskID(i >> 1);\n"+
 				"				/* Here we check that all the functions inside the task have executed,\n"+
 				"				 * then we check that the task did not fail (since the same FID may have been used twice\n"+
 				"				 * before the handler responds if the functions are tiny).\n"+
@@ -422,7 +425,8 @@ public class GenCoreMon extends GenCore{
 				"				if (!taskFailed || (taskFailed && taskID != failedTaskID)) { /*function can be decomposed into several chunks, so could be both cases */\n"+
 				"					REPOSTaskTable[taskID].funcCompleteCount = 0;\n"+
 				"					REPOSTaskComplete(taskID);\n"+
-				"					postDmaMessage(taskID, false);\n"+
+				"					int core0_safe = result & (1 << i);\n"+
+				"					postDmaMessage(taskID, false, core0_safe);\n"+
 				"				}\n"+
 				"			}\n"+
 				"		}\n"+
@@ -511,7 +515,10 @@ public class GenCoreMon extends GenCore{
 				"			ca.table[i][j] = i;\n"+
 				"		}\n"+
 				"	}\n"+
-				"	comp_set_core_assignment_table(&ca);\n"+
+				"	comp_set_core_assignment_table(&ca);\n"+ 
+				"	for(i = 0; i < CA_TABLE_NUM_TASKS; i++){\n" + 
+				"		comp_set_nmr(i,0);\n" + 
+				"	}"+
 				"\n"+
 				"	initCompIsr();\n"+
 				"\n"+

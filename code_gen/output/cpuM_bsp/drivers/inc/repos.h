@@ -40,22 +40,21 @@ typedef enum task_kind {
 struct REPOS_task {
 	bool taskRunning;
 	task_kind kind;
-	INT32U core[2];
-
+	INT32U core[3];
+	bool tmr;
 	void *dataAddressPhys;
 	void *dataAddressVirt;
-	void *dataAddressSP[2];
+	void *dataAddressSP[3];
 	int dataSize;
-	void *stackAddressPhys[2];
-	void *stackAddressVirt[2];
-	void *stackAddressSP[2];
+	void *stackAddressPhys[3];
+	void *stackAddressVirt[3];
+	void *stackAddressSP[3];
 	int stackSize;
 	int numFuncs;
 	int funcTableFirstIndex;
 	int funcCompleteCount;
 	INT32U runtime;
 	INT32U taskID;
-	INT32U fprintIDMask;
 	INT32U fprintID;
 	INT32U currentSP;
 	INT32U currentSPbin;
@@ -74,7 +73,6 @@ struct REPOS_task {
 };
 
 
-bool dmaReady[2];
 
 /*
  * Task searching will used a linked list method
@@ -114,7 +112,7 @@ void REPOSTaskReset(int taskID);
 
 bool REPOSAlreadyInScratchpad(REPOS_task *task, INT8U core);
 int REPOSgetFreeFprintID(REPOS_task *task);
-int REPOSgetTaskID(int fprintIDMask);
+int REPOSgetTaskID(int fprintID);
 void REPOSBeginTask(REPOS_task *task);
 void REPOSCheckPreemption(int coreID, int newTask);
 

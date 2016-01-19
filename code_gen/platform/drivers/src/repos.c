@@ -120,7 +120,7 @@ void REPOSTaskComplete(int taskID){
 	REPOS_task *task = &REPOSTaskTable[taskID];
 
 	int i;
-	for (i = 0; i < 2; i++){
+	for (i = 0; i < (task->tmr ? 3 : 2); i++){
 		REPOS_core *core = &REPOSCoreTableP[task->core[i]];
 		core->coreRunningCriticalTask = false;
 		int j;
@@ -139,8 +139,8 @@ void REPOSTaskComplete(int taskID){
 			core->coreRunningCriticalTask = true;
 		}
 	}
-	fprintIDFreeList |= task->fprintIDMask;
-	task->fprintIDMask = 0;
+	fprintIDFreeList |= (1 << task->fprintID);
+	task->fprintID=0xffff;
 	task->taskRunning = false;
 }
 
@@ -150,7 +150,6 @@ int REPOSgetFreeFprintID(REPOS_task *task) {
 		INT32U mask = 0;
 		if(fprintIDFreeList & (mask = 1 << i)){
 			fprintIDFreeList &= ~(mask);
-			task->fprintIDMask = mask;
 			task->fprintID = i;
 			return i;
 		}
@@ -158,11 +157,11 @@ int REPOSgetFreeFprintID(REPOS_task *task) {
 	return -1;
 }
 
-int REPOSgetTaskID(int fprintIDMask){
+int REPOSgetTaskID(int fprintID){
 	int i;
 	for(i = 0; i < OS_MAX_TASKS; i++){
 		REPOS_task *task = &REPOSTaskTable[i];
-		if(task->fprintIDMask == fprintIDMask){
+		if(task->fprintID == fprintID){
 			return task->taskID;
 		}
 	}
@@ -171,14 +170,14 @@ int REPOSgetTaskID(int fprintIDMask){
 
 void REPOSBeginTask(REPOS_task *task){
 	int i;
-	for(i = 0; i < 2; i++){
+	for(i = 0; i < (task->tmr ? 3 : 2); i++){
 		REPOS_core *core = &REPOSCoreTableP[i];
 		core->coreRunningCriticalTask=true;
 		core->currentTaskID = task->taskID;
 		core->currentScratchpad = task->currentSP;
 		core->scratchpadActive[core->currentScratchpad][task->currentSPbin] = true;
-		comp_set_core_assignment(0,task->core[0],task->fprintID);
-		comp_set_core_assignment(1,task->core[1],task->fprintID);	
+		comp_set_core_assignment(i,task->core[i],task->fprintID);
+		comp_set_nmr(i,task->tmr);	
 	}
 	task->taskRunning = true;
 }
@@ -204,8 +203,9 @@ void REPOSCheckPreemption(int coreID, int newTask) {
 
 void REPOSTaskReset(int taskID){
 	REPOSTaskComplete(taskID);
+	REPOS_task *task = &REPOSTaskTable[taskID];
 	int i, j;
-	for (i = 0; i < 2; i++){
+	for (i = 0; i < (task->tmr ? 3 : 2); i++){
 		REPOS_core *core = &REPOSCoreTableP[i];
 		for(j = 0; j < 2; j++){
 			if(core->scratchpadValid[i][j]

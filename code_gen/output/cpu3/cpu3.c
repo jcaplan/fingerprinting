@@ -16,7 +16,6 @@
 #include "reset_monitor.h"
 #include "runtimeMonitor.h"
 #include "critical.h"
-#include "for_loop_60000_0.h"
 
 
 
@@ -27,8 +26,6 @@
  **********************************/
 /* for_loop_70000_0*/
 
-/* for_loop_60000_0*/
-
 
 
 
@@ -38,7 +35,6 @@
  * Stack Declarations
  *****************************************************************************/
 OS_STK for_loop_70000_0_STACK[FOR_LOOP_70000_0_STACKSIZE] __attribute__ ((section (".stack_bin_0")));
-OS_STK for_loop_60000_0_STACK[FOR_LOOP_60000_0_STACKSIZE] __attribute__ ((section (".stack_bin_1")));
 
 
 
@@ -49,10 +45,7 @@ OS_STK for_loop_60000_0_STACK[FOR_LOOP_60000_0_STACKSIZE] __attribute__ ((sectio
  *****************************************************************************/
 rtMonitor_task rtMonTaskTable[NUM_TASKS] = {
 	{ FOR_LOOP_70000_0_PRIORITY, 0, FOR_LOOP_70000_0_WCET_LOWERBOUND, false, true, "for_loop_70000_0" },
-	{ FOR_LOOP_60000_0_PRIORITY, 0, FOR_LOOP_60000_0_WCET_LOWERBOUND, false, true, "for_loop_60000_0" },
-	{ FOR_LOOP_100000_0_PRIORITY, 0, FOR_LOOP_100000_0_WCET_LOWERBOUND, false, true, "for_loop_100000_0" },
-	{ FOR_LOOP_90000_0_PRIORITY, 0, FOR_LOOP_90000_0_WCET_LOWERBOUND, false, true, "for_loop_90000_0" },
-	{ FOR_LOOP_80000_0_PRIORITY, 0, FOR_LOOP_80000_0_WCET_LOWERBOUND, false, true, "for_loop_80000_0" }
+	{ FOR_LOOP_60000_0_PRIORITY, 0, FOR_LOOP_60000_0_WCET_LOWERBOUND, false, true, "for_loop_60000_0" }
 };
 
 
@@ -62,8 +55,8 @@ rtMonitor_task rtMonTaskTable[NUM_TASKS] = {
 /*****************************************************************************
  * Control Flow declarations
  *****************************************************************************/
-OS_EVENT *critical_SEM[5];
-int fID[5];
+OS_EVENT *critical_SEM[2];
+int fID[2];
 
 
 
@@ -158,46 +151,6 @@ void for_loop_70000_0_TASK(void* pdata) {
 	}
 }
 
-/*****************************************************************************
- * for_loop_60000_0Task wrapper
- *****************************************************************************/
-void for_loop_60000_0_TASK(void* pdata) {
-	void *gp = stab->gp_address;
-	void (*for_loop_60000_0Func)(int,
-			for_loop_60000_0Struct*) = functionTable[FOR_LOOP_60000_0_TABLE_INDEX].address;
-	while (1) {
-		INT8U perr;
-		OSSemPend(critical_SEM[FOR_LOOP_60000_0_TABLE_INDEX], 0, &perr);
-
-		rtMonitorStartTask(FOR_LOOP_60000_0_RT_PRIO);
-
-		//Context switch is necessary to clear the callee saved registers
-		long registers[8];
-		context_switch(registers);
-
-		int fprintID = fID[FOR_LOOP_60000_0_TABLE_INDEX];
-
-		//set the flag for the OS context switch
-		FprintActive = 1;
-		FprintTaskIDCurrent = fprintID;
-
-		//Retrieve the arguments before changing the GP
-
-		void *args = functionTable[FOR_LOOP_60000_0_TABLE_INDEX].args;
-
-		for_loop_60000_0Func(fprintID, args);
-		//call the critical task
-		context_restore(registers);
-
-
-		//set the flag for the OS context switch
-		FprintActive = 0;
-
-
-		rtMonitorEndTask(FOR_LOOP_60000_0_RT_PRIO);
-	}
-}
-
 
 
 
@@ -218,20 +171,7 @@ void mem_manager_init(void) {
 	entry->tlbDataLine = 0;
 	entry->tlbStackLine = 1;
 	entry->stackPhysicalAddress = (void*)0x4f9000;
-	entry->stackVirtualAddress = (void*)0x35000;
-	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
-	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
-
-	managerEnableTask(entry);
-	// for_loop_60000_0
-	entry = &memoryManagerTable[FOR_LOOP_60000_0_TABLE_INDEX];
-	entry->disablePending = false;
-	entry->disablePendSource = 0;
-	entry->taskPriority = FOR_LOOP_60000_0_PRIORITY;
-	entry->tlbDataLine = 2;
-	entry->tlbStackLine = 3;
-	entry->stackPhysicalAddress = (void*)0x4f8000;
-	entry->stackVirtualAddress = (void*)0x36000;
+	entry->stackVirtualAddress = (void*)0x32000;
 	entry->dataVirtualAddress = 0; /*get from monitor at interrupt time*/
 	entry->dataPhysicalAddress = 0; /*get from monitor at interrupt time*/
 
@@ -314,7 +254,7 @@ void nios2_mpu_data_init() {
 
 	//no more critical stack access
 	region[4].index = 0x4;
-	region[4].base = 0x4f8000 / 64;
+	region[4].base = 0x4f9000 / 64;
 	region[4].mask = 0x4fa000 / 64;
 	region[4].c = 0;
 	region[4].perm = MPU_DATA_PERM_SUPER_NONE_USER_NONE;
@@ -364,14 +304,9 @@ int main() {
 	//Put the location of the stack for the task in shared memory
 	//-----------------------------------------------------------
 	functionTable[FOR_LOOP_70000_0_TABLE_INDEX].stackAddress[1] = &for_loop_70000_0_STACK;
-	functionTable[FOR_LOOP_60000_0_TABLE_INDEX].stackAddress[0] = &for_loop_60000_0_STACK;
-	functionTable[FOR_LOOP_60000_0_TABLE_INDEX].address = for_loop_60000_0_CT;
 
 	critical_SEM[0] = OSSemCreate(0);
 	critical_SEM[1] = OSSemCreate(0);
-	critical_SEM[2] = OSSemCreate(0);
-	critical_SEM[3] = OSSemCreate(0);
-	critical_SEM[4] = OSSemCreate(0);
 	//Start up the MPU
 	//----------------
 
@@ -394,17 +329,11 @@ int main() {
 
 	INT8U perr;
 	OSTaskCreateExt(for_loop_70000_0_TASK, NULL,
-			(OS_STK *)0x35798,
+			(OS_STK *)0x32798,
 			FOR_LOOP_70000_0_PRIORITY, FOR_LOOP_70000_0_PRIORITY,
-			(OS_STK *)0x35000, FOR_LOOP_70000_0_STACKSIZE, NULL,
+			(OS_STK *)0x32000, FOR_LOOP_70000_0_STACKSIZE, NULL,
 			OS_TASK_OPT_STK_CLR);
 	OSTaskNameSet(FOR_LOOP_70000_0_PRIORITY, (INT8U *)"for_loop_70000_0", &perr);
-	OSTaskCreateExt(for_loop_60000_0_TASK, NULL,
-			(OS_STK *)0x36798,
-			FOR_LOOP_60000_0_PRIORITY, FOR_LOOP_60000_0_PRIORITY,
-			(OS_STK *)0x36000, FOR_LOOP_60000_0_STACKSIZE, NULL,
-			OS_TASK_OPT_STK_CLR);
-	OSTaskNameSet(FOR_LOOP_60000_0_PRIORITY, (INT8U *)"for_loop_60000_0", &perr);
 
 	resetMonitorCoreReg(CORE_ID);
 	nios2_mpu_enable();

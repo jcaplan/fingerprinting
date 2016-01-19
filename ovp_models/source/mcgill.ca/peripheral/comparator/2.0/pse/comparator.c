@@ -11,6 +11,11 @@
 #include "comparator.igen.h"
 //////////////////////////////// Callback stubs ////////////////////////////////
 
+#define TMR_ALL_CORES_MATCH     5
+#define TMR_CORE_0_MISMATCH     4
+#define TMR_CORE_1_MISMATCH     3
+#define TMR_CORE_2_MISMATCH     2
+#define TMR_ALL_CORES_MISMATCH  1
 
 int fprint[3][32];
 int assignment[3][16];
@@ -23,7 +28,7 @@ int failedReg;
 int successCounterReg[16];
 int taskCounter[16];
 // exception_reg exception;
-
+int tmrResult[16];
     
 int getLogicalCoreID(int task, int coreID){
     int id = -1;
@@ -84,6 +89,41 @@ int check_fprint(int task){
     return test;
 }
 
+int check_fprint_nmr(int task){
+   int c0_matches_c1 = 1;
+   int c1_matches_c2 = 1;
+   int c2_matches_c0 = 1;
+   int result;
+   int i;
+   if(fprint[0][task] != fprint[1][task]){
+        c0_matches_c1 = 0;
+   }
+   if(fprint[1][task] != fprint[2][task]){
+        c1_matches_c2 = 0;
+   }
+   if(fprint[2][task] != fprint[0][task]){
+        c2_matches_c0 = 0;
+   }
+   
+    if(c0_matches_c1 && c1_matches_c2){
+        result = TMR_ALL_CORES_MATCH;
+   } else if(c0_matches_c1){
+        result = TMR_CORE_2_MISMATCH;
+   } else if(c1_matches_c2){
+        result = TMR_CORE_0_MISMATCH;
+   } else if(c2_matches_c0){
+        result = TMR_CORE_1_MISMATCH;
+   } else {
+        result = TMR_ALL_CORES_MISMATCH;
+   }
+
+    for(i = 0; i < 3; i++){
+        fprintsReady[i][task] = 0;
+    }
+    tmrResult[task] = result;
+    return result;
+}
+
 
 void do_comparison(void){
     int fp;
@@ -91,7 +131,14 @@ void do_comparison(void){
     for(task = 0; task < 16; task++){
         //If a fingerprint is ready on both cores or the task is complete
         //on both cores
+
+
         fp = (fprintsReady[0][task] == 1 && fprintsReady[1][task] == 1);
+        if(nmrReg[task]){
+            bhmPrintf("nmr reg\n");
+            fp &= fprintsReady[2][task];
+        }
+
         if(fp)
             break;
     }
@@ -99,37 +146,82 @@ void do_comparison(void){
     //If the previous search gets a hit
     if(task != 16){
         //If different number of fingerprints then collision
-        bhmPrintf("fingerprints ready\n");
-        int test = check_fprint(task);
-        taskCounter[task]++;
-        //check final condition of test
-        if(test != 1) {
-            mismatch_occurred(task);
-            bhmPrintf("comparison failed!\n");
+        bhmPrintf("fingerprints ready for task %d\n",task);
+        
+        if(nmrReg[task]){
+            int test = check_fprint_nmr(task);
+            taskCounter[task]++;
+            const char *message = "";
+            switch(test){
+            case TMR_ALL_CORES_MATCH:
+                message = "COMP::All cores match";
+                break;
+            case TMR_CORE_0_MISMATCH:
+                message = "COMP::Core 0 does not match";
+                break;
+            case TMR_CORE_1_MISMATCH:
+                message = "COMP::Core 1 does not match";
+                break;
+            case TMR_CORE_2_MISMATCH:
+                message = "COMP::Core 2 does not match";
+                break;
+            case TMR_ALL_CORES_MISMATCH:
+                message = "COMP::None of the cores match";
+                break;
+            }
+            bhmPrintf("%s\n",message);
+
+
         } else {
-            if(diagnosticLevel == 3){
-                bhmPrintf("task %d fprint %x and %x match\n",task,fprint[0][task],fprint[1][task]);
-            }  
+            int test = check_fprint(task);
+            taskCounter[task]++;
+            //check final condition of test
+            if(test != 1) {
+                mismatch_occurred(task);
+                bhmPrintf("comparison failed!\n");
+            } else {
+                if(diagnosticLevel == 3){
+                    bhmPrintf("task %d fprint %x and %x match\n",task,fprint[0][task],fprint[1][task]);
+                }  
+            }
         }
     }
 }
 
 void checkTaskComplete(int task){
     int i;
-    if(checkin[0][task] == 1 && checkin[1][task] == 1){
+    if(checkin[0][task] == 1 && checkin[1][task] == 1
+        && (nmrReg[task] ? checkin[2][task] : 1)){
         if(taskCounter[task] == successCounterReg[task]){
-            for(i = 0; i < 2; i++){
+            for(i = 0; i < 3; i++){
                 checkin[i][task] = 0;
                 checkout[i][task] = 0;
             }
-            successReg |= (1 << task);
+            if(nmrReg[task]){
+                switch(tmrResult[task]){
+                case TMR_CORE_2_MISMATCH:
+                case TMR_CORE_1_MISMATCH:
+                case TMR_ALL_CORES_MATCH:
+                    successReg |= (1 << (task*2));
+                    break;
+                case TMR_CORE_0_MISMATCH:
+                    successReg |= (2 << (task*2));
+                    break;
+                case TMR_ALL_CORES_MISMATCH:    
+                    break;
+                }
+            } else {
+                //1 -> core 0 is safe
+                successReg |= (1 << (task*2));
+            }
             writeSuccessReg();
             successCounterReg[task]++;
             bhmPrintf("success task %d, successReg = %d!\n",task, successReg);
             ppmWriteNet(handles.COMP_IRQ, 1);
          } else {
-            bhmPrintf("COMPARATOR: task counter %d wrong (should be %d)!\n",taskCounter[task],successCounterReg[task]);
-            mismatch_occurred(task);
+            // bhmPrintf("COMPARATOR: task counter %d wrong (should be %d)!\n",taskCounter[task],successCounterReg[task]);
+            // mismatch_occurred(task);
+            bhmPrintf("intermediate result for task %d (%d/%d fingerprints have arrived), keep going",task,taskCounter[task],successCounterReg[task]);
         }
     }
 }

@@ -43,7 +43,7 @@
 
 
 #define CA_TABLE_MAX_REDUNDANCY					3
-#define CA_TABLE_NUM_TASKS						32
+#define CA_TABLE_NUM_TASKS						16
 
 
 

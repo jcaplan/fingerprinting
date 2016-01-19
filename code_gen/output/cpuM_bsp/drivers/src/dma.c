@@ -31,19 +31,22 @@ void dma_setCritFuncDataPointer(CriticalFunctionData *p){
 	critFuncDataP = p;
 }
 
-void postDmaMessage(INT32U task, bool start) {
+void postDmaMessage(INT32U task, bool start, bool core_0_safe) {
 	INT32U message = task;
 	if (start) {
 		message |= 1 << 31;
 	}
+	if(core_0_safe){
+		message |= 1 << 30;
+	}
 	OSQPost(dmaQ, (void *) message);
 }
 
-void parseDmaMessage(INT32U message, bool *start, INT32U *task) {
+void parseDmaMessage(INT32U message, bool *start, INT32U *task, bool *core_0_safe) {
 	*start = message & (1 << 31);
 	*task = message & (0x7FFFFFFF);
+	*core_0_safe = message & (1 << 30);
 }
-bool dmaReady[NUMCORES];
 
 
 void dma_TASK(void* pdata) {
@@ -53,7 +56,8 @@ void dma_TASK(void* pdata) {
 		INT32U message = (INT32U) OSQPend(dmaQ, 0, &perr);
 		bool start;
 		INT32U taskID;
-		parseDmaMessage(message, &start, &taskID);
+		bool core_0_safe;
+		parseDmaMessage(message, &start, &taskID, &core_0_safe);
 
 		// printf("dma task %lu\n", (unsigned long) taskID);
 
@@ -64,8 +68,9 @@ void dma_TASK(void* pdata) {
 		//is it already located in the scratchpads??
 		//for both cores
 		int i, core;
+		int numCores = (task->tmr ? 3 : 2);
 		if (start) {
-			for (i = 0; i < 2; i++) {
+			for (i = 0; i < numCores; i++) {
 				int core = task->core[i];
 
 				REPOSCheckPreemption(core,taskID);
@@ -104,7 +109,7 @@ void dma_TASK(void* pdata) {
 			REPOSgetFreeFprintID(task);
 			REPOSBeginTask(task);
 			/* now start the task */
-			for (i = 0; i < 2; i++) {
+			for (i = 0; i < numCores; i++) {
 				core = task->core[i];
 				critFuncDataP[core].fprintID = task->fprintID;
 				if (critFuncDataP[core].fprintID < 0) {
@@ -127,10 +132,18 @@ void dma_TASK(void* pdata) {
 			//-----------------
 			*core_IRQp[task->core[0]] = 1;
 			*core_IRQp[task->core[1]] = 1;
+			if(numCores == 3){
+				*core_IRQp[task->core[2]] = 1;
+			}
 			//wait until the message succeeds before returning to the top
 		} else { /* retrieve from only core 0 */
-			int core = task->core[0];
-			sendDMA(task->stackAddressSP[0], task->stackAddressPhys[0],
+			int safeCore = 0;
+			if(task->tmr && !core_0_safe){
+				safeCore = 1;
+			}
+
+			int core = task->core[safeCore];
+			sendDMA(task->stackAddressSP[safeCore], task->stackAddressPhys[safeCore],
 					task->stackSize, (void *) core);
 
 			OSFlagPend(dmaReadyFlag, 1 << core, OS_FLAG_WAIT_SET_ALL, 0, &perr);
@@ -146,7 +159,6 @@ volatile int derivativeMsgCount = 0;
 void handleDMA(void* handle, void* data) {
 
 	int core = (int) handle;
-	dmaReady[core] = true;
 	INT8U perr;
 	if(!taskFailed)
 		OSFlagPost(dmaReadyFlag, 1 << core, OS_FLAG_SET, &perr);

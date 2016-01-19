@@ -19,53 +19,35 @@
 #define STACKSIZE_MINOFFSET                       316
 #define STACKSIZE_MARGINERROR                     150
 #define DMA_STACKSIZE                             (1024 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define FOR_LOOP_100000_0_STACKSIZE               (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define FOR_LOOP_90000_0_STACKSIZE                (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
-#define FOR_LOOP_80000_0_STACKSIZE                (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 #define FOR_LOOP_70000_0_STACKSIZE                (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 #define FOR_LOOP_60000_0_STACKSIZE                (  20 + STACKSIZE_MINOFFSET + STACKSIZE_MARGINERROR )
 /*****************************************************************************
  * Task Priorities
  *****************************************************************************/
 #define DMA_PRIORITY                              0
-#define FOR_LOOP_100000_0_PRIORITY                2
-#define FOR_LOOP_90000_0_PRIORITY                 3
-#define FOR_LOOP_80000_0_PRIORITY                 4
 #define FOR_LOOP_70000_0_PRIORITY                 5
 #define FOR_LOOP_60000_0_PRIORITY                 6
 /*****************************************************************************
  * Task Table indices
  *****************************************************************************/
-#define FOR_LOOP_100000_0_TABLE_INDEX             0
-#define FOR_LOOP_90000_0_TABLE_INDEX              1
-#define FOR_LOOP_80000_0_TABLE_INDEX              2
-#define FOR_LOOP_70000_0_TABLE_INDEX              3
-#define FOR_LOOP_60000_0_TABLE_INDEX              4
+#define FOR_LOOP_70000_0_TABLE_INDEX              0
+#define FOR_LOOP_60000_0_TABLE_INDEX              1
 /*****************************************************************************
  * Task Periods
  *****************************************************************************/
-#define NUM_TASKS                                 6
+#define NUM_TASKS                                 3
 #define DMA_PERIOD                                0
-#define FOR_LOOP_100000_0_PERIOD                  90
-#define FOR_LOOP_90000_0_PERIOD                   150
-#define FOR_LOOP_80000_0_PERIOD                   75
 #define FOR_LOOP_70000_0_PERIOD                   75
 #define FOR_LOOP_60000_0_PERIOD                   75
 /*****************************************************************************
  * Runtime monitor table index
  *****************************************************************************/
 #define DMA_RT_PRIO                               0
-#define FOR_LOOP_100000_0_RT_PRIO                 1
-#define FOR_LOOP_90000_0_RT_PRIO                  2
-#define FOR_LOOP_80000_0_RT_PRIO                  3
-#define FOR_LOOP_70000_0_RT_PRIO                  4
-#define FOR_LOOP_60000_0_RT_PRIO                  5
+#define FOR_LOOP_70000_0_RT_PRIO                  1
+#define FOR_LOOP_60000_0_RT_PRIO                  2
 /*****************************************************************************
  * Execution time lower bounds
  *****************************************************************************/
 #define DMA_WCET_LOWERBOUND                       0
-#define FOR_LOOP_100000_0_WCET_LOWERBOUND         1600004
-#define FOR_LOOP_90000_0_WCET_LOWERBOUND          1600004
-#define FOR_LOOP_80000_0_WCET_LOWERBOUND          1600004
 #define FOR_LOOP_70000_0_WCET_LOWERBOUND          1600004
 #define FOR_LOOP_60000_0_WCET_LOWERBOUND          1600004

@@ -147,6 +147,9 @@ public class CodeGen {
 			if (f.cores.size() > 1) {
 				fprintList.add(f);
 			}
+			if (f.cores.size() > 2) {
+				f.tmr = true;
+			}
 		}
 	}
 

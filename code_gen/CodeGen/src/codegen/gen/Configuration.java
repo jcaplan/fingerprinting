@@ -212,9 +212,9 @@ public class Configuration {
 				}
 
 				if (func.critical) {
-					if (tokens.length == 3) {
+					if (tokens.length == 3 || tokens.length == 4) {
 						//try to assign to the cores... catch exception
-						for(int i = 1; i < 3; i++){
+						for(int i = 1; i < tokens.length; i++){
 							Core c = platform.getCore(tokens[i]);
 							if(c == null){
 								throwConfigError("##MAPPING ERROR: " + tokens[i] + "does not exist");
