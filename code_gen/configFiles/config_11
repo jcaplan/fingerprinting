@@ -12,7 +12,7 @@
 <FUNCTIONLIST>
 -rootdir /home/jonah/fingerprinting/automotive_control/CompiledC/for_loops
 -name for_loop_70000_0    -subdir for_loop_70000_0           -T  75   -c  -Priority 5	
--name for_loop_60000_0    -subdir for_loop_60000_0           -T  75   -c  -Priority 6	
+-name for_loop_60000_0    -subdir for_loop_60000_0           -T  50   -c  -Priority 6	
 
 </FUNCTIONLIST>
 

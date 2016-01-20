@@ -13,7 +13,7 @@
 	Checksums based on the execution stream are compared to ensure correct operation.
 	Local scratchpads are used in combination with memory protection and memory virtualization to ensure that data is quarantined within the sphere of replication until the results have been verified.
 	A trusted monitor is responsible for data management and replication across the entire system.
-	While hardware exists to support TMR, only DMR code generation has currently been implemented at this time. 
+	Code generation currently supports TMR and DMR.
 	
 	Code generation (Chapter~\ref{c:code-gen}) requires well defined protocols for the monitor and processing core that can be translated into C templates. 
 	Several issues must be addressed for correct operation: deterministic thread execution, fault containment, execution time monitoring, data transfer, and task re-execution in case of fault. 
@@ -199,6 +199,7 @@
 \label{s:dma-trans}
 	The default start hook called by the replication services upates internal state and initiates DMA transfer to each core. 
 	Algorithm~\ref{a:dma} runs from a high priority thread in the monitor to initiate DMA transfers of critical data to and from processing core scratchpads.
+	In the case of TMR, the algorithm ensures that the updated copy of data is retrieved from one of the cores with matching results.
 	The DMA thread uses a message queue rather than a semaphore to ensure that only one task can trigger the thread at a time.
 	Future work on FPGA development should include the implementation of a coarse grained time triggered network protocol. 
 	The monitor does not initiate more than one DMA transfer at a time to minimize interference with the aim of simplifying future expansion to the response time analysis and to facilitate integration of a time triggered communication layer.
@@ -216,7 +217,7 @@
 	Update shared memory and notify both cores of start\;
 }
 \Upon{End task $T_i$}{
-	Copy data back from one core\;
+	Copy data back from one successful core\;
 }
 \caption{DMA transfer of critical data.}
 \label{a:dma}

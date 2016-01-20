@@ -38,7 +38,7 @@
 #define NUM_TASKS                                 3
 #define DMA_PERIOD                                0
 #define FOR_LOOP_70000_0_PERIOD                   75
-#define FOR_LOOP_60000_0_PERIOD                   75
+#define FOR_LOOP_60000_0_PERIOD                   50
 /*****************************************************************************
  * Runtime monitor table index
  *****************************************************************************/

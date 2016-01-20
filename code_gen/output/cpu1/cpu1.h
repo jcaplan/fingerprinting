@@ -33,7 +33,7 @@
  * Task Periods
  *****************************************************************************/
 #define NUM_TASKS                                 2
-#define FOR_LOOP_60000_0_PERIOD                   75
+#define FOR_LOOP_60000_0_PERIOD                   50
 #define FOR_LOOP_70000_0_PERIOD                   75
 /*****************************************************************************
  * Runtime monitor table index

@@ -10,7 +10,7 @@
 	The schedulability analysis requires that all interrupt handlers be modelled as tasks as well as the monitor DMA task and data transfers.
 	The entire system does not allow for precedence-relations between tasks or data exchange. 
 	Furthermore, the reading of sensor data and writing of final answers to actuators is not modelled (any practical solution would be board specific and involve a fair bit of extra hardware design - beyond the scope of this thesis).
-	Code generation is limited to the three core system and does not support TMR or PR.
+	Code generation does not support passive replication.
 	Other fallback features such as watchdog timers and restarting in case of fatal errors such as null pointers have not been implemented.
 	Algorithms which employ table lookups cannot use ODR because the tables generally will not fit in the scratchpad.
 	A task may not acquire more than one page of scratchpad memory even if it is available.
