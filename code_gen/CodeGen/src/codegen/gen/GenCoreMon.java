@@ -126,7 +126,7 @@ public class GenCoreMon extends GenCore{
 						
 		s += "void REPOSInit(void) {\n"+
 				"\n"+
-				"	memset(REPOSCoreTable, 0, " + fprintList.size() + " * sizeof(REPOS_core));\n"+
+				"	memset(REPOSCoreTable, 0, " + platform.numProcessingCores + " * sizeof(REPOS_core));\n"+
 				"	memset(REPOSTaskTable, 0, OS_MAX_TASKS * sizeof(REPOS_task));\n"+
 				"\n";
 		

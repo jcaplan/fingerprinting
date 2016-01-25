@@ -32,11 +32,11 @@ static Bool postPlatformConstruct(void) {
     icmAdvanceTime(0);
 
     icmLoadProcessorMemory(handles.cpu0_c, 
-        "/home/jonah/fingerprinting/code_gen/output/cpu0/cpu0.elf", 0, 0, 1);
+        "/home/jonah/fingerprinting/code_gen/output2/cpu0/cpu0.elf", 0, 0, 1);
     icmLoadProcessorMemory(handles.cpu1_c, 
-        "/home/jonah/fingerprinting/code_gen/output/cpu1/cpu1.elf", 0, 0, 1);
+        "/home/jonah/fingerprinting/code_gen/output2/cpu1/cpu1.elf", 0, 0, 1);
     icmLoadProcessorMemory(handles.cpum_c, 
-        "/home/jonah/fingerprinting/code_gen/output/cpuM/cpuM.elf", 0, 0, 1);
+        "/home/jonah/fingerprinting/code_gen/output2/cpuM/cpuM.elf", 0, 0, 1);
     return True;
 }
 
