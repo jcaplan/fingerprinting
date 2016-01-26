@@ -56,8 +56,8 @@
 /*****************************************************************************
  * Execution time lower bounds
  *****************************************************************************/
-#define FOR_LOOP_70000_0_WCET_LOWERBOUND          1600004
-#define FOR_LOOP_60000_0_WCET_LOWERBOUND          1600004
-#define FOR_LOOP_100000_0_WCET_LOWERBOUND         1600004
-#define FOR_LOOP_90000_0_WCET_LOWERBOUND          1600004
-#define FOR_LOOP_80000_0_WCET_LOWERBOUND          1600004
+#define FOR_LOOP_70000_0_WCET_LOWERBOUND          1120020
+#define FOR_LOOP_60000_0_WCET_LOWERBOUND          960019
+#define FOR_LOOP_100000_0_WCET_LOWERBOUND         1600020
+#define FOR_LOOP_90000_0_WCET_LOWERBOUND          1440019
+#define FOR_LOOP_80000_0_WCET_LOWERBOUND          1280020

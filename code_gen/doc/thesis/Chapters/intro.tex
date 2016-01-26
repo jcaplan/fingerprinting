@@ -38,6 +38,27 @@
 	  \item Profiling and design space exploration tools to support automation of low level design parameters for code generation from high level functional configuration requirements.
 	\end{itemize}
 	
+		Figure~\ref{f:tool-arch} depicts the code generation and analysis framework. 
+% 	The three main components contributed by this project are the profiling tool, the code generation tool, and the mapping and scheduling tool. 
+	Simulink is used to generate the control algorithm C code and the Nios Software Build Tools (SBT) are used to generate and customize board support packages (BSPs) for each core. 
+	The BSP contains the Nios Hardware Abstraction Layer (HAL) (the minimal bare-metal drivers provided by Altera), the uC-OS II real-time operating system (RTOS), and the custom drivers required for fingerprinting and thread replication. 
+
+\addfigure{0.59}{toolarch1.pdf}{Tool architecture}{f:tool-arch}
+ 
+	The user provides a configuration file that contains information about the application such as timing requirements for each task in the system. 
+	The user may supply their own profiling results or task mappings in the configuration file (if they would like to use an externally derived estimates or if they want to skip the profiling stage after it has already run once). 
+	A sample configuration file is provided in Appendix~\ref{A:ConfigFile}. 
+	The tool and supports platforms with one monitor core and up to four processing cores.
+
+
+	The code generation tool (CG) first parses the configuration file and determines if profiling is required. 
+	It then generates the necessary inputs for the profiling tool and collects the results (which can include maximum stack depth and worst case execution time). 
+	The code generation tool then takes the provided or generated profiling information and forwards it to the Mapping and Scheduling (MS) tool. 
+	The MS tool returns an optimal schedule and mapping for the task set. 
+	Finally scripts to configure the BSP are generated as well as a main file for each core that configures all threads and replication related services. 	
+	
+	
+	
 	In general, each component is fairly naive in its implementation and assumptions. 
 	The purpose of this project is to deliver a framework with well defined interfaces between discrete aspects of the design problem in order to facilitate future collaboration and research development. 
 	The most pressing long term issues are the discrepency between high level schedulability models and actual system performance as well as generating high quality static worst case execution time estimates.
@@ -57,12 +78,12 @@
 % 	  \item Chapter~\ref{c:concl} discusses possible directions for future work and presents our conclusion.
 % 	\end{itemize}
 	Chapter~\ref{c:background} reviews prior work and related concepts including mixed criticality systems, on demand redundancy, fingerprinting, Simulink, and Open Virtual Platforms. 
-	Chapter~\ref{c:tool-arch} presents an overview of the entire tool chain and the workflow for each component. 
+% 	Chapter~\ref{c:tool-arch} presents an overview of the entire tool chain and the workflow for each component. 
 	Chapter~\ref{c:prof} discusses the profiling tool with special emphasis on the reconstruction of control flow graphs and expressions from the assembly code. 
 	These representations are then analyzed in further detail to infer maximum number of loop iterations. 
 	Chapter~\ref{c:sched} discusses a schedulability analysis based on AMC-rtb is presented that supports fault-tolerant cores (e.g. lockstep) as well as several varieties of on-demand redundancy in multicore systems. 
-	The analysis is then integrated into a design space exploration engine that maps tasks onto platforms and decides which technique to use for each task. C
-	hapter~\ref{c:soft-impl} discusses the implementation model of the fault tolerant system in more detail. 
+	The analysis is then integrated into a design space exploration engine that maps tasks onto platforms and decides which technique to use for each task.
+% 	hapter~\ref{c:soft-impl} discusses the implementation model of the fault tolerant system in more detail. 
 	Chapter~\ref{c:code-gen} discusses the code generation tool that produces code for all cores in the platform based on the mapping results. 
 	The tool also automatically generates and configures the board support package (BSP) using the Nios SBT tools. 
 	Chapter~\ref{c:related} discusses related work. 

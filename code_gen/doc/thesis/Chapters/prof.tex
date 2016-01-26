@@ -394,7 +394,7 @@ maxIterations = 128
 
 \section{Validation}
 \subsection{Static Analysis}
-28 micro-benchmarks were used to test the various forms a loop may have (see Appendix~\ref{A:ProfBench}. The benchmarks are fairly representative of the different forms a loop may take. All benchmarks pass that meet the general pattern outlined in this report. Listing~\ref{l:fail} shows one case that does not work when compiling without optimizations. The analysis only considers the behaviour of the variable in the loop condition and fails to recognize that $x$ is in fact behaving as an induction variable and that $k$ depends on $x$. Interestingly, gcc optimizes out the variable $k$ with -O so a more generic analysis of conditional expressions may improve the loop analysis.
+28 micro-benchmarks were used to test the various forms a loop may have (see Appendix~\ref{A:ProfBench}). The benchmarks are fairly representative of the different forms a loop may take. All benchmarks pass that meet the general pattern outlined in this report. Listing~\ref{l:fail} shows one case that does not work when compiling without optimizations. The analysis only considers the behaviour of the variable in the loop condition and fails to recognize that $x$ is in fact behaving as an induction variable and that $k$ depends on $x$. Interestingly, gcc optimizes out the variable $k$ with -O so a more generic analysis of conditional expressions may improve the loop analysis.
 
 \begin{lstlisting}[caption={Indirect test on induction variable fails.},label=l:fail]
 int g8 (){
