@@ -145,10 +145,6 @@ ELF := cpuM.elf
 C_SRCS += /home/jonah/fingerprinting/code_gen/output2/cpuM/cpuM.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output2/cpuM/critical.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output2/cpuM/for_loop_100000_0.c
-C_SRCS += /home/jonah/fingerprinting/code_gen/output2/cpuM/for_loop_60000_0.c
-C_SRCS += /home/jonah/fingerprinting/code_gen/output2/cpuM/for_loop_70000_0.c
-C_SRCS += /home/jonah/fingerprinting/code_gen/output2/cpuM/for_loop_80000_0.c
-C_SRCS += /home/jonah/fingerprinting/code_gen/output2/cpuM/for_loop_90000_0.c
 CXX_SRCS :=
 ASM_SRCS :=
 

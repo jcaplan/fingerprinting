@@ -37,7 +37,7 @@ typedef struct CriticalFunctionData{
 
 	//The identity of the function is retrieved from the functionTable
 	unsigned int tableIndex;
-
+	unsigned int modeChange;
 	//The TLB must be set appropriately for the function to run correctly
 	//Each core locally manages its own TLB, only the start address is required
 	void *tlbDataAddressPhys;

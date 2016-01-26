@@ -97,7 +97,7 @@ public class GenCoreMon extends GenCore{
 				"REPOS_core REPOSCoreTable[" + platform.numProcessingCores + "];\n" +
 				"\n"+
 				" void startHook(void *args) {\n"+
-				"	postDmaMessage((int)args,true,false);\n"+
+				"	postDmaMessage((int)args,true,false,false);\n"+
 				"}\n"+
 				"\n"+
 				"\n"+
@@ -358,7 +358,7 @@ public class GenCoreMon extends GenCore{
 				"	if (taskFailed) {\n" + 
 				"		taskFailed = false;\n" + 
 				"\n" + 
-				"		postDmaMessage(failedTaskID, true,false);\n" + 
+				"		postDmaMessage(failedTaskID, true,false,true);\n" + 
 				"\n" + 
 				"	}\n" + 
 				"}\n" + 
@@ -401,7 +401,7 @@ public class GenCoreMon extends GenCore{
 				"				/* assume only one failure possible */\n" + 
 				"				failedTaskID = REPOSgetTaskID(i);\n" + 
 				"				REPOSTaskReset(failedTaskID);\n" + 
-				"				postDmaMessage(failedTaskID, true,false);\n" + 
+				"				postDmaMessage(failedTaskID, true,false,true);\n" + 
 				"				break;\n" + 
 				"			}\n" + 
 				"		}\n" + 
@@ -426,7 +426,7 @@ public class GenCoreMon extends GenCore{
 				"					REPOSTaskTable[taskID].funcCompleteCount = 0;\n"+
 				"					REPOSTaskComplete(taskID);\n"+
 				"					int core0_safe = result & (1 << i);\n"+
-				"					postDmaMessage(taskID, false, core0_safe);\n"+
+				"					postDmaMessage(taskID, false, core0_safe,false);\n"+
 				"				}\n"+
 				"			}\n"+
 				"		}\n"+

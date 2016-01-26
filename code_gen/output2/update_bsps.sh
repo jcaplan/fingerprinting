@@ -11,7 +11,7 @@ BSPMOD_DIR=${NIOS_CODEGEN_ROOT}/platform/bsp_mods
 OS_DIR=${NIOS_CODEGEN_ROOT}/platform/micrium_uc_osii
 
 
-for i in {0..3} M
+for i in {0..1} M
 do
 	cp -f ${BSPMOD_DIR}/os_cpu_c.c            ${OUTPUT_DIR}/cpu${i}_bsp/HAL/src/
 	cp -f ${OS_DIR}/inc/os_cfg.h              ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/inc/
@@ -30,7 +30,7 @@ do
 	cp -f ${OS_DIR}/src/os_sem.c              ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/
 done
 
-for i in {0..3}
+for i in {0..1}
 do
 	cp -f ${BSPMOD_DIR}/alt_exception_entry_gp.S ${OUTPUT_DIR}/cpu${i}_bsp/HAL/src/alt_exception_entry.S
 	cp -f ${BSPMOD_DIR}/os_core.c                ${OUTPUT_DIR}/cpu${i}_bsp/UCOSII/src/
@@ -53,7 +53,7 @@ sed -r -e 's/(CFPU_0_CSR_IRQ) (-*[0-9]+)/\1 3/' \
 cp $DIR/test.x ${OUTPUT_DIR}/cpuM_bsp/system.h
 
 #update the Monitor dma interrupts file for all
-for i in {0..3}
+for i in {0..1}
 do
 	irq=$(expr $i + 5)
 	sed -r -e "s/(PROCESSOR${i}_0_DMA_0_IRQ) (-*[0-9]+)/\1 ${irq}/" \

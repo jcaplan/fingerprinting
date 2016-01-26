@@ -331,6 +331,11 @@ public class GenCore {
 		" *****************************************************************************/\n" +
 		"static void handleCPU(void* context) {\n" + 
 		"	int taskIndex = critFuncData[CORE_ID].tableIndex;\n"+
+		"	\n" + 
+		"	if(critFuncData[CORE_ID].modeChange){\n" + 
+		"		rtMonitorDropLowTasks();\n" + 
+		"	}\n" + 
+		"\n" + 
 		"	updateMemoryManagerTable(taskIndex,\n"+
 		"			&critFuncData[CORE_ID]);\n"+
 		"	fID[taskIndex] = critFuncData[CORE_ID].fprintID;"+

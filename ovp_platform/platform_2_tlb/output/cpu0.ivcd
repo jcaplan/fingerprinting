@@ -7,14 +7,14 @@ $timescale 8ns $end
 $scope module 5_for_loop_100000_0 $end
  $var wire 1 # 5_for_loop_100000_0 $end
 $upscope $end
+$scope module 6_uC/OS-II_Stat $end
+ $var wire 1 $ 6_uC/OS-II_Stat $end
+$upscope $end
 $scope module 7_uC/OS-II_Idle $end
  $var wire 1 % 7_uC/OS-II_Idle $end
 $upscope $end
 $scope module 4_for_loop_50000_50000 $end
  $var wire 1 ! 4_for_loop_50000_50000 $end
-$upscope $end
-$scope module 6_uC/OS-II_Stat $end
- $var wire 1 $ 6_uC/OS-II_Stat $end
 $upscope $end
 $scope module 0_None $end
  $var wire 1 " 0_None $end
@@ -22,9 +22,9 @@ $upscope $end
 $enddefinitions $end
 #0
 x#
+x$
 x%
 x!
-x$
 x"
 #110512
 1!
@@ -38,40 +38,34 @@ z#
 #1207352
 1%
 z$
-#3114579
+#3114582
 1#
 z%
-#4723957
+#4723960
 1%
 z#
-#4739583
-1#
-z%
-#6348957
-1%
-z#
-#8592141
+#8592123
 1!
 z%
-#10144961
+#10144943
 1%
 z!
-#10612073
+#10612081
 1#
 z%
-#12221447
+#12221455
 1%
 z#
-#17592140
+#17592123
 1!
 z%
-#18473512
+#18473498
 1#
 z!
-#20082234
+#20082220
 1%
 z#
-#25612078
+#25612070
 1#
 z%
 #25967181
@@ -80,18 +74,45 @@ z#
 #27348964
 1#
 z!
-#28603715
+#28603707
 1$
 z#
-#28604493
+#28604485
 1%
 z$
-#33112085
+#33112073
 1#
 z%
-#34721459
+#34721447
 1%
 z#
-#34842123
-1!
+#34738480
+1#
 z%
+#36347770
+1%
+z#
+#40612086
+1#
+z%
+#42221356
+1%
+z#
+#48112078
+1#
+z%
+#49721348
+1%
+z#
+#53592128
+1$
+z%
+#53592866
+1%
+z$
+#55612070
+1#
+z%
+#57221340
+1%
+z#

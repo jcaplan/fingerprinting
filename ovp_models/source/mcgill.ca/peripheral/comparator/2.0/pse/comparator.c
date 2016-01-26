@@ -215,13 +215,14 @@ void checkTaskComplete(int task){
                 successReg |= (1 << (task*2));
             }
             writeSuccessReg();
-            successCounterReg[task]++;
-            bhmPrintf("success task %d, successReg = %d!\n",task, successReg);
+            taskCounter[task] = 0;
+            bhmPrintf("success task %d, (%d/%d), successReg = %d!\n",task, taskCounter[task],
+                successCounterReg[task],successReg);
             ppmWriteNet(handles.COMP_IRQ, 1);
          } else {
             // bhmPrintf("COMPARATOR: task counter %d wrong (should be %d)!\n",taskCounter[task],successCounterReg[task]);
             // mismatch_occurred(task);
-            bhmPrintf("intermediate result for task %d (%d/%d fingerprints have arrived), keep going",task,taskCounter[task],successCounterReg[task]);
+            bhmPrintf("intermediate result for task %d (%d/%d fingerprints have arrived), keep going\n",task,taskCounter[task],successCounterReg[task]);
         }
     }
 }
@@ -307,6 +308,7 @@ PPM_REG_WRITE_CB(successCounterRegWrite) {
     COMP_CSR_SLAVE_ab32_dataTP successCounterRegData = handles.COMP_CSR_SLAVE;
     unsigned taskID = successCounterRegData->successCounterReg.bits.taskID;
     unsigned successData = successCounterRegData->successCounterReg.bits.data;
+    bhmPrintf("writing successCounterReg task %d = %d\n",taskID,successData);
     successCounterReg[taskID] = successData;
 }
 

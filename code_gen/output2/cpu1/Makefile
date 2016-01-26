@@ -145,8 +145,6 @@ ELF := cpu1.elf
 C_SRCS += /home/jonah/fingerprinting/code_gen/output2/cpu1/cpu1.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output2/cpu1/critical.c
 C_SRCS += /home/jonah/fingerprinting/code_gen/output2/cpu1/for_loop_100000_0.c
-C_SRCS += /home/jonah/fingerprinting/code_gen/output2/cpu1/for_loop_60000_0.c
-C_SRCS += /home/jonah/fingerprinting/code_gen/output2/cpu1/for_loop_90000_0.c
 CXX_SRCS :=
 ASM_SRCS :=
 

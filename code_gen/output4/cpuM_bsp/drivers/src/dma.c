@@ -31,7 +31,7 @@ void dma_setCritFuncDataPointer(CriticalFunctionData *p){
 	critFuncDataP = p;
 }
 
-void postDmaMessage(INT32U task, bool start, bool core_0_safe) {
+void postDmaMessage(INT32U task, bool start, bool core_0_safe, bool modeChange) {
 	INT32U message = task;
 	if (start) {
 		message |= 1 << 31;
@@ -39,13 +39,18 @@ void postDmaMessage(INT32U task, bool start, bool core_0_safe) {
 	if(core_0_safe){
 		message |= 1 << 30;
 	}
+	if(modeChange){
+		message |= 1 << 29;
+	}
 	OSQPost(dmaQ, (void *) message);
 }
 
-void parseDmaMessage(INT32U message, bool *start, INT32U *task, bool *core_0_safe) {
+void parseDmaMessage(INT32U message, bool *start, INT32U *task, bool *core_0_safe, 
+	bool *modeChange) {
 	*start = message & (1 << 31);
 	*task = message & (0x7FFFFFFF);
 	*core_0_safe = message & (1 << 30);
+	*modeChange = message & (1 << 29);
 }
 
 
@@ -57,7 +62,8 @@ void dma_TASK(void* pdata) {
 		bool start;
 		INT32U taskID;
 		bool core_0_safe;
-		parseDmaMessage(message, &start, &taskID, &core_0_safe);
+		bool modeChange;
+		parseDmaMessage(message, &start, &taskID, &core_0_safe, &modeChange);
 
 		// printf("dma task %lu\n", (unsigned long) taskID);
 
@@ -124,6 +130,7 @@ void dma_TASK(void* pdata) {
 				/* both cores share the core 1 physical address */
 				critFuncDataP[core].tlbStackAddressVirt =
 						task->stackAddressVirt[i];
+				critFuncDataP[core].modeChange = modeChange;
 			}
 			//TODO : check that cores have copied info !
 			// while(....);

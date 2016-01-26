@@ -1,7 +1,9 @@
 proc cpu0
-b *0x464a54
+b *0x464a64
 continue
 proc cpu0
 disable 1
 set extreg R2 0xffffe9
+proc comparator
+watch successCounterReg
 continue

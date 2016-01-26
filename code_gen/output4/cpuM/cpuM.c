@@ -220,7 +220,7 @@ static void handleResetMonitor(void* context) {
 	if (taskFailed) {
 		taskFailed = false;
 
-		postDmaMessage(failedTaskID, true,false);
+		postDmaMessage(failedTaskID, true,false,true);
 
 	}
 }
@@ -257,7 +257,7 @@ static void handleComp(void* context) {
 				/* assume only one failure possible */
 				failedTaskID = REPOSgetTaskID(i);
 				REPOSTaskReset(failedTaskID);
-				postDmaMessage(failedTaskID, true,false);
+				postDmaMessage(failedTaskID, true,false,true);
 				break;
 			}
 		}
@@ -281,7 +281,7 @@ static void handleComp(void* context) {
 					REPOSTaskTable[taskID].funcCompleteCount = 0;
 					REPOSTaskComplete(taskID);
 					int core0_safe = result & (1 << i);
-					postDmaMessage(taskID, false, core0_safe);
+					postDmaMessage(taskID, false, core0_safe,false);
 				}
 			}
 		}
@@ -305,7 +305,7 @@ static void initCompIsr(void) {
 REPOS_core REPOSCoreTable[4];
 
  void startHook(void *args) {
-	postDmaMessage((int)args,true,false);
+	postDmaMessage((int)args,true,false,false);
 }
 
 

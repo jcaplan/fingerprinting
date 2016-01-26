@@ -325,7 +325,7 @@ The data container ensures that all data is located in a contiguous region of me
 
 \subsubsection{Runtime Monitor}
 
-	The runtime monitor maintains a an execution time counter for each execution of all tasks on every core and is responsible for the mode change in case of an overrun.
+	The runtime monitor maintains an execution time counter for all tasks on each core and is responsible for the mode change in case of an overrun.
 	AMC response time analysis assumes that some runtime monitoring facilities exist to catch when a task exceeds its $C(LO)$ (Section~\ref{s:mcfts}). 
 	Only the simple two mode behaviour has been implemented and all LO criticality tasks are dropped at the mode change. 
 	Reverse mode changes (restarting the LO tasks) have also been omitted.
@@ -501,7 +501,7 @@ The data container ensures that all data is located in a contiguous region of me
 	The generated code is executed on the OVP virtual platform using Imperas debugging tools. The Imperas debugger analyzes the RTOS and generates a waveform representing the activity of the various tasks. 
 	An excerpt of the simulation is shown in Figure~\ref{f:sim1}.
 	The DMA task on the monitor executes once at 542 ms and takes almost no time since the delay for DMA transfer is not modelled.
-	The two copies of the HI task execute in parallel. The LO task interrupts the HI task on \emph{cpu0} however the response time remains under 30 ms.
+	The two copies of the HI task execute in parallel. The LO task \emph{T1} interrupts the HI task \emph{T0} on \emph{cpu0} however the response time remains under 30 ms.
 \addfigure{0.55}{sim1.png}{Simulation of sample program}{f:sim1}
 
 	We can observe a mode change by setting C(LO) to 9 ms for the task \emph{T1} because it has been configured to run between 8-12 ms. 
@@ -510,8 +510,7 @@ The data container ensures that all data is located in a contiguous region of me
 \addfigure{0.52}{sim2.png}{LO task is dropped after $C > C(LO)$}{f:sim2}
 		
 	Finally, in the case of an error, the task must be re-executed. 
-	The periods of \emph{T0} and \emph{T1} are extended to 60 ms for this example as the system in Table~\ref{t:config} is not schedule in the present of faults. 
-	\emph{T0} had a response time of 24 ms in Figure~\ref{f:sim1} and cannot complete in 30 ms if re-execution is required).
+	The periods of \emph{T0} and \emph{T1} are extended to 60 ms for this example as the system in Table~\ref{t:config} is not schedule in the present of faults (\emph{T0} had a response time of 24 ms in Figure~\ref{f:sim1} and cannot complete in 30 ms if re-execution is required).
 	A transient fault is simulated by pausing the simulation and changing the value in a general purpose register in Figure~\ref{f:sim3}. 
 	The DMA task runs again as it re-sends the stack and data to the scratchpads.
 	The LO task does not execute after the fault as a mode change occurs.

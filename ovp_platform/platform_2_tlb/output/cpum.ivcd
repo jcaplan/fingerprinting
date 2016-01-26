@@ -4,102 +4,144 @@ $end
 $comment imperas platform FprintPlatform $end
 $comment imperas cpu FprintPlatform/cpum $end
 $timescale 8ns $end
-$scope module 5_uC/OS-II_Idle $end
- $var wire 1 $ 5_uC/OS-II_Idle $end
+$scope module 4_uC/OS-II_Stat $end
+ $var wire 1 # 4_uC/OS-II_Stat $end
 $upscope $end
 $scope module 3_dma $end
  $var wire 1 ! 3_dma $end
 $upscope $end
-$scope module 4_uC/OS-II_Stat $end
- $var wire 1 # 4_uC/OS-II_Stat $end
+$scope module 5_uC/OS-II_Idle $end
+ $var wire 1 $ 5_uC/OS-II_Idle $end
 $upscope $end
 $scope module 0_None $end
  $var wire 1 " 0_None $end
 $upscope $end
 $enddefinitions $end
 #0
-x$
-x!
 x#
+x!
+x$
 x"
-#2997996
+#2998031
 1!
 z"
-#2998263
+#2998299
 1#
 z!
-#2998453
+#2998489
 1$
 z#
-#3098513
+#3098525
 1!
 z$
-#3114405
+#3114549
 1$
 z!
-#4724686
+#4724764
 1!
 z$
-#4739369
+#4730747
 1$
 z!
-#6349757
+#10598525
 1!
 z$
-#6355890
+#10612293
 1$
 z!
-#10598501
+#12222262
 1!
 z$
-#10612137
+#12229010
 1$
 z!
-#12222274
+#18098506
 1!
 z$
-#12229172
+#18112274
 1$
 z!
-#18098511
+#20083532
 1!
 z$
-#18112147
+#20089515
 1$
 z!
-#20083524
+#25598512
 1!
 z$
-#20089657
+#25612280
 1$
 z!
-#25598504
-1!
-z$
-#25612140
-1$
-z!
-#27973305
+#27973300
 1#
 z$
-#27973505
+#27973500
 1$
 z#
-#28604758
+#28604762
 1!
 z$
-#28610891
+#28610745
 1$
 z!
 #33098520
 1!
 z$
-#33112156
+#33112288
 1$
 z!
-#34722264
+#34722191
 1!
 z$
-#34729162
+#34737771
+1$
+z!
+#36349128
+1!
+z$
+#36355111
+1$
+z!
+#40598514
+1!
+z$
+#40612282
+1$
+z!
+#42222279
+1!
+z$
+#42229027
+1$
+z!
+#48098516
+1!
+z$
+#48112284
+1$
+z!
+#49722281
+1!
+z$
+#49729029
+1$
+z!
+#52973303
+1#
+z$
+#52973503
+1$
+z#
+#55598506
+1!
+z$
+#55612274
+1$
+z!
+#57222270
+1!
+z$
+#57229018
 1$
 z!
