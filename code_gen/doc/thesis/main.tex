@@ -269,7 +269,14 @@ Copyright \textsf{\textcopyright} \ 2016 Jonah Caplan
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
 
-The Thesis Abstract is written here (and usually kept to just this page). The page is kept centered vertically so can expand into the blank space above the title too\ldots
+	Model based design and code generation are increasingly important trends in embedded system design. 
+	In this thesis, the process of model based design is broken down into three stages: first a profiling stage where information is collected on execution time, then a mapping and scheduling phase where resources are allocated in a safe manner, and finally the generation of the code itself.
+	A framework is presented for the static analysis of binary code to estimate execution times and memory requirements of each task.
+	Standard program analysis techniques are borrowed from compiler theory to provide intraprocedural analysis on compiled C code. 
+	A novel multicore schedulability analysis is presented for mixed criticality fault tolerant systems along with a design space exploration framework using nested genetic algorithms to determine schedules with better quality of service.
+	Code generation targets a previously designed multicore platform with Nios II processors and fingerprinting based error detection to automate the porting of Simulink generated control algorithms onto the platform.
+		 
+
 
 \end{abstract}
 
