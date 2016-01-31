@@ -10,7 +10,7 @@ import gnu.getopt.LongOpt;
 
 public class MapTest {
 
-	private static final int MIN_NUM_TASKS = 20;
+	private static final int MIN_NUM_TASKS = 10;
 	private static final double MIN_PERCENT_HI = 0.5;
 	private static final double AVERAGE_DEFAULT_UTILIZATION = 0.8;
 	private static final double MAX_WCET_FACTOR = 2.0;
@@ -20,7 +20,7 @@ public class MapTest {
 	private static final int NUM_ODR_CORES = 2;
 	private static final int NUM_LOCKSTEP_CORES = 1;
 	private static ArrayList<FaultMechanism> ftms;
-	static Mapper mapper;
+	static Mapper mapper =  new HeurMapper();
 	
 
 
@@ -60,7 +60,7 @@ public class MapTest {
 		longopts[5] = new LongOpt("maxwcetf", LongOpt.REQUIRED_ARGUMENT, null, 5);
 		longopts[6] = new LongOpt("numthreads", LongOpt.REQUIRED_ARGUMENT, null, 6);
 		longopts[7] = new LongOpt("seed", LongOpt.REQUIRED_ARGUMENT, null,7);
-		
+		longopts[8] = new LongOpt("ga", LongOpt.REQUIRED_ARGUMENT, null,8);
 		
 		// One colon: required
 		// Two colons: optional
@@ -94,6 +94,9 @@ public class MapTest {
 				break;
 			case 7:
 				randomSeed = Integer.parseInt(g.getOptarg());
+				break;
+			case 8:
+				mapper = new GAMapper();
 				break;
 			case 'h':
 				System.out.println("minhinum=int minhiperc=double avgutil=double \n"
@@ -129,9 +132,7 @@ public class MapTest {
 		
 		Application app = Application.generateRandomApplication(minNumTasks, minHiPercent, avgDefaultUtil,
 				numOdrCores, numLockstepCores, maxWcetFactor,random);
-		
 
-		mapper = new Mapper();
 		mapper.setApplication(app);
 		mapper.printApp();
 		

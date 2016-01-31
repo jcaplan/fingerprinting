@@ -12,8 +12,17 @@ public class Schedule implements Serializable{
 	}
 
 
+	public void deallocate(Task t, Processor p) {
+		bindings.get(t).removeBinding(p);
+	}
+
+
 	
 	public Processor getLoModeProcessor(Task t){
+		Binding b = bindings.get(t);
+		if(b == null){
+			return null;
+		}
 		return bindings.get(t).getLoModeProcessor();
 	}
 
@@ -42,7 +51,7 @@ public class Schedule implements Serializable{
 	}
 	
 	public void removeBinding(Task t, int mode){
-		bindings.get(t).removBinding(mode);
+		bindings.get(t).removeBinding(mode);
 	}
 
 
@@ -95,9 +104,17 @@ public class Schedule implements Serializable{
 			processor[mode] = p;
 		}
 
-		public void removBinding(int mode) {
+		public void removeBinding(int mode) {
 			processor[mode] = null;
 			responseTime[mode] = 0;
+		}
+		
+		public void removeBinding(Processor p){
+			for(int i = 0; i < SchedAnalysis.numModes; i++){
+				if(processor[i] == p){
+					processor[i] = null;
+				}
+			}
 		}
 		
 		@Override
@@ -153,4 +170,6 @@ public class Schedule implements Serializable{
 		
 		return results;
 	}
+
+
 }

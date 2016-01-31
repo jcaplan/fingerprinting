@@ -15,7 +15,7 @@ public class Task implements Comparable<Task>, Serializable{
 	boolean type;
 	public static final boolean replica = true;
 	public static final boolean original = false;
-	double utilization;
+	double utilizationLO;
 	public String name;
 	Processor proc;
 	static int tID;
@@ -102,16 +102,20 @@ public class Task implements Comparable<Task>, Serializable{
 		this.period = period;	
 	}
 
-	public void setUtilization(double utilization) {
-		this.utilization = utilization;
+	public void setUtilizationLO(double utilization) {
+		this.utilizationLO = utilization;
 	}
 
-	public double getUtilization() {
-		return utilization;
+	public double getUtilizationLO() {
+		return utilizationLO;
+	}
+	
+	public double getUtilizationHI() {
+		return wcetUpperBound / period; 
 	}
 
 	public void setExecutionTimes(double cRatio) {
-		wcetLowerBound = period * utilization;
+		wcetLowerBound = period * utilizationLO;
 		wcetUpperBound = wcetLowerBound * cRatio;
 	}
 	

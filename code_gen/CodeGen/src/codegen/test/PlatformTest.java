@@ -11,6 +11,7 @@ import java.util.Random;
 import codegen.map.Application;
 import codegen.map.DMR;
 import codegen.map.FaultMechanism;
+import codegen.map.GAMapper;
 import codegen.map.Lockstep;
 import codegen.map.Mapper;
 import codegen.map.MultiThreadGABreeder;
@@ -148,7 +149,7 @@ public class PlatformTest {
 					2, 1, maxWcetFactor,random);
 			
 
-			mapper = new Mapper();
+			mapper = new GAMapper();
 			mapper.setApplication(app);
 			mapper.setProcList(lsList);
 			mapper.setFTMS(ls);
@@ -162,7 +163,7 @@ public class PlatformTest {
 				System.out.println("lockstep failed");
 			}
 			
-			mapper = new Mapper();
+			mapper = new GAMapper();
 			mapper.setApplication(app);
 			mapper.setProcList(odrList);
 			mapper.setFTMS(odr);
@@ -175,7 +176,7 @@ public class PlatformTest {
 				System.out.println("odr failed");
 			}
 			
-			mapper = new Mapper();
+			mapper = new GAMapper();
 			mapper.setApplication(app);
 			mapper.setProcList(fpList);
 			mapper.setFTMS(fp);

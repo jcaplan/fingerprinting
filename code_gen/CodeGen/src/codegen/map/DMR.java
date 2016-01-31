@@ -1,13 +1,13 @@
 package codegen.map;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Map;
 
 import org.jgap.Gene;
 
 public class DMR extends FaultMechanism {
 	
-	private final int[] reexecutionProfile = {1,2,1,2};
+	private static final int[] reexecutionProfile = {1,2,1,2};
 	
 	
 	@Override
@@ -26,6 +26,18 @@ public class DMR extends FaultMechanism {
 		replica.setMaxNumReexecutions(reexecutionProfile);
 		techniqueMap.put(t, this);
 //		techniqueMap.put(replica, this);
+	}
+	
+	public static HashMap<Task,Task[]> makeReplicaList(ArrayList<Task> taskList){
+		HashMap<Task,Task[]> replicas = new HashMap<>();
+		//make a list of replicas
+		for(Task t : taskList){
+			Task replica = new Task(t,Task.replica);
+			replicas.put(t,  new Task[] {replica});
+			t.setMaxNumReexecutions(reexecutionProfile);
+			replica.setMaxNumReexecutions(reexecutionProfile);
+		}
+		return replicas;
 	}
 
 	@Override

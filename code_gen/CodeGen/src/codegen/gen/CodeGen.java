@@ -5,6 +5,7 @@ import java.util.*;
 
 import codegen.map.Application;
 import codegen.map.DMR;
+import codegen.map.GAMapper;
 import codegen.map.Lockstep;
 import codegen.map.Mapper;
 import codegen.map.Processor;
@@ -108,7 +109,7 @@ public class CodeGen {
 				pList.add(new Processor(core.name, core.isMonitor));
 			}
 			
-			Mapper map = new Mapper();
+			Mapper map = new GAMapper();
 			map.setProcList(pList);
 			map.setApplication(app);
 			

@@ -100,19 +100,19 @@ public class Application implements Serializable {
 			double nextUtil = util
 					* Math.pow(ftemp1,
 							1.0 / ((double) taskList.size() - i));
-			t.setUtilization(util - nextUtil);
-			if (t.getUtilization() > 0.45) {
-				t.setUtilization(0.45);
+			t.setUtilizationLO(util - nextUtil);
+			if (t.getUtilizationLO() > 0.45) {
+				t.setUtilizationLO(0.45);
 				nextUtil = util - 0.45;
 			}
 
 			if (t.isCritical()) {
 				double cRatio = 1 + random.nextDouble() * (maxWcetFactor - 1);
-				if (cRatio * t.getUtilization() > 0.45) {
-					t.setUtilization(0.45 / cRatio);
+				if (cRatio * t.getUtilizationLO() > 0.45) {
+					t.setUtilizationLO(0.45 / cRatio);
 				}
 				t.setExecutionTimes(cRatio);
-				nextUtil = util - t.getUtilization();
+				nextUtil = util - t.getUtilizationLO();
 			} else {
 				t.setExecutionTimes(1);
 			}
@@ -120,7 +120,7 @@ public class Application implements Serializable {
 		}
 
 		Task t = taskList.get(taskList.size() - 1);
-		t.setUtilization(util);
+		t.setUtilizationLO(util);
 
 		double cRatio = 1 + random.nextDouble() * (maxWcetFactor - 1);
 

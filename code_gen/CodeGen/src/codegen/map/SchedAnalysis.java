@@ -16,12 +16,15 @@ public class SchedAnalysis {
 	ArrayList<Task> taskList;
 	Schedule schedule;
 	ArrayList<Processor> procList;
-
+	ArrayList<Task> priorityList;
+	
 	public SchedAnalysis(ArrayList<Task> taskList, Schedule schedule,
 			ArrayList<Processor> procList) {
 		this.taskList = taskList;
 		this.schedule = schedule;
 		this.procList = procList;
+
+		priorityList = getSortedPriorityList(taskList);
 	}
 
 	
@@ -33,25 +36,16 @@ public class SchedAnalysis {
 		// First a priority must be assigned to each task
 		// The priority is assigned to the binding in the schedule
 		//Sort by decreasing execution time, and increasing priority
-		ArrayList<Task> priorityList = (ArrayList<Task>) taskList.clone();
-		Collections.sort(priorityList);
-		int lowestPriority = priorityList.size() - 1;
-		for (int i = 0; i < priorityList.size(); i++) {
-			Task t = priorityList.get(i);
-			schedule.setPriority(t, lowestPriority - i);
-		}
 
 		// Check the schedulability on each processor
+		initSchedPriorities(schedule,priorityList);
+
 		for (Processor p : procList) {
 			/*
 			 * Build an array of tasks that execute on this processor
 			 */
-			ArrayList<Task> procTaskList = new ArrayList<>();
-			for (Task t : priorityList) {
-				if (schedule.getLoModeProcessor(t).equals(p)) {
-					procTaskList.add(t);
-				}
-			}
+			
+			ArrayList<Task> procTaskList = getProcTaskList(priorityList, p);
 
 			/*
 			 * each LO task can be assigned to: all 3 modes, a pair of modes, or a
@@ -138,6 +132,38 @@ public class SchedAnalysis {
 		return true;
 	}
 
+	private ArrayList<Task> getProcTaskList(ArrayList<Task> priorityList,
+			Processor p) {
+		ArrayList<Task> procTaskList = new ArrayList<>();
+		for (Task t : priorityList) {
+			Processor p2 = schedule.getLoModeProcessor(t); 
+			if (p2 != null && p2.equals(p)) {
+				procTaskList.add(t);
+			}
+		}
+		return procTaskList;
+	}
+
+	private void initSchedPriorities(Schedule schedule2,
+			ArrayList<Task> priorityList) {
+		int lowestPriority = priorityList.size() - 1;
+		for (int i = 0; i < priorityList.size(); i++) {
+			Task t = priorityList.get(i);
+			schedule2.setPriority(t, lowestPriority - i);
+		}
+	}
+
+	private ArrayList<Task> getSortedPriorityList(ArrayList<Task> taskList2) {
+		ArrayList<Task> priorityList = (ArrayList<Task>) taskList2.clone();
+		Collections.sort(priorityList);
+		return priorityList;
+	}
+
+	public boolean schedHIMode(Processor p){
+		ArrayList<Task> procTaskList = getProcTaskList(priorityList, p);
+		return schedHIMode(procTaskList);
+	}
+	
 	private boolean schedHIMode(ArrayList<Task> procTaskList) {
 		for (int i = 0; i < procTaskList.size(); i++) {
 			Task t = procTaskList.get(i);
