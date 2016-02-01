@@ -305,6 +305,7 @@ The data container ensures that all data is located in a contiguous region of me
 \label{s:proc-cores}
 \subsubsection{Running Critical Tasks on Processing Cores}
 
+\label{s:pcores}
 	Each critical task is assumed to be called from a single function that takes all global data (including persistent state) as arguments. 
 	Listing~\ref{l:crit-task-wrapper} shows a simplified example wrapper (the setting of some global RTOS flags has been omitted). 
 	As in any periodic task in a C based RTOS, the function consists of an infinite loop and waits on a semaphore to begin each loop iteration. 
@@ -317,7 +318,7 @@ The data container ensures that all data is located in a contiguous region of me
 	Both cores must execute the same critical code since the return addresses will be pushed onto the stack and must match in order for fingerprints to match. 
 	However, virtual memory has not yet been implemented for the instruction bus. 
 	As a result, critical code is compiled only for one processing core and this core must pass the function pointer to the other core so that they both execute the same code. 
-	One small problem arises because the Nios II architecture includes a global pointer similar to MIPS which raises a potential p.
+	One small problem arises because the Nios II architecture includes a global pointer similar to MIPS which raises a potential problem.
 	The Nios compiler does not guarantee that compiled code does not use the global pointer (the option is specified but unimplemented). 
 	However, shared code using Matlab's reusable function option should not generate global pointer references as there are no direct references to static objects. 
 	It is possible to temporarily change the global pointer of one core to match anothers as discussed in prior work \cite{ugthesis}.

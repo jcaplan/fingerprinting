@@ -269,8 +269,11 @@ Copyright \textsf{\textcopyright} \ 2016 Jonah Caplan
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
 
-	Model based design and code generation are increasingly important trends in embedded system design. 
-	In this thesis, the process of model based design is broken down into three stages: first a profiling stage where information is collected on execution time, then a mapping and scheduling phase where resources are allocated in a safe manner, and finally the generation of the code itself.
+% 	Model based design and code generation are increasingly important trends in embedded system design. 
+	Simulink is a standard tool for model based design of embededded control algorithms with support for code generation targeting single-core embedded processors. 
+	In this thesis, a separate code generation framework is presented which automates the porting of Simulink generated code to systems with two or four Nios II cores with support for software-level error detection using redundant executions. 
+% 	Code generation further supports the redundant execution of threads on several cores to detect errors. 
+	The framework consists of three stages: first a profiling stage where information is collected on execution time, then a mapping and scheduling phase where resources are allocated in a safe manner, and finally the generation of the code itself.
 	A framework is presented for the static analysis of binary code to estimate execution times and memory requirements of each task.
 	Standard program analysis techniques are borrowed from compiler theory to provide intraprocedural analysis on compiled C code. 
 	A novel multicore schedulability analysis is presented for mixed criticality fault tolerant systems along with a design space exploration framework using nested genetic algorithms to determine schedules with better quality of service.

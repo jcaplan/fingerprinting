@@ -4,6 +4,14 @@
 
 \label{c:background} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
+
+	This chapter presents relevant background information on several topics for this thesis. 
+	First, Section~\ref{s:mixedcriticality} reviews \emph{mixed criticality} and the scheduling theory which is the basis for Chapter~\ref{c:prof}. 
+	Section~\ref{s:odr} reviews \emph{on-demand redundancy}, a type of error detection technique geared towards mixed criticality systems with fault-tolerance requirements. 
+	Sections~\ref{s:nios} and \ref{s:hd} more specifically reviews the target platform for code generation and how \emph{fingerprinting} is used to detect errors to achieve on-demand redundancy.
+	Section~\ref{s:ovp} reviews the virtual modeling tools used to develop software for the target platform.
+	Section~\ref{s:simulink} discusses Simulink and the limitations imposed on Simulink generated code for the work in this thesis.
+	
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
@@ -12,7 +20,7 @@
 \label{s:mixedcriticality}
 	Mixed criticality systems share resources between safety-critical tasks where failure can result in expensive damange or harm to users (e.g. x-by-wire), and non-safety critical tasks (e.g. infotainment). 
 	Many industries such as automotive and avionics are trying to integrate low criticality (LO) and high criticality (HI) tasks onto the same processors.
-	Mixed criticality scheduling (MCS) is the analysis of scheduling algorithms that provide safety guarantees to HI tasks in the presence of LO tasks.
+	Mixed criticality scheduling (MCS) is the analysis of scheduling algorithms that provide safety guarantees to HI tasks in the presence of LO tasks \cite{burns2013mixed}.
 	
 	Adaptive mixed criticality (AMC), and more specifically the response time bound analysis (AMC-rtb) \cite{baruah2011response} is the baseline for much work in MCS. 
 	AMC models applications as a set of as independent periodic tasks with fixed deadlines and periods (often assumed to be the same).
@@ -31,7 +39,7 @@
 	  \item $R_i$: Response time of $\tau_i$
 	\end{itemize}
 
-	Rate-monotonic scheduling assigns the highest priority to the task with the smallest period. Priority inversion, depicted in Figure~\ref{f:responsetime}, is when LO tasks are able to preempt HI tasks. Priority inversion is desirable in mixed criticality systems if LO tasks have shorter periods than HI tasks. However, this necessitates the runtime monitoring and mode change in case the effects of LO tasks risk causing a HI task to miss a deadline.
+	Rate-monotonic scheduling assigns the highest priority to the task with the smallest period. Criticality inversion, depicted in Figure~\ref{f:responsetime}, is when LO tasks are able to preempt HI tasks. Priority inversion is desirable in mixed criticality systems if LO tasks have shorter periods than HI tasks \cite{baruah2011response}. However, this necessitates the runtime monitoring and mode change in case the effects of LO tasks risk causing a HI task to miss a deadline.
 
 \addfigure{0.7}{responsetime.pdf}{Example of priority inversion in mixed criticality system using rate monotonic scheduling.}{f:responsetime}
 
@@ -53,24 +61,26 @@ where $hp(i)$ is the set of tasks with higher priority than $\tau_i$, $hpH(i)$ i
 	Equation~\ref{eq:mode2} shows that in the HI mode, the response time takes into account preemptions of $hpH(i)$ that are assumed to run for their pessimistic $C_i(HI)$. 
 	Dropped tasks ($hpL(i)$) may still have preempted $\tau_i$ prior to the mode change and the third term in Equation~\ref{eq:mode2} models the carry-over effects.
 
-\section{Transient Faults}
-
-	Transient faults or soft errors occur when environmental radation causes voltage spikes in digital circuits \cite{Baumann:05}. 
-	In most cases transient faults are sufficiently rare to ignore. 
-	However, in safety critical applications they must be accounted for to ensure correct operation. 
-	All references to faults in this thesis refer only to transient faults whether or not explicitly stated. 
-	This thesis is specifically focused on transient faults in the register files of processors. 
-	Network and memory are also susceptible to transient faults however they are assumed to be dealt with by other mechanisms.
+% \section{Transient Faults}
 
 
 \section{On-Demand Redundancy}
+\label{s:odr}
 
-	Current solutions to transient errors typically rely on redundancy and voting through the replication of entire processors. 
-	Lockstep execution, shown in Figure~\ref{f:lockstep} is when two processors execute the same code in parallel. 
+	Transient faults or soft errors occur when environmental radation causes voltage spikes in digital circuits \cite{Baumann:05}. 
+	Transient faults must be accounted for in safety critical applications despite their rare occurence due to the catastrophic consequences that may occur such as loss of life.
+	All references to faults in this thesis refer only to transient faults whether or not explicitly stated. 
+	This thesis is specifically focused on transient faults in the register files of processors. 
+	Network \cite{radetzki2013methods} and memory \cite{Baumann:05} are also susceptible to transient faults however they are assumed to be dealt with by other mechanisms.
+
+
+% 	Current solutions to transient errors typically rely on replication of entire boards. 
+	Lockstep execution \cite{baleani2003fault} is the de-facto method of error detection in ECUs \cite{infineon2014aurix,freescale2014qorivva,renesas2016lockstep}. Lockstep execution, shown in Figure~\ref{f:lockstep}, consists of two cores executing the same code in parallel. 
 	Lockstep implements redundancy at a very fine granularity as each store instruction is compared in hardware before being released to the bus. 
 	If the store output does not match then some rollback procedure must be implemented or else the processors are restarted. 
 	It is only possible to detect an error with two processors. 
-	Correction can be implemented with three processors by majority vote. Lockstep cores are difficult to build and scale due to the precise synchronization required.
+	Correction can be implemented with three processors by majority vote. 
+	Lockstep cores are difficult to build and scale due to the precise synchronization required.
 
 	Lockstep execution is problematic in mixed criticality systems because it is not possible to \emph{decouple} the cores (i.e. use them to run different code independently). 
 	It is inefficent to run mixed criticality applications on a pair of \emph{statically coupled} lockstep cores because not all tasks necessarily require protection against transient faults. 
@@ -99,14 +109,15 @@ where $hp(i)$ is the set of tasks with higher priority than $\tau_i$, $hpH(i)$ i
 \end{figure}
 
 
-\section{Fingerprinting with Nios Cores}
-
+\subsection{Fingerprinting with Nios Cores}
+\label{s:nios}
 	The target architecture is shown in Figure~\ref{f:platform-arch}. 
-	A working FPGA prototype has been implemented with Nios II cores in previous work. 
+	A working FPGA prototype has been implemented with Nios II cores in previous work~\cite{ugthesis}. 
 	The platform provides a mix of hardened cores and unreliable processing cores. 
 	The goal of the platform is to explore the intersection of scheduling theory and a real-life implementation of on-demand redundancy. 
-	In a real system at least one core would need to be fault tolerant, as depicted \cite{dobel2012watches}. 
-	However, our prototype does not implement any specific fault tolerance mechanisms as we are concerned with higher level software design and resource management problems. 
+	In a real system at least one core would need to be fault tolerant to form a reliable computing base for the rest of the platform because thread level redundancy cannot catch errors in OS kernel code since it is not replicated \cite{dobel2012watches}. 
+	The reliable monitor must be present to take more drastic correction measures (e.g. core reboot) in case the kernel itself is corrupted on any core.
+	However, our FPGA prototype does not implement any specific fault tolerance mechanisms as we are concerned with higher level software design and resource management problems. 
 	It is sufficient for these purpose to assume one of the cores has internal hardware mechanisms that increase its reliability.
 
 
@@ -118,7 +129,7 @@ where $hp(i)$ is the set of tasks with higher priority than $\tau_i$, $hpH(i)$ i
 	The hardware supports rate-monotic scheduling, meaning that a fingerprinted task may be paused and a higher priority task can begin fingerprinting without corrupting the previous fingerprint.
 	Preemption is supported using modified exception funnels and stacks inside the FP however the implementation details were the subject of previous work \cite{ugthesis} and will not be discussed in this thesis.
 	
-	The sphere of replication (SoR) or fault containment region (FCR) refers to the notion that faulty data must not be allowed to propagate to main memory or IO. 
+	The sphere of replication (SoR) or fault containment region (FCR) refers to the notion that faulty data must not be allowed to propagate to main memory or I/O. 
 	The fault tolerant core (FTC) maintains the SoR by moving temporary copies of critical data into the local scratchpad memory (SPM) of each processing core using DMA. 
 	The processing cores are then notified to begin execution once the data is prepared. 
 	The output of redundant tasks are not directly compared.
@@ -126,27 +137,27 @@ where $hp(i)$ is the set of tasks with higher priority than $\tau_i$, $hpH(i)$ i
 	When a task is successful, the FTC copies the data from one of the scratchpads back to main memory.
 	
 	The execution of redundant threads must be completely deterministic to generate identical fingerprints. 
-	The uTLB implements virtual memory to allow the stack starting addresses and data locations must be identical on both copies for all store addresses to match.
+	For instance, the uTLB implements virtual memory to allow the stack starting addresses and data locations must be identical on both copies for all store addresses to match.
 % 	This is achieved using a virtual memory scheme using the uTLB.
 	%All functions must take the location of global data as arguments in order to have matching stack references for both cores (Simulink provides this option by choosing reusable function interfaces).
 
-\section{Fingerprints and Hamming Distance}
-
+\subsection{Fingerprints and Hamming Distance}
+\label{s:hd}
 	It must be decided when using fingerprinting how much state to compress into a single fingerprint. The larger the message being compressed, the more likely that \emph{aliasing} may occur, where the faulty fingerprint matches the correct fingerprint. 
-	When using CRC, which is a modulo division operation, the likelihood of aliasing for a 32 bit divisor (or generator polynomial) is $2^{-32}$ in the worst case.
+	When using CRC, which is a modulo division operation, the likelihood of aliasing for a 32 bit divisor (or generator polynomial) converges to $2^{-32}$ \cite{Maxino:09}.
 	
 	The Hamming distance (HD) is the number of bits which are different between the faulty message and the correct message. 
 	Certain 32 bit polynomials guarantee the absence of aliasing up to HDs of 5 or 6 if the message length is kept fairly small (under 32 kbits) \cite{koopman200232}.
 	The argument for short fingerprinting intervals includes minimizing detection latency and decreasing the probability of aliasing.
 
-	This implementation uses architectural fingerprinting as opposed to micro-architectural fingerprinting, meaning that the fingerprinting logic has not been integrated into the CPU and does not fingerprint micro-architectural state such as the register file or pipeline registers.
+	This implementation uses architectural fingerprinting as opposed to micro-architectural fingerprinting, meaning that the fingerprinting logic has not been integrated into the CPU and does not fingerprint micro-architectural state such as the register file or pipeline registers \cite{jared2007fingerprinting}.
 	We also replicate and restore data at the granularity of a single task execution and are only concerned with the worst case timing.
 	Only one fingerprint is necessary per task per period because enough resources must be allocated to handle the worst case latency (which occurs when a task fails near the end of its execution). 
 		
 	Figures~\ref{f:qsort-d} and \ref{f:qsort} show the average hamming distance (HD) and cumulative HD respectively for the qsort benchmark from the MiBench suite~\cite{guthaus2001mibench}. 
-	The results were previously compiled using one and two bit fault injection on an instruction accurate simulation of the PowerPC architecture. 
+	The results were previously compiled using one and two bit fault injection on an instruction accurate simulation of the PowerPC architecture \cite{georgi}. 
 	The figures show that the majority of errors with HD less than 10 bits are 1 or 2 bit errors and that the majority of errors result in HDs over 100. 
-	We argue that aliasing should not be considered a critical design point since register errors either tend not to propagate or propagate well past the point where lower block sizes can decrease the likelihood of aliasing.
+	We argue that aliasing should not be considered a critical design point since register errors either tend not to propagate or propagate well past the point where lower block sizes can decrease the likelihood of aliasing \cite{Maxino:09}.
 	
 	
 	
@@ -165,18 +176,19 @@ where $hp(i)$ is the set of tasks with higher priority than $\tau_i$, $hpH(i)$ i
 \caption{Fault injection results for qsort on PowerPC architecture}
 \label{f:ft-arch}
 \end{figure}
-\section{Virtual Platform Model}
 
+\section{Virtual Platform Model}
+\label{s:ovp}
 	This thesis is primarily concerned with the design and automatic generation of mixed-criticality software that runs on the proposed architecture. 
-	All development, validation, and testing is done on a virtual model of the platform using Open Virtual Platform (OVP) to model the system. OVP is an instruction accurate simulation environment. 
-	Examining the performance of the code on FPGA and improving the accuracy of the schedulability analysis and cycle accurate WCET estimates is beyond the scope of this thesis. 
-	It is assumed that considerable calibration will be required but this is the subject of future work.
+	All development, validation, and testing is done on a virtual model of the platform using Imperas simulation tools \cite{imperas} built on the Open Virtual Platform (OVP) instruction accurate simulation environment \cite{ovp}. 
+	The purpose of developing on the virtual platform is to eventually validate the system on the FPGA implementation, however, software
+	calibration on the FPGA is beyond the scope of this thesis.
 
 \section{Simulink and Code Generation}
-
-	Simulink is a dataflow language used to generate system models and control algorithms which provides the ability to export control algorithms as C code. 
+\label{s:simulink}
+	Simulink is a dataflow language used to generate system models and control algorithms which provides the ability to export control algorithms as C code \cite{simulink}. 
 	Simulink does not currently support multicore target platforms or fault tolerance. 
-	The current state of the embedded runtime environment and assumptions made in the schedulability analysis places some severe limitations on what can be exported from Simulink at this time, namely:
+	The current state of the embedded runtime environment and assumptions made in the schedulability analysis places some severe limitations on the Simulink generated code supported by the framework presented in this thesis, namely:
 \begin{itemize}
   \item The stack and heap requirements of any function cannot exceed 4kB (note that this limit could be increased but that \emph{some} hard limit must exist).
   \item There is no dataflow between tasks.

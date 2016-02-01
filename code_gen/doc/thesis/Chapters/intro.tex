@@ -10,18 +10,17 @@
 
 
 	Embedded system design lies at the intersection of several fields: software design, signal processing, control theory, harware design, etc. 
-	Often the hardware and software in these systems must be specified and designed in parallel due to increasing time-to-market pressures. 
-	FPGA prototyping and virtual platform simulation are opening up new possibilities for effective hardware-software codesign strategies. 
-	As a result, most application engineers in large industries such as automative are managing the complexity of the design space and the difficulties in writing and debugging dependable code by moving towards model based design and code generation. 
-	Code generation also has the benefit of reducing platform specific dependencies and increasing code reuseability. 
-	A sigificant portion of the millions of lines of code in modern cars will be generated automatically from models.
+	Often the hardware and software in these systems must be specified and designed in parallel due to increasing time-to-market pressures \cite{teich2012hardware}. 
+	FPGA prototyping and virtual platform simulation are opening up new possibilities for effective hardware-software codesign strategies \cite{alteraovp,dspace-hil}. 
+	As a result, most application engineers in large industries such as automative are managing the complexity of the design space and the difficulties in writing and debugging dependable code by moving towards model based design and code generation, especially considering the added benefits of reducing platform specific dependencies and increasing code reuseability \cite{mossinger2010software}. 
+	A sigificant portion of the millions of lines of code in modern cars will be generated automatically from models \cite{sangiovanni2007embedded}.
 
 	The use of multicore architectures in real-time systems further complicates the design process. 
-	Multicore engine control units (ECUs) have only appeared on the market in the last couple of years (e.g. Infineon Aurix product line). 
+	Multicore engine control units (ECUs) have only appeared on the market in the last couple of years (e.g. Infineon Aurix product line \cite{infineon2014aurix}). 
 	Support for multicore architectures by software providers in real-time model based design (e.g. LabVIEW, Simulink, Esterel) is very limited or non-existent.
-	Multicore architectures are of particular interest in providing more efficient solutions to transient fault management in mixed criticality systems where resources are shared by both safety critical and non-safety critical functions. 
+	Multicore architectures are of particular interest in providing more efficient solutions to transient fault management in mixed criticality systems where resources are shared by both safety critical and non-safety critical functions because they can be used to provide tunable redundancy to tasks based on their safety requirements \cite{kopetz2007automotive,Meyer:CASES11}.
 
-	In previous work we have designed and implemented a prototype multicore architecture on an FPGA using Nios soft cores and fingerprinting to detect errors caused by transient faults. 
+	In previous work we have designed and implemented a prototype multicore architecture on an FPGA using Nios soft cores and fingerprinting to detect errors caused by transient faults \cite{ugthesis}. 
 	Programming with fingerprinting requires tedious detail work and is error-prone and difficult.
 % 	The development of high caliber research implementations of software systems using the new platform intersects several fields: control systems, embedded software, digital design, code profiling, and schedulability analysis. 
 % 	Code generation allows abstract models to be implemented at a much faster rate.
