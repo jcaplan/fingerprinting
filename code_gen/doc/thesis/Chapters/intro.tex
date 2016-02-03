@@ -9,7 +9,7 @@
 %----------------------------------------------------------------------------------------
 
 	Safety critical embedded systems often require redundant hardware to guarantee correct operation. 
-	Typically, in the automotive domain, redundancy is implemented using a pair of cores executing in lockstep to achieve \emph{dual modular redundancy} (DMR). 
+	Typically, in the automotive domain, redundancy is implemented using a pair of cores executing in lockstep to achieve \emph{dual modular redundancy} (DMR) \cite{baleani2003fault}. 
 	Lockstep execution suffers from several disadvantages: the temperature and energy requirements are higher for lockstep cores, both cores cannot be used if either suffers a permanent fault, performance between both cores must be tightly synchronized, and core pairs are bounded by the performance of the slower core \cite{lafrieda2007utilizing}. 
 	
 % 	Multicore engine control units (ECUs) have only appeared on the market in the last couple of years . 
@@ -71,6 +71,7 @@
 	In general, each component is fairly naive in its implementation and assumptions. 
 	The purpose of this project is to deliver a framework with well defined interfaces between discrete aspects of the design problem in order to facilitate future collaboration and research development. 
 	The most pressing long term issues are the discrepency between high level schedulability models and actual system performance as well as generating high quality static worst case execution time estimates.
+	For instance, one study found that up to 97\% of schedulable systems using earliest-deadline-first global scheduling missed deadlines when implemented on a many-core processor~\cite{sigrist2015mixed}.
 	We believe the starting point for significant work in this area requires a model based framework that speeds up the implementation cycle to compare measurements of actual systems with the models used to design them.
 	Code generation further allows participants to address specific aspects of the problem without being experts in all overlapping domains.
 
