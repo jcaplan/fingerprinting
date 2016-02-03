@@ -155,7 +155,7 @@ where $hp(i)$ is the set of tasks with higher priority than $\tau_i$, $hpH(i)$ i
 	Only one fingerprint is necessary per task per period because enough resources must be allocated to handle the worst case latency (which occurs when a task fails near the end of its execution). 
 		
 	Figures~\ref{f:qsort-d} and \ref{f:qsort} show the average hamming distance (HD) and cumulative HD respectively for the qsort benchmark from the MiBench suite~\cite{guthaus2001mibench}. 
-	The results were previously compiled using one and two bit fault injection on an instruction accurate simulation of the PowerPC architecture \cite{georgi}. 
+	The results were previously compiled using one and two bit fault injection on an instruction accurate simulation of the PowerPC architecture \cite{georgi}.
 	The figures show that the majority of errors with HD less than 10 bits are 1 or 2 bit errors and that the majority of errors result in HDs over 100. 
 	We argue that aliasing should not be considered a critical design point since register errors either tend not to propagate or propagate well past the point where lower block sizes can decrease the likelihood of aliasing \cite{Maxino:09}.
 	

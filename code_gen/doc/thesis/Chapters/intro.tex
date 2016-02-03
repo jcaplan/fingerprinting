@@ -8,23 +8,33 @@
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
+	Safety critical embedded systems often require redundant hardware to guarantee correct operation. 
+	Typically, in the automotive domain, redundancy is implemented using a pair of cores executing in lockstep to achieve \emph{dual modular redundancy} (DMR). 
+	Lockstep execution suffers from several disadvantages: the temperature and energy requirements are higher for lockstep cores, both cores cannot be used if either suffers a permanent fault, performance between both cores must be tightly synchronized, and core pairs are bounded by the performance of the slower core \cite{lafrieda2007utilizing}. 
+	
+% 	Multicore engine control units (ECUs) have only appeared on the market in the last couple of years . 
+	The introduction of multicore architectures into the automotive domain (e.g. Infineon Aurix product line \cite{infineon2014aurix}) provides possible alternatives for achieving DMR, namely \emph{on-demand redundancy} (ODR) \cite{Meyer:CASES11,fu2013demand} or dynamic core coupling \cite{lafrieda2007utilizing}. 
+	These methods propose that redundancy may only be implemented as needed using thread replication and comparison of the results on different cores in a multicore system rather than hard-wiring cores together in permanent lockstep. 
+	ODR is especially attractive in \emph{mixed-criticality} scenarios where not all tasks require replication because only one thread is executed on one core.
+	In a lockstep system, by comparison, all tasks consume double the resources regardless of criticality (see Section~\ref{s:odr} for details).
 
-	Embedded system design lies at the intersection of several fields: software design, signal processing, control theory, harware design, etc. 
-	Often the hardware and software in these systems must be specified and designed in parallel due to increasing time-to-market pressures \cite{teich2012hardware}. 
-	FPGA prototyping and virtual platform simulation are opening up new possibilities for effective hardware-software codesign strategies \cite{alteraovp,dspace-hil}. 
-	As a result, most application engineers in large industries such as automative are managing the complexity of the design space and the difficulties in writing and debugging dependable code by moving towards model based design and code generation, especially considering the added benefits of reducing platform specific dependencies and increasing code reuseability \cite{mossinger2010software}. 
-	A sigificant portion of the millions of lines of code in modern cars will be generated automatically from models \cite{sangiovanni2007embedded}.
-
-	The use of multicore architectures in real-time systems further complicates the design process. 
-	Multicore engine control units (ECUs) have only appeared on the market in the last couple of years (e.g. Infineon Aurix product line \cite{infineon2014aurix}). 
-	Support for multicore architectures by software providers in real-time model based design (e.g. LabVIEW, Simulink, Esterel) is very limited or non-existent.
-	Multicore architectures are of particular interest in providing more efficient solutions to transient fault management in mixed criticality systems where resources are shared by both safety critical and non-safety critical functions because they can be used to provide tunable redundancy to tasks based on their safety requirements \cite{kopetz2007automotive,Meyer:CASES11}.
-
-	In previous work we have designed and implemented a prototype multicore architecture on an FPGA using Nios soft cores and fingerprinting to detect errors caused by transient faults \cite{ugthesis}. 
-	Programming with fingerprinting requires tedious detail work and is error-prone and difficult.
+% 	Embedded system design lies at the intersection of several fields: software design, signal processing, control theory, harware design, etc. 
+% 	Often the hardware and software in these systems must be specified and designed in parallel due to increasing time-to-market pressures \cite{teich2012hardware}. 
+% 	FPGA prototyping and virtual platform simulation are opening up new possibilities for effective hardware-software codesign strategies \cite{alteraovp,dspace-hil}. 
+% 	As a result, most application engineers in large industries such as automative are managing the complexity of the design space and the difficulties in writing and debugging dependable code by moving towards model based design and code generation, especially considering the added benefits of reducing platform specific dependencies and increasing code reuseability \cite{mossinger2010software}. 
+% 	A sigificant portion of the millions of lines of code in modern cars will be generated automatically from models \cite{sangiovanni2007embedded}.
+% 
+% 	The use of multicore architectures in real-time systems further complicates the design process. 
+% 	Support for multicore architectures by software providers in real-time model based design (e.g. LabVIEW, Simulink, Esterel) is very limited or non-existent.
+% 	Multicore architectures are of particular interest in providing more efficient solutions to transient fault management in mixed criticality systems where resources are shared by both safety critical and non-safety critical functions because they can be used to provide tunable redundancy to tasks based on their safety requirements \cite{kopetz2007automotive,Meyer:CASES11}. 
+	
+	In previous work we have designed and implemented a prototype multicore architecture on an FPGA using Nios soft cores and fingerprinting to detect errors caused by transient faults \cite{ugthesis} (see Section~\ref{s:nios} for details). 
+	There are several downsides to programming with fingerprinting and ODR compared to lockstep: redundancy must be explicitly expressed in the software, code most be ported manually to the multicore architecture, and the execution time is less predictable as the number of nodes accessing shared resources increases. 
+	An analysis and code generation framework is developed in this thesis to address these issues and allow parallel investigation of several fields in the future, namely, worst case execution time estimation, mixed criticality schedulability analysis and design space exploration, and development of sufficiently complex case studies on our prototype by non-expert embedded programmers.
+	
 % 	The development of high caliber research implementations of software systems using the new platform intersects several fields: control systems, embedded software, digital design, code profiling, and schedulability analysis. 
 % 	Code generation allows abstract models to be implemented at a much faster rate.
-	This project provides a baseline framework that allows quick porting of code to the multicore system. 
+% 	This project provides a baseline framework that allows quick porting of code to the multicore system. 
 	
 \section{Contributions}
 
