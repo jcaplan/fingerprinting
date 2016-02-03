@@ -22,6 +22,7 @@ public class LoopAnalysis {
 		ssa.analyze();
 		reachingExp = new ReachingExp(root);
 		reachingExp.analyze();
+		reachingExp.prettyPrint();
 		boolean allPassed = true;
 		// First do constant propagation on the entire function
 		// ----------------------------------------------------

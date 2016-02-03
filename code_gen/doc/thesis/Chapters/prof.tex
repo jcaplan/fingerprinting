@@ -121,7 +121,7 @@ Annotations on maximum loop iterations can be embedded in the binary using the f
 	First, the approximation produced by an analysis must be well defined. 
 	Second, an analysis is defined as either \emph{forwards}, where information is propagated down through the CFG from predecessor to successor, and \emph{backwards} analysis, where information is propagated from successor to predecessor. 
 	Third, a merge operation must be defined for join points in the CFG. 
-	Fourth, the behaviour of the analysis must be defined for each type program statement in terms of the in-set and out-set of each basic block. Generally, the analysis will remove (kill) some members of the inset and add some new members to the out-set(gen). The gen and kill for each program statement will depend on the in set as well as the type of statement. 
+	Fourth, the behaviour of the analysis must be defined for each type program statement in terms of the in-set and out-set of each basic block. Generally, the analysis will remove (kill) some members of the in-set and add some new members to the out-set(gen). The gen and kill set for each program statement will depend on the in set as well as the type of statement. 
 	Finally, the starting values for either the in or out set of every basic block must be defined (depending on whether the analysis is forwards or backwards). Generally, the in values are the same for all nodes except, possibly, for the start node.
 
 	A framework architecture is used to define a generic \emph{forward analysis} procedure that is extended to implement specific analyses. The framework is currently limited to intraprocedural analysis. The framework implements a worklist based approach for fixed point flow analysis \cite{andrew2002modern}.
@@ -221,15 +221,15 @@ out: {r3_1=[(0) << (16)]}
 -------------------------------
 @!Address: 10e4; instruction: addi; operands: r3_2,r3_1,9248@!
 in: {r3_1=[(0) << (16)]}
-out: {r3_2=[((0) << (16)) + (9248)], r3_1=[(0) << (16)]}
+out: {r3_2=[((0) << (16)) + (9248)]}
 -------------------------------
 @!Address: 10e8; instruction: mov; operands: r2_1,zero@!
-in: {r3_2=[((0) << (16)) + (9248)], r3_1=[(0) << (16)]}
-out: {r3_2=[((0) << (16)) + (9248)], r2_1=[0], r3_1=[(0) << (16)]}
+in: {r3_2=[((0) << (16)) + (9248)]}
+out: {r3_2=[((0) << (16)) + (9248)], r2_1=[0]}
 -------------------------------
 @!Address: 10ec; instruction: movi; operands: r4_1,300@!
-in: {r3_2=[((0) << (16)) + (9248)], r2_1=[0], r3_1=[(0) << (16)]}
-out: {r3_2=[((0) << (16)) + (9248)], r2_1=[0], r3_1=[(0) << (16)], r4_1=[300]}
+in: {r3_2=[((0) << (16)) + (9248)], r2_1=[0]}
+out: {r3_2=[((0) << (16)) + (9248)], r2_1=[0], r4_1=[300]}
 -------------------------------
 ****************************************************
 Basic block start address: 10f0
@@ -412,7 +412,7 @@ int g8 (){
 }
 \end{lstlisting}
 
-The matrix multiplication example is one of the benchmarks used in the WCET Workshop competition. Listing~\ref{l:inter} shows a useful case from another benchmark that fails without interprocedural analysis. A summary approach could be used to identify that the missing information is a function argument. However, this information is not easily integrated into the ILP formulation (which I've decided not to discuss in this report). Control flow representing infeasible paths is also generally difficult and requires several ILP problems to be generated representing sets of orthogonal constraints in the solution space. Function pointers are another interesting case that require interprocedural analysis.
+The matrix multiplication example is one of the benchmarks used in the WCET Workshop competition~\cite{wcetcomp}. Listing~\ref{l:inter} shows a useful case from another benchmark that fails without interprocedural analysis. A summary approach could be used to identify that the missing information is a function argument. However, this information is not easily integrated into the ILP formulation (which I've decided not to discuss in this report). Control flow representing infeasible paths is also generally difficult and requires several ILP problems to be generated representing sets of orthogonal constraints in the solution space. Function pointers are another interesting case that require interprocedural analysis.
 
 \begin{lstlisting}[caption={Interprocedural analysis is necessary to analyze programs that call a function which takes the threshold as an argument.},label={l:inter}]
 uint8_t fixFilter(uint8_t *f, int size){
@@ -469,7 +469,7 @@ Figure~\ref{f:ipetresults} shows the WCET calculated using IPET normalized to th
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.5]{ipetresults.pdf}
-\caption{Current IPET analysis over-estimates WCET for software floating point operations compared.}
+\caption{Current IPET analysis over-estimates WCET for software floating point operations.}
 \label{f:ipetresults}
 \end{figure}
 
