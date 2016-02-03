@@ -1,0 +1,22 @@
+
+\begin{abstract}
+\addchaptertocentry{\abstractname} % Add the abstract to the table of contents
+
+% 	Model based design and code generation are increasingly important trends in embedded system design. 
+% 	Simulink is a standard tool for model based design of embededded control algorithms with support for code generation targeting single-core embedded processors. 
+
+% 		 
+
+
+	Safety critical embedded systems often require redundant hardware to guarantee correct operation. 
+	Typically, in the automotive domain, redundancy is implemented using a pair of cores executing in lockstep to achieve dual modular redundancy.
+	Lockstep execution, however, has been shown in theory to be less efficient than alternative redundancy schemes such as on-demand redundancy, where redundancy is achieved by replicating threads in a multicore system.
+	In this thesis, an analysis and code generation framework is presented which automates the porting of Simulink generated code to a previously implemented multicore architecture supporting ODR with fingerprinting hardware to detect errors.
+	The framework consists of three stages: first a profiling stage where information is collected on execution time, then a mapping and scheduling phase where resources are allocated in a safe manner, and finally the generation of the code itself.
+	A framework has been implemented to allow arbitrary intraprocedural analysis to be defined for a program compiled for the Nios II architecture.
+	An analysis has been implemented using the framework to analyze the worst case behaviour of loops.
+	The instruction-accurate worst case execution time of each function is then estimated using the standard implicit path enumeration technique.
+	A novel four mode multicore schedulability analysis is presented for mixed criticality fault tolerant systems which improves the quality service in the presence of faults or execution time overruns.
+	The schedulability analysis is integrated with a design space exploration framework that uses genetic algorithms to determine schedules with better quality of service.
+	Code generation targets a previously designed multicore platform with Nios II processors and fingerprinting based error detection to automate the porting of Simulink generated control algorithms onto the platform.
+\end{abstract}
