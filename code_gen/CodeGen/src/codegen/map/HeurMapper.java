@@ -41,6 +41,20 @@ public class HeurMapper extends Mapper{
         }
 	};
 
+	private Comparator<Task> sortTaskDecreasingUtilLO = new Comparator<Task>() {
+        @Override
+        public int compare(Task t1, Task t2) {
+        	double result = t2.getUtilizationLO() - t1.getUtilizationLO();
+        	if(result > 0){
+        		return 1;
+        	} else if (result < 0){
+        		return -1;
+        	} else {
+        		return 0;
+        	}
+        }
+	};
+
 
 
 	@Override
@@ -66,15 +80,80 @@ public class HeurMapper extends Mapper{
 		// 2. schedule remaining HI tasks using DMR on processing cores
 		// for each task create a replica
 		HashMap<Task,Task[]> replicas = DMR.makeReplicaList(leftoverHI);
+
+		//need a list of all tasks and replicas
+		ArrayList<Task> fullTaskList = new ArrayList<>(app.taskList);
+		for(Task[] r : replicas.values()){
+			fullTaskList.add(r[0]);
+		}
+		
 		// Now check for the DMR tasks
-		if(!worstFitDecreasingHiDmr(schedule, leftoverHI, procList, replicas)){
+		if(!worstFitDecreasingHiDmr(schedule, fullTaskList,leftoverHI, procList, replicas)){
+			System.out.println("Could not fit all HI tasks");
 			return;
 		}
 		
 		// Now it's time to start working on the LO tasks
+		/*
+		 * 
+		 * Here would be the place to try using a genetic algorithm again
+		 * 
+		 */
+		if(!firstFitDecreasingLo(schedule,fullTaskList,procList)){
+			System.out.println("Could not fit all LO tasks");
+			return;
+		} else {
+			bestSchedule = schedule;
+		}
+		
+		//Now try to schedule tasks in as many modes as possible 
+		SchedAnalysis sa = new SchedAnalysis(fullTaskList, schedule, procList);
+		sa.schedAnalysis();
+		
 		
 	}
 	
+	private boolean firstFitDecreasingLo(Schedule sched,
+			ArrayList<Task> taskList, ArrayList<Processor> procList) {
+		ArrayList<Task> tList = new ArrayList<>();
+		//Only use critical tasks
+		for(Task t : taskList){
+			if(!t.isCritical()){
+				tList.add(t);
+			}
+		}
+		
+
+		SchedAnalysis sa = new SchedAnalysis(taskList, sched, procList);
+		Collections.sort(tList,sortTaskDecreasingUtilLO);
+		for(Task t : tList){
+			//sort proc list by utilization
+			boolean success = false;
+			for(Processor p : procList){
+				//assign a task
+				sched.allocate(t, p);
+				//check if it is schedulable
+
+				
+				if(sa.schedLOMode(p)){
+					success = true;
+					Double util = procUtilizationHI.get(p);
+					util += t.getUtilizationHI();
+					procUtilizationHI.put(p, util);
+					break;
+				} else {
+					//if not unassign
+					sched.deallocate(t,p);
+				}
+				
+			}
+			if(success == false){
+				return false;
+			}
+		}	
+		return true;
+	}
+
 	/**
 	 * Try to schedule as many HI tasks as possible on lockstep cores
 	 * @param sched
@@ -136,10 +215,9 @@ public class HeurMapper extends Mapper{
 	}
 	
 	public boolean worstFitDecreasingHiDmr(Schedule sched, 
-			ArrayList<Task> tList,ArrayList<Processor> procList,
+			ArrayList<Task> tList,ArrayList<Task> leftOverHI, ArrayList<Processor> procList,
 			HashMap<Task,Task[]>replicas){
 		ArrayList<Processor> pList = new ArrayList<>();
-		ArrayList<Task> unassignedTasks = new ArrayList<>();
 
 		//This time task set already contains the correct tasks
 		
@@ -149,15 +227,9 @@ public class HeurMapper extends Mapper{
 				pList.add(p);
 			}
 		}
-
 		SchedAnalysis sa = new SchedAnalysis(tList, sched, pList);
-			
 
-		
-		//Task list should still be sorted
-		
-
-		for(Task t : tList){
+		for(Task t : leftOverHI){
 			//sort proc list by utilization
 			Collections.sort(pList, sortProcIncrHIUtil);
 			boolean success = false;

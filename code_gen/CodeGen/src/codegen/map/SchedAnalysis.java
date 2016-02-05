@@ -194,7 +194,7 @@ public class SchedAnalysis {
 			if (responseTime > t.period) {
 				return false;
 			}
-//			schedule.setResponseTime(t, modeHI, responseTime);
+			schedule.setResponseTime(t, modeHI, responseTime);
 		}
 		return true;
 	}
@@ -349,6 +349,11 @@ public class SchedAnalysis {
 		return true;
 	}
 
+	public boolean schedLOMode(Processor p){
+		ArrayList<Task> procTaskList = getProcTaskList(priorityList, p);
+		return scheduleLoMode(procTaskList);
+	}
+	
 	private boolean scheduleLoMode(ArrayList<Task> procTaskList) {
 		for (int i = 0; i < procTaskList.size(); i++) {
 			Task t = procTaskList.get(i);

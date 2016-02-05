@@ -17,13 +17,14 @@ public class Processor implements Serializable{
 
 	@Override
 	public String toString(){
-		String s = name + ": ";
-		if(faultTolerant){
-			s += "lockstep";
-		} else {
-			s +=  "processing core";
-		}
-		return s;
+//		String s = name + ": ";
+//		if(faultTolerant){
+//			s += "lockstep";
+//		} else {
+//			s +=  "processing core";
+//		}
+//		return s;
+		return name;
 	}
 	
 	@Override

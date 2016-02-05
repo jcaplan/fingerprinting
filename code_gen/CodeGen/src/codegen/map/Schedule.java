@@ -63,7 +63,8 @@ public class Schedule implements Serializable{
 	public String toString(){
 		String s = "";
 		for(Task t : bindings.keySet()){
-			s += t.toString() + bindings.get(t);
+			s += t.toString() + "(" + (t.isCritical() ? "H" : "L")+ ")" + 
+					bindings.get(t) + ",p=" + t.period + "\n";
 		}
 		return s;
 	}
@@ -119,7 +120,9 @@ public class Schedule implements Serializable{
 		
 		@Override
 		public String toString(){
-			return String.format("[%s,%s,%s]\n",processor[1],processor[2],processor[3]);
+			return String.format("[%s,%s,%s,%s],[%f,%f,%f,%f]",
+					processor[0],processor[1],processor[2],processor[3],
+					responseTime[0],responseTime[1],responseTime[2],responseTime[3]);
 		}
 	}
 
