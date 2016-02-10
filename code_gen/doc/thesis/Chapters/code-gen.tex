@@ -48,7 +48,7 @@
 	Section~\ref{s:examples} presents several examples of generated applications.
 	
 \section{Software Implementation }
-\subsection{Memory Achitecture}
+\subsection{Memory Architecture}
 \label{s:mem-arch}
 	The memory architecture in Figure~\ref{f:mem-part} contains several specialized modules and regions of access to enforce fault containment and deterministic execution in redundant threads. 
 	Each core has an MPU to enforce memory protection and uTLB for virtual memory management. 
@@ -94,7 +94,7 @@
 
 	
 	The virtual memory protocol divides each scratchpad into bins according to the page size used by the uTLB. 
-	A 16kB scrachpad, for example, contains four bins of 4kB pages.  
+	A 16kB scratchpad, for example, contains four bins of 4kB pages.  
 	The linker script for each core is updated to reserve one page in main memory for the global data (currently one 4kB page is reserved for \emph{all} global data of fingerprinted tasks rather than on a per-task basis) and one for the stack of each task. 
 	The stack size of each task is known statically using profiling information and adding an offset to account for the overhead of context switching and interrupt handling. 
 	The virtual address for each stack is assigned statically at design time. 
@@ -293,9 +293,9 @@ The data container ensures that all data is located in a contiguous region of me
 	Hardware facilities are provided to restart an entire core if necessary. 
 	However, the current model assumes that it will only be necessary to restart a task.
 	The comparator is a hardware module capable of sending an interrupt to the monitor. 
-	If a task has failed in the comparison stage then the monitor resets the state for that task and resends the data and stack to the scratchpad.
+	If a task has failed in the comparison stage then the monitor resets the state for that task and re-sends the data and stack to the scratchpad.
 	The method is sufficient because the error is assumed not to affect the RTOS kernel which implies that execution will successfully wind back up the call stack to the top level and reach the same wait point in its loop regardless of the error.
-	Watchdog timers and memory exception prototcols would need to be implemented in order to tolerate more severe types of errors (null pointers or other access exceptions and infinite loops).
+	Watchdog timers and memory exception protocols would need to be implemented in order to tolerate more severe types of errors (null pointers or other access exceptions and infinite loops).
 
 % \subsection{Fingerprint Management}
 
@@ -321,7 +321,7 @@ The data container ensures that all data is located in a contiguous region of me
 	One small problem arises because the Nios II architecture includes a global pointer similar to MIPS which raises a potential problem.
 	The Nios compiler does not guarantee that compiled code does not use the global pointer (the option is specified but unimplemented). 
 	However, shared code using Matlab's reusable function option should not generate global pointer references as there are no direct references to static objects. 
-	It is possible to temporarily change the global pointer of one core to match anothers as discussed in prior work \cite{ugthesis}.
+	It is possible to temporarily change the global pointer of one core to match the global pointer of another as discussed in prior work \cite{ugthesis}.
 
 
 \subsubsection{Runtime Monitor}

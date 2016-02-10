@@ -46,6 +46,8 @@ doublespacing, % Single line spacing, alternatives: onehalfspacing or doublespac
 \DeclareNameAlias{sortname}{last-first}
 \DeclareNameAlias{default}{last-first}
 
+
+
 \usepackage{amsfonts}
 \usepackage[cmex10]{amsmath}
 \usepackage{comment}
@@ -140,6 +142,21 @@ doublespacing, % Single line spacing, alternatives: onehalfspacing or doublespac
 	\end{figure}
 }
 
+\newcommand{\printCodeH}[3]{
+	\begin{figure}[h!]
+	\captionsetup{type=lstlisting} 
+	\caption{#2}
+	\begin{sublstlisting}[t]{0.47\linewidth}
+	\caption{C code}
+	\lstinputlisting[captionpos=t,language=C]{code/#1.c}
+	\end{sublstlisting} \hfill
+	\begin{sublstlisting}[t]{0.47\linewidth}
+	\caption{Assembly Code}
+	\lstinputlisting[captionpos=t,language=C]{code/#1.s}
+	\end{sublstlisting}
+	\label{#3}
+	\end{figure}
+}
 
 
 
@@ -267,7 +284,8 @@ Copyright \textsf{\textcopyright} \ 2016 Jonah Caplan
 %----------------------------------------------------------------------------------------
 
 \input{Chapters/abstract}
-
+\clearpage
+\input{Chapters/abstract-fr}
 
 
 

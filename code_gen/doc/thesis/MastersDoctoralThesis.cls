@@ -28,6 +28,9 @@
 
 \RequirePackage{etoolbox}
 \RequirePackage{xparse}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern} % load a font with all the characters
 \newbool{nolistspace}
 \newbool{listtoc}
 \newbool{toctoc}
@@ -297,6 +300,31 @@
 % 	{\normalsize \MakeUppercase{\univname} \par} % University name in capitals
 % 	\bigskip
 	{\huge\textit{\abstractname} \par}
+% 	\bigskip
+% 	{\normalsize \facname \par} % Faculty name
+% 	{\normalsize \deptname \par} % Department name
+% 	\bigskip
+% 	{\normalsize \degreename\par} % Degree name
+% 	\bigskip
+% 	{\normalsize\bfseries \@title \par} % Thesis title
+% 	\medskip
+% 	{\normalsize \byname{} \authorname \par} % Author name
+% 	\bigskip
+	\end{center}
+}
+{
+  \vfil\vfil\vfil\null
+}
+
+
+\newenvironment{abstract-fr}{
+	\checktoopen
+	\tttypeout{Résumé}
+% 	\null\vfil
+	\begin{center}
+% 	{\normalsize \MakeUppercase{\univname} \par} % University name in capitals
+% 	\bigskip
+	{\huge\textit{Résumé} \par}
 % 	\bigskip
 % 	{\normalsize \facname \par} % Faculty name
 % 	{\normalsize \deptname \par} % Department name

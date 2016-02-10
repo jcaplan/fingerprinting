@@ -12,6 +12,7 @@ import codegen.map.Application;
 import codegen.map.DMR;
 import codegen.map.FaultMechanism;
 import codegen.map.GAMapper;
+import codegen.map.HeurMapper;
 import codegen.map.Lockstep;
 import codegen.map.Mapper;
 import codegen.map.MultiThreadGABreeder;
@@ -21,7 +22,7 @@ import codegen.util.Logger;
 
 public class PlatformTest {
 
-	private static final int MIN_NUM_TASKS = 20;
+	private static final int MIN_NUM_TASKS = 10;
 	private static final double MIN_PERCENT_HI = 0.5;
 	private static final double AVERAGE_DEFAULT_UTILIZATION = 0.8;
 	private static final double MAX_WCET_FACTOR = 2.0;
@@ -176,7 +177,7 @@ public class PlatformTest {
 				System.out.println("odr failed");
 			}
 			
-			mapper = new GAMapper();
+			mapper = new HeurMapper();
 			mapper.setApplication(app);
 			mapper.setProcList(fpList);
 			mapper.setFTMS(fp);
@@ -222,7 +223,7 @@ public class PlatformTest {
 					fpPS.print(qos[j] + ",");
 				}
 				fpPS.println("");
-				System.out.println(odrSched);
+				System.out.println(fpSched);
 			} else if(success){
 				fpPS.println("0,0,0,0");
 			}
@@ -241,7 +242,9 @@ public class PlatformTest {
 		odrPS.close();
 		lsPS.close();
 		
-		System.out.println("schedulability LS: " + sched[LS] + "FP: " + sched[ODR]);
+		System.out.println("schedulability LS: " + sched[LS]);
+		System.out.println("schedulability FP: " + sched[FP]);
+		System.out.println("schedulability ODR: " + sched[ODR]);
 	}
 
 

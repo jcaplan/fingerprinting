@@ -4,9 +4,15 @@
 
 \label{c:concl} 
 
+	This thesis has presented a framework to automate the porting of Simulink generated control loops to a multicore platform with on-demand redundancy.
+	The main goal of the project was to develop starting points for the three main components in the system in order to facilitate future work of a more inter-disciplinary (co-design) nature. 
+	Static analysis tools provide a baseline for WCET estimation and memory requirements. 
+	A mapping and scheduling tool provides analysis to determine an optimal allocation on the system.
+	Finally, the remaining source code is generated for the platform as well as scripts to facilitate user customizations.
+	
 	There are severe limitations across the framework that may be improved in future work.
 	The static analysis tool lacks any inter-procedural analysis which prevents it from tackling many practical benchmarks.
-	The IPET analysis requires some form of microarchitectural modelling to generate cycle accurate estimates.
+	The IPET analysis requires some form of micro-architectural modelling to generate cycle accurate estimates.
 	The schedulability analysis requires that all interrupt handlers be modelled as tasks as well as the monitor DMA task and data transfers.
 	The entire system does not allow for precedence-relations between tasks or data exchange. 
 	Furthermore, the reading of sensor data and writing of final answers to actuators is not modelled (any practical solution would be board specific and involve a fair bit of extra hardware design - beyond the scope of this thesis).
@@ -19,11 +25,7 @@
 	It is also possible that the monitor code suffers from race conditions that do not manifest in the virtual platform. 
 	Considerable time will be required to set up a robust debugging environment prior to validation on the FPGA.
 	
-
-	With these limitations acknowledged, this thesis has presented a framework to automate the porting of Simulink generated control loops to a multicore platform with on-demand redundancy.
-	The main goal of the project was to develop starting points for the three main components in the system in order to facilitate future work of a more inter-disciplinary (co-design) nature. 
-	Static analysis tools provide a baseline for WCET estimation and memory requirements. 
-	A mapping and scheduling tool provides analysis to determine an optimal allocation on the system.
-	Finally, the remaining source code is generated for the platform as well as scripts to facilitate user customizations.
-	Hopefully, non-trivial control systems may be demonstrated on the platform in the future.
+	Hopefully, non-trivial control systems may be demonstrated on the platform in the future. 
+	Much theory exists on the integrated workflow of hardware/software co-design using integrated models however only a few examples of research implementations in the mixed criticality fault tolerant domain.
+	Further development on the hardware platform, embedded software implementation, and analysis tools may provide useful insights into the co-design of hardware and software and the difficulties in calibrating the various interrelated models of the system.
 		

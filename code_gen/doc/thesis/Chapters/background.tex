@@ -18,7 +18,7 @@
 
 \section{Mixed Criticality}
 \label{s:mixedcriticality}
-	Mixed criticality systems share resources between safety-critical tasks where failure can result in expensive damange or harm to users (e.g. x-by-wire), and non-safety critical tasks (e.g. infotainment). 
+	Mixed criticality systems share resources between safety-critical tasks where failure can result in expensive damage or harm to users (e.g. x-by-wire), and non-safety critical tasks (e.g. infotainment). 
 	Many industries such as automotive and avionics are trying to integrate low criticality (LO) and high criticality (HI) tasks onto the same processors.
 	Mixed criticality scheduling (MCS) is the analysis of scheduling algorithms that provide safety guarantees to HI tasks in the presence of LO tasks \cite{burns2013mixed}.
 	
@@ -68,14 +68,14 @@ where $hp(i)$ is the set of tasks with higher priority than $\tau_i$, $hpH(i)$ i
 \label{s:odr}
 
 	Transient faults or soft errors occur when environmental radation causes voltage spikes in digital circuits \cite{Baumann:05}. 
-	Transient faults must be accounted for in safety critical applications despite their rare occurence due to the catastrophic consequences that may occur such as loss of life.
+	Transient faults must be accounted for in safety critical applications despite their rare occurrence due to the catastrophic consequences that may occur such as loss of life.
 	All references to faults in this thesis refer only to transient faults whether or not explicitly stated. 
 	This thesis is specifically focused on transient faults in the register files of processors. 
 	Network \cite{radetzki2013methods} and memory \cite{Baumann:05} are also susceptible to transient faults however they are assumed to be dealt with by other mechanisms.
 
 
 % 	Current solutions to transient errors typically rely on replication of entire boards. 
-	Lockstep execution \cite{baleani2003fault} is the de-facto method of error detection in ECUs \cite{infineon2014aurix,freescale2014qorivva,renesas2016lockstep}. Lockstep execution, shown in Figure~\ref{f:lockstep}, consists of two cores executing the same code in parallel. 
+	Lockstep execution \cite{baleani2003fault} is the de facto method of error detection in ECUs \cite{infineon2014aurix,freescale2014qorivva,renesas2016lockstep}. Lockstep execution, shown in Figure~\ref{f:lockstep}, consists of two cores executing the same code in parallel. 
 	Lockstep implements redundancy at a very fine granularity as each store instruction is compared in hardware before being released to the bus. 
 	If the store output does not match then some rollback procedure must be implemented or else the processors are restarted. 
 	It is only possible to detect an error with two processors. 
@@ -83,7 +83,7 @@ where $hp(i)$ is the set of tasks with higher priority than $\tau_i$, $hpH(i)$ i
 	Lockstep cores are difficult to build and scale due to the precise synchronization required.
 
 	Lockstep execution is problematic in mixed criticality systems because it is not possible to \emph{decouple} the cores (i.e. use them to run different code independently). 
-	It is inefficent to run mixed criticality applications on a pair of \emph{statically coupled} lockstep cores because not all tasks necessarily require protection against transient faults. 
+	It is inefficient to run mixed criticality applications on a pair of \emph{statically coupled} lockstep cores because not all tasks necessarily require protection against transient faults. 
 	In Figure~\ref{f:lockstep}, both non-critical tasks (blue) as well as critical tasks (red) must execute on two cores at all times. 	
 	The four physical cores operate as two logical nodes regardless of the workload.
 
@@ -126,7 +126,7 @@ where $hp(i)$ is the set of tasks with higher priority than $\tau_i$, $hpH(i)$ i
 	ODR is implemented using fingerprinting \cite{Smolens:04} to detect errors. 
 	The fingerprint hardware (FP) passively monitors bus traffic and generates checksums based on the write address and data.
 	The software on each core signals the start, end, and pausing of a task to the FP unit.
-	The hardware supports rate-monotic scheduling, meaning that a fingerprinted task may be paused and a higher priority task can begin fingerprinting without corrupting the previous fingerprint.
+	The hardware supports rate-monotonic scheduling, meaning that a fingerprinted task may be paused and a higher priority task can begin fingerprinting without corrupting the previous fingerprint.
 	Preemption is supported using modified exception funnels and stacks inside the FP however the implementation details were the subject of previous work \cite{ugthesis} and will not be discussed in this thesis.
 	
 	The sphere of replication (SoR) or fault containment region (FCR) refers to the notion that faulty data must not be allowed to propagate to main memory or I/O. 

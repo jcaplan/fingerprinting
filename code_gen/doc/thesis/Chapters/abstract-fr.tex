@@ -1,0 +1,22 @@
+\begin{abstract-fr}
+
+\addchaptertocentry{Résumé} % Add the abstract to the table of contents
+	Les systèmes intégrées au sécurité critique exigent souvent de matériel redondant pour guarantir l'opération correcte. 
+	La redondance est typiquement  réalisée en l'industrie automobile avec une paire de coeurs qui exécutent en \emph{lockstep} pour atteindre la redondance modulaire double (DMR). 
+	L'exécution en lockstep, cependent, a été démontrée moins efficace que les méthodes alternatives telles que la redondance en demande (ODR), où la redondance est obtenue en reproduisant des tâches d'execution dans un système multicoeur. 
+	Dans cette thèse, un cadre d'analyse et de génération de code est présenté qui automatise le portage du code généré avec Simulink sur un architecture multicoeur. La détéction des fautes ODR est réalisé avec \emph{fingerprinting}. 
+	Le cadre se compose de trois étapes: d'abord une étape de profilage où l'information est recueillie sur le temps d'exécution, alors une étaoe de planification et d'allocation de resources, et enfin la génération du code. 
+	
+	Un cadre a été mis en œuvre pour permettre la une définition d'analyse interprocédurale arbitraire pour un programme compilé pour l'architecture Nios II.
+	Une analyse a été mis en œuvre en utilisant le cadre pour déterminer le borne de boucles.
+	Le pire cas de temps d'exéecution est ensuite estimé au précisions des instructions en utilisant la technique l'énumération implicite des chemins (IPET). 
+	Une nouvelle analyse d'ordonnancement de quatre modes est présenté pour les systèmes multicœurs à tolérance de fautes de criticité mixte qui améliore la qualité de service en présence de fautes ou de dépassements de limites temporelles. 
+	L'analyse d'ordonnancement est intégré à un cadre de l'exploration de l'espace de conception qui utilise des algorithmes génétiques pour déterminer les horaires avec une meilleure qualité de service. 
+	La génération de code est réalisé pour une plateforme multicœur déjà conçu avec des processeurs Nios II et détection de fautes pour automatiser le portage d'algorithmes générés avec Simulink au plate-forme. 
+	Le code généré est vérifiée sur un modèle virtuel de la plate-forme mise en œuvre avec Open Platform virtuel.
+	Les travaux futurs porteront vérification du code sur FPGA et calibrer l'estimation du WCET pour refléter récupération de la mémoire non-idéal.
+
+
+\end{abstract-fr}
+
+
