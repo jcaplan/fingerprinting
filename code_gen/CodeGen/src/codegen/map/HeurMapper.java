@@ -170,6 +170,7 @@ public class HeurMapper extends Mapper{
 		for(Task t : taskList){
 			if(t.isCritical()){
 				tList.add(t);
+				t.setMaxNumReexecutions(new int[] {1,2,1,2});
 			}
 		}
 		

@@ -45,7 +45,7 @@ where:
 \begin{figure}[h]
 \centering
 \includegraphics[scale=1]{bbedges.pdf}
-\caption{Sum of the edges into the basic block must equal the sum of the edges out: $\sum e_{in} - \sum e_{out} = 0$.} 
+\caption[Sum of the edges into the basic block in IPET analysis]{Sum of the edges into the basic block must equal the sum of the edges out: $\sum e_{in} - \sum e_{out} = 0$.} 
 \label{f:bbedges}
 \end{figure}
 
@@ -60,7 +60,7 @@ Loops require an additional constraint on the maximum number of iterations. Ther
 \begin{figure}[h]
 \centering
 \includegraphics[scale=1]{loopedges.pdf}
-\caption{An additional constraint is required for loops: $\sum e_{in} \leq m$.} 
+\caption[Loop constraints in IPET]{An additional constraint is required for loops: $\sum e_{in} \leq m$.} 
 \label{f:loopedges}
 \end{figure}
 
@@ -93,7 +93,7 @@ The entry-point for function calls equals the sum of all the edges leaving basic
 
 \SetKwFunction{setRank}{setRank}
 
-root.age $\leftarrow$ 1\;
+root.rank $\leftarrow$ 1\;
 mark root as seen\;
 bbList $\leftarrow$ list of basic blocks\;
 bbList.add(root);
@@ -266,7 +266,7 @@ out: {r3_3=[((0) << (16)) + (9248), (r3_3) + (24), (((0) << (16)) + (9248)) + (2
 \subsection{Loop Analysis}
 
 	Algorithm~\ref{a:analysis} shows how the loop is characterized. 
-	Note that nested loops do not break the condition that only one backwards edge can exist because a backwards edge is defined as going back to the \textit{head} of the loop. 
+	Note that nested loops do not break the condition that only one backwards edge can exist because a backwards edge is defined as going back to the \textit{head} of the loop. Algorithm~\ref{a:range} shows how to determine the range of an expression. 
 
 
 \begin{algorithm}
@@ -343,6 +343,7 @@ reachingExp = Reaching expression analysis on f\;
 	  \Return $range$\;
   }
   \caption{Get range function for loop detection.}
+  \label{a:range}
  \end{algorithm}
  
  
@@ -511,7 +512,7 @@ Figure~\ref{f:ipetresults} shows the WCET calculated using IPET normalized to th
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.5]{ipetresults.png}
-\caption{Current IPET analysis over-estimates WCET for software floating point operations compared to simulation.}
+\caption[IPET results for software implemented floating point]{Current IPET analysis over-estimates WCET for software floating point operations compared to simulation.}
 \label{f:ipetresults}
 \end{figure}
 
