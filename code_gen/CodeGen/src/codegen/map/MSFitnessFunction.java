@@ -21,7 +21,7 @@ public class MSFitnessFunction extends FitnessFunction{
 	Map<Task, ArrayList<Processor>> legalMappings;
 	ArrayList<Processor> procList;
 	private Map<Task, FaultMechanism> techniqueMap;
-	
+	Map<Task, int[]> executionProfiles;
 //	public MSFitnessFunction(ArrayList<Task> taskList,
 //			ArrayList<MapConstraint> constraints, Map<Task, ArrayList<Processor>> legalMappings, ArrayList<Processor> procList) {
 //		this.taskList = taskList;
@@ -33,12 +33,13 @@ public class MSFitnessFunction extends FitnessFunction{
 	public MSFitnessFunction(ArrayList<Task> taskList,
 			Map<Task,Task[]> replicas, Map<Task, FaultMechanism> techniqueMap,
 			Map<Task, ArrayList<Processor>> legalMappings,
-			ArrayList<Processor> procList) {
+			Map<Task, int[]> executionProfiles, ArrayList<Processor> procList) {
 		this.taskList = taskList;
 		this.techniqueMap = techniqueMap;
 		this.legalMappings = legalMappings;
 		this.procList = procList;
 		this.replicas = replicas;
+		this.executionProfiles = executionProfiles;
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class MSFitnessFunction extends FitnessFunction{
 		}
 		
 		
-		SchedAnalysis analysis = new SchedAnalysis(taskList, schedule,procList);
+		SchedAnalysis analysis = new SchedAnalysis(taskList, schedule,procList, executionProfiles);
 		double fitness;
 		boolean schedResult;
 		if(!(schedResult = analysis.schedAnalysis())){

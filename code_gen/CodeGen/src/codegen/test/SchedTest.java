@@ -19,6 +19,7 @@ public class SchedTest {
 		Processor p = new Processor("p0", true);
 		
 		ArrayList<Task> taskList = new ArrayList<>();
+		Map<Task, int[]> executionProfiles = new HashMap<>();
 		for(int i = 0; i < period.length; i++){	
 			boolean criticality = crit[i] == 1;
 			Task t = new Task(clo[i], chi[i], period[i], criticality, "t" + i);
@@ -30,14 +31,14 @@ public class SchedTest {
 				int[] def = {1,1,1,1};
 				n = def;
 			}
-			t.setMaxNumReexecutions(n);
+			executionProfiles.put(t,n);
 			taskList.add(t);
 			schedule.allocate(t, p);
 		}
 		ArrayList<Processor> procList = new ArrayList<>();
 		procList.add(p);
 		
-		SchedAnalysis schedAnalysis = new SchedAnalysis(taskList, schedule, procList);
+		SchedAnalysis schedAnalysis = new SchedAnalysis(taskList, schedule, procList,executionProfiles);
 		System.out.println("system schedulable: " + schedAnalysis.schedAnalysis());
 		System.out.println(schedule);
 		for(Task t : taskList){

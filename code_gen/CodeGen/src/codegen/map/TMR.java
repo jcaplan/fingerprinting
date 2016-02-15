@@ -14,7 +14,8 @@ public class TMR extends FaultMechanism {
 
 	@Override
 	public synchronized void updateTaskList(ArrayList<Task> taskList, int taskIndex,
-			Map<Task,Task[]> replicas, Map<Task, FaultMechanism> techniqueMap) {
+			Map<Task,Task[]> replicas, Map<Task, FaultMechanism> techniqueMap,
+			Map<Task, int[]> executionProfiles) {
 		Task t = taskList.get(taskIndex);
 		
 		Task replica1 = new Task(t,Task.replica);
@@ -23,10 +24,9 @@ public class TMR extends FaultMechanism {
 		Task replica2 = new Task(t,Task.replica);
 		taskList.add(replica2);
 		replicas.put(t,new Task[] {replica1,replica2});
-		
-		t.setMaxNumReexecutions(reexecutionProfile);
-		replica1.setMaxNumReexecutions(reexecutionProfile);
-		replica2.setMaxNumReexecutions(reexecutionProfile);
+		executionProfiles.put(t, reexecutionProfile);
+		executionProfiles.put(replica1,reexecutionProfile);
+		executionProfiles.put(replica2,reexecutionProfile);
 		techniqueMap.put(t, this);
 //		techniqueMap.put(replica1, this);
 //		techniqueMap.put(replica2, this);

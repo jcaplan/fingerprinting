@@ -17,9 +17,16 @@ public class GAMapper extends Mapper{
 			Map<Task, ArrayList<Processor>> legalMappings = new HashMap<>();
 			Map<Task, FaultMechanism> techniqueMap = new HashMap<>();
 			Lockstep ls = new Lockstep();
+			Map<Task,int[]> executionProfiles = new HashMap<>();
+			
 			for (Task t : app.getTaskList()) {
 				legalMappings.put(t, procList);
 				techniqueMap.put(t, ls);
+				if(t.isCritical()){
+					executionProfiles.put(t, new int[]{1,2,1,2});
+				} else {
+					executionProfiles.put(t, new int[]{1,1,1,1});
+				}
 			}
 
 			MapConfiguration.reset();
@@ -35,7 +42,7 @@ public class GAMapper extends Mapper{
 			}
 			Map<Task,Task[]> replicas = new HashMap<>();
 			MSFitnessFunction msFF = new MSFitnessFunction(app.getTaskList(),
-					replicas, techniqueMap, legalMappings, procList);
+					replicas, techniqueMap, legalMappings, executionProfiles, procList);
 			GAEngine msEngine = new GAEngine(msFF, msConfig, sampleChromosome,false,30);
 
 			msEngine.findSolution();
@@ -52,13 +59,16 @@ public class GAMapper extends Mapper{
 				techniqueMap.put(t, dmr);
 			}
 			Map<Task,Task[]> replicas = new HashMap<>();
+			Map<Task,int[]> executionProfiles = new HashMap<>();
 			ArrayList<Task> taskList = (ArrayList<Task>) app.getTaskList().clone();
 			int numOriginalTasks = taskList.size();
 			for (int i = 0; i < numOriginalTasks; i++) {
 				Task t = taskList.get(i);
 				if (t.criticality == Task.HI) {
 					FaultMechanism mec = dmr;
-					mec.updateTaskList(taskList, i, replicas, techniqueMap);
+					mec.updateTaskList(taskList, i, replicas, techniqueMap, executionProfiles);
+				} else {
+					executionProfiles.put(t, new int[]{1,1,1,1});
 				}
 			}
 			MapConfiguration.reset();
@@ -73,7 +83,7 @@ public class GAMapper extends Mapper{
 			}
 
 			MSFitnessFunction msFF = new MSFitnessFunction(app.getTaskList(),
-					replicas, techniqueMap, legalMappings, procList);
+					replicas, techniqueMap, legalMappings, executionProfiles, procList);
 			GAEngine msEngine = new GAEngine(msFF, msConfig, sampleChromosome,false,30);
 
 			msEngine.findSolution();

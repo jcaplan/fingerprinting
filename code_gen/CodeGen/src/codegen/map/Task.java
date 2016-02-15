@@ -21,7 +21,6 @@ public class Task implements Comparable<Task>, Serializable{
 	static int tID;
 	static int numOriginalTasks;
 	int id;
-	int[] maxNumReexecutions = {1,1,1,1};
 	
 	
 	
@@ -42,7 +41,6 @@ public class Task implements Comparable<Task>, Serializable{
 		this.criticality = t.criticality;
 		this.type = Task.replica;
 		id = tID++;
-		this.maxNumReexecutions = t.maxNumReexecutions;
 		if(replica){
 			name = t.name + "R";
 		} else {
@@ -68,13 +66,6 @@ public class Task implements Comparable<Task>, Serializable{
 		return proc;
 	}
 	
-	public void setMaxNumReexecutions(int[] n){
-		for(int i = 0; i < SchedAnalysis.numModes; i++){
-			maxNumReexecutions[i] = n[i];
-		}
-	}
-	
-	//TODO: is this an OK sorting algorithm??
 
 	@Override
 	public int compareTo(Task task) {

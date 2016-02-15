@@ -69,7 +69,7 @@ public class Schedule implements Serializable{
 		return s;
 	}
 	
-	private class Binding implements Serializable{
+	private class Binding {
 		Processor[] processor = new Processor[SchedAnalysis.numModes];
 		int priority;
 		double[] responseTime = new double[SchedAnalysis.numModes];	
@@ -84,6 +84,8 @@ public class Schedule implements Serializable{
 				
 			}
 		}
+		
+		
 		
 		public void setPriority(int prio){
 			priority = prio;
@@ -173,6 +175,5 @@ public class Schedule implements Serializable{
 		
 		return results;
 	}
-
 
 }

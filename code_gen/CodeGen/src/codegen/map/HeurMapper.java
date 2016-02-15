@@ -6,10 +6,12 @@ import java.util.*;
 public class HeurMapper extends Mapper{
 
 	Map<Processor, Double> procUtilizationHI;
+	Map<Task, int[]> executionProfiles;
 	
 	public HeurMapper(){
 		super();
 		procUtilizationHI = new HashMap<>();
+		executionProfiles = new HashMap<>();
 	}
 	
 	private Comparator<Processor> sortProcIncrHIUtil = new Comparator<Processor>() {
@@ -79,7 +81,7 @@ public class HeurMapper extends Mapper{
 		
 		// 2. schedule remaining HI tasks using DMR on processing cores
 		// for each task create a replica
-		HashMap<Task,Task[]> replicas = DMR.makeReplicaList(leftoverHI);
+		HashMap<Task,Task[]> replicas = DMR.makeReplicaList(leftoverHI,executionProfiles);
 
 		//need a list of all tasks and replicas
 		ArrayList<Task> fullTaskList = new ArrayList<>(app.taskList);
@@ -107,7 +109,7 @@ public class HeurMapper extends Mapper{
 		}
 		
 		//Now try to schedule tasks in as many modes as possible 
-		SchedAnalysis sa = new SchedAnalysis(fullTaskList, schedule, procList);
+		SchedAnalysis sa = new SchedAnalysis(fullTaskList, schedule, procList, executionProfiles);
 		sa.schedAnalysis();
 		
 		
@@ -124,7 +126,7 @@ public class HeurMapper extends Mapper{
 		}
 		
 
-		SchedAnalysis sa = new SchedAnalysis(taskList, sched, procList);
+		SchedAnalysis sa = new SchedAnalysis(taskList, sched, procList, executionProfiles);
 		Collections.sort(tList,sortTaskDecreasingUtilLO);
 		for(Task t : tList){
 			//sort proc list by utilization
@@ -170,7 +172,9 @@ public class HeurMapper extends Mapper{
 		for(Task t : taskList){
 			if(t.isCritical()){
 				tList.add(t);
-				t.setMaxNumReexecutions(new int[] {1,2,1,2});
+				executionProfiles.put(t, new int[] {1,2,1,2});
+			} else {
+				executionProfiles.put(t, new int[] {1,1,1,1});
 			}
 		}
 		
@@ -181,7 +185,7 @@ public class HeurMapper extends Mapper{
 			}
 		}
 		
-		SchedAnalysis sa = new SchedAnalysis(tList, sched, pList);
+		SchedAnalysis sa = new SchedAnalysis(tList, sched, pList, executionProfiles);
 			
 		
 		//sort tasks by HI utilization
@@ -228,7 +232,7 @@ public class HeurMapper extends Mapper{
 				pList.add(p);
 			}
 		}
-		SchedAnalysis sa = new SchedAnalysis(tList, sched, pList);
+		SchedAnalysis sa = new SchedAnalysis(tList, sched, pList, executionProfiles);
 
 		for(Task t : leftOverHI){
 			//sort proc list by utilization

@@ -14,9 +14,10 @@ public class Lockstep extends FaultMechanism{
 
 	@Override
 	public synchronized void updateTaskList(ArrayList<Task> taskList, int taskIndex,
-			Map<Task,Task[]> constraints, Map<Task, FaultMechanism> techniqueMap) {
+			Map<Task,Task[]> constraints, Map<Task, FaultMechanism> techniqueMap,
+			Map<Task, int[]> executionProfiles) {
 		Task t = taskList.get(taskIndex);
-		t.setMaxNumReexecutions(reexecutionProfile);
+		executionProfiles.put(t,reexecutionProfile);
 		techniqueMap.put(t, this);
 	}
 

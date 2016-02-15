@@ -8,7 +8,7 @@ import org.jgap.Gene;
 
 public abstract class FaultMechanism implements Serializable{
 
-	
+	private static final int[] reexecutionProfile = {1,1,1,1};
 	
 	private static final Map<String, Class<? extends FaultMechanism>> mechanismTypes = new HashMap<String, Class<? extends FaultMechanism>>();
     static {
@@ -67,11 +67,13 @@ public abstract class FaultMechanism implements Serializable{
     }
     public abstract String getCommandName();
 
-	public abstract void updateTaskList(ArrayList<Task> taskList, int i, Map<Task,Task[]> replicas, Map<Task, FaultMechanism> techniqueMap);
+	public abstract void updateTaskList(ArrayList<Task> taskList, int i, Map<Task,Task[]> replicas, 
+			Map<Task, FaultMechanism> techniqueMap, Map<Task, int[]> executionProfiles);
 
 	public abstract int getPermutationSize(int numLegalProcessors);
 
 	public abstract void allocateProcessors(Schedule schedule, int permutation,
 			Map<Task, ArrayList<Processor>> legalMappings, Task t, Map<Task,Task[]> replicas);
+
 
 }

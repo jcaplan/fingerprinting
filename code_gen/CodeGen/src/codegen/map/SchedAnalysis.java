@@ -2,6 +2,7 @@ package codegen.map;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 
 public class SchedAnalysis {
 
@@ -17,13 +18,14 @@ public class SchedAnalysis {
 	Schedule schedule;
 	ArrayList<Processor> procList;
 	ArrayList<Task> priorityList;
+	Map<Task, int[]> executionProfiles;
 	
 	public SchedAnalysis(ArrayList<Task> taskList, Schedule schedule,
-			ArrayList<Processor> procList) {
+			ArrayList<Processor> procList, Map<Task, int[]> executionProfiles) {
 		this.taskList = taskList;
 		this.schedule = schedule;
 		this.procList = procList;
-
+		this.executionProfiles = executionProfiles;
 		priorityList = getSortedPriorityList(taskList);
 	}
 
@@ -171,15 +173,15 @@ public class SchedAnalysis {
 			if(!t.isCritical()){
 				continue;
 			}
-			double responseTime = t.wcetUpperBound * t.maxNumReexecutions[modeHI];
+			double responseTime = t.wcetUpperBound * executionProfiles.get(t)[modeHI];
 			while (responseTime < t.period) {
-				double rSum = t.wcetUpperBound * t.maxNumReexecutions[modeHI];
+				double rSum = t.wcetUpperBound * executionProfiles.get(t)[modeHI];
 				for (int j = i + 1; j < procTaskList.size(); j++) {
 					Task hpTask = procTaskList.get(j);
 
 					if(hpTask.criticality == Task.HI){
 						rSum += Math.ceil(responseTime / hpTask.period)
-								* hpTask.wcetUpperBound * hpTask.maxNumReexecutions[modeHI];
+								* hpTask.wcetUpperBound * executionProfiles.get(hpTask)[modeHI];
 					} else {
 						rSum += Math.ceil(schedule.getResponseTime(t,modeLO) / hpTask.period)
 								* hpTask.wcetLowerBound;
@@ -206,7 +208,7 @@ public class SchedAnalysis {
 			if(!schedule.isScheduled(t, modeOV)){
 				continue;
 			}
-			double responseTime = t.wcetUpperBound * t.maxNumReexecutions[modeOV];
+			double responseTime = t.wcetUpperBound * executionProfiles.get(t)[modeOV];
 			if(responseTime == 0){
 				//don't calculate response time for PR replicas with c= 0...
 				schedule.setResponseTime(t, modeOV, 0);
@@ -219,7 +221,7 @@ public class SchedAnalysis {
 					
 					if(schedule.isScheduled(hpTask,modeOV)){
 						rSum += Math.ceil(responseTime / hpTask.period)
-								* hpTask.wcetUpperBound * hpTask.maxNumReexecutions[modeOV];
+								* hpTask.wcetUpperBound * executionProfiles.get(hpTask)[modeOV];
 					} else {
 						rSum += Math.ceil(schedule.getResponseTime(t,modeLO) / hpTask.period)
 								* hpTask.wcetLowerBound;
@@ -246,15 +248,15 @@ public class SchedAnalysis {
 				continue;
 			}
 			//no carry overs -> skip LO tasks
-			double responseTime = t.wcetUpperBound * t.maxNumReexecutions[modeTF];
+			double responseTime = t.wcetUpperBound * executionProfiles.get(t)[modeTF];
 			while (responseTime < t.period) {
-				double rSum = t.wcetLowerBound * t.maxNumReexecutions[modeTF];
+				double rSum = t.wcetLowerBound * executionProfiles.get(t)[modeTF];
 				for (int j = i + 1; j < procTaskList.size(); j++) {
 					Task hpTask = procTaskList.get(j);
 
 					if(schedule.isScheduled(hpTask, modeTF)){
 						rSum += Math.ceil(responseTime / hpTask.period)
-								* hpTask.wcetLowerBound * hpTask.maxNumReexecutions[modeTF];
+								* hpTask.wcetLowerBound * executionProfiles.get(hpTask)[modeTF];
 					} else {
 						
 						rSum += Math.ceil(schedule.getResponseTime(t,modeLO) / hpTask.period)
@@ -281,15 +283,15 @@ public class SchedAnalysis {
 			if(!schedule.isScheduled(t, modeHI)){
 				continue;
 			}
-			double responseTime = t.wcetUpperBound * t.maxNumReexecutions[modeHI];
+			double responseTime = t.wcetUpperBound * executionProfiles.get(t)[modeHI];
 			while (responseTime < t.period) {
-				double rSum = t.wcetUpperBound * t.maxNumReexecutions[modeHI];
+				double rSum = t.wcetUpperBound * executionProfiles.get(t)[modeHI];
 				for (int j = i + 1; j < procTaskList.size(); j++) {
 					Task hpTask = procTaskList.get(j);
 
 					if(schedule.isScheduled(hpTask, modeHI)){
 						rSum += Math.ceil(responseTime / hpTask.period)
-								* hpTask.wcetUpperBound * hpTask.maxNumReexecutions[modeHI];
+								* hpTask.wcetUpperBound * executionProfiles.get(hpTask)[modeHI];
 					} else if (schedule.isScheduled(hpTask, modeOV)){
 						rSum += Math.ceil(schedule.getResponseTime(t, modeOV) / hpTask.period)
 								* hpTask.wcetLowerBound;
@@ -318,18 +320,18 @@ public class SchedAnalysis {
 			if(!schedule.isScheduled(t, modeHI)){
 				continue;
 			}
-			double responseTime = t.wcetUpperBound * t.maxNumReexecutions[modeHI];
+			double responseTime = t.wcetUpperBound * executionProfiles.get(t)[modeHI];
 			while (responseTime < t.period) {
-				double rSum = t.wcetUpperBound * t.maxNumReexecutions[modeHI];
+				double rSum = t.wcetUpperBound * executionProfiles.get(t)[modeHI];
 				for (int j = i + 1; j < procTaskList.size(); j++) {
 					Task hpTask = procTaskList.get(j);
 
 					if(schedule.isScheduled(hpTask, modeHI)){
 						rSum += Math.ceil(responseTime / hpTask.period)
-								* hpTask.wcetUpperBound * hpTask.maxNumReexecutions[modeHI];
+								* hpTask.wcetUpperBound * executionProfiles.get(hpTask)[modeHI];
 					} else if (schedule.isScheduled(hpTask, modeTF)){
 						rSum += Math.ceil(schedule.getResponseTime(t, modeTF) / hpTask.period)
-								* hpTask.wcetLowerBound * hpTask.maxNumReexecutions[modeTF];
+								* hpTask.wcetLowerBound * executionProfiles.get(hpTask)[modeTF];
 					} else {
 						rSum += Math.ceil(schedule.getResponseTime(t,modeLO) / hpTask.period)
 								* hpTask.wcetLowerBound;
@@ -358,7 +360,7 @@ public class SchedAnalysis {
 		for (int i = 0; i < procTaskList.size(); i++) {
 			Task t = procTaskList.get(i);
 			double responseTime = t.wcetLowerBound;
-			if(t.maxNumReexecutions[modeLO] == 0){
+			if(executionProfiles.get(t)[modeLO] == 0){
 				//don't calculate response time for PR replicas with c= 0...
 				schedule.setResponseTime(t, modeLO, 0);
 				return true;

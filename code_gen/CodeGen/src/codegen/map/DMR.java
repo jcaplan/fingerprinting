@@ -1,7 +1,6 @@
 package codegen.map;
 
 import java.util.*;
-import java.util.Map;
 
 import org.jgap.Gene;
 
@@ -17,25 +16,27 @@ public class DMR extends FaultMechanism {
 
 	@Override
 	public synchronized void updateTaskList(ArrayList<Task> taskList, int taskIndex,
-			Map<Task,Task[]> replicas, Map<Task, FaultMechanism> techniqueMap) {
+			Map<Task,Task[]> replicas, Map<Task, FaultMechanism> techniqueMap,
+			Map<Task, int[]> executionProfiles) {
 		Task t = taskList.get(taskIndex);
 		Task replica = new Task(t,Task.replica);
 		taskList.add(replica);
 		replicas.put(t, new Task[] {replica});
-		t.setMaxNumReexecutions(reexecutionProfile);
-		replica.setMaxNumReexecutions(reexecutionProfile);
+		executionProfiles.put(t,reexecutionProfile);
+		executionProfiles.put(replica,reexecutionProfile);
 		techniqueMap.put(t, this);
 //		techniqueMap.put(replica, this);
 	}
 	
-	public static HashMap<Task,Task[]> makeReplicaList(ArrayList<Task> taskList){
+	public static HashMap<Task,Task[]> makeReplicaList(ArrayList<Task> taskList,
+			Map<Task,int[]> executionProfiles){
 		HashMap<Task,Task[]> replicas = new HashMap<>();
 		//make a list of replicas
 		for(Task t : taskList){
 			Task replica = new Task(t,Task.replica);
 			replicas.put(t,  new Task[] {replica});
-			t.setMaxNumReexecutions(reexecutionProfile);
-			replica.setMaxNumReexecutions(reexecutionProfile);
+			executionProfiles.put(t,reexecutionProfile);
+			executionProfiles.put(replica,reexecutionProfile);
 		}
 		return replicas;
 	}

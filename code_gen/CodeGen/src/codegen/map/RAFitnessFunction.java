@@ -46,13 +46,17 @@ public class RAFitnessFunction extends FitnessFunction {
 		
 		//technique map only contains original task set
 		Map<Task, FaultMechanism> techniqueMap = new HashMap<>();
+		Map<Task, int[]> executionProfiles = new HashMap<>();
+		
 		int hiCount = 0;
 		for (int i = 0; i < numOriginalTasks; i++) {
 			Task t = taskList.get(i);
 			if (t.criticality == Task.HI) {
 				FaultMechanism mec = getDetectionType(chromosome, hiCount);
 				hiCount++;
-				mec.updateTaskList(taskList, i, replicas, techniqueMap);
+				mec.updateTaskList(taskList, i, replicas, techniqueMap, executionProfiles);
+			} else {
+				executionProfiles.put(t, new int[] {1,1,1,1});
 			}
 		}
 
@@ -92,7 +96,8 @@ public class RAFitnessFunction extends FitnessFunction {
 			e.printStackTrace();
 		}
 
-		MSFitnessFunction msFF = new MSFitnessFunction(app.getTaskList(), replicas,techniqueMap,legalMappings,procList);
+		MSFitnessFunction msFF = new MSFitnessFunction(app.getTaskList(), replicas,techniqueMap,
+				legalMappings,executionProfiles, procList);
 		GAEngine msEngine = new GAEngine(msFF, msConfig,sampleChromosome,false,30);
 
 		msEngine.findSolution();

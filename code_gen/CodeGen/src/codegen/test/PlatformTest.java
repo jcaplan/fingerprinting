@@ -12,7 +12,7 @@ import codegen.map.Application;
 import codegen.map.DMR;
 import codegen.map.FaultMechanism;
 import codegen.map.GAMapper;
-import codegen.map.HeurMapper;
+import codegen.map.GAMapper;
 import codegen.map.Lockstep;
 import codegen.map.Mapper;
 import codegen.map.MultiThreadGABreeder;
@@ -177,7 +177,7 @@ public class PlatformTest {
 				System.out.println("odr failed");
 			}
 			
-			mapper = new HeurMapper();
+			mapper = new GAMapper();
 			mapper.setApplication(app);
 			mapper.setProcList(fpList);
 			mapper.setFTMS(fp);

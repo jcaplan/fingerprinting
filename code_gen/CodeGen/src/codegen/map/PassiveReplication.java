@@ -15,16 +15,18 @@ public class PassiveReplication extends FaultMechanism {
 
 	@Override
 	public synchronized void updateTaskList(ArrayList<Task> taskList, int taskIndex,
-			Map<Task,Task[]> replicas, Map<Task, FaultMechanism> techniqueMap) {
+			Map<Task,Task[]> replicas, Map<Task, FaultMechanism> techniqueMap,
+			Map<Task, int[]> executionProfiles) {
 		Task t = taskList.get(taskIndex);
 		Task replica1 = new Task(t,Task.replica);
 		taskList.add(replica1);
 		Task replica2 = new Task(t,Task.replica);
 		taskList.add(replica2);
 		replicas.put(t,new Task[] {replica1,replica2});
-		t.setMaxNumReexecutions(reexecutionProfileOriginal);
-		replica1.setMaxNumReexecutions(reexecutionProfileOriginal);
-		replica2.setMaxNumReexecutions(reexecutionProfileFault);
+		executionProfiles.put(t,reexecutionProfileOriginal);
+		executionProfiles.put(replica1,reexecutionProfileOriginal);
+		executionProfiles.put(replica2,reexecutionProfileFault);
+		
 		techniqueMap.put(t, this);
 //		techniqueMap.put(replica1, this);
 //		techniqueMap.put(replica2,this);
