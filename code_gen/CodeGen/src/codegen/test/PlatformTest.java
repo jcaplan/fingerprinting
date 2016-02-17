@@ -15,6 +15,7 @@ import codegen.map.DMR;
 import codegen.map.FaultMechanism;
 import codegen.map.GAMapper;
 import codegen.map.Heur2Mapper;
+import codegen.map.HeurMapper;
 import codegen.map.Lockstep;
 import codegen.map.Mapper;
 import codegen.map.MultiThreadGABreeder;
@@ -173,7 +174,7 @@ public class PlatformTest {
 					2, 1, maxWcetFactor,random);
 			}
 
-			mapper = new GAMapper();
+			mapper = new HeurMapper();
 			mapper.setApplication(app);
 			mapper.setProcList(lsList);
 			mapper.setFTMS(ls);
@@ -187,7 +188,7 @@ public class PlatformTest {
 				System.out.println("lockstep failed");
 			}
 			
-			mapper = new GAMapper();
+			mapper = new HeurMapper();
 			mapper.setApplication(app);
 			mapper.setProcList(odrList);
 			mapper.setFTMS(odr);
@@ -200,7 +201,7 @@ public class PlatformTest {
 				System.out.println("odr failed");
 			}
 			
-			mapper = new Heur2Mapper();
+			mapper = new HeurMapper();
 			mapper.setApplication(app);
 			mapper.setProcList(fpList);
 			mapper.setFTMS(fp);
