@@ -60,7 +60,7 @@ public class RAFitnessFunction extends FitnessFunction {
 			}
 		}
 
-		printDetectionTypes(chromosome);
+//		printDetectionTypes(chromosome);
 
 		
 		//find the legal mappings for each of the original tasks

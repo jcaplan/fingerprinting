@@ -13,6 +13,7 @@ import codegen.map.DMR;
 import codegen.map.FaultMechanism;
 import codegen.map.GAMapper;
 import codegen.map.GAMapper;
+import codegen.map.Heur2Mapper;
 import codegen.map.Lockstep;
 import codegen.map.Mapper;
 import codegen.map.MultiThreadGABreeder;

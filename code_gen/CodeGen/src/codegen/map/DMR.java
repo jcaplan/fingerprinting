@@ -40,6 +40,15 @@ public class DMR extends FaultMechanism {
 		}
 		return replicas;
 	}
+	
+	public static void makeReplica(Task task,
+		Map<Task,int[]> executionProfiles, HashMap<Task,Task[]> replicas){
+		//make a list of replicas
+		Task replica = new Task(task,Task.replica);
+		replicas.put(task,  new Task[] {replica});
+		executionProfiles.put(task,reexecutionProfile);
+		executionProfiles.put(replica,reexecutionProfile);
+	}
 
 	@Override
 	public String toString(){

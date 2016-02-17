@@ -34,9 +34,10 @@ public class Application implements Serializable {
 		String s = "";
 		int count = 0;
 		for (Task t : taskList) {
-			Logger.logMessage("Task " + count + ": " + t);
+			s += "Task " + count + ": " + t + "\n";
 			count++;
 		}
+		Logger.logMessage(s);
 		return s;
 	}
 

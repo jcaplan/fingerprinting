@@ -15,6 +15,10 @@ public class Schedule implements Serializable{
 	public void deallocate(Task t, Processor p) {
 		bindings.get(t).removeBinding(p);
 	}
+	
+	public void deallocate(Task t){
+		bindings.remove(t);
+	}
 
 
 	
