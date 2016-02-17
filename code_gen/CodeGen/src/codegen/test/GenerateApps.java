@@ -38,7 +38,7 @@ public class GenerateApps {
 		int count = 0;
 
 		
-		ArrayList<Processor> procList = addProcessors(0,2);
+		ArrayList<Processor> fpList = addProcessors(0,2);
 		ArrayList<FaultMechanism> mecList = new ArrayList<>();
 		mecList.add(new Lockstep());
 		
@@ -50,7 +50,7 @@ public class GenerateApps {
 			
 			Mapper mapper = new GAMapper();
 			mapper.setApplication(app);
-			mapper.setProcList(procList);
+			mapper.setProcList(fpList);
 			mapper.setFTMS(mecList);
 			mapper.findSchedule();
 			if(mapper.getBestSchedule() != null){

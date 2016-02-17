@@ -24,7 +24,7 @@ public class LockstepTest {
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException{
 
-		ObjectInputStream ois = new ObjectInputStream(new FileInputStream("app.b"));
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream("lockstepApps.b"));
 		Application[] appList = (Application[]) ois.readObject();
 		ois.close();
 		
