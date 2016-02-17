@@ -1,15 +1,12 @@
 package codegen.test;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import codegen.map.Application;
-import codegen.map.DMR;
 import codegen.map.FaultMechanism;
 import codegen.map.GAMapper;
 import codegen.map.Lockstep;
@@ -37,32 +34,35 @@ public class GenerateApps {
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException{
 		Application app = null;
 		
+		Application[] appList = new Application[1000];
+		int count = 0;
+
 		
-		boolean success = false;
-		while(!success){
+		ArrayList<Processor> procList = addProcessors(0,2);
+		ArrayList<FaultMechanism> mecList = new ArrayList<>();
+		mecList.add(new Lockstep());
+		
+		while(count < 1000){
 			app = Application.generateRandomApplication(10, 0.5, 0.8, 2, 1, 2);
 		
 			
 			
-			ArrayList<Processor> fpList = addProcessors(2,1);
-			ArrayList<FaultMechanism> fp = new ArrayList<>();
-			fp.add(new DMR());
-			fp.add(new Lockstep());
 			
-			
-			Mapper mapper = new HeurMapper();
+			Mapper mapper = new GAMapper();
 			mapper.setApplication(app);
-			mapper.setProcList(fpList);
-			mapper.setFTMS(fp);
+			mapper.setProcList(procList);
+			mapper.setFTMS(mecList);
 			mapper.findSchedule();
 			if(mapper.getBestSchedule() != null){
-				success = true;
+				appList[count] = app;
+				count++;
+				System.out.println(count);
 			}
 		}
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("app.b"));
 		
-		System.out.println(app);
-		oos.writeObject(app);
+//		System.out.println(app);
+		oos.writeObject(appList);
 		
 		
 		oos.close();
