@@ -4,6 +4,8 @@ import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Random;
@@ -12,8 +14,6 @@ import codegen.map.Application;
 import codegen.map.DMR;
 import codegen.map.FaultMechanism;
 import codegen.map.GAMapper;
-import codegen.map.GAMapper;
-import codegen.map.Heur2Mapper;
 import codegen.map.Lockstep;
 import codegen.map.Mapper;
 import codegen.map.MultiThreadGABreeder;
@@ -58,6 +58,7 @@ public class PlatformTest {
 		double maxWcetFactor = MAX_WCET_FACTOR;
 		int iter = NUM_ITERATIONS;
 		boolean log = false;
+		String appFile = null;
 		int c;
 		LongOpt[] longopts = new LongOpt[9];
 		longopts[0] = new LongOpt("mintasknum", LongOpt.REQUIRED_ARGUMENT,
@@ -70,6 +71,7 @@ public class PlatformTest {
 		longopts[5] = new LongOpt("seed", LongOpt.REQUIRED_ARGUMENT, null,5);
 		longopts[6] = new LongOpt("iter", LongOpt.REQUIRED_ARGUMENT, null,6);
 		longopts[7] = new LongOpt("log", LongOpt.NO_ARGUMENT, null,7);
+		longopts[8] = new LongOpt("appfile", LongOpt.REQUIRED_ARGUMENT, null, 8);
 		
 		
 		
@@ -106,6 +108,9 @@ public class PlatformTest {
 			case 7:
 				log = true;
 				break;
+			case 8:
+				appFile = g.getOptarg();
+				break;
 			case 'h':
 				System.out.println("minhinum=int minhiperc=double avgutil=double \n"
 						+ "numodr=int numls=int maxwcetf=double numthreads=int seed=int");
@@ -137,7 +142,18 @@ public class PlatformTest {
 		int ODR = 1;
 		int FP = 2;
 		
-
+		// If an application binary is provided then use those applications
+		Application[] appList = null;
+		if(appFile != null){
+			ObjectInputStream is = new ObjectInputStream(new FileInputStream(appFile));
+			appList = (Application[]) is.readObject();
+			is.close();
+			if(iter > appList.length){
+				throw new RuntimeException("Iterations set to " + iter + " but application array provided "
+						+ " in file " + appFile + " only has length " + appList.length);
+			}
+		}
+				
 		
 		File lsResults = new File("lsResults.csv");
 		File odrResults = new File("odrResults.csv");
@@ -146,10 +162,15 @@ public class PlatformTest {
 		PrintStream odrPS = new PrintStream(odrResults);
 		PrintStream fpPS = new PrintStream(fpResults);
 		
+		
 		for(int i = 0; i < iter; i++){
-			Application app = Application.generateRandomApplication(minNumTasks, minHiPercent, avgDefaultUtil,
+			Application app;
+			if(appList != null){
+				app = appList[iter];
+			} else {
+				app = Application.generateRandomApplication(minNumTasks, minHiPercent, avgDefaultUtil,
 					2, 1, maxWcetFactor,random);
-			
+			}
 
 			mapper = new GAMapper();
 			mapper.setApplication(app);
