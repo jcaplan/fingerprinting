@@ -66,7 +66,7 @@ public class MSFitnessFunction extends FitnessFunction{
 		}
 		
 		
-		SchedAnalysis analysis = new SchedAnalysis(taskList, schedule,procList, executionProfiles);
+		SchedAnalysis analysis = new SchedAnalysis(schedule.getTasks(), schedule,procList, executionProfiles);
 		double fitness;
 		boolean schedResult;
 		if(!(schedResult = analysis.schedAnalysis())){

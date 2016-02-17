@@ -14,6 +14,7 @@ import codegen.map.Application;
 import codegen.map.DMR;
 import codegen.map.FaultMechanism;
 import codegen.map.GAMapper;
+import codegen.map.Heur2Mapper;
 import codegen.map.Lockstep;
 import codegen.map.Mapper;
 import codegen.map.MultiThreadGABreeder;
@@ -155,9 +156,9 @@ public class PlatformTest {
 		}
 				
 		
-		File lsResults = new File("lsResults.csv");
-		File odrResults = new File("odrResults.csv");
-		File fpResults = new File("fpResults.csv");
+		File lsResults = new File("lsResults1.csv");
+		File odrResults = new File("odrResults1.csv");
+		File fpResults = new File("fpResults1.csv");
 		PrintStream lsPS = new PrintStream(lsResults);
 		PrintStream odrPS = new PrintStream(odrResults);
 		PrintStream fpPS = new PrintStream(fpResults);
@@ -166,7 +167,7 @@ public class PlatformTest {
 		for(int i = 0; i < iter; i++){
 			Application app;
 			if(appList != null){
-				app = appList[iter];
+				app = appList[i];
 			} else {
 				app = Application.generateRandomApplication(minNumTasks, minHiPercent, avgDefaultUtil,
 					2, 1, maxWcetFactor,random);
@@ -199,7 +200,7 @@ public class PlatformTest {
 				System.out.println("odr failed");
 			}
 			
-			mapper = new GAMapper();
+			mapper = new Heur2Mapper();
 			mapper.setApplication(app);
 			mapper.setProcList(fpList);
 			mapper.setFTMS(fp);

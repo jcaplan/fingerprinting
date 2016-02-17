@@ -156,9 +156,7 @@ public class Heur2Mapper extends Mapper{
 						}
 					}
 					
-					for(Task t : loList){
-						sched.deallocate(t);
-					}
+					
 				}
 				
 				

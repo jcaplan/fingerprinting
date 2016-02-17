@@ -180,4 +180,12 @@ public class Schedule implements Serializable{
 		return results;
 	}
 
+	public ArrayList<Task> getTasks(){
+		Set<Task> taskSet = bindings.keySet();
+		ArrayList<Task> taskList = new ArrayList<>();
+		for(Task t : taskSet){
+			taskList.add(t);
+		}
+		return taskList;
+	}
 }
