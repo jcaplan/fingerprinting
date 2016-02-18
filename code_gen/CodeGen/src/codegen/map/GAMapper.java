@@ -101,7 +101,7 @@ public class GAMapper extends Mapper{
 				e.printStackTrace();
 			}
 	
-			GAEngine raEngine = new GAEngine(raFF,reliabilityConfig,sampleChromosome,false,30);		
+			GAEngine raEngine = new GAEngine(raFF,reliabilityConfig,sampleChromosome,true,30);		
 			raEngine.findSolution();
 			bestSchedule = raFF.getBestSchedule();
 			fitness = raEngine.getBestSolutionFitness();

@@ -174,7 +174,7 @@ public class PlatformTest {
 					2, 1, maxWcetFactor,random);
 			}
 
-			mapper = new HeurMapper();
+			mapper = new GAMapper();
 			mapper.setApplication(app);
 			mapper.setProcList(lsList);
 			mapper.setFTMS(ls);
@@ -188,7 +188,7 @@ public class PlatformTest {
 				System.out.println("lockstep failed");
 			}
 			
-			mapper = new HeurMapper();
+			mapper = new GAMapper();
 			mapper.setApplication(app);
 			mapper.setProcList(odrList);
 			mapper.setFTMS(odr);
@@ -201,7 +201,7 @@ public class PlatformTest {
 				System.out.println("odr failed");
 			}
 			
-			mapper = new HeurMapper();
+			mapper = new GAMapper();
 			mapper.setApplication(app);
 			mapper.setProcList(fpList);
 			mapper.setFTMS(fp);

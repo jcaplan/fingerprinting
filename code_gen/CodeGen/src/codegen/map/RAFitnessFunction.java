@@ -98,7 +98,7 @@ public class RAFitnessFunction extends FitnessFunction {
 
 		MSFitnessFunction msFF = new MSFitnessFunction(app.getTaskList(), replicas,techniqueMap,
 				legalMappings,executionProfiles, procList);
-		GAEngine msEngine = new GAEngine(msFF, msConfig,sampleChromosome,false,30);
+		GAEngine msEngine = new GAEngine(msFF, msConfig,sampleChromosome,true,30);
 
 		msEngine.findSolution();
 		double fitness = msEngine.getBestSolutionFitness();

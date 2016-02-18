@@ -12,7 +12,7 @@ import codegen.util.Logger;
 public class GAEngine {
 
 
-	private static final int populationSize = 100;
+	private int populationSize = 40;
 	private int numGenerations = 30;
 	private static final double MAX_FITNESS = 1.0;
 	private boolean quitEarly = true;
@@ -81,5 +81,13 @@ public class GAEngine {
 
 	public double getBestSolutionFitness(){
 		return population.getFittestChromosome().getFitnessValue();
+	}
+	
+	public void setPopulationSize(int pop){
+		populationSize = pop;
+	}
+	
+	public void setNumGenerations(int gen){
+		numGenerations = gen;
 	}
 }
