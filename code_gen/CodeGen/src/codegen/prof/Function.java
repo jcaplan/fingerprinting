@@ -13,7 +13,7 @@ public class Function {
 	String label;
 	ArrayList<Code> code = new ArrayList<>();
 	ArrayList<Loop> loops = new ArrayList<>();
-	
+	ArrayList<Function> calledFunctions;
 	public Function(int startAddress, String label) {
 		this.startAddress = startAddress;
 		this.label = label;
@@ -187,21 +187,24 @@ public class Function {
 	}
 
 	public ArrayList<Function> getAllCalledFunctions() {
-		ArrayList<Function> fList = new ArrayList<>();
-		fList.add(this);
-		for (BasicBlock bb : bbList) {
-			if (bb.type == BbType.CALL && bb.callee != this) {
-				if(!fList.contains(bb.callee)){
-					fList.add(bb.callee);
-				}
-				for (Function f : bb.callee.getAllCalledFunctions()) {
-					if (!fList.contains(f)) {
-						fList.add(f);
+		if(calledFunctions == null){
+			ArrayList<Function> fList = new ArrayList<>();
+			fList.add(this);
+			for (BasicBlock bb : bbList) {
+				if (bb.type == BbType.CALL && bb.callee != this) {
+					if(!fList.contains(bb.callee)){
+						fList.add(bb.callee);
+					}
+					for (Function f : bb.callee.getAllCalledFunctions()) {
+						if (!fList.contains(f)) {
+							fList.add(f);
+						}
 					}
 				}
 			}
+			calledFunctions = fList;
 		}
-		return fList;
+		return calledFunctions;
 	}
 
 	public BasicBlock getNextBlock(BasicBlock bb) {
@@ -387,6 +390,24 @@ public class Function {
 	
 	public ArrayList<Loop> getLoopList(){
 		return loops;
+	}
+
+	public Function getCalledFunction(String newFunction) {
+		for(Function f : getAllCalledFunctions()){
+			if(f.label.equals(newFunction)){
+				return f;
+			}
+		}
+		return null;
+	}
+	
+	public BasicBlock getReturnBlock(){
+		for(BasicBlock bb : bbList){
+			if(bb.isReturn()){
+				return bb;
+			}
+		}
+		return null;
 	}
 
 }

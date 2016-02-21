@@ -2,8 +2,11 @@ package codegen.prof.flow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 import codegen.prof.BasicBlock;
 import codegen.prof.Code;
@@ -15,30 +18,57 @@ public abstract class InterForwardAnalysis<A> implements ForwardAnalysisInterfac
 	 * Interprocedural analysis requires a context for each basic function (and containing blocks/code)
 	 * The context must also be easy to identify from the IPET analysis to identify each edge for different cost.
 	 * 
-	 * Context represented by a list of function calls, string or stack.
+	 * Context represented by a string or stack of function call sites.
 	 * Instead of one codeInSet/Outset, search based on context.
 	 * 
+	 * Make a context a string of function names separated by semicolons
+	 * f calls g calls h -> "f;g;h"
+	 * 
+	 * Then define push and pop by tokenizing strings and adding/removing tokens
+	 * and building a new string
 	 * 
 	 * 
 	 * 
 	 */
 	
+	
+	
+	Stack<Function> callStack = new Stack<>();
 	Function func;
+	
+	//Context 
+	// key is the context
+	// each context has a codeInSet, codeOutSet, and bbInSet
+	// need to supply a context when requesting codeInSet and codeOutSet
+
+	Map<String,List<BasicBlock>> bbListC;
+	Map<String,List<BasicBlock>> workListC;
+	Map<String,Map<Code,A>> codeInSetC;
+	Map<String,Map<Code,A>> codeOutSetC;
+	Map<String,Map<BasicBlock, A>>  bbInSetC;
+	
+	Set<String> seenContexts;
+	
+	//reference to current context variables
 	List<BasicBlock> bbList;
 	List<BasicBlock> workList;
-	
 	Map<Code,A> codeInSet;
 	Map<Code,A> codeOutSet;
 	Map<BasicBlock, A>  bbInSet;
 	
+	String context;
+	
 	public InterForwardAnalysis(Function root) {
 		func = root;
-		ArrayList<BasicBlock> blocks = new ArrayList<>(func.getBasicBlockList());
-		//getAllCalledFunctions handles recursive search
-		for(Function f : func.getAllCalledFunctions()){
-			blocks.addAll(f.getBasicBlockList());
-		}
-		setBBList(blocks);
+		context = func.getStartAddressHex();
+		bbListC = new HashMap<>();
+		workListC = new HashMap<>();
+		codeInSetC = new HashMap<>();
+		codeOutSetC = new HashMap<>();
+		bbInSetC = new HashMap<>();
+		seenContexts = new HashSet<>();
+		
+		setBBList(new ArrayList<>(func.getBasicBlockList()));
 	}	
 	
 	public InterForwardAnalysis(List<BasicBlock> bbList) {
@@ -54,9 +84,13 @@ public abstract class InterForwardAnalysis<A> implements ForwardAnalysisInterfac
 		
 		analysisPreprocessing();
 		
+		seenContexts.add(context);		
+		
 		while(!workList.isEmpty()){
 			BasicBlock bb = workList.get(0);
 			workList.remove(0);
+			
+			
 			
 			A bb_in = bbInSet.get(bb);
 			
@@ -93,10 +127,19 @@ public abstract class InterForwardAnalysis<A> implements ForwardAnalysisInterfac
 	}
 
 	public void resetAnalysis() {
+		//Initialize the data structures
 		codeInSet = new HashMap<Code, A>();
 		codeOutSet = new HashMap<Code, A>();
 		bbInSet = new HashMap<BasicBlock, A>();
 		workList = new ArrayList<>(bbList);
+		
+		//Store them by context
+		codeInSetC.put(context,codeInSet);
+		codeOutSetC.put(context,codeOutSet);
+		bbInSetC.put(context, bbInSet);
+		workListC.put(context, workList);
+		bbListC.put(context, bbList);
+		
 		initAllSets();
 		
 	}
@@ -244,7 +287,18 @@ public abstract class InterForwardAnalysis<A> implements ForwardAnalysisInterfac
 	}
 
 	protected A caseCall(Code c, A c_in, BasicBlock succ) {
-		return caseDefault(c,c_in, succ);
+		String callee = c.getOperands()[1];
+		Function calledF = func.getCalledFunction(callee);
+		pushContext(c,calledF);
+		bbInSet.put(bbList.get(0), c_in);
+		
+		analyze();
+		
+		A c_out = codeOutSet.get(calledF.getReturnBlock().getLastCode());
+		
+		popContext();
+		
+		return c_out;
 	}
 	
 	protected A caseBinOp(Code c, A c_in,
@@ -266,10 +320,15 @@ public abstract class InterForwardAnalysis<A> implements ForwardAnalysisInterfac
 
 	
 	public void prettyPrint(){
-		for(BasicBlock bb : bbList){
-			prettyPrint(bb);
-			
+		for(String context : seenContexts){
+			System.out.println("**********CONTEXT:" + context + "******************");
+			loadContext(context);
+			for(BasicBlock bb : bbList){
+				prettyPrint(bb);
+				
+			}
 		}
+		
 	}
 	
 	public void prettyPrintBlockList(){
@@ -309,6 +368,39 @@ public abstract class InterForwardAnalysis<A> implements ForwardAnalysisInterfac
 			System.out.println("out: " + codeOutSet.get(c));
 			System.out.println("-------------------------------");	
 		}			
+		
+	}
+	
+	
+	public void pushContext(Code c, Function callee){
+		context += ";" + c.getAddressHex();
+		//Check if first occurrence of context
+		callStack.push(func);
+		func = callee;
+		if(!seenContexts.contains(context)){
+			setBBList(new ArrayList<>(callee.getBasicBlockList()));
+		} else {
+			loadContext(context);
+			//Add the root back (list should always be empty here but check anyway)
+			if(!workList.contains(bbList.get(0))){
+				workList.add(0,bbList.get(0));
+			}
+		}
+	}
+	
+	public void popContext(){
+		context = context.substring(0, context.lastIndexOf(";"));
+		func = callStack.pop();
+		loadContext(context);
+		
+	}
+
+	private void loadContext(String cont) {
+		codeInSet = codeInSetC.get(cont);
+		codeOutSet = codeOutSetC.get(cont);
+		bbInSet = bbInSetC.get(cont);
+		workList = workListC.get(cont);
+		bbList = bbListC.get(cont);
 		
 	}
 }

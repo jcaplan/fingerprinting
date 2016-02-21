@@ -27,7 +27,7 @@ public class Definition {
 	
 	@Override
 	public String toString(){
-		return line + "";
+		return Integer.toHexString(line) + "";
 	}
 
 	public void setLine(int line) {

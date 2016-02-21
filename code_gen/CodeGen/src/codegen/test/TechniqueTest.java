@@ -8,7 +8,7 @@ import codegen.map.*;
 
 public class TechniqueTest {
 
-	private static final int NUM_ITERATIONS = 1000;
+	private static final int NUM_ITERATIONS = 10;
 
 	static Mapper mapper;
 	
@@ -58,7 +58,7 @@ public class TechniqueTest {
 		
 		PrintStream schedPS = new PrintStream("util_sched.csv");
 		PrintStream utilPS = new PrintStream("util_avg.csv");
-		schedPS.println("util,ls,fp,odr");
+		schedPS.println("util,dmr,odr");
 		
 		for(double util = 0.5; util < 0.85; util+=0.05){
 			//Load the apps from the file
@@ -89,7 +89,6 @@ public class TechniqueTest {
 					System.out.println("dmr scheduled");
 				} else {
 					System.out.println("dmr failed");
-					continue;
 				}
 				
 				mapper = new GAMapper();
@@ -103,32 +102,32 @@ public class TechniqueTest {
 					System.out.println("odr scheduled");
 				} else {
 					System.out.println("odr failed");
-					continue;
 				}
 				
 				
 				successfulIterations++;
 				double[] qos;
-
-				qos = odrSched.getQosPerMode();
-				System.out.println(mapper.getBestFTMs());
-				System.out.println("odr qos [LO,TF,OV,HI]: ");
-				for(int j = 0; j < qos.length; j++){
-					System.out.println(qos[j] + ", ");
-					odrPS.print(qos[j] + ",");
-					qosAvg[ODR][count][j] += qos[j];
+				boolean failed = (odrSched == null || dmrSched == null);
+				if(!failed){
+					qos = odrSched.getQosPerMode();
+					System.out.println(mapper.getBestFTMs());
+					System.out.println("odr qos [LO,TF,OV,HI]: ");
+					for(int j = 0; j < qos.length; j++){
+						System.out.println(qos[j] + ", ");
+						odrPS.print(qos[j] + ",");
+						qosAvg[ODR][count][j] += qos[j];
+					}
+					odrPS.println("");
+	
+					qos = dmrSched.getQosPerMode();
+					System.out.println("dmr qos [LO,TF,OV,HI]: ");
+					for(int j = 0; j < qos.length; j++){
+						System.out.println(qos[j] + ", ");
+						dmrPS.print(qos[j] + ",");
+						qosAvg[DMR][count][j] += qos[j];
+					}
+					dmrPS.println("");				
 				}
-				odrPS.println("");
-
-				qos = dmrSched.getQosPerMode();
-				System.out.println("dmr qos [LO,TF,OV,HI]: ");
-				for(int j = 0; j < qos.length; j++){
-					System.out.println(qos[j] + ", ");
-					dmrPS.print(qos[j] + ",");
-					qosAvg[DMR][count][j] += qos[j];
-				}
-				dmrPS.println("");				
-			
 			}
 
 			

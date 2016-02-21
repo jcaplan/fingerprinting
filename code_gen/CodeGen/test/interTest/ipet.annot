@@ -1,0 +1,5 @@
+
+ipet.out:     file format elf32-littlenios2
+
+Contents of section .wcet_annot:
+ 0000 ec100000 01000000 01000000           ............    
