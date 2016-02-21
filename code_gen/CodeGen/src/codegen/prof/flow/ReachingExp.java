@@ -1,11 +1,12 @@
 package codegen.prof.flow;
 
 import java.util.*;
+
 import codegen.prof.BasicBlock;
 import codegen.prof.Code;
 import codegen.prof.Function;
 
-public class ReachingExp extends ForwardAnalysis<HashMap<String,List<Expression>>>{
+public class ReachingExp extends IntraForwardAnalysis<HashMap<String,List<Expression>>>{
 
 	//Keep a symbol table for easy lookup of defs
 	

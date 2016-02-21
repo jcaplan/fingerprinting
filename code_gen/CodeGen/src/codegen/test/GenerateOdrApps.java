@@ -7,33 +7,39 @@ import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import codegen.map.Application;
-import codegen.map.FaultMechanism;
-import codegen.map.HeurMapper;
-import codegen.map.Lockstep;
-import codegen.map.Mapper;
-import codegen.map.Processor;
+import codegen.map.*;
 
-public class GenerateApps {
-
-	static int pcount = 0;
-
-	static ArrayList<Processor> fpList;
-	static ArrayList<FaultMechanism> mecList;
+public class GenerateOdrApps {
+	int pcount = 0;
+	double odrFactor;
+	ArrayList<Processor> fpList;
+	ArrayList<FaultMechanism> mecList;
+	int numApps;
+	
+	
+	public GenerateOdrApps(){
+		odrFactor = 1.5;
+		numApps = 1000;
+	}
+	
+	public GenerateOdrApps(double odrFactor, int numApps){
+		this.odrFactor = odrFactor;
+		this.numApps = numApps;
+	}
 	
 	public void generate(){
 
-		fpList = addProcessors(0, 2);
+		fpList = addProcessors(4, 0);
 		mecList = new ArrayList<>();
-		mecList.add(new Lockstep());
+		mecList.add(new DMR());
 		GenThread[] threads = new GenThread[10];
 		int count = 0;
-		for (double i = 0.5; i < 1; i += 0.05) {
+		for (double i = 0.5; i < 0.85; i += 0.05) {
 			threads[count] = new GenThread(i);
 			threads[count].start();
 			count++;
 		}
-		for (int i = 0; i < 10; i++){
+		for (int i = 0; i < 7; i++){
 			try {
 				threads[i].join();
 			} catch (InterruptedException e) {
@@ -42,7 +48,7 @@ public class GenerateApps {
 		}
 	}
 	
-	private static ArrayList<Processor> addProcessors(int numOdrCore,
+	private ArrayList<Processor> addProcessors(int numOdrCore,
 			int numLockstepCore) {
 		ArrayList<Processor> pList = new ArrayList<>();
 
@@ -58,7 +64,7 @@ public class GenerateApps {
 
 
 	
-	private static class GenThread extends Thread{ 
+	private class GenThread extends Thread{ 
 		
 		double util;
 		
@@ -71,9 +77,9 @@ public class GenerateApps {
 			int count = 0;
 			Application app;
 			String utilString = (new DecimalFormat("0.00").format(util));
-			while (count < 1000) {
-				app = Application.generateRandomApplication(20, 0.5, util, 2, 1,
-						2);
+			while (count < numApps) {
+				app = Application.generateRandomApplication(20, 0.5, util, 4, 0,
+						2,odrFactor);
 
 				Mapper mapper = new HeurMapper();
 				mapper.setApplication(app);
@@ -108,7 +114,7 @@ public class GenerateApps {
 	
 	public static void main(String[] args) throws FileNotFoundException,
 			IOException, ClassNotFoundException {
-		GenerateApps gen = new GenerateApps();
+		GenerateOdrApps gen = new GenerateOdrApps(1.5,10);
 		gen.generate();
 	}
 }

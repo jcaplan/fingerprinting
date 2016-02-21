@@ -8,7 +8,7 @@ import codegen.prof.BasicBlock;
 import codegen.prof.Code;
 import codegen.prof.Function;
 
-public class ExpressionBuilder extends ForwardAnalysis<Map<String, Expression>>{
+public class ExpressionBuilder extends IntraForwardAnalysis<Map<String, Expression>>{
 
 	
 

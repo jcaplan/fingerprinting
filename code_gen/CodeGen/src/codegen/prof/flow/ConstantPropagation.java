@@ -7,7 +7,7 @@ import codegen.prof.BasicBlock;
 import codegen.prof.Code;
 import codegen.prof.Function;
 
-public class ConstantPropagation extends ForwardAnalysis<Map<String,Expression>>{
+public class ConstantPropagation extends IntraForwardAnalysis<Map<String,Expression>>{
 
 	public ConstantPropagation(Function root) {
 		super(root);

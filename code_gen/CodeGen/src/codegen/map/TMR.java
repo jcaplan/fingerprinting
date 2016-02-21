@@ -63,7 +63,7 @@ public class TMR extends FaultMechanism {
 		
 		replica = replicas.get(t)[1];
 		proc = pList.get(rep1Index);
-		schedule.allocate(t,proc);
+		schedule.allocate(replica,proc);
 	}
 
 }

@@ -34,10 +34,11 @@ public class UtilizationTest {
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException{
 		
 		int iter = NUM_ITERATIONS;
-		
-		if(args.length > 0){
-			iter = Integer.parseInt(args[1]);
+		if(args.length > 0 && args[0].equals("-gen")){	
+			(new GenerateApps()).generate();
 		}
+		
+		
 		MultiThreadGABreeder.NUM_THREADS = 20;
 
 		//Set up platforms
@@ -68,7 +69,7 @@ public class UtilizationTest {
 		for(double util = 0.5; util < 1.0; util+=0.05){
 			//Load the apps from the file
 			String utilString = (new DecimalFormat("0.00").format(util));
-			String fileName = "util_" + utilString + ".b";
+			String fileName = "tasksets_01/util_" + utilString + ".b";
 			Application[] appList = null;
 			ObjectInputStream is = new ObjectInputStream(new FileInputStream(fileName));
 			appList = (Application[]) is.readObject();

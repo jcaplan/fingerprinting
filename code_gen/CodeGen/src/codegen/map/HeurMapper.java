@@ -91,7 +91,7 @@ public class HeurMapper extends Mapper{
 		
 		// Now check for the DMR tasks
 		if(!worstFitDecreasingHiDmr(schedule, fullTaskList,leftoverHI, procList, replicas)){
-			System.out.println("Could not fit all HI tasks");
+//			System.out.println("Could not fit all HI tasks");
 			return;
 		}
 		
@@ -102,15 +102,15 @@ public class HeurMapper extends Mapper{
 		 * 
 		 */
 		if(!firstFitDecreasingLo(schedule,fullTaskList,procList)){
-			System.out.println("Could not fit all LO tasks");
+//			System.out.println("Could not fit all LO tasks");
 			return;
-		} else {
-			bestSchedule = schedule;
 		}
 		
 		//Now try to schedule tasks in as many modes as possible 
 		SchedAnalysis sa = new SchedAnalysis(fullTaskList, schedule, procList, executionProfiles);
-		sa.schedAnalysis();
+		if(sa.schedAnalysis()){
+			bestSchedule = schedule;
+		}
 		
 		
 	}

@@ -9,42 +9,19 @@ import codegen.prof.BasicBlock;
 import codegen.prof.Code;
 import codegen.prof.Function;
 
+public abstract class InterForwardAnalysis<A> implements ForwardAnalysisInterface<A> {
 
-/*
- * Each Basic block stores its IN-set
- * Compute along edges
- * 
- * Algorithm
- * ---------
- * 
- * Worklist = all blocks (reverse post order..)
- * 
- * initialize each BB.inSet
- * 
- * 	while(!worklist.isEmpty()
- * 		x = choose first block from worklist and remove
- * 		in_x = in[x]
- * 		for each y in x.successors() do
- * 			out_x = flow[x,y](in_x)
- * 			new_in_y = out_x merge in[y]
- * 			if (new_in_y != in[y] 
- * 				in[y] = new_in_y
- * 				add y to worklist if not there
- * 		until no nodes left in worklist
- * 	
- * 
- * 
- * 
- * 
- * Need to keep track of in and out for each line of code
- * also need to keep track of in and out for each basic block
- * 
- * but each basic block also needs
- * 
- */
-
-
-public abstract class ForwardAnalysis<A> {
+	/*
+	 * Interprocedural analysis requires a context for each basic function (and containing blocks/code)
+	 * The context must also be easy to identify from the IPET analysis to identify each edge for different cost.
+	 * 
+	 * Context represented by a list of function calls, string or stack.
+	 * Instead of one codeInSet/Outset, search based on context.
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
 	
 	Function func;
 	List<BasicBlock> bbList;
@@ -54,13 +31,17 @@ public abstract class ForwardAnalysis<A> {
 	Map<Code,A> codeOutSet;
 	Map<BasicBlock, A>  bbInSet;
 	
-	public ForwardAnalysis(Function root) {
+	public InterForwardAnalysis(Function root) {
 		func = root;
-		setBBList(new ArrayList<>(func.getBasicBlockList()));
-		
+		ArrayList<BasicBlock> blocks = new ArrayList<>(func.getBasicBlockList());
+		//getAllCalledFunctions handles recursive search
+		for(Function f : func.getAllCalledFunctions()){
+			blocks.addAll(f.getBasicBlockList());
+		}
+		setBBList(blocks);
 	}	
 	
-	public ForwardAnalysis(List<BasicBlock> bbList) {
+	public InterForwardAnalysis(List<BasicBlock> bbList) {
 		setBBList(bbList);
 	}	
 	

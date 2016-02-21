@@ -363,7 +363,7 @@ public class SchedAnalysis {
 			if(executionProfiles.get(t)[modeLO] == 0){
 				//don't calculate response time for PR replicas with c= 0...
 				schedule.setResponseTime(t, modeLO, 0);
-				return true;
+				continue;
 			}
 			while (responseTime < t.period) {
 				double rSum = t.wcetLowerBound;

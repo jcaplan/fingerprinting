@@ -58,7 +58,7 @@ public class GAEngine {
 			
 			// Check if max
 			if(bestSolutionSoFar.getFitnessValue() == MAX_FITNESS){
-				System.out.println("Found max fitness in " + i + " iterations.");
+//				System.out.println("Found max fitness in " + i + " iterations.");
 				break;
 			}
 			
@@ -72,7 +72,7 @@ public class GAEngine {
 				}
 	
 				if (sameCount > 4) {
-					System.out.println("Seems to be converging. Quitting after " + i + " iterations.");
+//					System.out.println("Seems to be converging. Quitting after " + i + " iterations.");
 					break;
 				}
 			}

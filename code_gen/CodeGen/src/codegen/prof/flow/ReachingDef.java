@@ -10,7 +10,7 @@ import codegen.prof.Code;
 import codegen.prof.Function;
 import codegen.prof.Code.CodeType;
 
-public class ReachingDef  extends ForwardAnalysis<HashMap<String,List<Definition>>>{
+public class ReachingDef  extends IntraForwardAnalysis<HashMap<String,List<Definition>>>{
 
 	
 	public ReachingDef(Function root) {

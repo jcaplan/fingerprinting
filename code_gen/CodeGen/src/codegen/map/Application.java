@@ -76,13 +76,28 @@ public class Application implements Serializable {
 			double minHiPercent, double averageDefaultUtilization,
 			int numOdrCores, int numLockstepCores, double maxWcetFactor){
 		return generateRandomApplication(minNumTasks, minHiPercent, averageDefaultUtilization, 
-				numOdrCores, numLockstepCores, maxWcetFactor,new Random());
+				numOdrCores, numLockstepCores, maxWcetFactor,new Random(),2);
+	}
+	
+	public static Application generateRandomApplication(int minNumTasks,
+			double minHiPercent, double averageDefaultUtilization,
+			int numOdrCores, int numLockstepCores, double maxWcetFactor, double odrFactor){
+		return generateRandomApplication(minNumTasks, minHiPercent, averageDefaultUtilization, 
+				numOdrCores, numLockstepCores, maxWcetFactor,new Random(), odrFactor);
+	}
+	
+	public static Application generateRandomApplication(int minNumTasks,
+			double minHiPercent, double averageDefaultUtilization,
+			int numOdrCores, int numLockstepCores, double maxWcetFactor,
+			Random random) {
+		return generateRandomApplication(minNumTasks, minHiPercent, averageDefaultUtilization, 
+				numOdrCores, numLockstepCores, maxWcetFactor,random, 2);
 	}
 
 	public static Application generateRandomApplication(int minNumTasks,
 			double minHiPercent, double averageDefaultUtilization,
 			int numOdrCores, int numLockstepCores, double maxWcetFactor,
-			Random random) {
+			Random random, double odrFactor) {
 
 		Application app = new Application();
 		
@@ -92,7 +107,7 @@ public class Application implements Serializable {
 		generatePeriods(random, taskList);
 
 		double util = averageDefaultUtilization
-				* (numOdrCores / 2 + numLockstepCores);
+				* (numOdrCores / odrFactor + numLockstepCores);
 
 		// calculate the utilization for each task
 		for (int i = 0; i < taskList.size() - 1; i++) {

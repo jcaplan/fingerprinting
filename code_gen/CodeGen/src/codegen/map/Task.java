@@ -22,6 +22,12 @@ public class Task implements Comparable<Task>, Serializable{
 	static int numOriginalTasks;
 	int id;
 	
+	private static class SerializableLock implements Serializable{
+
+	}
+
+	static SerializableLock lock = new SerializableLock();
+	
 	
 	
 	public Task(double clo, double chi, double period, boolean criticality, String name) {
@@ -30,7 +36,9 @@ public class Task implements Comparable<Task>, Serializable{
 		this.period = period;
 		this.criticality = criticality;
 		this.name = name;
-		id = tID++;
+		synchronized(lock){
+			id = tID++;
+		}
 		numOriginalTasks++;
 	}
 
@@ -40,7 +48,9 @@ public class Task implements Comparable<Task>, Serializable{
 		this.period = t.period;
 		this.criticality = t.criticality;
 		this.type = Task.replica;
-		id = tID++;
+		synchronized(lock){
+			id = tID++;
+		}
 		if(replica){
 			name = t.name + "R";
 		} else {
@@ -73,7 +83,7 @@ public class Task implements Comparable<Task>, Serializable{
 		if(this.period > task.period){
 			result = -1;
 		} else if(this.period == task.period){
-			result = this.id > task.id ? -1 : 1;
+				result = this.id > task.id ? -1 : 1;
 		} else {
 			result = 1;
 		}

@@ -8,7 +8,7 @@ import java.util.Map;
 import codegen.prof.BasicBlock;
 import codegen.prof.Function;
 
-public class DomFrontier extends ForwardAnalysis<List<BasicBlock>>{
+public class DomFrontier extends IntraForwardAnalysis<List<BasicBlock>>{
 
 	
 	Map<BasicBlock,List<BasicBlock>>  bbOutSet;
