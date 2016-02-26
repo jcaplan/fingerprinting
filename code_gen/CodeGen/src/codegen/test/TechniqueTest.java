@@ -105,10 +105,11 @@ public class TechniqueTest {
 				}
 				
 				
-				successfulIterations++;
 				double[] qos;
 				boolean failed = (odrSched == null || dmrSched == null);
 				if(!failed){
+
+					successfulIterations++;
 					qos = odrSched.getQosPerMode();
 					System.out.println(mapper.getBestFTMs());
 					System.out.println("odr qos [LO,TF,OV,HI]: ");
