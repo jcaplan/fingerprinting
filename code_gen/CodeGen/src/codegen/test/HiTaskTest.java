@@ -6,11 +6,11 @@ import java.util.ArrayList;
 
 import codegen.map.*;
 
-public class UtilizationTest {
+public class HiTaskTest {
 
 	private static final int MIN_NUM_TASKS = 10;
 	private static final double MIN_PERCENT_HI = 0.5;
-	private static final double AVERAGE_DEFAULT_UTILIZATION = 0.8;
+	private static final double AVERAGE_DEFAULT_hitaskIZATION = 0.8;
 	private static final double MAX_WCET_FACTOR = 2.0;
 	private static final int NUM_ITERATIONS = 1000;
 
@@ -34,9 +34,7 @@ public class UtilizationTest {
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException{
 		
 		int iter = NUM_ITERATIONS;
-		if(args.length > 0 && args[0].equals("-gen")){	
-			(new GenerateApps()).generate();
-		}
+
 		
 		
 		MultiThreadGABreeder.NUM_THREADS = 20;
@@ -62,21 +60,15 @@ public class UtilizationTest {
 		
 		int count = 0;
 		
-		PrintStream schedPS = new PrintStream("util_sched.csv");
-		PrintStream utilPS = new PrintStream("util_avg.csv");
-		schedPS.println("util,ls,fp,odr");
+		PrintStream schedPS = new PrintStream("hitask_sched.csv");
+		PrintStream hitaskPS = new PrintStream("hitask_avg.csv");
+		schedPS.println("hitask,ls,fp,odr");
 		
-		for(double util = 0.5; util < 1.0; util+=0.05){
-			//Load the apps from the file
-			String utilString = (new DecimalFormat("0.00").format(util));
-			String fileName = "tasksets/util_" + utilString + ".b";
-			Application[] appList = null;
-			ObjectInputStream is = new ObjectInputStream(new FileInputStream(fileName));
-			appList = (Application[]) is.readObject();
-			is.close();
-			File lsResults = new File("util_ls_" + utilString + ".csv");
-			File odrResults = new File("util_odr_" + utilString + ".csv");
-			File fpResults = new File("util_fp_" + utilString + ".csv");
+		for(double hitask = 0.2; hitask < 0.9; hitask+=0.1){
+			String hitaskString = (new DecimalFormat("0.00").format(hitask));
+			File lsResults = new File("hitask_ls_" + hitaskString + ".csv");
+			File odrResults = new File("hitask_odr_" + hitaskString + ".csv");
+			File fpResults = new File("hitask_fp_" + hitaskString + ".csv");
 			PrintStream lsPS = new PrintStream(lsResults);
 			PrintStream odrPS = new PrintStream(odrResults);
 			PrintStream fpPS = new PrintStream(fpResults);
@@ -84,7 +76,8 @@ public class UtilizationTest {
 			int successfulIterations = 0;
 			//Start test on each app
 			for(int i = 0; i < iter; i++){
-				Application app = appList[i];
+				Application app = Application.generateRandomApplication2(20, hitask, 0.7, 2,
+						2);
 				mapper = new GAMapper();
 				mapper.setApplication(app);
 				mapper.setProcList(lsList);
@@ -98,6 +91,7 @@ public class UtilizationTest {
 					System.out.println("ls scheduled");
 				} else {
 					System.out.println("lockstep failed");
+					continue;
 				}
 				
 				mapper = new GAMapper();
@@ -111,6 +105,7 @@ public class UtilizationTest {
 					System.out.println("odr scheduled");
 				} else {
 					System.out.println("odr failed");
+					continue;
 				}
 				
 				mapper = new GAMapper();
@@ -124,6 +119,7 @@ public class UtilizationTest {
 					System.out.println("fp scheduled");
 				} else {
 					System.out.println("fp failed");
+					continue;
 				}
 				
 				boolean fail = (lsSched == null) || (odrSched == null) || (fpSched == null);
@@ -177,19 +173,19 @@ public class UtilizationTest {
 			System.out.println("schedulability FP: " + sched[FP][count]);
 			System.out.println("schedulability ODR: " + sched[ODR][count]);
 			
-			schedPS.println(String.format("%s,%f,%f,%f",utilString,sched[LS][count],sched[FP][count],sched[ODR][count]));
-			String s = utilString + ",";
+			schedPS.println(String.format("%s,%f,%f,%f",hitaskString,sched[LS][count],sched[FP][count],sched[ODR][count]));
+			String s = hitaskString + ",";
 			for(int i = 0; i < 3; i++){
 				for(int j = 0; j < 4; j++){
 					s += qosAvg[i][count][j] / successfulIterations + ",";
 				}
 			}
-			utilPS.println(s);
+			hitaskPS.println(s);
 			count++;
 		}
 		
 		schedPS.close();
-		utilPS.close();
+		hitaskPS.close();
 		
 	}
 }

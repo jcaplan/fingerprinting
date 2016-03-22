@@ -43,7 +43,7 @@ public class GAMapper extends Mapper{
 			Map<Task,Task[]> replicas = new HashMap<>();
 			MSFitnessFunction msFF = new MSFitnessFunction(app.getTaskList(),
 					replicas, techniqueMap, legalMappings, executionProfiles, procList);
-			GAEngine msEngine = new GAEngine(msFF, msConfig, sampleChromosome,false,30);
+			GAEngine msEngine = new GAEngine(msFF, msConfig, sampleChromosome,false,100,200);
 
 			msEngine.findSolution();
 			bestSchedule = msFF.getBestSchedule();
@@ -84,7 +84,7 @@ public class GAMapper extends Mapper{
 
 			MSFitnessFunction msFF = new MSFitnessFunction(app.getTaskList(),
 					replicas, techniqueMap, legalMappings, executionProfiles, procList);
-			GAEngine msEngine = new GAEngine(msFF, msConfig, sampleChromosome,false,30);
+			GAEngine msEngine = new GAEngine(msFF, msConfig, sampleChromosome,false,100,200);
 
 			msEngine.findSolution();
 			bestSchedule = msFF.getBestSchedule();

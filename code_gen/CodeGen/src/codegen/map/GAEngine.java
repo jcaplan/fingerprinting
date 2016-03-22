@@ -30,6 +30,16 @@ public class GAEngine {
 		this.sampleChromosome = sampleChromosome;
 		this.numGenerations = numGenerations;
 	}
+	
+	public GAEngine(FitnessFunction ff, Configuration config,
+			Chromosome sampleChromosome, boolean quitEarly, int numGenerations, int populationSize) {
+		this.quitEarly = quitEarly;
+		this.ff = ff;
+		this.config = config;
+		this.sampleChromosome = sampleChromosome;
+		this.numGenerations = numGenerations;
+		this.populationSize = populationSize;
+	}
 
 	public GAEngine(FitnessFunction ff, Configuration config) {
 		this.ff = ff;

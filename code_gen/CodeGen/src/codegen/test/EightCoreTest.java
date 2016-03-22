@@ -1,13 +1,25 @@
 package codegen.test;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import codegen.map.*;
+import codegen.map.Application;
+import codegen.map.DMR;
+import codegen.map.FaultMechanism;
+import codegen.map.GAMapper;
+import codegen.map.Lockstep;
+import codegen.map.Mapper;
+import codegen.map.MultiThreadGABreeder;
+import codegen.map.Processor;
+import codegen.map.Schedule;
 
-public class UtilizationTest {
-
+public class EightCoreTest {
 	private static final int MIN_NUM_TASKS = 10;
 	private static final double MIN_PERCENT_HI = 0.5;
 	private static final double AVERAGE_DEFAULT_UTILIZATION = 0.8;
@@ -34,17 +46,18 @@ public class UtilizationTest {
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException{
 		
 		int iter = NUM_ITERATIONS;
-		if(args.length > 0 && args[0].equals("-gen")){	
-			(new GenerateApps()).generate();
-		}
+		double upperBound = 0.85;
+//		if(args.length > 0 && args[0].equals("-gen")){	
+//			(new GenerateOdrApps(2,10,8,80,0.85)).generate();
+//		}
 		
 		
 		MultiThreadGABreeder.NUM_THREADS = 20;
 
 		//Set up platforms
-		ArrayList<Processor> lsList = addProcessors(0,2);
-		ArrayList<Processor> odrList = addProcessors(4,0);
-		ArrayList<Processor> fpList = addProcessors(2,1);
+		ArrayList<Processor> lsList = addProcessors(0,4);
+		ArrayList<Processor> odrList = addProcessors(8,0);
+		ArrayList<Processor> fpList = addProcessors(4,2);
 		ArrayList<FaultMechanism> ls = new ArrayList<>();
 		ls.add(new Lockstep());
 		ArrayList<FaultMechanism> odr = new ArrayList<>();
@@ -66,14 +79,14 @@ public class UtilizationTest {
 		PrintStream utilPS = new PrintStream("util_avg.csv");
 		schedPS.println("util,ls,fp,odr");
 		
-		for(double util = 0.5; util < 1.0; util+=0.05){
+		for(double util = 0.50; util <= upperBound + 0.009; util+=0.05){
 			//Load the apps from the file
 			String utilString = (new DecimalFormat("0.00").format(util));
-			String fileName = "tasksets/util_" + utilString + ".b";
-			Application[] appList = null;
-			ObjectInputStream is = new ObjectInputStream(new FileInputStream(fileName));
-			appList = (Application[]) is.readObject();
-			is.close();
+//			String fileName = "tasksets/util_" + utilString + ".b";
+//			Application[] appList = null;
+//			ObjectInputStream is = new ObjectInputStream(new FileInputStream(fileName));
+//			appList = (Application[]) is.readObject();
+//			is.close();
 			File lsResults = new File("util_ls_" + utilString + ".csv");
 			File odrResults = new File("util_odr_" + utilString + ".csv");
 			File fpResults = new File("util_fp_" + utilString + ".csv");
@@ -84,7 +97,8 @@ public class UtilizationTest {
 			int successfulIterations = 0;
 			//Start test on each app
 			for(int i = 0; i < iter; i++){
-				Application app = appList[i];
+				Application app = Application.generateRandomApplication2(40, 0.5, util, 4,
+						2);
 				mapper = new GAMapper();
 				mapper.setApplication(app);
 				mapper.setProcList(lsList);
@@ -98,6 +112,7 @@ public class UtilizationTest {
 					System.out.println("ls scheduled");
 				} else {
 					System.out.println("lockstep failed");
+					continue;
 				}
 				
 				mapper = new GAMapper();
@@ -111,6 +126,7 @@ public class UtilizationTest {
 					System.out.println("odr scheduled");
 				} else {
 					System.out.println("odr failed");
+					continue;
 				}
 				
 				mapper = new GAMapper();
@@ -124,6 +140,7 @@ public class UtilizationTest {
 					System.out.println("fp scheduled");
 				} else {
 					System.out.println("fp failed");
+					continue;
 				}
 				
 				boolean fail = (lsSched == null) || (odrSched == null) || (fpSched == null);

@@ -86,6 +86,14 @@ public class Application implements Serializable {
 				numOdrCores, numLockstepCores, maxWcetFactor,new Random(), odrFactor);
 	}
 	
+	
+	public static Application generateRandomApplication2(int minNumTasks,
+			double minHiPercent, double averageDefaultUtilization,
+			int numLockstepCores, double maxWcetFactor){
+		return generateSchedulableApplication(minNumTasks, minHiPercent, averageDefaultUtilization, 
+				numLockstepCores, maxWcetFactor,new Random());
+	}
+	
 	public static Application generateRandomApplication(int minNumTasks,
 			double minHiPercent, double averageDefaultUtilization,
 			int numOdrCores, int numLockstepCores, double maxWcetFactor,
@@ -195,4 +203,76 @@ public class Application implements Serializable {
 			}
 		}
 	}
+	
+	public static Application generateSchedulableApplication(int minNumTasks,
+			double minHiPercent, double averageDefaultUtilization,
+			int numLockstepCores, double maxWcetFactor,
+			Random random) {
+
+		Application app = new Application();
+		
+		// create tasks and assign criticality
+		ArrayList<Task> taskList = generateTaskList(random,minHiPercent,minNumTasks);
+
+		generatePeriods(random, taskList);
+
+		int numCores = (int)(numLockstepCores);
+		
+		double[] util = new double[numLockstepCores];
+		for(int i = 0; i < numLockstepCores; i++){
+			util[i] = averageDefaultUtilization;
+		}
+		
+		int[] taskAllocation = new int[taskList.size()];
+		int[] numTasksPerCore = new int[numLockstepCores];
+		int[] tasksCompletedPerCore = new int[numLockstepCores];
+		for(int i = 0; i < taskList.size(); i++){
+			int core = random.nextInt(numLockstepCores);
+			taskAllocation[i] = core;
+			numTasksPerCore[core]++;
+			
+		}
+				
+		// calculate the utilization for each task
+		for (int i = 0; i < taskList.size() - 1; i++) {
+			Task t = taskList.get(i);
+			double ftemp1 = random.nextDouble();
+			int core = taskAllocation[i];
+			double nextUtil = util[core]
+					* Math.pow(ftemp1,
+							1.0 / ((double) numTasksPerCore[core] - tasksCompletedPerCore[core]));
+			tasksCompletedPerCore[core]++;
+			t.setUtilizationLO(util[core] - nextUtil);
+			if (t.getUtilizationLO() > 0.45) {
+				t.setUtilizationLO(0.45);
+				nextUtil = util[core] - 0.45;
+			}
+
+			if (t.isCritical()) {
+				double cRatio = 1 + random.nextDouble() * (maxWcetFactor - 1);
+				if (cRatio * t.getUtilizationLO() > 0.45) {
+					t.setUtilizationLO(0.45 / cRatio);
+				}
+				t.setExecutionTimes(cRatio);
+				nextUtil = util[core] - t.getUtilizationLO();
+			} else {
+				t.setExecutionTimes(1);
+			}
+			util[core] = nextUtil;
+		}
+
+		Task t = taskList.get(taskList.size() - 1);
+		t.setUtilizationLO(util[taskAllocation[taskList.size()-1]]);
+
+		double cRatio = 1 + random.nextDouble() * (maxWcetFactor - 1);
+
+		t.setExecutionTimes(cRatio);
+
+		app.setTasks(taskList);
+
+		return app;
+	}
+
+	
+	
 }

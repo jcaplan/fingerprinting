@@ -1,11 +1,14 @@
 package codegen.test;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import org.apache.commons.io.FileUtils;
 
 import codegen.map.*;
 
@@ -15,31 +18,48 @@ public class GenerateOdrApps {
 	ArrayList<Processor> fpList;
 	ArrayList<FaultMechanism> mecList;
 	int numApps;
-	
+	private int numOdrProcessors;
+	int numTasks;
+	double utilUpperBound;
 	
 	public GenerateOdrApps(){
 		odrFactor = 1.5;
 		numApps = 1000;
+		numOdrProcessors = 4;
+		numTasks = 20;
+		utilUpperBound = 0.95;
 	}
 	
-	public GenerateOdrApps(double odrFactor, int numApps){
+	public GenerateOdrApps(double odrFactor, int numApps, int numOdrProcessors, int numTasks,
+			double utilUpperBound){
 		this.odrFactor = odrFactor;
 		this.numApps = numApps;
+		this.numOdrProcessors = numOdrProcessors;
+		this.numTasks = numTasks;
+		this.utilUpperBound = utilUpperBound;
 	}
 	
 	public void generate(){
 
-		fpList = addProcessors(4, 0);
+		File outputDir = new File("tasksets");
+		try {
+			FileUtils.forceMkdir(outputDir);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		fpList = addProcessors(numOdrProcessors, 0);
 		mecList = new ArrayList<>();
 		mecList.add(new DMR());
 		GenThread[] threads = new GenThread[10];
 		int count = 0;
-		for (double i = 0.5; i < 0.85; i += 0.05) {
+		for (double i = 0.5; i <= utilUpperBound + 0.009; i += 0.05) {
+			System.out.println("Starting gen thread " + i);
 			threads[count] = new GenThread(i);
 			threads[count].start();
 			count++;
 		}
-		for (int i = 0; i < 7; i++){
+		for (int i = 0; i < (int)((utilUpperBound - 0.5) / 0.05); i++){
 			try {
 				threads[i].join();
 			} catch (InterruptedException e) {
@@ -78,7 +98,7 @@ public class GenerateOdrApps {
 			Application app;
 			String utilString = (new DecimalFormat("0.00").format(util));
 			while (count < numApps) {
-				app = Application.generateRandomApplication(20, 0.5, util, 4, 0,
+				app = Application.generateRandomApplication(numTasks, 0.5, util, numOdrProcessors, 0,
 						2,odrFactor);
 
 				Mapper mapper = new HeurMapper();
@@ -114,7 +134,7 @@ public class GenerateOdrApps {
 	
 	public static void main(String[] args) throws FileNotFoundException,
 			IOException, ClassNotFoundException {
-		GenerateOdrApps gen = new GenerateOdrApps(1.5,10);
+		GenerateOdrApps gen = new GenerateOdrApps(1.5,10,4,20,0.80);
 		gen.generate();
 	}
 }

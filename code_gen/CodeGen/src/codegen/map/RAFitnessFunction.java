@@ -123,8 +123,13 @@ public class RAFitnessFunction extends FitnessFunction {
 			Task t = taskList.get(i);
 			int numLegalProcessors = legalMappings.get(t).size();
 			if(t.isCritical()){
-			sampleGenes[i] = new IntegerGene(config, 0, 
-					techniqueMap.get(t).getPermutationSize(numLegalProcessors) - 1);
+				int lowerBound =  0;
+				int upperBound = techniqueMap.get(t).getPermutationSize(numLegalProcessors) - 1;
+				if(upperBound < lowerBound){
+					System.out.println("wtf");
+				}
+				sampleGenes[i] = new IntegerGene(config, lowerBound, 
+						upperBound);
 			} else {
 				sampleGenes[i] = new IntegerGene(config, 0, numLegalProcessors-1);
 			}

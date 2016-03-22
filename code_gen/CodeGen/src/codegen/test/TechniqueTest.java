@@ -31,7 +31,7 @@ public class TechniqueTest {
 		
 		int iter = NUM_ITERATIONS;
 		if(args.length > 0 && args[0].equals("-gen")){	
-			(new GenerateOdrApps(1.5,iter)).generate();
+			(new GenerateOdrApps(1.5,iter,4,20,0.8)).generate();
 		}
 		
 		long time = System.currentTimeMillis();
