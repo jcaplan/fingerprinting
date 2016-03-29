@@ -139,10 +139,25 @@ Transient faults or soft errors occur when environmental radation causes voltage
 \label{f:ft-arch}
 \end{figure}
 
-	
-We make the following {\bf contributions} in this paper:
-\td{our contributions}
 
+	We will extend the analysis on lockstep (LS) to support three types of ODR. The four scenarios (including lockstep) are shown in Figure~\ref{f:ftm}. 
+	In (a), LS execution occurs when a node has internal mechanisms for detecting but not correcting errors. 
+	An error simply results in a re-execution on that node, as previously discussed. 	
+	In (b), dual modular redundancy (DMR) replicates a thread on two cores that cannot detect errors by themselves. 
+	The task must be re-executed if the executions do not match according to some external comparison or voting mechanism.
+	In (c), triple modular redundancy (TMR) replicates a thread on three cores that cannot detect errors. 
+	If an error occurs, the majority answer is taken from the three replicas and no re-execution is required (the system assumes only one replica may fail at a time).
+	Finally, in (d), passive replication is similar to TMR but the final replica does not execute if the first two copies return the same result. 
+	A design space exploration is conducted to demonstrate the benefits to schedulability and quality of service for various platforms consisting of different mixes of fault tolerant and non-fault tolerant cores as well as different fault tolerance mechanisms on the same platform.
+
+\addfigure{0.55}{ftm.pdf}{The 4 fault tolerance mechanisms supported by the proposed MCFTS analysis}{f:ftm}
+			
+		
+We make the following {\bf contributions} in this paper:
+\begin{itemize}
+  \item An extension to the previous FTMCS model to include ODR and heterogeneous systems.
+  \item A design space exploration that demonstrates the benefits of supporting various types of ODR. 
+\end{itemize}
 
 \section{Related Work}
 
@@ -153,6 +168,10 @@ Earlier MCS scheduling work, such as AMC~\cite{baruah2011response}, addresses ov
 Other recent work has begun exploring the scheduling problem in the context of fault-tolerant MCS. For instance, in ~\cite{lin2014scheduling} re-execution slots are reserved for all tasks (both LO and HI). Since faults are rare events, such over-provisioning wastes CPU time and increases hardware costs. We start the system in a mode with no over-provisioning, and only consider re-execution for HI-criticality tasks and in response to faults. In \cite{thekkilakattil2014mixed}, zonal and fault hazard analysis are used to constrain task allocation and re-execution and make offline guarantees for HI tasks. LO tasks are executed if the scenario allows it, but unlike our work, no guarantees are made. In \cite{kang2014static}, a reliability-aware mapping technique is proposed with worst case guarantees for MCS executing on a multiprocessor system-on-chip. However, WCET variation is assumed to be a result of the fault mitigation techniques such as re-execution. In \cite{huang2014scheduling}, the reliability requirements of tasks are accounted for by deriving new values for the HI-criticality tasks' WCETs in the HI mode. None of the three works~\cite{thekkilakattil2014mixed, kang2014static, huang2014scheduling} model the basic MCS premise that HI tasks can have different WCETs coming from, for example, the designer and the certification authority.
 The work in~\cite{pathan14} addresses this issue and is similar to our work in considering both fault tolerance and certification requirements for mixed-criticality systems. However, it uses the standard two-mode model of MCS, and LO-criticality tasks are immediately dropped once either a fault or an overrun occurs, compromising QoS for LO tasks.
 
+Mapping strategies and automated design space exploration for multicore systems are explored in \cite{bolchini2013reliability}, and \cite{kang2014static}. Recent work has also examined porting of multi-rate synchronous languages to multicore systems \cite{puffitsch2013mapping}. We have proposed a four-mode response time analysis for mixed-criticality fault tolerant systems and developed a similar design space exploration technique based on genetic algorithms using our analysis~\cite{albayati2016modes}.
+
+On-demand redundancy \cite{Meyer:CASES11,fu2013demand} and dynamic core coupling \cite{lafrieda2007utilizing} discuss potential performance gains arising from non-lockstep based architectures for mixed-criticality applications.  
+ 	The L4.fiasco microkernel also uses fingerprinting to monitor redundant threads \cite{dobel2012operating} and propose a similar architecture with a \emph{trusted computing base} \cite{dobel2012watches}. 
 
 
 \section{Assumptions and Notation}
@@ -302,19 +321,7 @@ R_i^{(HI)}= \max(R_i^{(HIa)},R_i^{(HIb)})
 
 \section{Extending Response Time Analysis to ODR}
 \label{s:multicorerta}
-	We will extend the analysis on lockstep (LS) to support three types of ODR. The four scenarios (including lockstep) are shown in Figure~\ref{f:ftm}. 
-	In (a), LS execution occurs when a node has internal mechanisms for detecting but not correcting errors. 
-	An error simply results in a re-execution on that node, as previously discussed. 	
-	In (b), dual modular redundancy (DMR) replicates a thread on two cores that cannot detect errors by themselves. 
-	The task must be re-executed if the executions do not match according to some external comparison or voting mechanism.
-	In (c), triple modular redundancy (TMR) replicates a thread on three cores that cannot detect errors. 
-	If an error occurs, the majority answer is taken from the three replicas and no re-execution is required (the system assumes only one replica may fail at a time).
-	Finally, in (d), passive replication is similar to TMR but the final replica does not execute if the first two copies return the same result. 
-
-
-\addfigure{0.55}{ftm.pdf}{The 4 fault tolerance mechanisms supported by the proposed MCFTS analysis}{f:ftm}
-	
-	Each technique is expressed in the new analysis by three parameters: a task set transformation, mapping constraints, and a re-execution profile denoted by $N$.
+	Each technique in Figure~\ref{f:ftm} is expressed in the new analysis by three parameters: a task set transformation, mapping constraints, and a re-execution profile denoted by $N$.
 	The task set transformation represents each replica explicitly in the task set. 
 	Consider the example task set in Table~\ref{t:transform}. 
 	Lockstep does not introduce any replicas to the system and does not require any transformation of the task set. 
@@ -472,15 +479,33 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 	
 	\section{Experimental Results}
 	
-	\td{Three figures are interesting because\ldots}
+	We conducted experiments to compare the LO-criticality task QoS (the fraction of LO tasks scheduled in a given mode) achieved for various platform configurations. 
+	We first examined four core systems with two pairs of lockstep cores (LS), one lockstep pair and one ODR pair (MIX), and two ODR pairs (ODR) with only DMR. 
+	We also examined schedulability and QoS for the ODR system with DMR compared to a system capable of ODR, TMR, and passive replication.
+	
+	We varied system utilization and the fraction of HI tasks, for both single-core and lockstep multicore architectures.
+	By default, half of the tasks were HI-critical. The periods of tasks were randomly selected from the set \{10, 20, 40, 50, 100, 200, 400, 500, 1000\} ms.
+	The utilization of each task in LO mode was generated using the UUnifast algorithm~\cite{bini2005measuring}, such that the total LO-mode utilization across all tasks meets a given target, on average $80\%$ for a pair of lockstep cores by default. All task sets are tuned to the LS system. 
+	We then calculated $C_i(LO) =  u_i(LO)/T_i$. 
+	For HI-criticality tasks, $CFactor=C(HI)/C(LO)$ is then randomly selected within the range $[1, 2]$, and $C(HI)$ was calculated as $C(HI)=CFactor \cdot C(LO)$.
+	
+	Figure~\ref{f:mc-mec-qos-hi} compares the QoS for the different hardware configurations as system utilization varies. 20 tasks were scheduled, with half on average HI. The QoS for MIX and ODR are on average 20\% better than for LS and 30\% in the worst case. Figure~\ref{f:mc-hitasks} shows similar results with the percentage of HI tasks varied while utilization is held constant at 0.7. In both cases we observe that ODR provides better resource utilization on average as resource utilization increases. The results do not take into account possible voting overheads or recovery delays that might further differentiate between the MIX and ODR platforms. 
+	
 % 	\addfigure{0}{name}{caption}{label}
-	\addfigure{0}{mc-plat-qos-hi.jpg}{ODR provides better QoS in multicore systems}{f:mc-mec-qos-hi}
-	\addfigure{0}{mc-mec-qos-hi}{Combining several ODR techniques improves QoS}{f:mc-mec-qos-hi}
-	\addfigure{0}{mc-mec-sched}{Combining several ODR techniques improves schedulability}{f:mc-mec-sched}
+	\addfigure{0}{platform-qos.pdf}{ODR provides better QoS in multicore systems as utilization increases}{f:mc-mec-qos-hi}
+	\addfigure{0}{hitask.pdf}{ODR provides better QoS in multicore systems as the percentage of HI tasks increases.}{f:mc-hitasks}
+	
+	Figures~\ref{f:mc-mec-qos-hi} and \ref{f:mc-mec-sched} compare the QoS and schedulability, respectively, for two ODR platforms with different fault tolerance mechanisms available. The first system is only capable of DMR (DMR) while the second system is capable of all three varieties of ODR studied in this paper (DMR+TMR+PR). We observe that in general more varieties of ODR improves both schedulability and QoS. The different techniques provide greater flexibility in how to distribute the workload across the cores. 
+	
+	\addfigure{0}{mec-qos.pdf}{Combining several ODR techniques improves QoS}{f:mc-mec-qos-hi}
+	\addfigure{0}{mec-sched.pdf}{Combining several ODR techniques improves schedulability}{f:mc-mec-sched}
 	
 \section{Conclusion}
 \label{sec:conclusion}
 
+In this work we proposed a multicore extension to the previous four mode model for MCFTS schedulability analysis that incorporates the notion of on-demand redundancy and supports heterogeneous systems. The analysis was utilized in a design space exploration that supported heterogeneous hardware configurations and arbitrary ODR mechanisms. 
+
+Experimental results show that in general systems with at least partial ODR support outperform those where all cores are statically bound in lockstep. We further showed that support for several types of ODR can further improve both the average schedulability and QoS.
 
 \section*{Acknowledgments}
 
@@ -507,7 +532,6 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 \fi
 #2}}
 \providecommand{\BIBdecl}{\relax}
-\BIBdecl
 
 
 \bibitem{burns2013mixed}

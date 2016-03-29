@@ -41,7 +41,7 @@
 
 	Rate-monotonic scheduling assigns the highest priority to the task with the smallest period. Criticality inversion, depicted in Figure~\ref{f:responsetime}, is when LO tasks are able to preempt HI tasks. Priority inversion is desirable in mixed criticality systems if LO tasks have shorter periods than HI tasks \cite{baruah2011response}. However, this necessitates the runtime monitoring and mode change in case the effects of LO tasks risk causing a HI task to miss a deadline.
 
-\addfigure{0.7}{responsetime.pdf}{Example of priority inversion in mixed criticality system using rate monotonic scheduling.}{f:responsetime}
+\addfigure{0.7}{responsetime.pdf}{Example of criticality inversion in mixed criticality system using rate monotonic scheduling.}{f:responsetime}
 
 AMC-rtb analysis consists of two equations for the response time of each task in the LO and HI mode:
 \begin{equation}
