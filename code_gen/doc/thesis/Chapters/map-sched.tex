@@ -303,7 +303,7 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 	Finally mutation randomly modifies a randomly selected gene in a randomly selected chromosome.
 	There are many probabilistic parameters that require calibration for each operator as well as the population size and number of generations.
 	
-	There is not a generally well defined methodology for selecting these parameters. These experiments will evolve a population of size 100 over 30 generations. 80\% of chromosomes are selected from the previous generation using tournament selection. The tournament selection itself passes on the best chromosomes with a probability of 80\%. The crossover rate is 40\% and the mutation rate is 50\%.
+	There is not a generally well defined methodology for selecting these parameters. These experiments will evolve a population of size 100 over 30 generations. 80\% of chromosomes are selected from the previous generation using tournament selection. The tournament selection itself passes on the best chromosomes with a probability of 80\%. The crossover rate is 40\% and the mutation rate is 50\%. The mutation and crossover rates are fairly high however only the fittest chromosome is required (rather than a population of highly fit chromosomes). High mutation rates result in more sampled data because the algorithm retains the fittest chromosome. Furthermore, we allow the algorithm to optionally quit early if several generations pass without finding a new answer. Therefore, increasing the size of the population ensures a certain minimum number of chromosomes have been tested.
 
 \subsection{Two Stage GA}
 	The mapping and scheduling algorithm follows the procedure used in \cite{bolchini2013reliability} and \cite{kang2014reliability}. 
@@ -380,19 +380,14 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 	They should only differ (possibly) in the QoS of each mode. 
 	Furthermore, we expect the QoS of the ODR and FP systems to be higher than that of the LS.  
 
-	Figure~\ref{f:platform-sched} shows the schedulability results for the three platforms. 
-	The schedulability of ODR and LS were 69\% and 70\% respectively. 
-	In three cases, the tool failed to find a solution with ODR for a system that passed with LS while only two cases occurred where a LS solution was not found for a system that passed with ODR. 
-	The schedulability for the FP platform was 31\% which is problematic. 
-	The GA finds solutions for less than half of the schedulable systems on the other platforms.
-	It is possible that the GA would produce better results given longer search times and optimizing the schedulability computations. 
-	However, integration with a code generation tool for rapid prototyping makes increasing the runtime impractical. 
-	Overall, this result suggests that the use of genetic algorithms may be a useful starting point but that other semi-random unguided heuristics should also be explored in future work.
 	
-	Figure~\ref{f:platform-sched} shows the results for average QoS only for task sets successfully scheduled on all three platforms. 
-	Here we see that ODR does indeed provide better QoS compared to LS.
-	FP provides better QoS in the first three modes compared to LS but not in the HI mode.
-	
-\addfigure{1}{platform-sched.pdf}{Schedulability results for three different platforms}{f:platform-sched}
-\addfigure{1}{platform-qos.pdf}{QoS of the four modes for three different platforms.}{f:platform-qos}
+	Figure~\ref{f:mc-mec-qos-hi} compares the QoS in the HI mode for the different hardware configurations as system utilization varies. 20 tasks were scheduled, with half on average HI. The QoS for MIX and ODR are on average 20\% better than for LS and 30\% in the worst case. Figure~\ref{f:mc-hitasks} shows similar results with the percentage of HI tasks varied while utilization is held constant at 0.7. In both cases we observe that ODR provides better resource utilization on average as resource utilization increases. The results do not take into account possible voting overheads or recovery delays that might further differentiate between the MIX and ODR platforms. 
 
+% 	\addfigure{0}{name}{caption}{label}
+	\addfigure{0.4}{platform-qos.png}{ODR provides better QoS in multicore systems as utilization increases in the HI mode.}{f:mc-mec-qos-hi}
+	\addfigure{0.4}{hitask.png}{ODR provides better QoS in multicore systems as the percentage of HI tasks increases.}{f:mc-hitasks}
+	
+	Figures~\ref{f:mc-mec-qos-hi} and \ref{f:mc-mec-sched} compare the QoS and schedulability, respectively, for two ODR platforms with different fault tolerance mechanisms available. The first system is only capable of DMR (DMR) while the second system is capable of all three varieties of ODR studied in this paper (DMR+TMR+PR). We observe that in general more varieties of ODR improves both schedulability and QoS. The different techniques provide greater flexibility in how to distribute the workload across the cores. 
+	
+	\addfigure{0.4}{mec-qos.png}{Combining several ODR techniques improves QoS}{f:mc-mec-qos-hi}
+	\addfigure{0.4}{mec-sched.png}{Combining several ODR techniques improves schedulability}{f:mc-mec-sched}

@@ -54,17 +54,17 @@
 
 \addfigure{0.59}{toolarch1.pdf}{Tool architecture}{f:tool-arch}
  
-	The user provides a configuration file that contains information about the application such as timing requirements for each task in the system. 
+	The basic workflow is takes the following basic steps. 1) The user provides a configuration file that contains information about the application such as timing requirements for each task in the system. 
 	The user may supply their own profiling results or task mappings in the configuration file (if they would like to use an externally derived estimates or if they want to skip the profiling stage after it has already run once). 
 	A sample configuration file is provided in Appendix~\ref{A:ConfigFile}. 
 	The tool and supports platforms with one monitor core and up to four processing cores.
 
 
 	The code generation tool (CG) first parses the configuration file and determines if profiling is required. 
-	It then generates the necessary inputs for the profiling tool and collects the results (which can include maximum stack depth and worst case execution time). 
-	The code generation tool then takes the provided or generated profiling information and forwards it to the Mapping and Scheduling (MS) tool. 
-	The MS tool returns an optimal schedule and mapping for the task set. 
-	Finally scripts to configure the BSP are generated as well as a main file for each core that configures all threads and replication related services. 	
+	2) It then generates the necessary inputs for the profiling tool and collects the results (which can include maximum stack depth and worst case execution time). 
+	3) The code generation tool then takes the provided or generated profiling information and forwards it to the Mapping and Scheduling (MS) tool. 
+	4) The MS tool returns an optimal schedule and mapping for the task set. 
+	5) Finally scripts to configure the BSP are generated as well as a main file for each core that configures all threads and replication related services. 	
 	
 	
 	
