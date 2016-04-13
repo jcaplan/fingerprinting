@@ -381,10 +381,10 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 	Furthermore, we expect the QoS of the ODR and FP systems to be higher than that of the LS.  
 
 	
-	Figure~\ref{f:mc-mec-qos-hi} compares the QoS in the HI mode for the different hardware configurations as system utilization varies. 20 tasks were scheduled, with half on average HI. The QoS for MIX and ODR are on average 20\% better than for LS and 30\% in the worst case. Figure~\ref{f:mc-hitasks} shows similar results with the percentage of HI tasks varied while utilization is held constant at 0.7. In both cases we observe that ODR provides better resource utilization on average as resource utilization increases. The results do not take into account possible voting overheads or recovery delays that might further differentiate between the MIX and ODR platforms. 
+	Figure~\ref{f:platform-qos} compares the QoS in the HI mode for the different hardware configurations as system utilization varies. 20 tasks were scheduled, with half on average HI. The QoS for MIX and ODR are on average 20\% better than for LS and 30\% in the worst case. Figure~\ref{f:mc-hitasks} shows similar results with the percentage of HI tasks varied while utilization is held constant at 0.7. In both cases we observe that ODR provides better resource utilization on average as resource utilization increases. The results do not take into account possible voting overheads or recovery delays that might further differentiate between the MIX and ODR platforms. 
 
 % 	\addfigure{0}{name}{caption}{label}
-	\addfigure{0.4}{platform-qos.png}{ODR provides better QoS in multicore systems as utilization increases in the HI mode.}{f:mc-mec-qos-hi}
+	\addfigure{0.4}{platform-qos.png}{ODR provides better QoS in multicore systems as utilization increases in the HI mode.}{f:platform-qos}
 	\addfigure{0.4}{hitask.png}{ODR provides better QoS in multicore systems as the percentage of HI tasks increases.}{f:mc-hitasks}
 	
 	Figures~\ref{f:mc-mec-qos-hi} and \ref{f:mc-mec-sched} compare the QoS and schedulability, respectively, for two ODR platforms with different fault tolerance mechanisms available. The first system is only capable of DMR (DMR) while the second system is capable of all three varieties of ODR studied in this paper (DMR+TMR+PR). We observe that in general more varieties of ODR improves both schedulability and QoS. The different techniques provide greater flexibility in how to distribute the workload across the cores. 
