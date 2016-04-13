@@ -434,6 +434,8 @@ The data container ensures that all data is located in a contiguous region of me
 	The pointer to the state variable initially points to the physical address because the monitor will modify the variable in the \texttt{initialize} function. 
 	Afterwards, the pointer is set to the virtual address that the processing core will use.
 
+	It is worth noting here that any code which follows the reusable function prototype and default naming conventions from Simulink Coder can be used as inputs for the code generation tool. Further extensions to the tool could allow users to customize the naming convention similar to Simulink Coder or allow alternative function prototypes.
+	
 \subsection{Generating Application}
 
 	The application requires a Makefile based on the source code required for each function running on that core. First the source code for each core is copied into a folder. The application Makefile is then generated using Nios SBT. Appendix~\ref{A:ConfigScripts} contains a sample script for generating the Makefile. 

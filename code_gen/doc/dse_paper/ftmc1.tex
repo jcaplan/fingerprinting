@@ -97,7 +97,7 @@ Most of the work on mixed-criticality scheduling assumes that the tasks in the s
 In order to ensure safety, system operation must be guaranteed even when transient faults occur~\cite{baleani2003}. Researchers have begun to evaluate MCS in the context of transient faults, but often subsume overruns and task re-execution in response to transient error~\cite{kang2014static, huang2014scheduling}. This overlooks the fact that re-execution budgets and conservative WCET budgets are two different sets of requirements and must be both considered. Other work differentiates between faults and overruns~\cite{pathan14}, but it conservatively drops all LO tasks when either event occurs. Designers, however, are increasingly concerned with quality of service (QoS, the fraction of LO tasks scheduled in a given mode)~\cite{yip2014relaxing, burns2013mixed}; new techniques are needed that improve LO task QoS while satisfying certification and fault tolerance requirements.
 
 	
-In this paper, we propose an extension to previous work \cite{DATE} that incorporates \emph{on-demand redundancy} (ODR).
+In this paper, we propose an extension to previous work \cite{albayati2016modes} that incorporates \emph{on-demand redundancy} (ODR).
 Transient faults or soft errors occur when environmental radation causes voltage spikes in digital circuits \cite{Baumann:05}. 
 	Transient faults must be accounted for in safety critical applications despite their rare occurrence due to the catastrophic consequences that may occur such as loss of life.
 	All references to faults in this thesis refer only to transient faults whether or not explicitly stated. 
@@ -106,7 +106,7 @@ Transient faults or soft errors occur when environmental radation causes voltage
 
 
 % 	Current solutions to transient errors typically rely on replication of entire boards. 
-	Lockstep execution \cite{baleani2003fault} is the de facto method of error detection in ECUs \cite{infineon2014aurix,freescale2014qorivva,renesas2016lockstep}. Lockstep execution, shown in Figure~\ref{f:lockstep}, consists of two cores executing the same code in parallel. 
+	Lockstep execution \cite{baleani2003} is the de facto method of error detection in ECUs \cite{infineon2014aurix,freescale2014qorivva,renesas2016lockstep}. Lockstep execution, shown in Figure~\ref{f:lockstep}, consists of two cores executing the same code in parallel. 
 	Lockstep implements redundancy at a very fine granularity as each store instruction is compared in hardware before being released to the bus. 
 	If the store output does not match then some rollback procedure must be implemented or else the processors are restarted. 
 	It is only possible to detect an error with two processors. 
@@ -176,7 +176,7 @@ On-demand redundancy \cite{Meyer:CASES11,fu2013demand} and dynamic core coupling
 
 \section{Assumptions and Notation}
 \label{sec:notation}
-Our objective is to perform task allocation and scheduling for a set of sporadic mixed-criticality tasks $\Gamma = \{\tau_1,\tau_2,...\}$. The supporting architecture can be single- or multi-core. Tasks are scheduled with fixed priority, and, if the architecture is multicore, with partitioned scheduling. We assume that each core is capable of detecting faults, and that core $\pi$ is characterized by a failure rate $\lambda_{\pi}$ (failures per unit time). Examples of such detection mechanism are acoustic sensors~\cite{UpasaniISCA2014} or lockstep execution~\cite{baleani2003}. 
+Our objective is to perform task allocation and scheduling for a set of sporadic mixed-criticality tasks $\Gamma = \{\tau_1,\tau_2,...\}$. The supporting architecture can be single- or multi-core. Tasks are scheduled with fixed priority, and, if the architecture is multicore, with partitioned scheduling. We assume that each core is capable of detecting faults, and that core $\pi$ is characterized by a failure rate $\lambda_{\pi}$ (failures per unit time). Examples of such detection mechanism are acoustic sensors~\cite{upasani2014avoiding} or lockstep execution~\cite{baleani2003}. 
 
 %In consistency with previous works on fault tolerance in MCS (such as \cite{pathan14}, \cite{kang2014static}, \cite{huang2014scheduling}),
 
@@ -199,7 +199,7 @@ Our system operates as follows:
 \begin{enumerate}[topsep=-5pt]
 \item  The system starts in the LO mode, where all tasks $i$ execute once ($n_i(LO)=1$) and can run up to $C_i(LO)$.
 \item  In LO mode, if any task $i$ executes beyond $C_i(LO)$, the system moves into overrun (OV) mode where all HI-criticality tasks $j$ can safely execute once ($n_j(OV)=1$) up to $C_j(OV) = C_j(HI)$.
-\item  Alternatively, in LO mode, if any HI-criticality task experiences a transient fault, the system moves into transient fault (TF) mode where each HI-criticality task $i$ is guaranteed a sufficient number of re-executions to satisfy their reliability requirements as per Eq.~\eqref{eqn:numRexec} ($n_i(TF)>1$). {\it During the mode transition, the required re-executions for HI tasks must be guaranteed to finish before the deadline}. In this way, reliability requirements are met even when the task starts its execution in a mode that does not consider re-executions. The original task and all re-executions are allowed to execute up to $C_i(TF) = C_i(LO)$.
+\item  Alternatively, in LO mode, if any HI-criticality task experiences a transient fault, the system moves into transient fault (TF) mode where each HI-criticality task $i$ is guaranteed a sufficient number of re-executions to satisfy their reliability requirements ($n_i(TF)>1$). {\it During the mode transition, the required re-executions for HI tasks must be guaranteed to finish before the deadline}. In this way, reliability requirements are met even when the task starts its execution in a mode that does not consider re-executions. The original task and all re-executions are allowed to execute up to $C_i(TF) = C_i(LO)$.
 \item  If any of the (re-)executions of a HI-criticality $i$ task in TF mode overruns $C_i(LO)$, the system moves into HI mode. A move to this mode is also possible if the system is in OV mode and a transient fault occurs. In HI mode, HI-criticality tasks $i$ can execute up to $C_i(HI)$ and re-execute $n_i(HI) \ge n_i(TF)$ times.
 \end{enumerate}
 
@@ -429,7 +429,7 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 	The basic flow is shown in Figure~\ref{f:dse}. 
 	The Reliability Aware (RA) stage is responsible for mapping a fault tolerance mechanism to each task. 
 	The RA stage then generates a chromosome structure for the Mapping and Scheduling (MS) stage. 
-	The MS stage attempts to find an allocation for each task onto a core that maximizes the average QoS across all modes in the system using the response time analysis from Section~\ref{s:mcfts}.
+	The MS stage attempts to find an allocation for each task onto a core that maximizes the average QoS across all modes in the system using the four mode response time analysis.
 	It is necessary to define the problem in terms of a chromosome for each stage.
 	
 \addfigure{0.6}{dse.pdf}{Overview of DSE workflow using nested genetic algorithm searches}{f:dse}
@@ -492,13 +492,13 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 	Figure~\ref{f:mc-mec-qos-hi} compares the QoS for the different hardware configurations as system utilization varies. 20 tasks were scheduled, with half on average HI. The QoS for MIX and ODR are on average 20\% better than for LS and 30\% in the worst case. Figure~\ref{f:mc-hitasks} shows similar results with the percentage of HI tasks varied while utilization is held constant at 0.7. In both cases we observe that ODR provides better resource utilization on average as resource utilization increases. The results do not take into account possible voting overheads or recovery delays that might further differentiate between the MIX and ODR platforms. 
 	
 % 	\addfigure{0}{name}{caption}{label}
-	\addfigure{0}{platform-qos.pdf}{ODR provides better QoS in multicore systems as utilization increases}{f:mc-mec-qos-hi}
-	\addfigure{0}{hitask.pdf}{ODR provides better QoS in multicore systems as the percentage of HI tasks increases.}{f:mc-hitasks}
+	\addfigure{0}{platform-qos.png}{ODR provides better QoS in multicore systems as utilization increases}{f:mc-mec-qos-hi}
+	\addfigure{0}{hitask.png}{ODR provides better QoS in multicore systems as the percentage of HI tasks increases.}{f:mc-hitasks}
 	
 	Figures~\ref{f:mc-mec-qos-hi} and \ref{f:mc-mec-sched} compare the QoS and schedulability, respectively, for two ODR platforms with different fault tolerance mechanisms available. The first system is only capable of DMR (DMR) while the second system is capable of all three varieties of ODR studied in this paper (DMR+TMR+PR). We observe that in general more varieties of ODR improves both schedulability and QoS. The different techniques provide greater flexibility in how to distribute the workload across the cores. 
 	
-	\addfigure{0}{mec-qos.pdf}{Combining several ODR techniques improves QoS}{f:mc-mec-qos-hi}
-	\addfigure{0}{mec-sched.pdf}{Combining several ODR techniques improves schedulability}{f:mc-mec-sched}
+	\addfigure{0}{mec-qos.png}{Combining several ODR techniques improves QoS}{f:mc-mec-qos-hi}
+	\addfigure{0}{mec-sched.png}{Combining several ODR techniques improves schedulability}{f:mc-mec-sched}
 	
 \section{Conclusion}
 \label{sec:conclusion}
@@ -509,140 +509,140 @@ Experimental results show that in general systems with at least partial ODR supp
 
 \section*{Acknowledgments}
 
-% %\bibliographystyle{IEEEtran}
-% %\bibliography{ftmc}
+\bibliographystyle{IEEEtran}
+\bibliography{ftmc}
 
-\begin{thebibliography}{10}
-\providecommand{\url}[1]{#1}
-\csname url@samestyle\endcsname
-\providecommand{\newblock}{\relax}
-\providecommand{\bibinfo}[2]{#2}
-\providecommand{\BIBentrySTDinterwordspacing}{\spaceskip=0pt\relax}
-\providecommand{\BIBentryALTinterwordstretchfactor}{4}
-\providecommand{\BIBentryALTinterwordspacing}{\spaceskip=\fontdimen2\font plus
-\BIBentryALTinterwordstretchfactor\fontdimen3\font minus
-  \fontdimen4\font\relax}
-\providecommand{\BIBforeignlanguage}[2]{{%
-\expandafter\ifx\csname l@#1\endcsname\relax
-\typeout{** WARNING: IEEEtran.bst: No hyphenation pattern has been}%
-\typeout{** loaded for the language `#1'. Using the pattern for}%
-\typeout{** the default language instead.}%
-\else
-\language=\csname l@#1\endcsname
-\fi
-#2}}
-\providecommand{\BIBdecl}{\relax}
-
-
-\bibitem{burns2013mixed}
-A.~Burns and R.~Davis, ``Mixed criticality systems-a review,'' \emph{Department
-  of Computer Science, University of York, Tech. Rep}, 2015.
-
-\vspace{-0.5mm}
-\bibitem{baruah2011response}
-S.~Baruah, A.~Burns, and R.~Davis, ``Response-time analysis for mixed
-  criticality systems,'' in \emph{32nd IEEE Real-Time Systems Symposium}, 2011.
-
-
-\vspace{-0.5mm}
-\bibitem{baleani2003}
-M.~Baleani, A.~Ferrari, L.~Mangeruca, A.~Sangiovanni-Vincentelli, M.~Peri, and S.~Pezzini,
- ``Fault-tolerant platforms for automotive safety-critical applications,'' in \emph{International conference
- on Compilers, architecture and synthesis for embedded systems}, 2003.
-
-
-
-\vspace{-0.5mm}
-\bibitem{kang2014static}
-S.~Kang, H.~Yang, S.~Kim, I.~Bacivarov, S.~Ha, and L.~Thiele,
-``Static Mapping of Mixed-Critical Applications for Fault-Tolerant MPSoCs,''
-in \emph{Design Automation Conference}, 2014.
-
-
-\vspace{-0.5mm}
-\bibitem{huang2014scheduling}
-P.~Huang, H.~Yang, and L.~Thiele, ``On the scheduling of fault-tolerant
-  mixed-criticality systems,'' in \emph{Design Automation Conference}, 2014.
-
-\vspace{-0.5mm}
-\bibitem{pathan14}
-R.~Pathan, ``Fault-tolerant and real-time scheduling for mixed-criticality systems,''
-  \emph{Real-Time Systems}, 50(4):509--547, 2014.
-
-\vspace{-0.5mm}
-\bibitem{yip2014relaxing}
-E.~Yip, M.~M. Kuo, P.~S. Roop, and D.~Broman,
-``Relaxing the synchronous
-  approach for mixed-criticality systems,'' in \emph{IEEE Real-Time and Embedded
-  Technology and Applications Symp.}, 2014.
-
-\vspace{-0.5mm}
- \bibitem{burns2013towards}
-A.~Burns and S.~Baruah, ``Towards a more practical model for mixed criticality
-  systems,'' \emph{Workshop on Mixed Criticality Systems}, 2013.
-
-\vspace{-0.5mm}
- \bibitem{importance14}
-T.~Fleming and A.~Burns, ``Incorporating the notion of importance into mixed
-  criticality systems,'' \emph{Workshop on Mixed Criticality  Sys.}, 2014.
-
-
-\vspace{-0.5mm}
-\bibitem{lin2014scheduling}
-J.~Lin, A.~M. Cheng, D.~Steel, and M.~Y.-C. Wu, ``Scheduling mixed-criticality
-  realtime tasks with fault tolerance,'' in \emph{Workshop on Mixed
-  Criticality Systems}, 2014.
-
-
-\vspace{-0.5mm}
-\bibitem{thekkilakattil2014mixed}
-A.~Thekkilakattil, R.~Dobrin, and S.~Punnekkat, ``Mixed criticality scheduling
-  in fault-tolerant distributed real-time systems,'' in \emph{International Conference on Embedded Systems}, 2014.
-
-
-\vspace{-0.5mm}
-\bibitem{UpasaniISCA2014}
-G.~Upasani, X. Vera, and A. Gonz\'{a}lez,
-``Avoiding core's DUE \& SDC via acoustic wave detectors and tailored error containment and recovery,''
-in \emph{Int. Symposium on Computer Architecuture}, 2014.
-
-
-\vspace{-0.5mm}
-\bibitem{lafrieda2007utilizing}
-C.~LaFrieda, E.~Ipek, J.~F. Martinez, and R.~Manohar, ``Utilizing dynamically
- coupled cores to form a resilient chip multiprocessor,'' in \emph{IEEE/IFIP Int.
- Conf. on Dependable Systems and Networks}, 2007.
-
-
-
-\vspace{-0.5mm}
-\bibitem{meyer2011}
-B.~H.~Meyer, B.~H.~Calhoun,  J.~Lach, and K.~Skadron,
-``Cost-effective safety and fault localization using distributed temporal redundancy,''
-\emph{Compilers, architecture and synthesis for embedded systems}, 2011.
-
-
-\vspace{-0.5mm}
-\bibitem{ElesDATE2008}
-P. Eles, V. Izosimov, P. Pop, and P.~Zebo, ``Synthesis of Fault-Tolerant Embedded Systems,''
-\emph{Design, Automation and Test in Europe}, 2008.
-
-
-\vspace{-0.5mm}
-\bibitem{bini2005measuring}
-E.~Bini and G.~C. Buttazzo, ``Measuring the performance of schedulability
-  tests,'' \emph{Real-Time Systems}, 30(1-2):129--154, 2005.
-
-\vspace{-0.5mm}
-\bibitem{zaidaspdac15}
-Z.~Al-bayati, Q.~Zhao, A.~Youssef, H.~Zeng, and Z.~Gu, ``Enhanced partitioned scheduling of Mixed-Criticality Systems on multicore platforms,'' \emph{Asia and South Pacific Design Automation Conf.}, 630--635, 2015.
-
-
-
-
-
-
-\end{thebibliography}
+% \begin{thebibliography}{10}
+% \providecommand{\url}[1]{#1}
+% \csname url@samestyle\endcsname
+% \providecommand{\newblock}{\relax}
+% \providecommand{\bibinfo}[2]{#2}
+% \providecommand{\BIBentrySTDinterwordspacing}{\spaceskip=0pt\relax}
+% \providecommand{\BIBentryALTinterwordstretchfactor}{4}
+% \providecommand{\BIBentryALTinterwordspacing}{\spaceskip=\fontdimen2\font plus
+% \BIBentryALTinterwordstretchfactor\fontdimen3\font minus
+%   \fontdimen4\font\relax}
+% \providecommand{\BIBforeignlanguage}[2]{{%
+% \expandafter\ifx\csname l@#1\endcsname\relax
+% \typeout{** WARNING: IEEEtran.bst: No hyphenation pattern has been}%
+% \typeout{** loaded for the language `#1'. Using the pattern for}%
+% \typeout{** the default language instead.}%
+% \else
+% \language=\csname l@#1\endcsname
+% \fi
+% #2}}
+% \providecommand{\BIBdecl}{\relax}
+% 
+% 
+% \bibitem{burns2013mixed}
+% A.~Burns and R.~Davis, ``Mixed criticality systems-a review,'' \emph{Department
+%   of Computer Science, University of York, Tech. Rep}, 2015.
+% 
+% \vspace{-0.5mm}
+% \bibitem{baruah2011response}
+% S.~Baruah, A.~Burns, and R.~Davis, ``Response-time analysis for mixed
+%   criticality systems,'' in \emph{32nd IEEE Real-Time Systems Symposium}, 2011.
+% 
+% 
+% \vspace{-0.5mm}
+% \bibitem{baleani2003}
+% M.~Baleani, A.~Ferrari, L.~Mangeruca, A.~Sangiovanni-Vincentelli, M.~Peri, and S.~Pezzini,
+%  ``Fault-tolerant platforms for automotive safety-critical applications,'' in \emph{International conference
+%  on Compilers, architecture and synthesis for embedded systems}, 2003.
+% 
+% 
+% 
+% \vspace{-0.5mm}
+% \bibitem{kang2014static}
+% S.~Kang, H.~Yang, S.~Kim, I.~Bacivarov, S.~Ha, and L.~Thiele,
+% ``Static Mapping of Mixed-Critical Applications for Fault-Tolerant MPSoCs,''
+% in \emph{Design Automation Conference}, 2014.
+% 
+% 
+% \vspace{-0.5mm}
+% \bibitem{huang2014scheduling}
+% P.~Huang, H.~Yang, and L.~Thiele, ``On the scheduling of fault-tolerant
+%   mixed-criticality systems,'' in \emph{Design Automation Conference}, 2014.
+% 
+% \vspace{-0.5mm}
+% \bibitem{pathan14}
+% R.~Pathan, ``Fault-tolerant and real-time scheduling for mixed-criticality systems,''
+%   \emph{Real-Time Systems}, 50(4):509--547, 2014.
+% 
+% \vspace{-0.5mm}
+% \bibitem{yip2014relaxing}
+% E.~Yip, M.~M. Kuo, P.~S. Roop, and D.~Broman,
+% ``Relaxing the synchronous
+%   approach for mixed-criticality systems,'' in \emph{IEEE Real-Time and Embedded
+%   Technology and Applications Symp.}, 2014.
+% 
+% \vspace{-0.5mm}
+%  \bibitem{burns2013towards}
+% A.~Burns and S.~Baruah, ``Towards a more practical model for mixed criticality
+%   systems,'' \emph{Workshop on Mixed Criticality Systems}, 2013.
+% 
+% \vspace{-0.5mm}
+%  \bibitem{importance14}
+% T.~Fleming and A.~Burns, ``Incorporating the notion of importance into mixed
+%   criticality systems,'' \emph{Workshop on Mixed Criticality  Sys.}, 2014.
+% 
+% 
+% \vspace{-0.5mm}
+% \bibitem{lin2014scheduling}
+% J.~Lin, A.~M. Cheng, D.~Steel, and M.~Y.-C. Wu, ``Scheduling mixed-criticality
+%   realtime tasks with fault tolerance,'' in \emph{Workshop on Mixed
+%   Criticality Systems}, 2014.
+% 
+% 
+% \vspace{-0.5mm}
+% \bibitem{thekkilakattil2014mixed}
+% A.~Thekkilakattil, R.~Dobrin, and S.~Punnekkat, ``Mixed criticality scheduling
+%   in fault-tolerant distributed real-time systems,'' in \emph{International Conference on Embedded Systems}, 2014.
+% 
+% 
+% \vspace{-0.5mm}
+% \bibitem{UpasaniISCA2014}
+% G.~Upasani, X. Vera, and A. Gonz\'{a}lez,
+% ``Avoiding core's DUE \& SDC via acoustic wave detectors and tailored error containment and recovery,''
+% in \emph{Int. Symposium on Computer Architecuture}, 2014.
+% 
+% 
+% \vspace{-0.5mm}
+% \bibitem{lafrieda2007utilizing}
+% C.~LaFrieda, E.~Ipek, J.~F. Martinez, and R.~Manohar, ``Utilizing dynamically
+%  coupled cores to form a resilient chip multiprocessor,'' in \emph{IEEE/IFIP Int.
+%  Conf. on Dependable Systems and Networks}, 2007.
+% 
+% 
+% 
+% \vspace{-0.5mm}
+% \bibitem{meyer2011}
+% B.~H.~Meyer, B.~H.~Calhoun,  J.~Lach, and K.~Skadron,
+% ``Cost-effective safety and fault localization using distributed temporal redundancy,''
+% \emph{Compilers, architecture and synthesis for embedded systems}, 2011.
+% 
+% 
+% \vspace{-0.5mm}
+% \bibitem{ElesDATE2008}
+% P. Eles, V. Izosimov, P. Pop, and P.~Zebo, ``Synthesis of Fault-Tolerant Embedded Systems,''
+% \emph{Design, Automation and Test in Europe}, 2008.
+% 
+% 
+% \vspace{-0.5mm}
+% \bibitem{bini2005measuring}
+% E.~Bini and G.~C. Buttazzo, ``Measuring the performance of schedulability
+%   tests,'' \emph{Real-Time Systems}, 30(1-2):129--154, 2005.
+% 
+% \vspace{-0.5mm}
+% \bibitem{zaidaspdac15}
+% Z.~Al-bayati, Q.~Zhao, A.~Youssef, H.~Zeng, and Z.~Gu, ``Enhanced partitioned scheduling of Mixed-Criticality Systems on multicore platforms,'' \emph{Asia and South Pacific Design Automation Conf.}, 630--635, 2015.
+% 
+% 
+% 
+% 
+% 
+% 
+% \end{thebibliography}
 
 
 
