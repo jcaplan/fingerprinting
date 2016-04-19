@@ -482,6 +482,60 @@ C_i(L_i)\color{red} \color{black}+\sum_{j \in hpC(OV,i)}\Big\lceil\frac{R_i^{(OV
 	
 	\section{Experimental Results}
 	
+	\subsection{Single Core}
+	We conducted experiments to compare the LO-criticality task QoS (the fraction of LO tasks scheduled in a given mode) achieved by our four-mode model with the traditional two-mode model in a variety of scenarios. We varied system utilization, the total number of tasks, and the fraction of HI tasks, for both single-core and lockstep multicore architectures.
+	
+
+By default, half of the tasks were HI-critical. The periods of tasks were randomly selected from the set \{10, 20, 40, 50, 100, 200, 400, 500, 1000\} ms.
+The utilization of each task in LO mode was generated using the UUnifast algorithm~\cite{bini2005measuring}, such that the total LO-mode utilization across all tasks meets a given target, on average $80\%$ for a core by default. We then calculated $C_i(LO) =  u_i(LO)/T_i$. For HI-criticality tasks, $CFactor=C(HI)/C(LO)$ is then randomly selected within the range $[1, 2]$, and $C(HI)$ was calculated as $C(HI)=CFactor \cdot C(LO)$.
+The HI mode PFH was set to $1 \times 10^{-9}$, equivalent to the avionics safety standard DO-178C level-A requirements. The number of re-executions for each task in modes TF and HI was then derived using Equation (\ref{eqn:numRexec}).	We assumed $\lambda_{\pi} = 1 \times 10^{-4}$.
+1000 systems were generated for each combination of resource utilization, fraction of HI-criticality task utilization, and task count.
+	
+Figure~\ref{fig:util_basic} shows the performance of each mode as utilization is increased for a single-core architecture. 20 tasks were scheduled, half of which are HI. We observe that in general, LO task QoS is better in OV and TF than HI: on average OV and TF execute 42.9\% and 20.2\% more LO-criticality tasks than HI respectively.
+The benefit is relatively small at low processor utilization: CPU idle time is available to execute longer tasks (OV mode) and task re-executions (TF mode), or even a combination (HI mode). As utilization increases, the QoS in HI mode degrades as more LO-criticality tasks must be dropped to accommodate HI-criticality tasks.
+	
+Figure~\ref{fig:perchi_basic} shows the performance of each mode as the percentage of HI tasks is increased from 20\% to 70\% while utilization is maintained at 80\%. All other parameters are similar to  the ones in Figure~\ref{fig:util_basic}. Modes OV and TF maintain better QoS than HI throughout the experiment. The benefit of these two modes becomes higher as the percentage of HI tasks in the system increases, hence requiring more CPU time for overruns and re-executions. 	
+
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=1.0\linewidth]{images/final-allModesNoF.pdf}
+\caption{Modes OV and TF achieve better QoS than HI for all utilizations ($F$ not bounded).}
+\label{fig:util_basic}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=1.0\linewidth]{images/final-percentHI.pdf}
+\caption{Modes OV and TF achieve better QoS than HI for different percentages of HI tasks ($F$ not bounded).}
+\label{fig:perchi_basic}
+\end{figure}
+
+Figure~\ref{fig:avgU} shows the average improvement for modes OV and TF compared to HI as a function of the maximum number of faults ($F$) considered. When fewer faults are considered, the HI mode performs better and the relative improvement is lower: less time is needed for task re-execution, freeing more resources for LO-criticality tasks in HI mode. Also, limiting pessimism on the analysis is an effective way to improve QoS.% as fewer faults get considered with a given bound on $F$.
+For example, in mode TF (Figure~\ref{fig:avgUN}), when $F=2$, a 20.2\% improvement in QoS is achieved by using the analysis in Section~\ref{sec:F} compared to that of Section~\ref{sec:basic}.
+
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.48\linewidth]{images/averageQoS_square.pdf} \label{fig:avgU}
+\includegraphics[width=0.48\linewidth]{images/TFmodeAvgu_square.pdf} \label{fig:avgUN}
+\caption{(a) Average improvement over all system utilizations for OV and TF modes compared to HI mode. (b) Performance of TF mode for different $F$. }
+\label{fig:util}
+\end{figure}
+
+
+Figure~\ref{fig:multicore} illustrates the QoS for a multicore system (four lockstep cores). 40 tasks (20 HI, 20 LO) were scheduled on the four cores. Task allocation is performed in two steps: first HI tasks are sorted by decreasing utilization and assigned using a worst-fit policy. Then, LO tasks, sorted by decreasing utilization, were assigned using a best-fit policy. Previous results such as \cite{zaidaspdac15} indicate that this method provides good schedulability. As expected, OV and TF modes improve the QoS of LO tasks significantly over HI mode under lockstep, by 91.6\% and 43.9\% on average respectively. With more cores, there is more flexibility to efficiently utilize the processing resources in the new modes. This result shows that the model is beneficial to partitioned multicore architectures, by providing more significant QoS advantages for this increasingly popular platform in embedded systems.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=1.0\linewidth]{images/final-multicoreavgU.pdf}
+\caption{Modes OV and TF achieve better QoS on multicores ($F$ not bounded).}
+\label{fig:multicore}
+\end{figure}
+	
+	
+	\subsection{Multicore}
+	
 	We conducted experiments to compare the LO-criticality task QoS (the fraction of LO tasks scheduled in a given mode) achieved for various platform configurations. 
 	We first examined four core systems with two pairs of lockstep cores (LS), one lockstep pair and one ODR pair (MIX), and two ODR pairs (ODR) with only DMR. 
 	We also examined schedulability and QoS for the ODR system with DMR compared to a system capable of ODR, TMR, and passive replication.
