@@ -105,6 +105,7 @@ public class RAFitnessFunction extends FitnessFunction {
 		if(fitness > bestFitness){
 			bestFitness = fitness;
 			setBestSchedule(msFF.bestSchedule);
+			msFF.bestSchedule.executionProfiles = executionProfiles;
 			System.out.println(bestSchedule);
 			setBestTechniqueMap(techniqueMap);	
 		}

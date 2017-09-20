@@ -7,6 +7,8 @@ public class Schedule implements Serializable{
 
 	Map<Task,Binding> bindings = new HashMap<>();
 	
+	public Map<Task, int[]> executionProfiles = new HashMap<>();
+
 	public void allocate(Task t, Processor p) {
 		bindings.put(t,new Binding(p,t.isCritical()));		
 	}

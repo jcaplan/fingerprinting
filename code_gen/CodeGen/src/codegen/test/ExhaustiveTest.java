@@ -3,6 +3,8 @@ package codegen.test;
 import java.io.*;
 import java.util.*;
 
+import com.sun.corba.se.spi.extension.ZeroPortPolicy;
+
 import codegen.map.*;
 
 public class ExhaustiveTest {
@@ -24,23 +26,47 @@ static Mapper mapper;
 		return pList;
 	}
 	
-	
+
+	private static final int MIN_NUM_TASKS = 10;
+	private static final double MIN_PERCENT_HI = 0.5;
+	private static final double AVERAGE_DEFAULT_UTILIZATION = 0.6;
+	private static final double MAX_WCET_FACTOR = 2.0;
+
+	private static int zeroCount = 0;
+
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException{
-		
-		ObjectInputStream ois = new ObjectInputStream(new FileInputStream("app.b"));
-		Application app = (Application) ois.readObject();
-		ois.close();
+		double sum = 0;
+		int count = 0;
+		for(int i = 0; i < 100; i++) {
+
+			double result = gaMatchesExhaustive();
+			if (result > 0) {
+				sum += result;
+				count++;
+			}
+
+		System.out.println("zero count: " + zeroCount);
+		System.out.println("average deviation: " + sum / count);
+		System.out.println("matching: " + (i + 1 - count - zeroCount));
+
+		}
+	}
+
+	public static double gaMatchesExhaustive() {
+		Random random = new Random();
+
+		Application app = Application.generateRandomApplication(MIN_NUM_TASKS, MIN_PERCENT_HI, AVERAGE_DEFAULT_UTILIZATION,
+				2, 1, MAX_WCET_FACTOR,random);;
 		
 
 		ArrayList<Processor> fpList = addProcessors(2,1);
-		Map<Task, int[]> executionProfiles = new HashMap<>();
 		ArrayList<FaultMechanism> fp = new ArrayList<>();
 		fp.add(new DMR());
 		fp.add(new Lockstep());
-		
+
 		ArrayList<Task> tList = app.getTaskList();
 		// how many tasks are lockstep/dmr
-		
+
 		//build a list of HI tasks
 		ArrayList<Task> hiList = new ArrayList<>();
 
@@ -50,21 +76,24 @@ static Mapper mapper;
 			if(t.isCritical()){
 				hiList.add(t);
 			} else {
-				executionProfiles.put(t,loProfile);
 				loList.add(t);
 			}
 		}
-		
+
 		int numRows = (int)Math.pow(2, hiList.size());
 		int numCols = (int)Math.pow(3, loList.size());
 		int numIter = numRows*numCols;
 		
 		double[][] results = new double[numRows][numCols];
 		
+		double max = 0;
+
 		int count = 0;
 		int percent = 0;
 		
 		for(int i = 0; i < Math.pow(2, hiList.size()); i++){
+			Map<Task, int[]> executionProfiles = new HashMap<>();
+
 			Schedule sched = new Schedule();
 			
 			// binary number -> each task is either dmr (0) or lockstep (1)
@@ -83,7 +112,7 @@ static Mapper mapper;
 					//Lockstep
 					executionProfiles.put(t, lsProfile);
 					sched.allocate(t, fpList.get(2));
-				}		
+				}
 			}
 			
 			ArrayList<Task> fullTaskList = new ArrayList<>(tList);
@@ -97,11 +126,22 @@ static Mapper mapper;
 			// 3 ^ numLo 
 			for(int j = 0; j < Math.pow(3,loList.size()); j++){
 				for(int k = 0; k < loList.size(); k++){
+					executionProfiles.put(loList.get(k), loProfile);
 					sched.allocate(loList.get(k), fpList.get(((int)(j / Math.pow(3, k)) % 3)));
 				}
 				SchedAnalysis sa = new SchedAnalysis(fullTaskList, sched, fpList, executionProfiles);
 				if(sa.schedAnalysis()){
 					results[i][j] = sa.qosAnalysis();
+					if (results[i][j] > max) {
+						max = results[i][j];
+						System.out.println("***********");
+						System.out.println("i: " + i + "j: " + j);
+						System.out.println(sched);
+						System.out.println(max +", " + Math.abs(max - 1.0));
+						if (Math.abs(max - 1.0) < 0.005) {
+							break;
+						}
+					}
 					
 				} else {
 					results[i][j] = 0;
@@ -118,17 +158,28 @@ static Mapper mapper;
 					System.out.println(percent + "%");
 				}
 			}
+			if (Math.abs(max - 1.0) < 0.005) break;
 		}
-		
 
-		PrintStream ps = new PrintStream("results.txt");
-		for(int i = 0; i < numRows; i++){
-			for(int j = 0; j < numCols; j++){
-				ps.print(results[i][j] + ",");
-			}
-			ps.println("\n");
+		if (max == 0) {
+			zeroCount++;
 		}
-		ps.close();
+		mapper = new GAMapper();
+		mapper.setApplication(app);
+		mapper.setProcList(fpList);
+		mapper.setFTMS(fp);
+		mapper.findSchedule();
+		Schedule fpSched = mapper.getBestSchedule();
+		double fp_max = 0;
+		if(fpSched != null) {
+			SchedAnalysis sa = new SchedAnalysis(fpSched.getTasks(), fpSched, fpList, fpSched.executionProfiles);
+			sa.schedAnalysis();
+			fp_max = sa.qosAnalysis();
+		}
+		System.out.println("ga: " + fp_max);
+		System.out.println("exhaustive: " + max);
+
+		return Math.abs(max - fp_max);
 	}
 
 }
